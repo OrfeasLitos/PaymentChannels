@@ -1,0 +1,42 @@
+\section{Lightning Network}
+  This construction is the first to achieve a functional model for payment channels. It
+  is designed for bitcoin and requires some new opcodes and removing the malleability of
+  transactions to function properly.
+
+  The basic construction is as follows. Suppose that $Alice$ and $Bob$ want to create a
+  payment channel that contains 1 BTC consisting of 0.5 BTC from each party. To achieve
+  this, they follow these steps (see also section 3.1.2 and Figure 4 in 3.3.2 in
+  \cite{lightning}):
+  \begin{enumerate}
+    \item Either party (say $Alice$) creates a transaction called $F$ with an input of 0.5
+    BTC from her and 0.5 BTC from $Bob$, and a 2-of-$\left\{Alice, Bob\right\}$ multisig
+    as output; she then sends $F$ to $Bob$. This transaction is not yet signed nor
+    broadcast. $F$ needs to be signed by both parties to be valid.
+
+    \item $Alice$ creates, signs and sends to $Bob$ a transaction ($C1b$) that spends $F$
+    and has the following outputs:
+    \begin{enumerate}
+      \item 0.5 BTC that can be spent by either party, but only after a specified amount
+      of blocks (say $n$) have been mined on top of $C1b$.
+      \item 0.5 BTC that can be spent by $Alice$ immediately when $C1b$ is broadcast.
+    \end{enumerate}
+    Furthermore, $Alice$ creates, signs and sends a "Revocable Delivery" transaction
+    ($RD1b$) that pays the first of the two outputs to $Bob$, but will be accepted by the
+    network if it is in the mempool only after $n$ blocks have been mined on top of $C1b$.
+
+    $Bob$ similarly creates, signs and sends $C1a$ and $RD1a$ to $Alice$.
+
+    \item After $Alice$ receives the signed $C1a$ and $RD1a$ from $Bob$, she verifies that
+    they are both valid and correctly spend $F$. Given that everything works out right,
+    she signs $F$ and sends it to $Bob$.
+
+    Observe that she is not running the risk of $Bob$ refusing to cooperate in signing $F$
+    and thus keeping her 0.5 BTC locked because she has the ability to sign and broadcast
+    the (already signed by $Bob$) $C1a$ and $RD1a$ and thus get her money back $n$
+    confirmations after $C1a$ is confirmed (that is when $RD1a$ is confirmed). Thus
+    $Alice$ need not trust $Bob$ in any way.
+
+    $Bob$ similarly verifies that $C1b$ and $RD1b$ have the correct structure, along with
+    $Alice$'s signature on $F$. He then signs $F$ and broadcasts it. Note that he does not
+    have to trust $Alice$ either.
+  \end{enumerate}
