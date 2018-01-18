@@ -16,9 +16,12 @@
     \item $Alice$ creates, signs and sends to $Bob$ a transaction ($C1b$) that spends $F$
     and has the following outputs:
     \begin{enumerate}
-      \item 0.5 BTC that can be spent by either party, but only after a specified amount
-      of blocks (say $n$) have been mined on top of $C1b$.
       \item 0.5 BTC that can be spent by $Alice$ immediately when $C1b$ is broadcast.
+      \item 0.5 BTC that can be spent by either party, but $Bob$ can spend it only after
+      a specified amount of blocks (say $n$) have been mined on top of $C1b$, whereas
+      $Alice$ can spend it only if $Bob$ provides her with a "Breach Remedy" transaction
+      (explained later) signed by him. This output is called "Revocable Sequence Maturity
+      Contract" (RSMC).
     \end{enumerate}
     Furthermore, $Alice$ creates, signs and sends a "Revocable Delivery" transaction
     ($RD1b$) that pays the first of the two outputs to $Bob$, but will be accepted by the
