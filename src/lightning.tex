@@ -43,3 +43,35 @@
     $Alice$'s signature on $F$. He then signs $F$ and broadcasts it. Note that he does not
     have to trust $Alice$ either.
   \end{enumerate}
+
+  After initially setting up the channel, $Alice$ and $Bob$ can update it as follows:
+  \begin{enumerate}
+    \item Both $Alice$ and $Bob$ follow exactly the same steps as before to create $C2a$,
+    $C2b$, $RD2a$ and $RD2b$; the only difference these transactions have to their
+    counterparts from the previous state of the channel is that, instead of 0.5 BTC for
+    each player, they contain the new agreed balance of the channel (e.g. 0.4 BTC for
+    $Alice$ and 0.6 BTC for $Bob$).
+
+    \item $Alice$ creates, signs and sends to $Bob$ a so-called "Breach Remedy"
+    transaction ($BR1a$). This transaction lets $Bob$ redeem the RSMC output of $C1a$ as
+    soon as $C1a$ is broadcast. $Bob$ similarly creates, signs and sends $BR1b$ to
+    $Alice$.
+  \end{enumerate}
+  Note that this effectively disincentivises $Alice$ from ever broadcasting $C1a$,
+  since then $Bob$ will have a window of $n$ blocks during which he can claim the entire
+  sum in $C1a$, 1 BTC, for himself. $Alice$ had better purge $C1a$ after $BR1a$ is sent to
+  $Bob$. Similarly $Bob$ is incentivised to refrain from ever broadcasting $C1b$.
+
+  This arrangement creates a situation where both players can be confident that the state
+  of the channel is the one expressed by $C2a$, $C2b$, $RD2a$ and $RD2b$, thus they can
+  assume that $Alice$ has just paid $Bob$ 0.1 BTC. No trust between the two players was
+  needed all along. The only caveat is that both players must periodically check the
+  blockchain to ensure that the other party has not broadcast an old Commitment
+  transaction.
+
+  $Alice$ can outsource the task of the periodic check to a dedicated service by sending
+  it all the previous Breach Remedy transactions. To incentivise the service to cooperate,
+  $Alice$ can pay a fee to it as an output of these transactions. Note that $Alice$ does
+  not need to trust the service, since the only thing it can do is to broadcast a Branch
+  Remedy transaction that was created by $Alice$; she never discloses any of her private
+  keys to it.
