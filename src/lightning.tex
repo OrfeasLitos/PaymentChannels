@@ -1,76 +1,92 @@
 \section{Lightning Network}
-  This construction is the first to achieve a functional model for payment channels. It
-  is designed for bitcoin and requires some new opcodes and removing the malleability of
+  This construction is the first to achieve a functional model for payment channels. It is
+  designed for bitcoin and requires some new opcodes and removing the malleability of
   transactions to function properly~\cite{lightning}.
 
-  The basic construction is as follows. Suppose that $Alice$ and $Bob$ want to create a
-  payment channel that contains 1 BTC consisting of 0.5 BTC from each party. To achieve
-  this, they follow these steps (see also section 3.1.2 and Figure 4 in 3.3.2
-  in~\cite{lightning}):
-  \begin{enumerate}
-    \item Either party (say $Alice$) creates a "Funding" transaction ($F$) with an input
-    of 0.5 BTC from her and 0.5 BTC from $Bob$, and a 2-of-$\left\{Alice, Bob\right\}$
-    multisig as output; she then sends $F$ to $Bob$. This transaction is not yet signed
-    nor broadcast. $F$ needs to be signed by both parties to be valid.
-
-    \item $Alice$ creates, signs and sends to $Bob$ a "Commitment" transaction ($C1b$)
-    that spends $F$ and has the following outputs:
+  \subsection{Simple two-party channel}
+    The basic construction is as follows. Suppose that $Alice$ and $Bob$ want to create a
+    payment channel that contains 1 BTC consisting of 0.5 BTC from each party. To achieve
+    this, they follow these steps (see also section 3.1.2 and Figure 4 in 3.3.2
+    in~\cite{lightning}):
     \begin{enumerate}
-      \item 0.5 BTC that can be spent by $Alice$ immediately when $C1b$ is broadcast.
-      \item 0.5 BTC that can be spent by either party, but $Bob$ can spend it only after
-      a specified amount of blocks (say $n$) have been mined on top of $C1b$, whereas
-      $Alice$ can spend it only if $Bob$ provides her with a "Breach Remedy" transaction
-      (explained later) signed by him. This output is called "Revocable Sequence Maturity
-      Contract" (RSMC).
+      \item Either party (say $Alice$) creates a "Funding" transaction ($F$) with an input
+      of 0.5 BTC from her and 0.5 BTC from $Bob$, and a 2-of-$\left\{Alice, Bob\right\}$
+      multisig as output; she then sends $F$ to $Bob$. This transaction is not yet signed
+      nor broadcast. $F$ needs to be signed by both parties to be valid.
+
+      \item $Alice$ creates, signs and sends to $Bob$ a "Commitment" transaction ($C1b$)
+      that spends $F$ and has the following outputs:
+      \begin{enumerate}
+        \item 0.5 BTC that can be spent by $Alice$ immediately when $C1b$ is broadcast.
+        \item 0.5 BTC that can be spent by either party, but $Bob$ can spend it only after
+        a specified amount of blocks (say $n$) have been mined on top of $C1b$, whereas
+        $Alice$ can spend it only if $Bob$ provides her with a "Breach Remedy" transaction
+        (explained later) signed by him. This output is called "Revocable Sequence
+        Maturity Contract" (RSMC).
+      \end{enumerate}
+      Furthermore, $Alice$ creates, signs and sends a "Revocable Delivery" transaction
+      ($RD1b$) that pays the first of the two outputs of $C1b$ to $Bob$, but will be
+      accepted by the network if it is in the mempool only after $n$ blocks have been
+      mined on top of $C1b$.
+
+      $Bob$ similarly creates, signs and sends $C1a$ and $RD1a$ to $Alice$.
+
+      \item After $Alice$ receives the signed $C1a$ and $RD1a$ from $Bob$, she verifies
+      that they are both valid and correctly spend $F$. Given that everything works out
+      right, she signs $F$ and sends it to $Bob$.
+
+      Observe that she is not running the risk of $Bob$ refusing to cooperate in signing
+      $F$ and thus keeping her 0.5 BTC locked because she has the ability to sign and
+      broadcast the (already signed by $Bob$) $C1a$ and $RD1a$ and thus get her money back
+      $n$ confirmations after $C1a$ is confirmed (that is when $RD1a$ is confirmed). Thus
+      $Alice$ need not trust $Bob$ in any way.
+
+      $Bob$ similarly verifies that $C1b$ and $RD1b$ have the correct structure, along
+      with $Alice$'s signature on $F$. He then signs $F$ and broadcasts it. Note that he
+      does not have to trust $Alice$ either.
     \end{enumerate}
-    Furthermore, $Alice$ creates, signs and sends a "Revocable Delivery" transaction
-    ($RD1b$) that pays the first of the two outputs of $C1b$ to $Bob$, but will be
-    accepted by the network if it is in the mempool only after $n$ blocks have been mined
-    on top of $C1b$.
 
-    $Bob$ similarly creates, signs and sends $C1a$ and $RD1a$ to $Alice$.
+    After initially setting up the channel, $Alice$ and $Bob$ can update it as follows
+    (see also section 3.3.4 and Figures 7, 8 in~\cite{lightning}):
+    \begin{enumerate}
+      \item Both $Alice$ and $Bob$ follow exactly the same steps as before to create
+      $C2a$, $C2b$, $RD2a$ and $RD2b$; the only difference these transactions have to
+      their counterparts from the previous state of the channel is that, instead of 0.5
+      BTC for each player, they contain the new agreed balance of the channel (e.g. 0.4
+      BTC for $Alice$ and 0.6 BTC for $Bob$).
 
-    \item After $Alice$ receives the signed $C1a$ and $RD1a$ from $Bob$, she verifies that
-    they are both valid and correctly spend $F$. Given that everything works out right,
-    she signs $F$ and sends it to $Bob$.
+      \item $Alice$ creates, signs and sends to $Bob$ a so-called "Breach Remedy"
+      transaction ($BR1a$). This transaction lets $Bob$ redeem the RSMC output of $C1a$ as
+      soon as $C1a$ is broadcast. $Bob$ similarly creates, signs and sends $BR1b$ to
+      $Alice$.
+    \end{enumerate}
+    Note that this effectively disincentivises $Alice$ from ever broadcasting $C1a$, since
+    in such case $Bob$ will have a window of $n$ blocks during which he can claim the
+    entire sum in $C1a$, 1 BTC, for himself. $Alice$ had better purge $C1a$ after $BR1a$
+    is sent to $Bob$. Similarly $Bob$ is incentivised to refrain from ever broadcasting
+    $C1b$.
 
-    Observe that she is not running the risk of $Bob$ refusing to cooperate in signing $F$
-    and thus keeping her 0.5 BTC locked because she has the ability to sign and broadcast
-    the (already signed by $Bob$) $C1a$ and $RD1a$ and thus get her money back $n$
-    confirmations after $C1a$ is confirmed (that is when $RD1a$ is confirmed). Thus
-    $Alice$ need not trust $Bob$ in any way.
+    This arrangement creates a situation where both players can be confident that the
+    state of the channel is the one expressed by $C2a$, $C2b$, $RD2a$ and $RD2b$, thus
+    they can assume that $Alice$ has just paid $Bob$ 0.1 BTC. No trust between the two
+    players was needed all along. There are only two caveats: First, both players must
+    periodically check the blockchain to ensure that the other party has not broadcast an
+    old Commitment transaction. Second, in case of an uncooperative counterparty, one has
+    to wait a prespecified amount of time before releasing their funds, which may be
+    undesirable.
 
-    $Bob$ similarly verifies that $C1b$ and $RD1b$ have the correct structure, along with
-    $Alice$'s signature on $F$. He then signs $F$ and broadcasts it. Note that he does not
-    have to trust $Alice$ either.
-  \end{enumerate}
+    Thus, the necessary number of blocks mined on top of a Confirmation transaction for a
+    subsequent Revocable Delivery to be valid (previously called $n$) must be carefully
+    chosen in a way that does not lock up the funds for a long time in case of a dispute
+    and at the same time does not require that the parties check the blockchain too often
+    for a malicious broadcast of an already invalidated Commitment transaction.
 
-  After initially setting up the channel, $Alice$ and $Bob$ can update it as follows (see
-  also section 3.3.4 and Figures 7, 8 in~\cite{lightning}):
-  \begin{enumerate}
-    \item Both $Alice$ and $Bob$ follow exactly the same steps as before to create $C2a$,
-    $C2b$, $RD2a$ and $RD2b$; the only difference these transactions have to their
-    counterparts from the previous state of the channel is that, instead of 0.5 BTC for
-    each player, they contain the new agreed balance of the channel (e.g. 0.4 BTC for
-    $Alice$ and 0.6 BTC for $Bob$).
-
-    \item $Alice$ creates, signs and sends to $Bob$ a so-called "Breach Remedy"
-    transaction ($BR1a$). This transaction lets $Bob$ redeem the RSMC output of $C1a$ as
-    soon as $C1a$ is broadcast. $Bob$ similarly creates, signs and sends $BR1b$ to
-    $Alice$.
-  \end{enumerate}
-  Note that this effectively disincentivises $Alice$ from ever broadcasting $C1a$,
-  since in such case $Bob$ will have a window of $n$ blocks during which he can claim the
-  entire sum in $C1a$, 1 BTC, for himself. $Alice$ had better purge $C1a$ after $BR1a$ is
-  sent to $Bob$. Similarly $Bob$ is incentivised to refrain from ever broadcasting $C1b$.
-
-  This arrangement creates a situation where both players can be confident that the state
-  of the channel is the one expressed by $C2a$, $C2b$, $RD2a$ and $RD2b$, thus they can
-  assume that $Alice$ has just paid $Bob$ 0.1 BTC. No trust between the two players was
-  needed all along. There are only two caveats: First, both players must periodically
-  check the blockchain to ensure that the other party has not broadcast an old Commitment
-  transaction. Second, in case of an uncooperative counterparty, one has to wait a
-  prespecified amount of time before releasing their funds, which may be undesirable.
+    $Alice$ can outsource the task of the periodic check to a dedicated service by sending
+    it all the previous Breach Remedy transactions. To incentivise the service to
+    cooperate, $Alice$ can pay a fee to it as an output of these transactions. Note that
+    $Alice$ does not need to trust the service, since the only thing it can do is to
+    broadcast a Branch Remedy transaction that was created by $Alice$; she never discloses
+    any of her private keys to it.
 
   Thus, the necessary number of blocks mined on top of a Confirmation transaction for a
   subsequent Revocable Delivery to be valid (previously called $n$) must be carefully
