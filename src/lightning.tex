@@ -8,13 +8,13 @@
   this, they follow these steps (see also section 3.1.2 and Figure 4 in 3.3.2 in
   \cite{lightning}):
   \begin{enumerate}
-    \item Either party (say $Alice$) creates a transaction called $F$ with an input of 0.5
-    BTC from her and 0.5 BTC from $Bob$, and a 2-of-$\left\{Alice, Bob\right\}$ multisig
-    as output; she then sends $F$ to $Bob$. This transaction is not yet signed nor
-    broadcast. $F$ needs to be signed by both parties to be valid.
+    \item Either party (say $Alice$) creates a "Funding" transaction ($F$) with an input
+    of 0.5 BTC from her and 0.5 BTC from $Bob$, and a 2-of-$\left\{Alice, Bob\right\}$
+    multisig as output; she then sends $F$ to $Bob$. This transaction is not yet signed
+    nor broadcast. $F$ needs to be signed by both parties to be valid.
 
-    \item $Alice$ creates, signs and sends to $Bob$ a transaction ($C1b$) that spends $F$
-    and has the following outputs:
+    \item $Alice$ creates, signs and sends to $Bob$ a "Commitment" transaction ($C1b$)
+    that spends $F$ and has the following outputs:
     \begin{enumerate}
       \item 0.5 BTC that can be spent by $Alice$ immediately when $C1b$ is broadcast.
       \item 0.5 BTC that can be spent by either party, but $Bob$ can spend it only after
