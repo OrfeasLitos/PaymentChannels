@@ -1,12 +1,12 @@
 \section{Lightning Network}
   This construction is the first to achieve a functional model for payment channels. It
   is designed for bitcoin and requires some new opcodes and removing the malleability of
-  transactions to function properly.
+  transactions to function properly~\cite{lightning}.
 
   The basic construction is as follows. Suppose that $Alice$ and $Bob$ want to create a
   payment channel that contains 1 BTC consisting of 0.5 BTC from each party. To achieve
-  this, they follow these steps (see also section 3.1.2 and Figure 4 in 3.3.2 in
-  \cite{lightning}):
+  this, they follow these steps (see also section 3.1.2 and Figure 4 in 3.3.2
+  in~\cite{lightning}):
   \begin{enumerate}
     \item Either party (say $Alice$) creates a "Funding" transaction ($F$) with an input
     of 0.5 BTC from her and 0.5 BTC from $Bob$, and a 2-of-$\left\{Alice, Bob\right\}$
@@ -44,7 +44,8 @@
     have to trust $Alice$ either.
   \end{enumerate}
 
-  After initially setting up the channel, $Alice$ and $Bob$ can update it as follows:
+  After initially setting up the channel, $Alice$ and $Bob$ can update it as follows (see
+  also section 3.3.4 and Figures 7, 8 in~\cite{lightning}):
   \begin{enumerate}
     \item Both $Alice$ and $Bob$ follow exactly the same steps as before to create $C2a$,
     $C2b$, $RD2a$ and $RD2b$; the only difference these transactions have to their
