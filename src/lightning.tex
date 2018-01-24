@@ -24,8 +24,9 @@
       Contract" (RSMC).
     \end{enumerate}
     Furthermore, $Alice$ creates, signs and sends a "Revocable Delivery" transaction
-    ($RD1b$) that pays the first of the two outputs to $Bob$, but will be accepted by the
-    network if it is in the mempool only after $n$ blocks have been mined on top of $C1b$.
+    ($RD1b$) that pays the first of the two outputs of $C1b$ to $Bob$, but will be
+    accepted by the network if it is in the mempool only after $n$ blocks have been mined
+    on top of $C1b$.
 
     $Bob$ similarly creates, signs and sends $C1a$ and $RD1a$ to $Alice$.
 
@@ -59,9 +60,9 @@
     $Alice$.
   \end{enumerate}
   Note that this effectively disincentivises $Alice$ from ever broadcasting $C1a$,
-  since then $Bob$ will have a window of $n$ blocks during which he can claim the entire
-  sum in $C1a$, 1 BTC, for himself. $Alice$ had better purge $C1a$ after $BR1a$ is sent to
-  $Bob$. Similarly $Bob$ is incentivised to refrain from ever broadcasting $C1b$.
+  since in such case $Bob$ will have a window of $n$ blocks during which he can claim the
+  entire sum in $C1a$, 1 BTC, for himself. $Alice$ had better purge $C1a$ after $BR1a$ is
+  sent to $Bob$. Similarly $Bob$ is incentivised to refrain from ever broadcasting $C1b$.
 
   This arrangement creates a situation where both players can be confident that the state
   of the channel is the one expressed by $C2a$, $C2b$, $RD2a$ and $RD2b$, thus they can
