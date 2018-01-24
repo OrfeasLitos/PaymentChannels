@@ -88,15 +88,14 @@
     broadcast a Branch Remedy transaction that was created by $Alice$; she never discloses
     any of her private keys to it.
 
-  Thus, the necessary number of blocks mined on top of a Confirmation transaction for a
-  subsequent Revocable Delivery to be valid (previously called $n$) must be carefully
-  chosen in a way that does not lock up the funds for a long time in case of a dispute
-  and at the same time does not require that the parties check the blockchain too often
-  for a malicious broadcast of an already invalidated Commitment transaction.
+    Finally, the parties can cooperatively close the channel without having to wait $n$
+    blocks as follows: When both parties have agreed to closing the channel, $Alice$
+    creates, signs and sends to $Bob$ an "Exercise Settlement" transaction ($ES$) that
+    spends the Funding transaction and has two simple outputs, each paying to the
+    respective party the sum of the last agreed Commitment transaction. Following the
+    previous example, this transaction would pay 0.4 BTC to $Alice$ and 0.6 BTC to $Bob$.
+    $Bob$ can then also sign and broadcast the transaction to close the channel.
 
-  $Alice$ can outsource the task of the periodic check to a dedicated service by sending
-  it all the previous Breach Remedy transactions. To incentivise the service to cooperate,
-  $Alice$ can pay a fee to it as an output of these transactions. Note that $Alice$ does
-  not need to trust the service, since the only thing it can do is to broadcast a Branch
-  Remedy transaction that was created by $Alice$; she never discloses any of her private
-  keys to it.
+    Once $Alice$ has sent $ES$, she considers the channel as closed. If $Bob$ does not
+    broadcast $ES$, we have a dispute and she has to broadcast the latest Commitment
+    transaction and wait for her funds to be unlocked.
