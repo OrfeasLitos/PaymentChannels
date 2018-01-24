@@ -67,9 +67,16 @@
   This arrangement creates a situation where both players can be confident that the state
   of the channel is the one expressed by $C2a$, $C2b$, $RD2a$ and $RD2b$, thus they can
   assume that $Alice$ has just paid $Bob$ 0.1 BTC. No trust between the two players was
-  needed all along. The only caveat is that both players must periodically check the
-  blockchain to ensure that the other party has not broadcast an old Commitment
-  transaction.
+  needed all along. There are only two caveats: First, both players must periodically
+  check the blockchain to ensure that the other party has not broadcast an old Commitment
+  transaction. Second, in case of an uncooperative counterparty, one has to wait a
+  prespecified amount of time before releasing their funds, which may be undesirable.
+
+  Thus, the necessary number of blocks mined on top of a Confirmation transaction for a
+  subsequent Revocable Delivery to be valid (previously called $n$) must be carefully
+  chosen in a way that does not lock up the funds for a long time in case of a dispute
+  and at the same time does not require that the parties check the blockchain too often
+  for a malicious broadcast of an already invalidated Commitment transaction.
 
   $Alice$ can outsource the task of the periodic check to a dedicated service by sending
   it all the previous Breach Remedy transactions. To incentivise the service to cooperate,
