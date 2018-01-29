@@ -99,3 +99,51 @@
     Once $Alice$ has sent $ES$, she considers the channel as closed. If $Bob$ does not
     broadcast $ES$, we have a dispute and she has to broadcast the latest Commitment
     transaction and wait for her funds to be unlocked.
+
+  \subsection{Payments depending on preimage knowledge (HTLC)}
+    Multi-hop payments can take place between players (e.g. $Alice$ and $Dave$) who do not
+    share a simple channel (i.e. an on-chain Funding transaction), but share simple
+    channels with intermediate nodes (e.g. $Alice$ with $Bob$, $Bob$ with $Carol$ and
+    $Carol$ with $Dave$).
+
+    To enable the creation of multi-hop channels, so-called "Hashed Timelock Contracts"
+    (HTLC) are used. An HTLC is an additional output in a Commitment transaction which can
+    be redeemed by either $Alice$ or $Bob$; $Alice$ can redeem it after a specified number
+    of additional blocks, say $m$, have been mined after the creation (\textit{not} the
+    broadcast) of the Commitment transaction, whereas $Bob$ can redeem it at any time, but
+    only if he produces the preimage $R$ of a hash specified in the HTLC output (see also
+    section 4.2 and Figure 12 in~\cite{lightning}).
+
+    More specifically, consider $C2a, C2b$ where, contrary to the example in the previous
+    subsection, $Alice$ has paid the 0.1 BTC to an HTLC instead of directly to $Bob$.
+    $Bob$ should be able to redeem the 0.1 BTC only if he knows the preimage $R$ before
+    the $m$ blocks have been mined. In addition to $RD2a$ and $RD2b$, six additional
+    transactions have to be signed and exchanged.
+    \begin{enumerate}
+      \item $Alice$ signs and sends an "HTLC Execution Delivery" transaction ($HED1a$) to
+      $Bob$. $HED1a$ pays the HTLC output of $C2a$ to $Bob$, only if he knows the required
+      preimage $R$. Only $Bob$ can broadcast the transaction.
+      \item $Bob$ signs and sends a so-called "HTLC Timeout Delivery" transaction
+      ($HTD1b$) to $Alice$. $HTD1b$ pays the HTLC output of $C2b$ to $Alice$, only after
+      $m$ blocks have been mined from the time $C2b$ was created. Only $Alice$ can
+      broadcast this transaction.
+      \item $Alice$ signs and sends an "HTLC Execution" transaction ($HE1b$) to $Bob$.
+      $HE1b$ pays the HTLC output of $C2b$ to $Bob$, only if he knows the required
+      preimage $R$. Only $Bob$ can broadcast this transaction. Its single output is an
+      RSMC with duration $n$, spendable by $Bob$.
+      \item $Alice$ signs and sends an "HTLC Execution Revocable Delivery" transaction
+      ($HERD1b$) to $Bob$. This transaction spends the RSMC output of $HE1b$. $Bob$ can
+      broadcast this transaction after $n$ blocks have been mined on top of $HE1b$.
+      \item $Bob$ signs and sends an "HTLC Timeout" transaction ($HT1a$) to $Alice$.
+      $HT1a$ pays the HTLC output of $C2a$ to $Alice$, only after $m$ blocks have been
+      mined from the time $HT1a$ was created. Its single output is an RSMC with duration
+      $n$, spendable by $Alice$.
+      \item $Bob$ signs and sends an "HTLC Timeout Revocable Delivery" transaction
+      ($HTRD1b$) to $Alice$. This transaction spends the RSMC output of $HT1b$. $Alice$
+      can broadcast this transaction after $n$ blocks have been mined on top of $HE1b$.
+    \end{enumerate}
+    Note that once again, no trust is necessary in the process described above. The
+    RSMC outputs of $HT1a$ and $HE1b$ are necessary for future invalidation according to
+    the "Breach Remedy" method. More details can be found in Figure 14 of section 4.3. In
+    case of common desire to close the channel, they can be cooperatively closed using the
+    "Exercise Settlement" method.
