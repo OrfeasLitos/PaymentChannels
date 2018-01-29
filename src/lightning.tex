@@ -147,3 +147,55 @@
     the "Breach Remedy" method. More details can be found in Figure 14 of section 4.3. In
     case of common desire to close the channel, they can be cooperatively closed using the
     "Exercise Settlement" method.
+
+  \subsection{Multi-hop channels}
+    With the use of HTLC outputs, it is possible to execute multi-hop payments as follows.
+    Suppose $Alice$ wants to pay $Dave$ 0.001 BTC and they find out that they are
+    connected through the preexisting channels $Alice \Leftrightarrow Bob$, $Bob
+    \Leftrightarrow Carol$ and $Carol \Leftrightarrow Dave$. This payment can be completed
+    with the following steps:
+    \begin{enumerate}
+      \item $Dave$ generates a random number $R$ and sends $hash\left(R\right)$ to
+      $Alice$, $Bob$ and $Carol$.
+      \item $Alice$ and $Bob$ update their channel with an e.g. 300-block HTLC that
+      transfers 0.001 BTC from $Alice$ to $Bob$.
+      \item $Bob$ and $Carol$ update their channel with an e.g. 200-block HTLC that
+      transfers 0.001 BTC from $Bob$ to $Carol$.
+      \item $Carol$ and $Dave$ update their channel with an e.g. 100-block HTLC that
+      transfers 0.001 BTC from $Carol$ to $Dave$.
+      \item $Dave$ discloses $R$ to $Carol$; he obtains 0.001 BTC from the 100-block HTLC
+      transaction.
+      \item $Carol$ discloses $R$ to $Bob$; she obtains 0.001 BTC from the 200-block HTLC
+      transaction.
+      \item $Bob$ discloses $R$ to $Alice$; he obtains 0.001 BTC from the 300-block HTLC
+      transaction.
+    \end{enumerate}
+    Thus $Alice$ has paid $Dave$ 0.001. No party can be defrauded: For example, $Carol$
+    will pay 0.001 BTC to $Dave$ if he shows her $R$ within 100 blocks but then she can
+    take the 0.001 BTC back by disclosing $R$ to $Bob$; she has at least 100 more blocks
+    to do so. In case $Dave$ does not disclose $R$, all parties can take their funds back
+    by settling on-chain.
+
+    On the other hand, assume that $Bob$ does not cooperate after the establishment of the
+    HTLC transactions, but keeps $R$ hidden. In this case $Bob$ will lose his 0.001 BTC to
+    $Carol$ and no other player will be negatively affected; $Carol$ and $Dave$ can
+    fulfill their part without $Bob$'s cooperation, albeit $Carol$ will have to wait for
+    her channel with $Bob$ to expire, since she has to settle on-chain. Likewise $Alice$
+    can take back her 0.001 after the 300-block HTLC lock has expired. Thus no trust
+    between parties is needed.
+
+    One can note two things: Firstly, there is no such thing as a persistent multi-hop
+    channel. The whole procedure must be repeated for each subsequent multi-hop payment
+    and the successful completion of one such payment does not facilitate the creation of
+    future payments along the same route as far as the techniques described above are
+    concerned. Nevertheless, previous cooperation between players can obviate the need of
+    exploring the network anew for a connecting series of preexisting channels.
+
+    Secondly, all intermediate players have to actively engage for a multi-hop payment to
+    go through. This means that a multi-hop payment's latency increases linearly with the
+    length of the chain, as well as the waiting time if on-chain settlement is needed
+    (given that the same margin of security is desired irrespective of the payment
+    length). This reduces the scalability of the design and fosters the creation of
+    centralized, heavily connected players that ensure that short chains are available
+    instead of distributed, loosely connected players that exchange funds through long
+    chains.
