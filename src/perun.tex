@@ -1,2 +1,47 @@
 \section{Perun}
+  Perun~\cite{perun} is a payment network designed for Turing-complete smart contract
+  scripting languages. It has been implemented for Ethereum. Its main contribution is
+  \textit{multistate channels} that allow the dynamic deployment of virtual contracts,
+  known as \textit{nanocontracts}. Contracts of this type do not have to enter the
+  blockchain if all parties are cooperative and only do so in case of a dispute.
 
+  The paper describes specifically the use of such multistate channels for creating
+  virtual payment channels between parties that do not have a standard payment channel
+  between them, but both have channels with an intermediary. Then the intermediary could
+  substitute for the blockchain and thus a virtual payment channel on top of the two
+  on-chain multistate channels can be created. The parties need the intermediary only for
+  setting up the channel and to close it fast. If the intermediary refuses to close the
+  channel, they can always fall back to the blockchain.
+
+  \subsection{Payment channels}
+    A basic payment channel is a tuple
+    \begin{equation*}
+      \gamma = \left(\gamma\mbox{\texttt{.id}}, \gamma\mbox{\texttt{.Alice}},
+      \gamma\mbox{\texttt{.Bob}}, \gamma\mbox{\texttt{.cash}},
+      \gamma\mbox{\texttt{.ver-num}}, \gamma\mbox{\texttt{.sign}}\right)
+    \end{equation*}
+    Versions of this tuple are held by $Alice$ and $Bob$. $\gamma\mbox{\texttt{.id}}$ is a
+    unique identifier for the channel, $\gamma\mbox{\texttt{.Alice}}$ and
+    $\gamma\mbox{\texttt{.Bob}}$ are the end-users of $\gamma$ and
+    $\gamma\mbox{\texttt{.cash}}$ is a function from the end-users to a real non-negative
+    value that denotes the amount of cash the user has in the channel.
+    $\gamma\mbox{\texttt{.ver-num}}$ is a number that is incremented with each channel
+    update (so that the latest state of the channel is known in case of dispute) and
+    $\gamma\mbox{\texttt{.sign}}$ is the singature of the other party on
+    $\left(\gamma\mbox{\texttt{.id}}, \gamma\mbox{\texttt{.cash}},
+    \gamma\mbox{\texttt{.ver-num}}\right)$.
+
+    A payment channel has a corresponding
+    $\mbox{\texttt{PaymentContract}}_{\gamma\mbox{\texttt{.id}}}$ on the ledger. End-users
+    interact with the contract only to set up and close the channel, whereas updating the
+    channel happens off-chain. The contract does not contain the fields
+    $\gamma\mbox{\texttt{.ver-num}}$ and $\gamma\mbox{\texttt{.sign}}$; the two fields are
+    kept only by the end-users.
+
+  \subsection{Multistate channels}
+    A basic multistate channel is a tuple
+    \begin{equation*}
+      \gamma = \left(\gamma\mbox{.\texttt{id}}, \gamma\mbox{.\texttt{Alice}},
+      \gamma\mbox{.\texttt{Bob}}, \gamma\mbox{.\texttt{cash}},
+      \gamma\mbox{.\texttt{nspace}}\right)
+    \end{equation*}
