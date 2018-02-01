@@ -35,15 +35,22 @@
       that they are both valid and correctly spend $F$. Given that everything works out
       right, she signs $F$ and sends it to $Bob$.
 
-      Observe that she is not running the risk of $Bob$ refusing to cooperate in signing
-      $F$ and thus keeping her 0.5 BTC locked because she has the ability to sign and
-      broadcast the (already signed by $Bob$) $C1a$ and $RD1a$ and thus get her money back
-      $n$ confirmations after $C1a$ is confirmed (that is when $RD1a$ is confirmed). Thus
-      $Alice$ need not trust $Bob$ in any way.
-
       $Bob$ similarly verifies that $C1b$ and $RD1b$ have the correct structure, along
       with $Alice$'s signature on $F$. He then signs $F$ and broadcasts it. Note that he
-      does not have to trust $Alice$ either.
+      does not have to trust $Alice$ in any way.
+
+      The fact that $Alice$ holds $C1a$ and $RD1a$, already signed by $Bob$, ensures her
+      that her 0.5 BTC cannot be locked in the 2-of-2 multisig of $F$ in case $Bob$ stops
+      cooperating. If she decides that $Bob$ stopped cooperating, she can broadcast $C1a$,
+      wait for it to be confirmed $n$ times and broadcast $RD1a$ to get her money back.
+      Thus $Alice$ need not trust $Bob$ either.
+
+      Observe that if $Bob$ refuses to cooperate in signing $F$, then the blockchain has
+      not been changed and no funds are at risk. In such case, to ensure that $Bob$ cannot
+      lock her funds in the future, she should immediately transfer her funds to a new
+      address or periodically check the blockchain for $F$ and broadcast $C1a$ and $RD1$
+      in case she finds $F$ on the ledger.
+
     \end{enumerate}
 
     After initially setting up the channel, $Alice$ and $Bob$ can update it as follows
