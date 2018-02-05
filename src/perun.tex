@@ -63,6 +63,39 @@
     contract code is public and thus end-users do not engage with it if it does not
     correspond to the expected code; no trust towards the contract is needed.
 
+    Assume that the end-users want to update an existing channel balance from
+    $\gamma\mbox{\texttt{.cash}}$ to $\mbox{\texttt{cash}}'$, where the total
+    channel balance has remained unchanged:
+    \begin{equation*}
+      \gamma\mbox{\texttt{.cash}}\left(\gamma\mbox{\texttt{.Alice}}\right) +
+      \gamma\mbox{\texttt{.cash}}\left(\gamma\mbox{\texttt{.Bob}}\right) =
+      \mbox{\texttt{cash}}'\left(\gamma\mbox{\texttt{.Alice}}\right) +
+      \mbox{\texttt{cash}}'\left(\gamma\mbox{\texttt{.Bob}}\right)
+    \end{equation*}
+    The procedure of updating to the new balance is as follows:
+    \begin{enumerate}
+      \item $Alice$ builds a new channel tuple $\gamma^{Alice}$ where
+      \begin{itemize}
+        \item the fields \texttt{id} and \texttt{users} are as in $\gamma$,
+        \item $\gamma^{Alice}\mbox{\texttt{.cash}} = \mbox{\texttt{cash}}'$,
+        \item $\gamma^{Alice}\mbox{\texttt{.ver-num}} = \gamma\mbox{\texttt{.ver-num}} +
+        1$ and
+        \item $\gamma^{Alice}\mbox{\texttt{.sign}}$ is $Alice$'s signature on \newline
+        $\left(\gamma^{Alice}\mbox{\texttt{.id}}, \gamma^{Alice}\mbox{\texttt{.cash}},
+        \gamma^{Alice}\mbox{\texttt{.ver-num}}\right)$.
+      \end{itemize}
+      \item $Alice$ sends $\gamma^{Alice}$ to $Bob$ and waits for his response.
+      \item $Bob$ checks that all fields are as expected and replaces the old channel
+      tuple, $\gamma$, with the newly tuple, $\gamma^{Alice}$. From his point of view, the
+      payment has gone through.
+      \item $Bob$ sends to $Alice$ the updated channel, $\gamma^{Bob}$, of which all
+      fields are the same as $\gamma^{Alice}$ except for
+      $\gamma^{Bob}\mbox{\texttt{.sign}}$, which is $Bob$'s signature on
+      $\left(\gamma^{Bob}\mbox{\texttt{.id}}, \gamma^{Bob}\mbox{\texttt{.cash}},
+      \gamma^{Bob}\mbox{\texttt{.ver-num}}\right)$.
+      \item If $Alice$ receives the expected $\gamma^{Bob}$, she replaces the old channel
+      tuple with $\gamma^{Bob}$. From her point of view, the payment has gone through.
+    \end{enumerate}
   \subsection{Multistate channels}
     A basic multistate channel is a tuple
     \begin{equation*}
