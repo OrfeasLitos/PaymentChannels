@@ -96,6 +96,30 @@
       \item If $Alice$ receives the expected $\gamma^{Bob}$, she replaces the old channel
       tuple with $\gamma^{Bob}$. From her point of view, the payment has gone through.
     \end{enumerate}
+
+    The above description holds symmetrically if $Bob$ initiates the channel update. If
+    any player diverges from these steps, the other player can assume that the first has
+    been corrupted and should close the channel immediately.
+
+    Note that after the first update, the channel tuples held by the two players are not
+    the same, their only difference being in the signature field. Strictly speaking, this
+    means that the description of updating a channel above abuses the notation when it
+    refers to $\gamma$ as the common previous channel state.
+
+    Also note that the following scenario may arise: $Alice$ sends the updated version of
+    the channel along with her signature, but $Bob$ does not reply. In this case, $Alice$
+    wants to close the channel since $Bob$ is assumed to be corrupt, but the latest state
+    of which she has $Bob$'s signature is one version earlier than $Bob$'s latest state.
+    The only way $Alice$ can retrieve her funds is by broadcasting this older state. $Bob$
+    can then broadcast his latest state, which supersedes $Alice$'s state. From the point
+    of view of the blockchain, $Alice$ has tried to close the channel with an older state.
+
+    Since there is a situation where the blockchain cannot say which player was corrupt,
+    $Alice$ cannot be punished for broadcasting an older state of the channel by losing
+    all her funds in the channel. She should be entitled to her share, as defined by the
+    latest channel state that has been broadcast. Thus the punishment scheme of Lightning
+    cannot be applied here.
+
   \subsection{Multistate channels}
     A basic multistate channel is a tuple
     \begin{equation*}
