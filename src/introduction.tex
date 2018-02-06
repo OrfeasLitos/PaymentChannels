@@ -34,3 +34,9 @@
   many payments were made, so the fees are kept low. Furthermore, both parties can
   unilateraly close the channel at any given point and claim the coins of their latest
   ``refund'', thus no trust is required between the two parties.
+
+  As an extension of the previous model, let $Charlie$ be a colleague of $Alice$, who also
+  has a payment channel with $Bob$. It is reasonable to imagine a system where $Alice$ can
+  pay $Charlie$ without touching the blockchain, by leveraging the two pre-existing
+  channels ($Alice \Leftrightarrow Bob, Bob \Leftrightarrow Charlie$) with minimal
+  interaction with $Bob$ and without having to trust him at all.
