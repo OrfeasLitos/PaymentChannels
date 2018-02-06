@@ -9,22 +9,22 @@
     this, they follow these steps (see also section 3.1.2 and Figure 4 in 3.3.2
     in~\cite{lightning}):
     \begin{enumerate}
-      \item Either party (say $Alice$) creates a "Funding" transaction ($F$) with an input
+      \item Either party (say $Alice$) creates a ``Funding'' transaction ($F$) with an input
       of 0.5 BTC from her and 0.5 BTC from $Bob$, and a 2-of-$\left\{Alice, Bob\right\}$
       multisig as output; she then sends $F$ to $Bob$. This transaction is not yet signed
       nor broadcast. $F$ needs to be signed by both parties to be valid.
 
-      \item $Alice$ creates, signs and sends to $Bob$ a "Commitment" transaction ($C1b$)
+      \item $Alice$ creates, signs and sends to $Bob$ a ``Commitment'' transaction ($C1b$)
       that spends $F$ and has the following outputs:
       \begin{enumerate}
         \item 0.5 BTC that can be spent by $Alice$ immediately when $C1b$ is broadcast.
         \item 0.5 BTC that can be spent by either party, but $Bob$ can spend it only after
         a specified amount of blocks (say $n$) have been mined on top of $C1b$, whereas
-        $Alice$ can spend it only if $Bob$ provides her with a "Breach Remedy" transaction
-        (explained later) signed by him. This output is called "Revocable Sequence
-        Maturity Contract" (RSMC).
+        $Alice$ can spend it only if $Bob$ provides her with a ``Breach Remedy'' transaction
+        (explained later) signed by him. This output is called ``Revocable Sequence
+        Maturity Contract'' (RSMC).
       \end{enumerate}
-      Furthermore, $Alice$ creates, signs and sends a "Revocable Delivery" transaction
+      Furthermore, $Alice$ creates, signs and sends a ``Revocable Delivery'' transaction
       ($RD1b$) that pays the first of the two outputs of $C1b$ to $Bob$, but will be
       accepted by the network if it is in the mempool only after $n$ blocks have been
       mined on top of $C1b$.
@@ -62,7 +62,7 @@
       BTC for each player, they contain the new agreed balance of the channel (e.g. 0.4
       BTC for $Alice$ and 0.6 BTC for $Bob$).
 
-      \item $Alice$ creates, signs and sends to $Bob$ a so-called "Breach Remedy"
+      \item $Alice$ creates, signs and sends to $Bob$ a so-called ``Breach Remedy''
       transaction ($BR1a$). This transaction lets $Bob$ redeem the RSMC output of $C1a$ as
       soon as $C1a$ is broadcast. $Bob$ similarly creates, signs and sends $BR1b$ to
       $Alice$.
@@ -97,7 +97,7 @@
 
     Finally, the parties can cooperatively close the channel without having to wait $n$
     blocks as follows: When both parties have agreed to closing the channel, $Alice$
-    creates, signs and sends to $Bob$ an "Exercise Settlement" transaction ($ES$) that
+    creates, signs and sends to $Bob$ an ``Exercise Settlement'' transaction ($ES$) that
     spends the Funding transaction and has two simple outputs, each paying to the
     respective party the sum of the last agreed Commitment transaction. Following the
     previous example, this transaction would pay 0.4 BTC to $Alice$ and 0.6 BTC to $Bob$.
@@ -113,7 +113,7 @@
     channels with intermediate nodes (e.g. $Alice$ with $Bob$, $Bob$ with $Carol$ and
     $Carol$ with $Dave$).
 
-    To enable the creation of multi-hop channels, so-called "Hashed Timelock Contracts"
+    To enable the creation of multi-hop channels, so-called ``Hashed Timelock Contracts''
     (HTLC) are used. An HTLC is an additional output in a Commitment transaction which can
     be redeemed by either $Alice$ or $Bob$; $Alice$ can redeem it after a specified number
     of additional blocks, say $m$, have been mined after the creation (\textit{not} the
@@ -127,33 +127,33 @@
     the $m$ blocks have been mined. In addition to $RD2a$ and $RD2b$, six additional
     transactions have to be signed and exchanged.
     \begin{enumerate}
-      \item $Alice$ signs and sends an "HTLC Execution Delivery" transaction ($HED1a$) to
+      \item $Alice$ signs and sends an ``HTLC Execution Delivery'' transaction ($HED1a$) to
       $Bob$. $HED1a$ pays the HTLC output of $C2a$ to $Bob$, only if he knows the required
       preimage $R$. Only $Bob$ can broadcast the transaction.
-      \item $Bob$ signs and sends a so-called "HTLC Timeout Delivery" transaction
+      \item $Bob$ signs and sends a so-called ``HTLC Timeout Delivery'' transaction
       ($HTD1b$) to $Alice$. $HTD1b$ pays the HTLC output of $C2b$ to $Alice$, only after
       $m$ blocks have been mined from the time $C2b$ was created. Only $Alice$ can
       broadcast this transaction.
-      \item $Alice$ signs and sends an "HTLC Execution" transaction ($HE1b$) to $Bob$.
+      \item $Alice$ signs and sends an ``HTLC Execution'' transaction ($HE1b$) to $Bob$.
       $HE1b$ pays the HTLC output of $C2b$ to $Bob$, only if he knows the required
       preimage $R$. Only $Bob$ can broadcast this transaction. Its single output is an
       RSMC with duration $n$, spendable by $Bob$.
-      \item $Alice$ signs and sends an "HTLC Execution Revocable Delivery" transaction
+      \item $Alice$ signs and sends an ``HTLC Execution Revocable Delivery'' transaction
       ($HERD1b$) to $Bob$. This transaction spends the RSMC output of $HE1b$. $Bob$ can
       broadcast this transaction after $n$ blocks have been mined on top of $HE1b$.
-      \item $Bob$ signs and sends an "HTLC Timeout" transaction ($HT1a$) to $Alice$.
+      \item $Bob$ signs and sends an ``HTLC Timeout'' transaction ($HT1a$) to $Alice$.
       $HT1a$ pays the HTLC output of $C2a$ to $Alice$, only after $m$ blocks have been
       mined from the time $HT1a$ was created. Its single output is an RSMC with duration
       $n$, spendable by $Alice$.
-      \item $Bob$ signs and sends an "HTLC Timeout Revocable Delivery" transaction
+      \item $Bob$ signs and sends an ``HTLC Timeout Revocable Delivery'' transaction
       ($HTRD1b$) to $Alice$. This transaction spends the RSMC output of $HT1b$. $Alice$
       can broadcast this transaction after $n$ blocks have been mined on top of $HE1b$.
     \end{enumerate}
     Note that once again, no trust is necessary in the process described above. The
     RSMC outputs of $HT1a$ and $HE1b$ are necessary for future invalidation according to
-    the "Breach Remedy" method. More details can be found in Figure 14 of section 4.3. In
+    the ``Breach Remedy'' method. More details can be found in Figure 14 of section 4.3. In
     case of common desire to close the channel, they can be cooperatively closed using the
-    "Exercise Settlement" method.
+    ``Exercise Settlement'' method.
 
   \subsection{Multi-hop channels}
     With the use of HTLC outputs, it is possible to execute multi-hop payments as follows.
