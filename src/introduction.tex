@@ -4,3 +4,29 @@
   They are constructed in a way that either does not allow the agents to cheat (given
   appropriate assumptions), or give the opportunity to the cheated agents to report the
   latest valid state to a global database (i.e. blockchain) and reclaim their assets.
+
+  For example, imagine that $Alice$ works in $Bob$'s pin factory. They have agreed that
+  $Alice$ be paid right after she makes each pin a small amount $x$ \cite{bdevguide}. This
+  can add up to hundreds, even thousands small of payments each day. Since most
+  cryptocurrencies impose fees per transaction, it would be a waste to broadcast a new
+  transaction for each small payment. For this reason, they turn to payment channels.
+
+  At the beginning of each month, $Bob$ creates a transaction that pays e.g. 100 coins (a
+  bit more than $Alice$'s expected pay for the month) to himself. He builds it in a way
+  that needs both his and $Alice$'s signature to be spent (i.e. 2-of-2 multisig). This is
+  the ``bond'' transaction. $Alice$ confirms that the ``bond'' looks fine and gives $Bob$
+  a special transaction that spends the ``bond''. This transaction is the ``refund''
+  transaction. $Bob$ broadcasts the ``bond'' (but not yet the ``refund'') to the
+  blockchain. The channel is now open.
+
+  Every time $Alice$ makes a pin, $Bob$ pays $x$ to $Alice$ as follows: He creates a new
+  ``refund'' that pays to $Alice$ the amount she already owned according to the previous
+  ``refund'' plus $x$; accordingly, his payment is reduced by $x$. The total coins in
+  the refund are always the same. He signs the new ``refund'' and sends it to $Alice$. She
+  in turn signs the new ``refund'' and sends it back to $Bob$. The channel is now updated.
+
+  Finally, the end of the month comes and $Alice$ wants to cash out on the blockchain, so
+  that she can use her coins elsewhere. In order to do so, she simply broadcasts the
+  latest ``refund''. The ``bond'' is spent according to the latest update, so she takes
+  her rightful payment and $Bob$ takes the rest of the 100 initial coins. The channel is
+  now closed.
