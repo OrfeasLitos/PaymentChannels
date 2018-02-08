@@ -191,14 +191,23 @@
     can take back her 0.001 after the 300-block HTLC lock has expired. Thus no trust
     between parties is needed.
 
-    One can note two things: Firstly, there is no such thing as a persistent multi-hop
+    One can note three things: Firstly, there is no such thing as a persistent multi-hop
     channel. The whole procedure must be repeated for each subsequent multi-hop payment
     and the successful completion of one such payment does not facilitate the creation of
     future payments along the same route as far as the techniques described above are
     concerned. Nevertheless, previous cooperation between players can obviate the need of
     exploring the network anew for a connecting series of preexisting channels.
 
-    Secondly, all intermediate players have to actively engage for a multi-hop payment to
+    Secondly, merely the existence of a channel is not enough to ensure that multi-hop
+    payments can be achieved through it. It must be the case that the correct player holds
+    at least as much funds as the desired payment, which can only be verified by asking
+    the players of the channel, since the latest state is not public. Thus, in the
+    previous example, $Bob$ must own at least 0.001 BTC in the $Bob \Leftrightarrow
+    Charlie$ channel in order for the payment to be possible. $Alice$ (or $Dave$) must ask
+    $Bob$ and $Charlie$ whether this is the case before initiating the multi-hop payment
+    process.
+
+    Finally, all intermediate players have to actively engage for a multi-hop payment to
     go through. This means that a multi-hop payment's latency increases linearly with the
     length of the chain, as well as the waiting time if on-chain settlement is needed
     (given that the same margin of security is desired irrespective of the payment
