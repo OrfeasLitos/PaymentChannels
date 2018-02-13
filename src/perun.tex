@@ -39,6 +39,8 @@
     $\gamma\mbox{\texttt{.ver-num}}$ and $\gamma\mbox{\texttt{.sign}}$; the two fields are
     kept only by the end-users.
 
+    \subsubsection{Channel creation} \ \\
+
     The procedure of creating a channel is as follows:
     \begin{enumerate}
       \item $Alice$ creates a $\mbox{\texttt{PaymentContract}}\left(\gamma\right)$, pays
@@ -62,6 +64,8 @@
     pays the contract after he verifies that $Alice$ has set up everything correctly. The
     contract code is public and thus end-users do not engage with it if it does not
     correspond to the expected code; no trust towards the contract is needed.
+
+    \subsubsection{Channel update} \ \\
 
     Assume that the end-users want to update an existing channel balance from
     $\gamma\mbox{\texttt{.cash}}$ to $\mbox{\texttt{cash}}'$, where the total
