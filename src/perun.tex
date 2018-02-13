@@ -124,6 +124,42 @@
     latest channel state that has been broadcast. Thus the punishment scheme of Lightning
     cannot be applied here.
 
+    \subsubsection{Closing the channel} \ \\
+
+    Finally, we present the procedure of closing a channel.
+
+    \begin{enumerate}
+      \item $Alice$ calls the function $\mbox{\texttt{close}}\left(\gamma^{Alice}\right)$
+      of $\mbox{\texttt{PaymentContract}}_{\gamma\mbox{\texttt{.id}}}$.
+      \item $\mbox{\texttt{PaymentContract}}_{\gamma\mbox{\texttt{.id}}}$ checks that
+      $\gamma^{Alice}$ is correctly formed and holds the same total balance
+      as the initial channel recorded in the contract. If so, it accepts $\gamma^{Alice}$
+      as the channel state. Additionally, $Bob$ can call
+      $\mbox{\texttt{close}}\left(\right)$ at any time and either $Alice$ or $Bob$ can
+      call $\mbox{\texttt{finalize}}\left(\right)$ after time $\Delta$ has passed. If
+      $\gamma^{Alice}$ is does not pass the checks, the contract ignores the call.
+      \item If $Bob$ disagrees with the channel state published by $Alice$, he calls
+      $\mbox{\texttt{close}}\left(\gamma^{Bob}\right)$ of
+      $\mbox{\texttt{PaymentContract}}_{\gamma\mbox{\texttt{.id}}}$.
+      \item Upon receiving a $\mbox{\texttt{close}}\left(\gamma^{Bob}\right)$ call from
+      $Bob$, $\mbox{\texttt{PaymentContract}}_{\gamma\mbox{\texttt{.id}}}$ checks that
+      $\gamma^{Bob}$ is correctly formed, holds the same total balance as the initial
+      channel recorded in the contract and additionally has a higher version number than
+      $\gamma^{Alice}$. If so, it accepts $\gamma^{Bob}$ as the channel state. Either
+      $Alice$ or $Bob$ can still call $\mbox{\texttt{finalize}}\left(\right)$ after time
+      $\Delta$ from $Alice$'s original $\mbox{\texttt{close}}\left(\right)$ call has
+      passed. If $\gamma^{Bob}$ does not pass the checks, the contract ignores the call.
+      \item After time $\Delta$ has passed, either end-user can call
+      $\mbox{\texttt{finalize}}\left(\right)$ of
+      $\mbox{\texttt{PaymentContract}}_{\gamma\mbox{\texttt{.id}}}$.
+      \item Upon receiving a $\mbox{\texttt{finalize}}\left(\right)$ call from either
+      end-user, the contract $\mbox{\texttt{PaymentContract}}_{\gamma\mbox{\texttt{.id}}}$
+      checks that time $\Delta$ has passed since the original
+      $\mbox{\texttt{close}}\left(\right)$. If so, it sends \texttt{closed} and
+      $\gamma\mbox{\texttt{.cash}}\left(P\right)$ to each end-user $P$. If not, it ignores
+      the $\mbox{\texttt{finalize}}\left(\right)$ call.
+    \end{enumerate}
+
   \subsection{Multistate channels}
     A basic multistate channel is a tuple
     \begin{equation*}
