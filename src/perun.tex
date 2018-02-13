@@ -174,5 +174,22 @@
     \begin{equation*}
       \gamma = \left(\gamma\mbox{.\texttt{id}}, \gamma\mbox{.\texttt{Alice}},
       \gamma\mbox{.\texttt{Bob}}, \gamma\mbox{.\texttt{cash}},
-      \gamma\mbox{.\texttt{nspace}}\right)
+      \gamma\mbox{.\texttt{nspace}}\right) \enspace,
     \end{equation*}
+
+    where $\gamma\mbox{.\texttt{id}}$, $\gamma\mbox{.\texttt{Alice}}$,
+    $\gamma\mbox{.\texttt{Bob}}$ and $\gamma\mbox{.\texttt{cash}}$ are as in a payment
+    channel and $\gamma\mbox{.\texttt{nspace}}$ is a set of nanocontracts, or
+    \textit{nanocontracts space}.
+
+    A nanocontract $\nu$ is a tuple
+    \begin{equation*}
+      \nu = \left(\nu\mbox{.\texttt{nid}}, \nu\mbox{.\texttt{blocked}},
+      \nu\mbox{.\texttt{storage}}\right) \enspace,
+    \end{equation*}
+
+    where $\nu\mbox{.\texttt{nid}}$ is a globally unique identifier of the nanocontract,
+    $\nu\mbox{\texttt{.blocked}}$ is a function from the end-users of the multistate
+    channel to a real non-negative value that denotes the amount of cash the end-user has
+    in the nanocontract and $\nu\mbox{\texttt{.storage}}$ contains the storage of the
+    nanocontract.
