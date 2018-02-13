@@ -160,6 +160,15 @@
       the $\mbox{\texttt{finalize}}\left(\right)$ call.
     \end{enumerate}
 
+    The above closing sequence gives $Bob$ a window of duration at least $\Delta$ to
+    dispute the closing channel state reported by $Alice$.
+
+    Note that, in contrast to Lightning, there is no provision for cooperative closing of
+    a channel, thus a delay of $\Delta$ must always be incurred between initiating a
+    channel closure and getting access to the funds. The parameter $\Delta$ is decided by
+    the parties when the channel is created and presents the same tradeoffs as the
+    parameter $n$ of Lightning.
+
   \subsection{Multistate channels}
     A basic multistate channel is a tuple
     \begin{equation*}
