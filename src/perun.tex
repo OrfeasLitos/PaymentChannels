@@ -55,7 +55,7 @@
       \item The contract sends the message (\texttt{initialised}, $\gamma$) to both
       end-users.
       \item If $Alice$ does not receive (\texttt{initialised}, $\gamma$) after a
-      predefined time $\Delta$ has passed from receiving (\texttt{initialising},
+      predefined period $\Delta$ has passed from receiving (\texttt{initialising},
       $\gamma$), she calls the contract function \texttt{refund}() and gets her deposit
       back.
     \end{enumerate}
@@ -130,8 +130,8 @@
 
     \begin{enumerate}
       \item $Alice$ calls the function $\mbox{\texttt{close}}\left(\gamma^{Alice}\right)$
-      of $\mbox{\texttt{PaymentContract}}_{\gamma\mbox{\texttt{.id}}}$.
-      \item $\mbox{\texttt{PaymentContract}}_{\gamma\mbox{\texttt{.id}}}$ checks that
+      of $\mbox{\texttt{PaymentContract}}_{\gamma\mbox{.\texttt{id}}}$.
+      \item $\mbox{\texttt{PaymentContract}}_{\gamma\mbox{.\texttt{id}}}$ checks that
       $\gamma^{Alice}$ is correctly formed and holds the same total balance
       as the initial channel recorded in the contract. If so, it accepts $\gamma^{Alice}$
       as the channel state. Additionally, $Bob$ can call
@@ -140,9 +140,9 @@
       $\gamma^{Alice}$ is does not pass the checks, the contract ignores the call.
       \item If $Bob$ disagrees with the channel state published by $Alice$, he calls
       $\mbox{\texttt{close}}\left(\gamma^{Bob}\right)$ of
-      $\mbox{\texttt{PaymentContract}}_{\gamma\mbox{\texttt{.id}}}$.
+      $\mbox{\texttt{PaymentContract}}_{\gamma\mbox{.\texttt{id}}}$.
       \item Upon receiving a $\mbox{\texttt{close}}\left(\gamma^{Bob}\right)$ call from
-      $Bob$, $\mbox{\texttt{PaymentContract}}_{\gamma\mbox{\texttt{.id}}}$ checks that
+      $Bob$, $\mbox{\texttt{PaymentContract}}_{\gamma\mbox{.\texttt{id}}}$ checks that
       $\gamma^{Bob}$ is correctly formed, holds the same total balance as the initial
       channel recorded in the contract and additionally has a higher version number than
       $\gamma^{Alice}$. If so, it accepts $\gamma^{Bob}$ as the channel state. Either
@@ -153,7 +153,7 @@
       $\mbox{\texttt{finalize}}\left(\right)$ of
       $\mbox{\texttt{PaymentContract}}_{\gamma\mbox{\texttt{.id}}}$.
       \item Upon receiving a $\mbox{\texttt{finalize}}\left(\right)$ call from either
-      end-user, the contract $\mbox{\texttt{PaymentContract}}_{\gamma\mbox{\texttt{.id}}}$
+      end-user, the contract $\mbox{\texttt{PaymentContract}}_{\gamma\mbox{.\texttt{id}}}$
       checks that time $\Delta$ has passed since the original
       $\mbox{\texttt{close}}\left(\right)$. If so, it sends \texttt{closed} and
       $\gamma\mbox{\texttt{.cash}}\left(P\right)$ to each end-user $P$. If not, it ignores
