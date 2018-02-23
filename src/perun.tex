@@ -193,3 +193,8 @@
     channel to a real non-negative value that denotes the amount of cash the end-user has
     in the nanocontract and $\nu\mbox{\texttt{.storage}}$ contains the storage of the
     nanocontract.
+
+    The multistate channel $\gamma$ has a corresponding contract
+    $\mbox{\texttt{MSContract}}_{\gamma\mbox{.\texttt{id}}}$ on the ledger. The end-users
+    have to interact with this contract upon channel creation, new nanocontract creation,
+    channel closure and of course in case of dispute.
