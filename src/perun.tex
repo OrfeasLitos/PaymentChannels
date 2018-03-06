@@ -176,25 +176,47 @@
       \gamma\mbox{.\texttt{Bob}}, \gamma\mbox{.\texttt{cash}},
       \gamma\mbox{.\texttt{nspace}}\right) \enspace,
     \end{equation*}
-
     where $\gamma\mbox{.\texttt{id}}$, $\gamma\mbox{.\texttt{Alice}}$,
     $\gamma\mbox{.\texttt{Bob}}$ and $\gamma\mbox{.\texttt{cash}}$ are as in a payment
     channel and $\gamma\mbox{.\texttt{nspace}}$ is a set of nanocontracts, or
     \textit{nanocontracts space}.
 
-    A nanocontract $\nu$ is a tuple
+    The multistate channel $\gamma$ has a corresponding contract
+    $\mbox{\texttt{MSContract}}_{\gamma\mbox{.\texttt{id}}}$ on the ledger. The end-users
+    have to interact with this contract upon channel creation, new nanocontract creation,
+    channel closure and of course in case of dispute over the state of a nanocontract.
+
+    A nanocontract $\nu \in \gamma\mbox{.\texttt{nspace}}$ is a tuple
     \begin{equation*}
       \nu = \left(\nu\mbox{.\texttt{nid}}, \nu\mbox{.\texttt{blocked}},
-      \nu\mbox{.\texttt{storage}}\right) \enspace,
+      \nu\mbox{.\texttt{storage}}, \nu\mbox{.\texttt{ver-num}},
+      \nu\mbox{.\texttt{sign}}\right) \enspace,
     \end{equation*}
-
     where $\nu\mbox{.\texttt{nid}}$ is a globally unique identifier of the nanocontract,
     $\nu\mbox{\texttt{.blocked}}$ is a function from the end-users of the multistate
     channel to a real non-negative value that denotes the amount of cash the end-user has
     in the nanocontract and $\nu\mbox{\texttt{.storage}}$ contains the storage of the
-    nanocontract.
+    nanocontract. Like simple payment channels, the nanocontract with the highest
+    $\nu\mbox{\texttt{.ver-num}}$ and a valid $\nu\mbox{\texttt{.sign}}$ will be accepted
+    by the blockchain in case of registration of the state of the nanocontract on the
+    ledger.
 
-    The multistate channel $\gamma$ has a corresponding contract
-    $\mbox{\texttt{MSContract}}_{\gamma\mbox{.\texttt{id}}}$ on the ledger. The end-users
-    have to interact with this contract upon channel creation, new nanocontract creation,
-    channel closure and of course in case of dispute.
+    Registration happens in case of dispute with regard to the state of the nanocontract
+    or when the parties want to close the multistate channel. The registration mechanism
+    is very similar to that of closing a simple payment channel, so will not be described
+    in detail.
+
+    Since a nanocontract has its own $\nu\mbox{.\texttt{ver-num}}$ and
+    $\nu\mbox{.\texttt{sign}}$ field, it can be updated to $\nu'$ without updating the
+    whole multistate channel. The only requirement is that
+    \begin{align*}
+      \nu\mbox{\texttt{.blocked}}\left(Alice\right) &+
+      \nu\mbox{\texttt{.blocked}}\left(Bob\right) \geq \\
+      \nu'\mbox{\texttt{.blocked}}\left(Alice\right) &+
+      \nu'\mbox{\texttt{.blocked}}\left(Bob\right) \enspace.
+    \end{align*}
+    This ensures that no two nanocontracts will together require more funds than are
+    available in the multistate channel and thus that all nanocontracts can be updated in
+    parallel. If it is the case that $\nu\mbox{\texttt{.blocked}}\left(Alice\right) +
+    \nu\mbox{\texttt{.blocked}}\left(Bob\right) = 0$, we say that the nanocontract $\nu$
+    is terminated.
