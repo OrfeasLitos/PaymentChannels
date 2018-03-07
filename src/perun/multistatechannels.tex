@@ -1,0 +1,95 @@
+\subsection{Multistate channels}
+  A basic multistate channel is a tuple
+  \begin{equation*}
+    \gamma = \left(\gamma\mbox{.\texttt{id}}, \gamma\mbox{.\texttt{Alice}},
+    \gamma\mbox{.\texttt{Bob}}, \gamma\mbox{.\texttt{cash}},
+    \gamma\mbox{.\texttt{nspace}}\right) \enspace,
+  \end{equation*}
+  where $\gamma\mbox{.\texttt{id}}$, $\gamma\mbox{.\texttt{Alice}}$,
+  $\gamma\mbox{.\texttt{Bob}}$ and $\gamma\mbox{.\texttt{cash}}$ are as in a payment
+  channel and $\gamma\mbox{.\texttt{nspace}}$ is a set of nanocontracts, or
+  \textit{nanocontracts space}.
+
+  The multistate channel $\gamma$ has a corresponding contract
+  $\mbox{\texttt{MSContract}}_{\gamma\mbox{.\texttt{id}}}$ on the ledger. The end-users
+  have to interact with this contract upon channel creation, channel closure and in case
+  of dispute over the state of a nanocontract. Note that the end-users can create new
+  nanocontracts, as well as cooperatively update them, without touching the ledger.
+
+  A nanocontract $\nu \in \gamma\mbox{.\texttt{nspace}}$ is a tuple
+  \begin{equation*}
+    \nu = \left(\nu\mbox{.\texttt{nid}}, \nu\mbox{.\texttt{blocked}},
+    \nu\mbox{.\texttt{storage}}, \nu\mbox{.\texttt{ver-num}},
+    \nu\mbox{.\texttt{sign}}\right) \enspace,
+  \end{equation*}
+  where $\nu\mbox{.\texttt{nid}}$ is a globally unique identifier of the nanocontract,
+  $\nu\mbox{\texttt{.blocked}}$ is a function from the end-users of the multistate channel
+  to a real non-negative value that denotes the amount of cash the end-user has in the
+  nanocontract and $\nu\mbox{\texttt{.storage}}$ contains the storage of the nanocontract.
+  Like simple payment channels, the nanocontract with the highest
+  $\nu\mbox{\texttt{.ver-num}}$ and a valid $\nu\mbox{\texttt{.sign}}$ will be accepted by
+  the blockchain in case of registration of the state of the nanocontract on the ledger.
+
+  The update mechanism for a nanocontract is similar to the update mechanism of a simple
+  payment channel and thus will not be explained in detail. The only substantial
+  differences are the following:
+  \begin{enumerate}
+    \item After $Alice$ proposes a nanocontract update, $Bob$ has time $\Upsilon$ to reply
+    whether he agrees with this update or not. If he agrees the update goes through, else
+    the state of the nanocontract is not updated (apart from increasing the version
+    number). This is not considered a dispute, so (on-chain) nanocontract state
+    registration does not need to take place.
+    \item In case of a sucessful update, the cash balance of both end-users in the
+    underlying multistate channel ($\gamma\mbox{.\texttt{cash}}\left(Alice\right)$ and
+    $\gamma\mbox{.\texttt{cash}}\left(Alice\right)$) are updated to reflect the fact that
+    the nanocontract update has consumed or returned some funds to the end-users.
+  \end{enumerate}
+
+  Each nanocontract has its own $\nu\mbox{.\texttt{ver-num}}$ and
+  $\nu\mbox{.\texttt{sign}}$ field, so that several nanocontracts of the same multistate
+  channel can be updated in parallel. Let $\nu'$ be the state of the nanocontract $\nu$
+  after an update. The only requirement is that
+  \begin{align*}
+    \nu'\mbox{\texttt{.blocked}}\left(Alice\right) &+
+    \nu'\mbox{\texttt{.blocked}}\left(Bob\right) \leq \\
+    \nu\mbox{\texttt{.blocked}}\left(Alice\right) &+
+    \nu\mbox{\texttt{.blocked}}\left(Bob\right) \enspace.
+  \end{align*}
+  This ensures that no two nanocontracts will together require more funds than are
+  available in the multistate channel and thus that all nanocontracts can be updated in
+  parallel. If it is the case that $\nu\mbox{\texttt{.blocked}}\left(Alice\right) +
+  \nu\mbox{\texttt{.blocked}}\left(Bob\right) = 0$, we say that the nanocontract $\nu$ is
+  \texttt{terminated}.
+
+  To create a new nanocontract $\nu$, users simply apply the update mechanism. They have
+  to ensure that $\nu\mbox{.\texttt{nid}}$ is a new, globally unique identifier and that
+  the $\nu\mbox{.\texttt{ver-num}} = 0$.
+
+  Registration of the state of a nanocontract on \texttt{MSContract} happens in case of
+  dispute with regard to the state of the nanocontract or when the parties want to close
+  the multistate channel. The registration mechanism is very similar to that of closing a
+  simple payment channel, so will not be described in detail.
+
+  Given that a nanocontract $\nu$ is registered on the \texttt{MSContract} of the
+  underlying multistate channel of $\nu$, any end-user can unilaterally execute a
+  nanocontract function \texttt{fun} by calling the \texttt{MSContract} function
+  $\mbox{\texttt{execute}}\left(\nu\mbox{.\texttt{nid}}, \mbox{\texttt{fun}}, z\right)$.
+  \texttt{MSContract} then updates the state of the nano\-contract on the ledger and
+  returns the output to the end-users.
+
+  Finally, when the end-users wish to close the multistate channel, they have to update
+  all nanocontracts such that they are \texttt{terminated}, register their state (or
+  alternatively register their state and then execute functions on the ledger until they
+  are \texttt{terminated}) and then initiate a procedure similar to the closing of basic
+  payment channels, which gives the opportunity to both end-users to publish their latest
+  version of all nanocontracts of the multistate channel. The nanocontract states with the
+  highest version number are accepted by the ledger as valid. Each end-user receives coins
+  equal to the initial coins they contributed to the multistate channel, amended by the
+  changes introduced by the nanocontracts. These coins are now available to use with other
+  users of the ledger.
+
+  It may be the case that some nanocontracts cannot be updated to a \texttt{terminated}
+  state due to dispute between end-users or design problems of the nanocontract. The
+  end-users can have special provision in \texttt{MSContract} for such cases to be able to
+  kill such misbehaving nanocontracts and distribute the funds in a predefined manner.
+  Such a mechanism is not explicitly specified.
