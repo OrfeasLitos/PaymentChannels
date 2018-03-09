@@ -1,1 +1,26 @@
-\subsection{Virtual Payment Channels}
+\subsection{Virtual payment channels}
+  Virtual payment channels are channels created on top of suitable preexisting multistate
+  channels that facilitate trustless funds exchange between parties that do not share an
+  on-chain channel. Going into more detail, a virtual payment channel $\gamma$ is a tuple:
+  \begin{gather*}
+    \left(\gamma\mbox{.\texttt{id}}, \gamma\mbox{.\texttt{Alice}},
+    \gamma\mbox{.\texttt{Ingrid}}, \gamma\mbox{.\texttt{Bob}},
+    \gamma\mbox{.\texttt{cash}}, \gamma\mbox{.\texttt{subchan}}, \right. \\
+    \left.\gamma\mbox{.\texttt{validity}}, \gamma\mbox{.\texttt{ver-num}},
+    \gamma\mbox{.\texttt{sign}}\right)
+  \end{gather*}
+  Let $Alice$ have a multistate channel with $Ingrid$ ($Alice
+  \overset{\gamma_a}{\Leftrightarrow} Ingrid$); also let $Bob$ have a multistate channel
+  with $Ingrid$ ($Bob \overset{\gamma_b}{\Leftrightarrow} Ingrid$). To build $\gamma$, two
+  nanocontracts $\nu_a$ and $\nu_b$ are created, each on the corresponding multistate
+  channel. $\nu_a$ has $\gamma\mbox{.\texttt{cash}}\left(Alice\right)$ blocked by $Alice$
+  and $\gamma\mbox{.\texttt{cash}}\left(Bob\right)$ blocked by $Ingrid$. Similarly,
+  $\nu_b$ has $\gamma\mbox{.\texttt{cash}}\left(Alice\right)$ blocked by $Ingrid$ and
+  $\gamma\mbox{.\texttt{cash}}\left(Bob\right)$ blocked by $Bob$. At a high level, a
+  virtual payment channel creation protocol is as follows:
+  \begin{enumerate}
+  \setcounter{enumi}{-1}
+    \item $Alice$ and $Bob$ discover that $Ingrid$ is an intermediary. They also agree on
+    the initial balance of $\gamma$.
+    \item $Alice$ sends a signed $\nu_a$ to $Ingrid$.
+  \end{enumerate}
