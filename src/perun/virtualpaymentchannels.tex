@@ -43,3 +43,33 @@
     need to interact with $Ingrid$ at all to update the channel. This decreases the number
     of rounds needed for an update to 2 in the optimistic case that both $Alice$ and $Bob$
     are honest. Furthermore, it somewhat increases the privacy of the end-users.
+
+  \subsubsection{Closing the channel} \ \\
+
+    In case all three parties are honest, they agree that they want to close $\gamma$ and
+    $\gamma\mbox{.\texttt{validity}}$ time has not yet passed, then both $Alice$ and $Bob$
+    attempt to terminate their respective nanocontract with $Ingrid$, $\nu_a$ and $\nu_b$.
+    The end-users send their latest version of $\gamma$ to the intermediary, who expects a
+    tuple with valid signatures by the initially registered end-users and a total balance
+    equal to that of the initial state of the channel. If both end-users send different
+    valid tuples, then $Ingrid$ chooses the one with the higher version number as valid.
+    Thus both nanocontracts can be terminated with each of the end-users unblocking their
+    respective balance, as defined by the valid $\gamma$, on their multistate channel with
+    $Ingrid$. The sum of coins $Ingrid$ will unblock in both multistate channels will be
+    equal to the sum of the original coins she blocked during the virtual payment channel
+    creation, only redistributed between the two channels as defined by the latest
+    $\gamma$ state.
+
+    $Alice$ can unilaterally register the $\nu_a$ nanocontract state on the ledger and
+    provide her latest $\gamma$ version, thus she does not need $Ingrid$'s cooperation to
+    unblock her funds. If $Ingrid$ learns a newer valid $\gamma$ version from $Bob$ (which
+    means that $Alice$ tried to cheat), then $Ingrid$ can publish it within a
+    predetermined timeframe and claim her rightful funds.
+
+    Furthermore, if the channel hasn't closed after $\gamma\mbox{.\texttt{validity}}$ time
+    has passed, any of the three parties can unilaterally finalize the nanocontract(s) she
+    has access to and unblock the respective funds.
+
+    Thus we have seen that no trust between the parties is necessary. Similarly to
+    Lightning though, cooperating parties can unblock their funds faster and with less
+    interaction with the ledger (and thus lower fees).
