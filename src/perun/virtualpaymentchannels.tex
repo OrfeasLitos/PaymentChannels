@@ -11,19 +11,23 @@
   \end{gather*}
   Let $Alice$ have a multistate channel with $Ingrid$ ($Alice
   \overset{\gamma_a}{\Leftrightarrow} Ingrid$); also let $Bob$ have a multistate channel
-  with $Ingrid$ ($Bob \overset{\gamma_b}{\Leftrightarrow} Ingrid$). To build $\gamma$, two
-  nanocontracts $\nu_a$ and $\nu_b$ are created, each on the corresponding multistate
-  channel. $\nu_a$ has $\gamma\mbox{.\texttt{cash}}\left(Alice\right)$ blocked by $Alice$
-  and $\gamma\mbox{.\texttt{cash}}\left(Bob\right)$ blocked by $Ingrid$. Similarly,
-  $\nu_b$ has $\gamma\mbox{.\texttt{cash}}\left(Alice\right)$ blocked by $Ingrid$ and
-  $\gamma\mbox{.\texttt{cash}}\left(Bob\right)$ blocked by $Bob$. At a high level, a
-  virtual payment channel creation protocol is as follows:
-  \begin{enumerate}
-  \setcounter{enumi}{-1}
-    \item $Alice$ and $Bob$ discover that $Ingrid$ is an intermediary. They also agree on
-    the initial balance of $\gamma$.
-    \item $Alice$ sends a signed $\nu_a$ to $Ingrid$.
-    \item $Ingrid$ sends a signed $\nu_b$ to $Bob$.
-    \item $Bob$ replies to $Ingrid$ with $\nu_b$, signed by the former.
-    \item $Ingrid$ replies to $Alice$ with $\nu_a$, signed by the former.
-  \end{enumerate}
+  with $Ingrid$ ($Bob \overset{\gamma_b}{\Leftrightarrow} Ingrid$).
+
+  \subsubsection{Channel creation} \ \\
+
+    To build $\gamma$, two nanocontracts $\nu_a$ and $\nu_b$ are created, each on the
+    corresponding multistate channel. $\nu_a$ has
+    $\gamma\mbox{.\texttt{cash}}\left(Alice\right)$ blocked by $Alice$ and
+    $\gamma\mbox{.\texttt{cash}}\left(Bob\right)$ blocked by $Ingrid$. Similarly, $\nu_b$
+    has $\gamma\mbox{.\texttt{cash}}\left(Alice\right)$ blocked by $Ingrid$ and
+    $\gamma\mbox{.\texttt{cash}}\left(Bob\right)$ blocked by $Bob$. At a high level, a
+    virtual payment channel creation protocol is as follows:
+    \begin{enumerate}
+    \setcounter{enumi}{-1}
+      \item $Alice$ and $Bob$ discover that $Ingrid$ is an intermediary. They also agree
+      on the initial balance of $\gamma$.
+      \item $Alice$ sends a signed $\nu_a$ to $Ingrid$.
+      \item $Ingrid$ sends a signed $\nu_b$ to $Bob$.
+      \item $Bob$ replies to $Ingrid$ with $\nu_b$, signed by the former.
+      \item $Ingrid$ replies to $Alice$ with $\nu_a$, signed by the former.
+    \end{enumerate}
