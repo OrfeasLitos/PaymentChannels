@@ -34,3 +34,12 @@
 
     We now say that there exists the virtual payment channel $\gamma$ between $Alice$ and
     $Bob$ ($Alice \overset{\gamma}{\leftrightarrow} Bob$).
+
+  \subsubsection{Channel update} \ \\
+
+    Updating the cash balance of the channel can be accomplished in the same way as for
+    the basic payment channels, with both $Alice$ and $Bob$ signing the new state with an
+    incremented version number. Note that, in contrast to Lightning, the end-users do not
+    need to interact with $Ingrid$ at all to update the channel. This decreases the number
+    of rounds needed for an update to 2 in the optimistic case that both $Alice$ and $Bob$
+    are honest. Furthermore, it somewhat increases the privacy of the end-users.
