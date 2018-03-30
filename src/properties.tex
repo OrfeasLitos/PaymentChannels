@@ -1,13 +1,20 @@
-\begin{enumerate}
-  \item Number of participants in the channel
-  \item On-chain connection(s) between participants
-  \item Actions: open, update, execute, close
-  \item Who needs to sign for each action, who is notified, how many rounds of
-  communication?
-  \item Can a participant unilaterally commit on-chain?
-  \item Up to how much money can a participant unilaterally obtain?
-  \item What can a malicious party do? If it corrupts more participants it can do more?
-  \item How much slower is the process in case of a malicious party?
-  \item How expensive are the actions? (CPU, memory, storage)
-  \item How expensive are interactions with the blockchain? (fees, time, etc.)
-\end{enumerate}
+\section{General properties of Payment Channels}
+  \begin{enumerate}
+    \item Number of participants in the channel
+    \item On-chain connection(s) between participants
+    \item Actions: open, update, execute, close
+    \item Who needs to sign for each action, who is notified, how many rounds of
+    communication?
+    \item What information can one obtain by observing the blockchain?
+    \item Under what circumstances an operation cannot complete? (e.g. concurrency issues)
+    \item Which participants are aware of the identity of which participants?
+    \item Is there an upper bound to the amount of updates? How is this number decided?
+    \item Can a participant unilaterally commit on-chain?
+    \item Up to how much money can a participant unilaterally obtain?
+    \item What can a malicious party do? If it corrupts more participants it can do more?
+    \item Can a malicious/honest-but-curious party that is a participant learn who is
+    transacting with who?
+    \item How much slower is the process in case of a malicious party?
+    \item How expensive are the actions? (CPU, memory, storage)
+    \item How expensive are interactions with the blockchain? (fees, time, etc.)
+  \end{enumerate}
