@@ -18,4 +18,11 @@
   \end{itemize}
 
   In case all parties are honest, \texttt{PM} is not invoked, the entire interaction
-  happens off-chain and needs $l + 1$ rounds to complete. In case a party misbehaves, 
+  happens off-chain and needs $l + 1$ rounds to complete. In case a party misbehaves by
+  delaying sending the preimage until the last possible moment (i.e. time $\Delta$ after
+  she received the preimage from the previous link), she will have to publish the preimage
+  to the blockchain instead of just sharing it with the next link in the chain of
+  payments. Thus, the rest of the (honest) players can settle the channel by asking
+  \texttt{PM} whether the hash they already know has been \texttt{published()}. This
+  action can be completed concurrently, thus the maximum delay that can be incurred is $l
+  + \Delta$.
