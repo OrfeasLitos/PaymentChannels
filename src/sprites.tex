@@ -10,11 +10,14 @@
   Let $\mathcal{H}\left(\cdot\right)$ be a suitable hash function. Parties can interact
   with \texttt{PM} in the following way:
   \begin{itemize}
-    \item $\mathtt{publish(}x\mathtt{)}$: Input a preimage $x$ at time $T$. \texttt{PM}
-    stores $\mathtt{timestamp}\left[\mathcal{H}\left(x\right)\right] = T$.
-    \item $\mathtt{published(}h, T\mathtt{)}$: Input a hash image $h$ and a time $T$.
-    \texttt{PM} returns \texttt{True} if $h \in \mathtt{timestamp}$ and
-    $\mathtt{timestamp}\left[h\right] \leq T$, \texttt{False} otherwise.
+    \item Call $\mathtt{publish(}x\mathtt{)}$ at time $T$: \texttt{PM} stores
+    $\mathtt{timestamp}\left[\mathcal{H}\left(x\right)\right] = T$.
+    \item Call $\mathtt{published(}h, T\mathtt{)}$: \texttt{PM} returns \texttt{True} if
+    \begin{itemize}
+      \item $h \in \mathtt{timestamp}$ and
+      \item $\mathtt{timestamp}\left[h\right] \leq T$,
+    \end{itemize}
+    \texttt{False} otherwise.
   \end{itemize}
 
   In case all parties are honest, \texttt{PM} is not invoked, the entire interaction
@@ -22,7 +25,7 @@
   delaying sending the preimage until the last possible moment (i.e. time $\Delta$ after
   she received the preimage from the previous link), she will have to publish the preimage
   to the blockchain instead of just sharing it with the next link in the chain of
-  payments. Thus, the rest of the (honest) players can settle the channel by asking
-  \texttt{PM} whether the hash they already know has been \texttt{published()}. This
-  action can be completed concurrently, thus the maximum delay that can be incurred is $l
-  + \Delta$.
+  payments in order to ensure she gets her funds. Thus, the rest of the (honest) players
+  can settle the channel by asking \texttt{PM} whether the hash they already know has been
+  \texttt{published()}. This action can be completed concurrently, thus the maximum delay
+  that can be incurred is $l + \Delta$.
