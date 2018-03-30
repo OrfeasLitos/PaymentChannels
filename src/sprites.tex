@@ -1,0 +1,21 @@
+\section{Sprites}
+  Sprites~\cite{sprites} constitute an improvement upon Lightning~\cite{lightning}
+  regarding the worst-case time needed to settle in case of a dispute. Consider a channel
+  of $l$ hops, where $\Delta$ is the time given to each participant to publish their state
+  after a counterparty has unilaterally broadcast theirs. The worst-case time to settle in
+  the case of Lightning is $\Theta\left(l\Delta\right)$, whereas in Sprites it is
+  $\Theta\left(l + \Delta\right)$.
+
+  To achieve this, Sprites propose a smart contract called Preimage Manager (\texttt{PM}).
+  Let $\mathcal{H}\left(\cdot\right)$ be a suitable hash function. Parties can interact
+  with \texttt{PM} in the following way:
+  \begin{itemize}
+    \item $\mathtt{publish(}x\mathtt{)}$: Input a preimage $x$ at time $T$. \texttt{PM}
+    stores $\mathtt{timestamp}\left[\mathcal{H}\left(x\right)\right] = T$.
+    \item $\mathtt{published(}h, T\mathtt{)}$: Input a hash image $h$ and a time $T$.
+    \texttt{PM} returns \texttt{True} if $h \in \mathtt{timestamp}$ and
+    $\mathtt{timestamp}\left[h\right] \leq T$, \texttt{False} otherwise.
+  \end{itemize}
+
+  In case all parties are honest, \texttt{PM} is not invoked, the entire interaction
+  happens off-chain and needs $l + 1$ rounds to complete. In case a party misbehaves, 
