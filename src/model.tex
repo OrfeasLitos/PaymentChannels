@@ -1,0 +1,17 @@
+\section{Model for Payment Channels}
+  A payment channel is a tuple
+  \begin{equation*}
+    PC = \left(\left\{\left(P_1, c_1\right), \dots, \left(P_n, c_n\right)\right\},
+    \left\{\left(e_1, b_1\right), \dots, \left(e_m, b_m\right)\right\}, f : \mathcal{A}^n
+    \rightarrow \mathcal{PC}\right)
+  \end{equation*}
+  where $\sum\limits_{i = 1}^n c_i \leq \sum\limits_{i = 1}^m b_i$.
+
+  $\left(P_i, c_i\right)$ represents the $i$-th player and her available funds on
+  settling.
+
+  $\left(e_j, b_j\right)$ represents the $j$-th on-chain endpoint and the corresponding
+  funds that will be released for use in the blockchain if this endpoint is settled.
+
+  $f$ is a function from player actions to a new payment channel. The new payment channel
+  must have at most as much funds as the old.
