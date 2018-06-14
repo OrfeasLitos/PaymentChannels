@@ -1,0 +1,53 @@
+\begin{algorithm}
+  \caption{$\mathcal{F}_{\mathrm{PayNet}}$}
+  \label{alg:payfunc}
+  \begin{algorithmic}[1]
+    \State Initialisation:
+    \ForAll{$v \in \mathcal{P}$}
+      $\mathrm{blocked}\left(v\right) = 0$
+    \EndFor
+    \State Pending = $\emptyset$
+    \State Channels = $\emptyset$
+    \State
+    \State Upon receiving (open, $Bob$, $x$, $y$) from $Alice$:
+      \If{$\left(Bob, Alice, y, x\right) \in \mathrm{Pending}$}
+        \State assert($\mathcal{G}_{\mathrm{Ledger}}$.balance($Alice$) $\geq
+        \mathrm{blocked}\left(Alice\right) + x$)
+        \State assert($\mathcal{G}_{\mathrm{Ledger}}$.balance($Bob$) $\geq
+        \mathrm{blocked}\left(Bob\right)$)
+        \State $\mathrm{blocked}\left(Bob\right) = \mathrm{blocked}\left(Bob\right) - y$
+        \State id $\overset{r}{\leftarrow} \left\{0, 1\right\}^{\mathrm{gazillion}}$
+        \State $\mathrm{Channels} \leftarrow \mathrm{Channels} \cup \left\{\left(Alice,
+        Bob, x, y, \mathrm{id}\right)\right\}$
+        \State $\mathrm{Pending} \leftarrow \mathrm{Pending} \setminus \left\{\left(Alice,
+        Bob, x, y\right)\right\}$
+        \State create funding tx with id for $Alice, Bob$ with initial balance $x, y$
+        respectively
+        \State send message $\left(\mathrm{opened}, Alice, Bob, x, y, \mathrm{id}\right)$
+        to $Alice$
+        \State send message $\left(\mathrm{opened}, Bob, Alice, y, x, \mathrm{id}\right)$
+        to $Bob$
+      \Else
+        \State $\mathrm{Pending} \leftarrow \mathrm{Pending} \cup \left\{\left(Alice, Bob,
+        x, y\right)\right\}$
+        \State $\mathrm{blocked}\left(Alice\right) \leftarrow
+        \mathrm{blocked}\left(Alice\right) + x$ 
+      \EndIf
+    \State
+    \State Upon receiving (pay, $Bob$, $x$) from $Alice$: 
+      \If{there is an $Alice \rightarrow Bob$ path of weight $x$}
+        \ForAll{$\left(Carol, Dave, y, z, \mathrm{id}\right)$ channel in the path}
+          \State Update channel to $\left(Carol, Dave, y - x, z + x, \mathrm{id}\right)$
+        \EndFor
+        \State send message $\left(\mathrm{payed}, Bob, x\right)$ to $Alice$
+        \State send message $\left(\mathrm{payedFrom}, Alice, x\right)$ to $Bob$
+      \Else
+        \State send message $\left(\mathrm{noPath}, Alice, x\right)$ to $Alice$
+      \EndIf
+    \State
+    \State Upon receiving (close, id) from $Alice$: 
+      \If{$\mathcal{G}_{Ledger}$ has a valid funding tx with id}
+        close that channel
+      \EndIf
+  \end{algorithmic}
+\end{algorithm}
