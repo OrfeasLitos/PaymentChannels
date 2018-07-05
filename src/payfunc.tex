@@ -4,7 +4,7 @@
   \begin{algorithmic}[1]
     \State Initialisation:
     \ForAll{$v \in \mathcal{P}$}
-      $\mathrm{blocked}\left(v\right) = 0$
+      \State $\mathrm{blocked}\left(v\right) = 0$
     \EndFor
     \State Pending = $\emptyset$
     \State Channels = $\emptyset$
@@ -31,10 +31,10 @@
         \State $\mathrm{Pending} \leftarrow \mathrm{Pending} \cup \left\{\left(Alice, Bob,
         x, y\right)\right\}$
         \State $\mathrm{blocked}\left(Alice\right) \leftarrow
-        \mathrm{blocked}\left(Alice\right) + x$ 
+        \mathrm{blocked}\left(Alice\right) + x$
       \EndIf
     \State
-    \State Upon receiving (pay, $Bob$, $x$) from $Alice$: 
+    \State Upon receiving (pay, $Bob$, $x$) from $Alice$:
       \If{there is an $Alice \rightarrow Bob$ path of weight $x$}
         \ForAll{$\left(Carol, Dave, y, z, \mathrm{id}\right)$ channel in the path}
           \State Update channel to $\left(Carol, Dave, y - x, z + x, \mathrm{id}\right)$
@@ -45,7 +45,7 @@
         \State send message $\left(\mathrm{noPath}, Alice, x\right)$ to $Alice$
       \EndIf
     \State
-    \State Upon receiving (close, id) from $Alice$: 
+    \State Upon receiving (close, id) from $Alice$:
       \If{$\mathcal{G}_{Ledger}$ has a valid funding tx with id}
         close that channel
       \EndIf
