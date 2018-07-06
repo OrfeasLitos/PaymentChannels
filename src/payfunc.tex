@@ -42,12 +42,12 @@
         \State send message $\left(\mathrm{payed}, Bob, x\right)$ to $Alice$
         \State send message $\left(\mathrm{payedFrom}, Alice, x\right)$ to $Bob$
       \Else
-        \State send message $\left(\mathrm{noPath}, Alice, x\right)$ to $Alice$
+        \State send message $\left(\mathrm{noPath}, Bob, x\right)$ to $Alice$
       \EndIf
     \State
     \State Upon receiving (close, id) from $Alice$:
       \If{$\mathcal{G}_{Ledger}$ has a valid funding tx with id}
-        close that channel
+        \State close that channel
       \EndIf
   \end{algorithmic}
 \end{algorithm}
