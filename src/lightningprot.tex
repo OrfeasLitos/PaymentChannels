@@ -1,0 +1,67 @@
+\begin{algorithm}
+  \caption{$\Pi_{\mathrm{LN}}$}
+  \label{alg:lightningprot}
+  \begin{algorithmic}[1]
+    \State Initialisation:
+      \State $\mathrm{blocked} = 0$
+      \State Peers = $\emptyset$
+      \State Channels = $\emptyset$
+    \State
+    \State Upon receiving (connect, $\mathrm{sid}_{Bob}$) from $\mathcal{E}$:
+      \State Send (connect, $\mathrm{sid}_{Alice}$) to $Bob$ \Comment{is sid in message
+      needed?}
+      \State Wait for (connected) from $Bob$
+      \State Peers = Peers $\cup \left\{\mathrm{sid}_{Bob}\right\}$
+    \State
+    \State Upon receiving (connect) from $Bob$:
+      \State Peers = Peers $\cup \left\{\mathrm{sid}_{Bob}\right\}$
+      \State Send (connected) to $Bob$
+    \State
+    \State Upon receiving (open, $\mathrm{sid}_{Bob}$, $x$) from $\mathcal{E}$:
+      \If{$Bob \in \mathrm{Peers} \And
+      \mathcal{G}_{\mathrm{Ledger}}.\mathrm{balance}(Alice) - \mathrm{blocked} \geq x$}
+        \State blocked = blocked + $x$
+        \State Let tx be a suitable funding transaction
+        \State Send (opening, $x$, tx) to $Bob$
+        \State Send (INPUT, tx) to $\mathcal{G}_{\mathrm{Ledger}}$
+        \State wait for tx to be confirmed \Comment{correct way to wait?}
+        \State Channels = Channels $\cup \left\{\left(\mathrm{sid}_{Bob},
+        x, 0\right)\right\}$
+        \State Send (opened, $Alice$, $Bob$, x, 0, $\mathcal{H}\left(\mathrm{tx}\right))$
+        to $\mathcal{E}$
+      \EndIf
+    \State
+    \State Upon receiving (opening, $x$, tx) from $Bob$:
+      \State wait for tx to be confirmed
+      \State Channels = Channels $\cup \left\{\left(\mathrm{sid}_{Bob}, 0,
+      x\right)\right\}$
+      \State Send (opened, $Alice$, $Bob$, 0, x, $\mathcal{H}\left(\mathrm{tx}\right))$ to
+      $\mathcal{E}$
+    \State
+    \State Upon receiving (pay, $Bob$, $x$) from $Alice$:
+      \State Let $G$ be the payment network, as reflected by all confirmed txs in
+      $\mathcal{G}_{Ledger}$
+      \If{there is and $Alice \rightarrow Bob$ path of weight $x$}
+        \State Send invoice
+        \State Wait for invoice check by counterparty
+        \State Send payment as new commitment transaction \Comment{TODO: find sequence of
+        messages}
+        \State Wait for payment check by counterparty
+        \State send (payed, $Bob$, $x$) to $\mathcal{E}$
+      \Else
+        \State send (noPath, $Bob$, $x$) to $\mathcal{E}$
+      \EndIf
+    \State
+    \State Upon receiving invoice from $Bob$: \Comment{TODO}
+    \State
+    \State Upon receiving payment from $Bob$: \Comment{TODO}
+    \State
+    \State Upon receiving (close, id) from $Alice$:
+    \If{$\mathcal{G}_{Ledger}$ has a valid funding tx with id}
+      \State Try to close cooperatively \Comment{TODO}
+      \If{cooperative closing fails} \Comment{TODO}
+        \State Close unilaterally \Comment{TODO}
+      \EndIf
+    \EndIf
+  \end{algorithmic}
+\end{algorithm}
