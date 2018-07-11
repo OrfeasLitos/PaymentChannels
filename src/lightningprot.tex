@@ -43,29 +43,30 @@
         \State Channels = Channels $\setminus$ E
       \EndIf
     \State
-    \State Upon receiving (payMe, $x$, hash) from $Bob$:
-      \State Send (payThem, $x$, $Bob$) to $\mathcal{E}$
-      \State wait for response
-      \If{response == yes}
-        \State Let $G$ be the payment network, as reflected Channels and MyChannels
-        \If{there is an $\left(Alice, v_1, \dots, v_n, Bob\right)$ path in $G$ where the
-        first hop is of weight at least $x$}
-          \State Send a Sphinx~\cite{sphinx} message with the correct HTLCs (containing
-          hash) for $Bob$
-          \State Wait for payment to $v_1$ to complete
-          \If{payment completes}
-            \State send (paymentSuccessful, $Bob$, $x$) to $\mathcal{E}$
-          \Else
-            \State send (paymentFailed, $Bob$, $x$) to $\mathcal{E}$
-          \EndIf
+    \State Upon receiving (pay, $Bob$, $x$) from $\mathcal{E}$:
+      \State Send (sendInvoice, $x$) to $Bob$
+      \State wait for response (invoice, $x$, hash) from $Bob$:
+      \State Let $G$ be the payment network, as reflected by Channels and MyChannels
+      \If{there is an $\left(Alice, v_1, \dots, v_n, Bob\right)$ path in $G$ where the
+      first hop is of weight at least $x$}
+	\State Send a Sphinx~\cite{sphinx} message with the correct HTLCs (containing
+	hash) for $Bob$
+	\State \Comment{Sane fees and timeouts as requested by each hop}
+        \State Wait for payment to $v_1$ to complete
+        \If{payment completes}
+          \State send (paymentSuccessful, $Bob$, $x$) to $\mathcal{E}$
         \Else
-          \State send (noPath, $Bob$, $x$) to $\mathcal{E}$
+          \State send (paymentFailed, $Bob$, $x$) to $\mathcal{E}$
         \EndIf
+      \Else
+        \State send (noPath, $Bob$, $x$) to $\mathcal{E}$
       \EndIf
     \State
-    \State Upon receiving invoice from $Bob$: \Comment{TODO}
-    \State
-    \State Upon receiving payment from $Bob$: \Comment{TODO}
+    \State Upon receiving (sendInvoice, $x$) from $Bob$:
+      \State $\mathrm{preimage} \overset{r}{\leftarrow}
+      \left\{0,1\right\}^{\mathrm{gazillion}}$
+      \State hash = $\mathcal{H}\left(\mathrm{preimage}\right)$
+      \State Send (invoice, $x$, hash) to $Bob$
     \State
     \State Upon receiving (close, id) from $Alice$:
       \If{$\mathcal{G}_{Ledger}$ has a valid funding tx with
