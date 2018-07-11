@@ -30,18 +30,18 @@
     \State
     \State Upon receiving (newChannel, txid, $\mathrm{sid}_{Charlie},
     \mathrm{sid}_{Dave}$) from $Bob$:
-    \If{there exists a tx with $\mathcal{H}\left(\mathrm{tx}\right) = \mathrm{txid}$ on
-    $\mathcal{G}_{\mathrm{Ledger}}$ and is a valid funding transaction}
-      \State Channels = Channels $\cup \left\{\left(\mathrm{sid}_{Charlie},
-      \mathrm{sid}_{Dave}, \mathrm{txid}\right)\right\}$
-    \EndIf
+      \If{there exists a tx with $\mathcal{H}\left(\mathrm{tx}\right) = \mathrm{txid}$ on
+      $\mathcal{G}_{\mathrm{Ledger}}$ and is a valid funding transaction}
+        \State Channels = Channels $\cup \left\{\left(\mathrm{sid}_{Charlie},
+        \mathrm{sid}_{Dave}, \mathrm{txid}\right)\right\}$
+      \EndIf
     \State
     \State Upon receiving (closedChannel, txid) from $Bob$:
-    \If{there exists ad tx with $\mathcal{H}\left(\mathrm{tx}\right) = \mathrm{txid}$ on
-    $\mathcal{G}_{\mathrm{Ledger}}$ that closes a funding tx' that corresponds to entry E
-    of Channels}
-      \State Channels = Channels $\setminus$ E
-    \EndIf
+      \If{there exists ad tx with $\mathcal{H}\left(\mathrm{tx}\right) = \mathrm{txid}$ on
+      $\mathcal{G}_{\mathrm{Ledger}}$ that closes a funding tx' that corresponds to entry
+      E of Channels}
+        \State Channels = Channels $\setminus$ E
+      \EndIf
     \State
     \State Upon receiving (payMe, $x$, hash) from $Bob$:
       \State Send (payThem, $x$, $Bob$) to $\mathcal{E}$
@@ -68,12 +68,12 @@
     \State Upon receiving payment from $Bob$: \Comment{TODO}
     \State
     \State Upon receiving (close, id) from $Alice$:
-    \If{$\mathcal{G}_{Ledger}$ has a valid funding tx with
-    $\mathcal{H}\left(\mathrm{tx}\right) = \mathrm{id}$}
-      \State Try to close cooperatively \Comment{TODO}
-      \If{cooperative closing fails} \Comment{TODO}
-        \State Close unilaterally \Comment{TODO}
+      \If{$\mathcal{G}_{Ledger}$ has a valid funding tx with
+      $\mathcal{H}\left(\mathrm{tx}\right) = \mathrm{id}$}
+        \State Try to close cooperatively \Comment{TODO}
+        \If{cooperative closing fails} \Comment{TODO}
+          \State Close unilaterally \Comment{TODO}
+        \EndIf
       \EndIf
-    \EndIf
   \end{algorithmic}
 \hrulefill
