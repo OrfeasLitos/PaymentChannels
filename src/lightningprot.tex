@@ -52,8 +52,12 @@
         \State Send a Sphinx~\cite{sphinx} message with the correct HTLCs (containing
         hash) for $Bob$
         \State \Comment{Sane fees and timeouts as requested by each hop}
-        \State Wait for $v_1$ to send (preimage)
+        \State Wait for (preimage) from $v_1$
         \If{$\mathcal{H}\left(\mathrm{preimage}\right) = \mathrm{hash}$}
+          \State update $\left(\mathrm{sid}_{Alice}, \mathrm{sid}_{v_1}, y, z,
+          \mathrm{txid}\right) \in \mathrm{MyChannels}$ to $\left(\mathrm{sid}_{Alice},
+          \mathrm{sid}_{v_1}, y - x, z + x, \mathrm{txid}\right) \in \mathrm{MyChannels}$
+          \Comment{Send relevant messages to $v_1$}
           \State send (paymentSuccessful, $Bob$, $x$) to $\mathcal{E}$
         \Else
           \State send (paymentFailed, $Bob$, $x$) to $\mathcal{E}$
