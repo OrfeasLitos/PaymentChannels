@@ -49,11 +49,11 @@
       \State Let $G$ be the payment network, as reflected by Channels and MyChannels
       \If{there is an $\left(Alice, v_1, \dots, v_n, Bob\right)$ path in $G$ where the
       first hop is of weight at least $x$}
-	\State Send a Sphinx~\cite{sphinx} message with the correct HTLCs (containing
-	hash) for $Bob$
-	\State \Comment{Sane fees and timeouts as requested by each hop}
-        \State Wait for payment to $v_1$ to complete
-        \If{payment completes}
+        \State Send a Sphinx~\cite{sphinx} message with the correct HTLCs (containing
+        hash) for $Bob$
+        \State \Comment{Sane fees and timeouts as requested by each hop}
+        \State Wait for $v_1$ to send (preimage)
+        \If{$\mathcal{H}\left(\mathrm{preimage}\right) = \mathrm{hash}$}
           \State send (paymentSuccessful, $Bob$, $x$) to $\mathcal{E}$
         \Else
           \State send (paymentFailed, $Bob$, $x$) to $\mathcal{E}$
