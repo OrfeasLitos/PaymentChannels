@@ -58,7 +58,7 @@
           \mathrm{txid}\right) \in \mathrm{MyChannels}$ to $\left(\mathrm{sid}_{Alice},
           \mathrm{sid}_{v_1}, y - x, z + x, \mathrm{txid}\right) \in \mathrm{MyChannels}$
           \Comment{Send relevant messages to $v_1$}
-          \State send (paymentSuccessful, $Bob$, $x$) to $\mathcal{E}$
+          \State send (paymentSent, $Bob$, $x$) to $\mathcal{E}$
         \Else
           \State send (paymentFailed, $Bob$, $x$) to $\mathcal{E}$
         \EndIf
@@ -71,6 +71,13 @@
       \left\{0,1\right\}^{\mathrm{gazillion}}$
       \State hash = $\mathcal{H}\left(\mathrm{preimage}\right)$
       \State Send (invoice, $x$, hash) to $Bob$
+      \State Wait for update of channel with $Charlie$ that contains an HTLC with the hash
+      of the preimage payable to self
+      \State Send (preimage) to $Charlie$
+      \If{$Charlie$ does not update the channel and pays $Bob$ $x$}
+        \State Settle HTLC on-chain with the preimage and take $x$ by $Charlie$
+      \EndIf
+      \State send (paymentReceived, $Bob$, $x$) to $\mathcal{E}$
     \State
     \State Upon receiving (close, id) from $Alice$:
       \If{$\mathcal{G}_{Ledger}$ has a valid funding tx with
