@@ -13,7 +13,7 @@
         \State Let tx be a suitable funding transaction
         \State Send (opening, $x$, tx) to $Bob$
         \State Send (INPUT, tx) to $\mathcal{G}_{\mathrm{Ledger}}$
-        \State wait for tx to be confirmed \Comment{correct way to wait?}
+        \State Wait for tx to be confirmed \Comment{correct way to Wait?}
         \State blocked = blocked - $x$
         \State MyChannels = MyChannels $\cup \left\{\left(\mathrm{sid}_{Alice},
         \mathrm{sid}_{Bob}, x, 0, \mathcal{H}\left(\mathrm{tx}\right)\right)\right\}$
@@ -22,7 +22,7 @@
       \EndIf
     \State
     \State Upon receiving (opening, $x$, tx) from $Bob$:
-      \State wait for tx to be confirmed
+      \State Wait for tx to be confirmed
       \State MyChannels = MyChannels $\cup \left\{\left(\mathrm{sid}_{Alice},
       \mathrm{sid}_{Bob}, 0, x, \mathcal{H}\left(\mathrm{tx}\right)\right)\right\}$
       \State Send (opened, $Alice$, $Bob$, 0, x, $\mathcal{H}\left(\mathrm{tx}\right))$ to
@@ -44,8 +44,8 @@
       \EndIf
     \State
     \State Upon receiving (pay, $Bob$, $x$) from $\mathcal{E}$:
-      \State Send (sendInvoice, $x$) to $Bob$
-      \State wait for response (invoice, $x$, hash) from $Bob$:
+      \State Send (SendInvoice, $x$) to $Bob$
+      \State Wait for response (invoice, $x$, hash) from $Bob$:
       \State Let $G$ be the payment network, as reflected by Channels and MyChannels
       \If{there is an $\left(Alice, v_1, \dots, v_n, Bob\right)$ path in $G$ where the
       first hop is of weight at least $x$}
@@ -58,15 +58,15 @@
           \mathrm{txid}\right) \in \mathrm{MyChannels}$ to $\left(\mathrm{sid}_{Alice},
           \mathrm{sid}_{v_1}, y - x, z + x, \mathrm{txid}\right) \in \mathrm{MyChannels}$
           \Comment{Send relevant messages to $v_1$}
-          \State send (paymentSent, $Bob$, $x$) to $\mathcal{E}$
+          \State Send (paymentSent, $Bob$, $x$) to $\mathcal{E}$
         \Else
-          \State send (paymentFailed, $Bob$, $x$) to $\mathcal{E}$
+          \State Send (paymentFailed, $Bob$, $x$) to $\mathcal{E}$
         \EndIf
       \Else
-        \State send (noPath, $Bob$, $x$) to $\mathcal{E}$
+        \State Send (noPath, $Bob$, $x$) to $\mathcal{E}$
       \EndIf
     \State
-    \State Upon receiving (sendInvoice, $x$) from $Bob$:
+    \State Upon receiving (SendInvoice, $x$) from $Bob$:
       \State $\mathrm{preimage} \overset{r}{\leftarrow}
       \left\{0,1\right\}^{\mathrm{gazillion}}$
       \State hash = $\mathcal{H}\left(\mathrm{preimage}\right)$
@@ -77,7 +77,7 @@
       \If{$Charlie$ does not update the channel and pays $Bob$ $x$}
         \State Settle HTLC on-chain with the preimage and take $x$ by $Charlie$
       \EndIf
-      \State send (paymentReceived, $Bob$, $x$) to $\mathcal{E}$
+      \State Send (paymentReceived, $Bob$, $x$) to $\mathcal{E}$
     \State
     \State Upon receiving (close, id) from $Alice$:
       \If{$\mathcal{G}_{Ledger}$ has a valid funding tx with
