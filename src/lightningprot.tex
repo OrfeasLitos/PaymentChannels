@@ -79,11 +79,18 @@
       \left\{0,1\right\}^{\mathrm{gazillion}}$
       \State $\mathrm{hash} \leftarrow \mathcal{H}\left(\mathrm{preimage}\right)$
       \State Send (invoice, $x$, hash) to $Bob$
-      \State Wait for update of channel with $Charlie$ that contains an HTLC with the hash
-      of the preimage payable to self
+      \State Wait for update of any channel $e = \left(\mathrm{txid},
+      \left(\mathrm{sid}_{Alice}, y\right), \left(\mathrm{sid}_{Charlie}, z\right)\right)$
+      to $e' = \left(\mathrm{txid}, \left(\mathrm{sid}_{Alice}, y + x\right),
+      \left(\mathrm{sid}_{Charlie}, z - x\right)\right)$ conditional on $Alice$'s
+      knowledge of the preimage of the hash
       \State Send (preimage) to $Charlie$
-      \If{$Charlie$ does not update the channel and pays $Bob$ $x$}
-        \State Settle HTLC on-chain with the preimage and take $x$ by $Charlie$
+      \State Wait for update of $e'$ to $e'' = \left(\mathrm{txid},
+      \left(\mathrm{sid}_{Alice}, y + x\right), \left(\mathrm{sid}_{Charlie}, z -
+      x\right)\right)$ unconditional
+      \If{$Charlie$ does not update the channel to $e''$}
+        \State Settle $e'$ on-chain with the preimage and take $x$ from the HTLC provided
+        by $Charlie$
       \EndIf
       \State Send (paymentReceived, $Bob$, $x$) to $\mathcal{E}$
     \State
