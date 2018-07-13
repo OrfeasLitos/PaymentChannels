@@ -2,45 +2,47 @@
   \label{alg:lightningprot}
   \begin{algorithmic}[1]
     \State Initialisation:
-      \State $\mathrm{blocked} = 0$
-      \State Channels = $\emptyset$
-      \State MyChannels = $\emptyset$
+      \State $\mathrm{blocked} \leftarrow 0$
+      \State $G \leftarrow \left(\emptyset, \emptyset\right)$
     \State
     \State Upon receiving (open, $\mathrm{sid}_{Bob}$, $x$) from $\mathcal{E}$:
       \If{$\mathcal{G}_{\mathrm{Ledger}}.\mathrm{balance}(Alice) - \mathrm{blocked} \geq
       x$}
-        \State blocked = blocked + $x$
+        \State $\mathrm{blocked} \leftarrow \mathrm{blocked} + x$
         \State Let tx be a suitable funding transaction
         \State Send (opening, $x$, tx) to $Bob$
         \State Send (INPUT, tx) to $\mathcal{G}_{\mathrm{Ledger}}$
         \State Wait for tx to be confirmed \Comment{correct way to Wait?}
-        \State blocked = blocked - $x$
-        \State MyChannels = MyChannels $\cup \left\{\left(\mathrm{sid}_{Alice},
-        \mathrm{sid}_{Bob}, x, 0, \mathcal{H}\left(\mathrm{tx}\right)\right)\right\}$
+        \State $\mathrm{blocked} \leftarrow \mathrm{blocked} - x$
+        \State $\mathrm{MyChannels} \leftarrow \mathrm{MyChannels} \cup
+        \left\{\left(\mathrm{sid}_{Alice}, \mathrm{sid}_{Bob}, x, 0,
+        \mathcal{H}\left(\mathrm{tx}\right)\right)\right\}$
         \State Send (opened, $Alice$, $Bob$, x, 0, $\mathcal{H}\left(\mathrm{tx}\right))$
         to $\mathcal{E}$
       \EndIf
     \State
     \State Upon receiving (opening, $x$, tx) from $Bob$:
       \State Wait for tx to be confirmed
-      \State MyChannels = MyChannels $\cup \left\{\left(\mathrm{sid}_{Alice},
-      \mathrm{sid}_{Bob}, 0, x, \mathcal{H}\left(\mathrm{tx}\right)\right)\right\}$
+      \State $\mathrm{MyChannels} \leftarrow \mathrm{MyChannels} \cup
+      \left\{\left(\mathrm{sid}_{Alice}, \mathrm{sid}_{Bob}, 0, x,
+      \mathcal{H}\left(\mathrm{tx}\right)\right)\right\}$
       \State Send (opened, $Alice$, $Bob$, 0, x, $\mathcal{H}\left(\mathrm{tx}\right))$ to
       $\mathcal{E}$
     \State
     \State Upon receiving (newChannel, txid, $\mathrm{sid}_{Charlie},
     \mathrm{sid}_{Dave}$) from $Bob$:
-      \If{there exists a tx with $\mathcal{H}\left(\mathrm{tx}\right) = \mathrm{txid}$ on
+      \If{there exists a tx with $\mathcal{H}\left(\mathrm{tx}\right) == \mathrm{txid}$ on
       $\mathcal{G}_{\mathrm{Ledger}}$ and is a valid funding transaction}
-        \State Channels = Channels $\cup \left\{\left(\mathrm{sid}_{Charlie},
-        \mathrm{sid}_{Dave}, \mathrm{txid}\right)\right\}$
+        \State $\mathrm{Channels} \leftarrow \mathrm{Channels} \cup
+        \left\{\left(\mathrm{sid}_{Charlie}, \mathrm{sid}_{Dave},
+        \mathrm{txid}\right)\right\}$
       \EndIf
     \State
     \State Upon receiving (closedChannel, txid) from $Bob$:
-      \If{there exists ad tx with $\mathcal{H}\left(\mathrm{tx}\right) = \mathrm{txid}$ on
+      \If{there exists ad tx with $\mathcal{H}\left(\mathrm{tx}\right) == \mathrm{txid}$ on
       $\mathcal{G}_{\mathrm{Ledger}}$ that closes a funding tx' that corresponds to entry
       E of Channels}
-        \State Channels = Channels $\setminus$ E
+        \State $\mathrm{Channels} \leftarrow \mathrm{Channels} \setminus$ E
       \EndIf
     \State
     \State Upon receiving (pay, $Bob$, $x$) from $\mathcal{E}$:
@@ -53,7 +55,7 @@
         hash) for $Bob$
         \State \Comment{Sane fees and timeouts as requested by each hop}
         \State Wait for (preimage) from $v_1$
-        \If{$\mathcal{H}\left(\mathrm{preimage}\right) = \mathrm{hash}$}
+        \If{$\mathcal{H}\left(\mathrm{preimage}\right) == \mathrm{hash}$}
           \State update $\left(\mathrm{sid}_{Alice}, \mathrm{sid}_{v_1}, y, z,
           \mathrm{txid}\right) \in \mathrm{MyChannels}$ to $\left(\mathrm{sid}_{Alice},
           \mathrm{sid}_{v_1}, y - x, z + x, \mathrm{txid}\right) \in \mathrm{MyChannels}$
@@ -69,7 +71,7 @@
     \State Upon receiving (SendInvoice, $x$) from $Bob$:
       \State $\mathrm{preimage} \overset{r}{\leftarrow}
       \left\{0,1\right\}^{\mathrm{gazillion}}$
-      \State hash = $\mathcal{H}\left(\mathrm{preimage}\right)$
+      \State $\mathrm{hash} \leftarrow \mathcal{H}\left(\mathrm{preimage}\right)$
       \State Send (invoice, $x$, hash) to $Bob$
       \State Wait for update of channel with $Charlie$ that contains an HTLC with the hash
       of the preimage payable to self
@@ -81,7 +83,7 @@
     \State
     \State Upon receiving (close, id) from $Alice$:
       \If{$\mathcal{G}_{Ledger}$ has a valid funding tx with
-      $\mathcal{H}\left(\mathrm{tx}\right) = \mathrm{id}$}
+      $\mathcal{H}\left(\mathrm{tx}\right) == \mathrm{id}$}
         \State Try to close cooperatively \Comment{TODO}
         \If{cooperative closing fails} \Comment{TODO}
           \State Close unilaterally \Comment{TODO}
