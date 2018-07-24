@@ -52,7 +52,13 @@
     \State Upon receiving (pay, $Bob$, $x$) from $\mathcal{E}$:
       \State Send (SendInvoice, $x$) to $Bob$
       \State Wait for response (invoice, $x$, hash) from $Bob$:
-      \If{there is an $\left(Alice, Charlie, \dots, Bob\right)$ path in $G$ where the
+      \If{$\exists e = \left(\mathrm{txid}, \left(\mathrm{sid}_{Alice},
+      y\right), \left(\mathrm{sid}_{Bob}, z\right)\right) \in G: y \geq x$}
+        \State Update $e$ to $e' = \left(\mathrm{txid},
+        \left(\mathrm{sid}_{Alice}, y - x\right),
+        \left(\mathrm{sid}_{Bob}, z + x\right)\right)$ \Comment{Primitive
+        for Update}
+      \ElsIf{there is an $\left(Alice, Charlie, \dots, Bob\right)$ path in $G$ where the
       first hop is of weight at least $x$}
         \State Send a Sphinx~\cite{sphinx} message with the correct HTLCs (containing
         hash) for $Bob$
