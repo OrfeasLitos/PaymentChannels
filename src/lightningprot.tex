@@ -110,3 +110,25 @@
       \EndIf
   \end{algorithmic}
 \hrulefill
+\ \\ \noindent {Connection with $\mathcal{F}_{\mathrm{Ledger}}$}
+  \label{alg:temp:formalfledger}
+  \begin{algorithmic}[1]
+    \State $\mathcal{F}_{\mathrm{Ledger}}\mathrm{.balance}\left(Alice\right)$:
+    \State
+    \State Send (READ, sid) to $\mathcal{F}_{\mathrm{Ledger}}$ \Comment{Whose sid? List is
+    not created by Alice}
+    \State Wait for response $\mathrm{state}_{sid}$
+    \State Find \texttt{list} of txs in UTXO spendable by $Alice$ (using
+    $\mathrm{Dec}\left(\mathrm{state}_{sid}\right)$) \Comment{blockify() is system
+    parameter, how to better specify above?}
+    \State Return sum of outputs in \texttt{list} spendable by $Alice$ \Comment{Only
+    P2PKH? Or any kind (e.g. multisigs, funding txs)?}
+    \State
+    \State
+    \State Send (pay, $Alice$, $Bob$, $x$) to $\mathcal{F}_{\mathrm{Ledger}}$:
+    \State
+    \State Create and sign transaction \texttt{tx} that pays $x$ from $Alice$ to $Bob$
+    \Comment{Clear enough? How to sign? Is signature needed?}
+    \State Send (SUBMIT, $sid_{Alice}$ \texttt{tx}) to $\mathcal{F}_{\mathrm{Ledger}}$
+  \end{algorithmic}
+\hrulefill
