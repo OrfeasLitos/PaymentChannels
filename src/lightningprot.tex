@@ -10,18 +10,24 @@
       \If{$\mathcal{G}_{\mathrm{Ledger}}.\mathrm{balance}(Alice) - \mathrm{blocked} \geq
       x$}
         \State $\mathrm{blocked} \leftarrow \mathrm{blocked} + x$
-        \State Let tx be a suitable funding transaction
-        \State Send (opening, $x$, tx) to $Bob$
-        \State Send (INPUT, tx) to $\mathcal{G}_{\mathrm{Ledger}}$
-        \State Wait for tx to be confirmed \Comment{correct way to Wait?}
+        \State tx $\leftarrow$ Open($\mathrm{sid}_{Alice}$, $\mathrm{sid}_{Bob}$, $x$)
+        \If{tx is a valid funding transaction}
+          \State Send (INPUT, tx) to $\mathcal{G}_{\mathrm{Ledger}}$
+          \State Wait for tx to be confirmed \Comment{correct way to Wait?}
+          \State $G \leftarrow G \cup \left(\left\{\mathrm{sid}_{Bob}\right\},
+          \left\{\left(\mathcal{H}\left(\mathrm{tx}\right), \left(\mathrm{sid}_{Alice},
+          x\right), \left(\mathrm{sid}_{Bob}, 0\right)\right)\right\}\right)$
+          \State Send (opened, $Alice$, $Bob$, $x$, 0,
+          $\mathcal{H}\left(\mathrm{tx}\right))$ to $\mathcal{E}$
+        \Else
+          \State Send (notOpened, $Alice$, $Bob$, $x$, 0) to $\mathcal{E}$
+        \EndIf
         \State $\mathrm{blocked} \leftarrow \mathrm{blocked} - x$
-        \State $G \leftarrow G \cup \left(\left\{\mathrm{sid}_{Bob}\right\},
-        \left\{\left(\mathcal{H}\left(\mathrm{tx}\right), \left(\mathrm{sid}_{Alice},
-        x\right), \left(\mathrm{sid}_{Bob}, 0\right)\right)\right\}\right)$ \Comment{Add
-        $\mathrm{sid}_{Bob}$ to nodes, new channel to edges}
-        \State Send (opened, $Alice$, $Bob$, x, 0, $\mathcal{H}\left(\mathrm{tx}\right))$
-        to $\mathcal{E}$
+      \Else
+        \State Send (noFunds, $Alice$, $x$) to $\mathcal{E}$
       \EndIf
+    \State
+    \State Open(source, dest, funds):
     \State
     \State Upon receiving (opening, $x$, tx) from $Bob$:
       \State Wait for tx to be confirmed
