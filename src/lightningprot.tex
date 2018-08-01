@@ -50,8 +50,7 @@
             \left(\mathrm{outpoint}\left(\mathrm{initTX}, 0\right), sa_0\right)$
             \State Wait for $F$ to be confirmed on-chain \Comment{Is broadcast by $Bob$.
             TODO: correct way to Wait?}
-            \If{confirmed}
-          %TODO end
+            \If{$F$ confirmed}
               \State Return $F$
             \Else
               \State Return $\bot$
