@@ -29,21 +29,27 @@
       \State Send (proposeChannel, funds) to dest
       \State Wait for response
       \If{response == yes}
-        \State $\left(\left(pa_0, sa_0\right), \left(pa_1, sa_1\right), \left(pa_2,
+        \State $\left(\left(pa_1, sa_1\right), \left(pa_2,
         sa_2\right), \left(pa_3, sa_3\right)\right) \gets
         \textsc{GetOpenKeys}\left(\mathrm{funds}\right)$
         \State Send (openKeys, $\left(pa_0, pa_1, pa_2, pa_3\right)$) to dest
         \State Wait for response
         \If{response == $\left(pb_1, pb_2, pb_3\right) \And \forall i \in \left[3\right],
         \mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}\left(pb_i\right)$ == true}
-          \State $\left(F, C1b, RD1b\right) \gets \textsc{GetOpenTXs}\left(pa_0, pa_1,
-          pb_1, pa_2, pb_2, pb_3, \mathrm{funds}\right)$
+          \State $\left(\mathrm{initTX}, \left(pa_0, sa_0\right)\right) \gets
+          \mathcal{F}_{\mathrm{Wallet}}.\mathrm{getTXandKeyWithValue}
+          \left(\mathrm{funds}\right)$ \Comment{Returns tx with 1 p2pkh output of value
+          funds and the keypair that spends it}
+          \State $\left(F, C1b, RD1b\right) \gets
+          \textsc{GetOpenTXsSend}\left(\mathrm{initTX}, pa_0, pa_1, sa_1, pb_1, pa_2,
+          sa_2, pb_2, pb_3, \mathrm{funds}\right)$
           \State Send (openTXs, $\left(F, C1b, RD1b\right)$) to dest
           \State Wait for response
+          \If{response == $\left(C1a, RD1a\right) \And
           %TODO start
-          \If{response == $\left(C1a, RD1a\right) \And C1a, RD1a$ correct commitment,
-          revocable delivery tx}
-            \State Send signature to $F_0$
+          \textsc{isValidOpenTXsResponse}\left(\left(C1a, RD1a\right)\right), TODO$}
+            \State Send (fundingSig, $\mathcal{F}_{\mathrm{Wallet}}.\text{sigForP2PKH}
+            \left(\mathrm{outpoint}\left(\mathrm{initTX}, 0\right), sa_0\right)$
             \State Wait for $F$ to be confirmed on-chain \Comment{Is broadcast by $Bob$.
             TODO: correct way to Wait?}
             \If{confirmed}
@@ -65,9 +71,6 @@
     \EndProcedure
     \State
     \Procedure{GetOpenKeys}{$x$}
-      \State $\left(pa0, sa0\right) \leftarrow
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{getKeyWith}\left(x\right)$ \Comment{Contains
-      exactly $x$ coins}
       \State $\left(pa1, sa1\right) \leftarrow
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For funding tx
       output}
@@ -81,20 +84,51 @@
       sa2\right), \left(pa3, sa3\right)\right)$
     \EndProcedure
     \State
-    \Procedure{GetOpenTXs}{$pa_0, pa_1, pb_1, pa_2, pb_2, pb_3, \mathrm{funds}$}
+    \Procedure{GetOpenTXsSend}{$pa_0, pa_1, sa_1, pb_1, pa_2, sa_2, pb_2, pb_3,
+    \mathrm{funds}$}
       \State $F \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
-      \State inputs: $\left[\left(\mathrm{p2pkh}\left(pa_0, \mathrm{funds}\right),
-      \mathrm{nosig}\right)\right]$
+      \State inputs: $\left[\left(\mathrm{P2PKH}\left(pa_0, \mathrm{funds}\right),
+      \bot\right)\right]$
       \State outputs: $\left[\text{2-of-2-msig}\left(pa_1, pb_1,
       \mathrm{funds}\right)\right]$
       \State )\}
       \State $C1b \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
-      \State inputs: $\left[\left(F_0, \mathrm{sig}, sa_1\right)\right]$
-      %TODO: \State outputs: $\left[\mathrm{p2pkh}\left(\right), \mathrm{RSMC}\left(\right)\right]$
+      \State inputs: $\left[\left(\mathrm{outpoint}\left(F, 0\right),
+      \text{sigFor2-of-2-msig}\left(\mathrm{outpoint}\left(F, 0\right), 0,
+      sa_1\right)\right)\right]$
+      \State outputs: $\left[\mathrm{P2PKH}\left(pa_2, \mathrm{funds}\right),
+      \mathrm{RSMC}\left(pa_2, pb_2, 0\right)\right]$
+      \State )\}
+      \State $RD1b \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
+      \State inputs: $\left[\left(\mathrm{outpoint}\left(C1b, 0\right),
+      \text{sigForP2PKH}\left(\mathrm{outpoint}\left(C1b, 0\right),
+      sa_2\right)\right)\right]$
+      \State outputs: $\left[\mathrm{Delay}\left(pb_3, \mathrm{funds}\right)\right]$
       \State )\}
       \State Return $\left(F, C1b, RD1b\right)$
     \EndProcedure
     \State
+    \Procedure{GetOpenTXsRespond}{$F, sb_1, pa_2, pb_2, sb_2, pa_3, \mathrm{funds}$}
+      \State $C1a \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
+      \State inputs: $\left[\left(\mathcal{F}_{\mathrm{Wallet}}.\mathrm{outpoint}\left(F,
+      0\right),
+      \text{sigFor2-of-2-msig}\left(\mathcal{F}_{\mathrm{Wallet}}.\mathrm{outpoint}\left(F,
+      0\right), 1, sb_1\right)\right)\right]$
+      \State outputs: $\left[\mathrm{P2PKH}\left(pb_2, 0\right), \mathrm{RSMC}\left(pb_2,
+      pa_2, \mathrm{funds}\right)\right]$
+      \State )\}
+      \State $RD1a \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
+      \State inputs:
+      $\left[\left(\mathcal{F}_{\mathrm{Wallet}}.\mathrm{outpoint}\left(C1a, 0\right),
+      \text{sigForP2PKH}\left(\mathcal{F}_{\mathrm{Wallet}}.\mathrm{outpoint}\left(C1b,
+      0\right), sb_2\right)\right)\right]$
+      \State outputs: $\left[\mathrm{Delay}\left(pa_3, 0\right)\right]$
+      \State )\}
+      \State Return $\left(F, C1b, RD1b\right)$
+    \EndProcedure
+    \State
+    \State TODO: isValidPubKey(), isValidOpenTXsSend(), isValidOpenTXsResponse(), Bob's
+    side
     \State Upon receiving (opening, $x$, tx) from $Bob$:
       \State Wait for tx to be confirmed
       \State $G \leftarrow G \cup \left(\left\{\mathrm{sid}_{Bob}\right\},
