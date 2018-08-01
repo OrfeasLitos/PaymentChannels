@@ -30,9 +30,9 @@
       \State Send (proposeChannel, funds) to dest
       \State Wait for response
       \If{response == yes}
-        \State $\left(\left(pa_1, sa_1\right), \left(pa_2,
-        sa_2\right), \left(pa_3, sa_3\right)\right) \gets
-        \textsc{GetOpenKeys}\left(\mathrm{funds}\right)$
+        \State $\left(\mathrm{initTX}, \left(pa_0, sa_0\right), \left(pa_1, sa_1\right),
+        \left(pa_2, sa_2\right), \left(pa_3, sa_3\right)\right) \gets
+        \textsc{GetOpenKeysAndTX}\left(\mathrm{funds}\right)$
         \State Send (openKeys, $\left(pa_0, pa_1, pa_2, pa_3\right)$) to dest
         \State Wait for response
         \If{response == $\left(pb_1, pb_2, pb_3\right) \And \forall i \in \left[3\right],
@@ -71,18 +71,22 @@
       \EndIf
     \EndProcedure
     \State
-    \Procedure{GetOpenKeys}{$x$}
-      \State $\left(pa1, sa1\right) \leftarrow
+    \Procedure{GetOpenKeysAndTX}{$x$}
+      \State $\left(\mathrm{initTX}, \left(pa_0, sa_0\right)\right) \gets
+      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{getTXandKeyWithValue}
+      \left(\mathrm{funds}\right)$ \Comment{Returns tx with 1 p2pkh output of value funds
+      and the keypair that spends it for funding tx input}
+      \State $\left(pa_1, sa_1\right) \leftarrow
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For funding tx
       output}
-      \State $\left(pa2, sa2\right) \leftarrow
+      \State $\left(pa_2, sa_2\right) \leftarrow
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For C1a
       outputs}
-      \State $\left(pa3, sa3\right) \leftarrow
+      \State $\left(pa_3, sa_3\right) \leftarrow
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For RD1a
       output}
-      \State Return $\left(\left(pa1, sa1\right), \left(pa2, sa2\right), \left(pa3,
-      sa3\right)\right)$
+      \State Return $\left(\mathrm{initTX}, \left(pa_0, sa_0\right), \left(pa_1,
+      sa_1\right), \left(pa_2, sa_2\right), \left(pa_3, sa_3\right)\right)$
     \EndProcedure
     \State
     \Procedure{GetOpenTXsSend}{$pa_0, pa_1, sa_1, pb_1, pa_2, sa_2, pb_2, pb_3,
