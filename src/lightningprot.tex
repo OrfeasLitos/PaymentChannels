@@ -89,7 +89,7 @@
     \Procedure{GetOpenTXsSend}{$\mathrm{initTX}, pa_1, sa_1, pb_1, pa_2, sa_2, pb_2, pb_3,
     \mathrm{funds}$}
       \State $F \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
-      \State inputs: $\left[\left(\mathrm{P2PKH}\left(pa_0, \mathrm{funds}\right),
+      \State inputs: $\left[\left(\mathrm{outpoint}\left(\mathrm{initTX}, 0\right),
       \bot\right)\right]$
       \State outputs: $\left[\text{2-of-2-msig}\left(pa_1, pb_1,
       \mathrm{funds}\right)\right]$
