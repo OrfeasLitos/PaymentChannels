@@ -112,18 +112,16 @@
     \State
     \Procedure{GetOpenTXsRespond}{$F, sb_1, pa_2, pb_2, sb_2, pa_3, \mathrm{funds}$}
       \State $C1a \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
-      \State inputs: $\left[\left(\mathcal{F}_{\mathrm{Wallet}}.\mathrm{outpoint}\left(F,
-      0\right),
-      \text{sigFor2-of-2-msig}\left(\mathcal{F}_{\mathrm{Wallet}}.\mathrm{outpoint}\left(F,
-      0\right), 1, sb_1\right)\right)\right]$
+      \State inputs: $\left[\left(\mathrm{outpoint}\left(F, 0\right),
+      \text{sigFor2-of-2-msig}\left(\mathrm{outpoint}\left(F, 0\right), 1,
+      sb_1\right)\right)\right]$
       \State outputs: $\left[\mathrm{P2PKH}\left(pb_2, 0\right), \mathrm{RSMC}\left(pb_2,
       pa_2, \mathrm{funds}\right)\right]$
       \State )\}
       \State $RD1a \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
-      \State inputs:
-      $\left[\left(\mathcal{F}_{\mathrm{Wallet}}.\mathrm{outpoint}\left(C1a, 0\right),
-      \text{sigForP2PKH}\left(\mathcal{F}_{\mathrm{Wallet}}.\mathrm{outpoint}\left(C1b,
-      0\right), sb_2\right)\right)\right]$
+      \State inputs: $\left[\left(\mathrm{outpoint}\left(C1a, 0\right),
+      \text{sigForP2PKH}\left(\mathrm{outpoint}\left(C1b, 0\right),
+      sb_2\right)\right)\right]$
       \State outputs: $\left[\mathrm{Delay}\left(pa_3, 0\right)\right]$
       \State )\}
       \State Return $\left(F, C1b, RD1b\right)$
