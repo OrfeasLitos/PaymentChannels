@@ -33,18 +33,19 @@
         \State $\left(\mathrm{initTX}, \left(pa_0, sa_0\right), \left(pa_1, sa_1\right),
         \left(pa_2, sa_2\right), \left(pa_3, sa_3\right)\right) \gets
         \textsc{GetOpenKeysAndTX}\left(\mathrm{funds}\right)$
-        \State Send (openKeys, $\left(pa_0, pa_1, pa_2, pa_3\right)$) to dest
+        \State Send (openSendKeys, $\left(pa_1, pa_2, pa_3\right)$) to dest
         \State Wait for response
-        \If{response == $\left(pb_1, pb_2, pb_3\right) \And \forall i \in \left[3\right],
+        \If{response == (openResponseKeys, $\left(pb_1, pb_2, pb_3\right)$) $\And \forall
+        i \in \left[3\right],
         \mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}\left(pb_i\right)$ == true}
           \State $\left(F, C1b, RD1b\right) \gets
           \textsc{GetOpenTXsSend}\left(\mathrm{initTX}, pa_0, pa_1, sa_1, pb_1, pa_2,
           sa_2, pb_2, pb_3, \mathrm{funds}\right)$
-          \State Send (openTXs, $\left(F, C1b, RD1b\right)$) to dest
+          \State Send (openSendTXs, $\left(F, C1b, RD1b\right)$) to dest
           \State Wait for response
-          \If{response == $\left(C1a, RD1a\right) \And
           %TODO start
           \textsc{isValidOpenTXsResponse}\left(\left(C1a, RD1a\right)\right), TODO$}
+          \If{response == (openResponseTXs, $\left(C1a, RD1a\right)$) $\And
             \State Send (fundingSig, $\mathcal{F}_{\mathrm{Wallet}}.\text{sigForP2PKH}
             \left(\mathrm{outpoint}\left(\mathrm{initTX}, 0\right), sa_0\right)$
             \State Wait for $F$ to be confirmed on-chain \Comment{Is broadcast by $Bob$.
