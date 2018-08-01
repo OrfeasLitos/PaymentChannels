@@ -37,10 +37,6 @@
         \State Wait for response
         \If{response == $\left(pb_1, pb_2, pb_3\right) \And \forall i \in \left[3\right],
         \mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}\left(pb_i\right)$ == true}
-          \State $\left(\mathrm{initTX}, \left(pa_0, sa_0\right)\right) \gets
-          \mathcal{F}_{\mathrm{Wallet}}.\mathrm{getTXandKeyWithValue}
-          \left(\mathrm{funds}\right)$ \Comment{Returns tx with 1 p2pkh output of value
-          funds and the keypair that spends it}
           \State $\left(F, C1b, RD1b\right) \gets
           \textsc{GetOpenTXsSend}\left(\mathrm{initTX}, pa_0, pa_1, sa_1, pb_1, pa_2,
           sa_2, pb_2, pb_3, \mathrm{funds}\right)$
