@@ -22,6 +22,11 @@
 \usepackage{hyperref}
 \usepackage{import}
 
+%indentation for algorithm
+\algdef{SE}[SUBALG]{Indent}{EndIndent}{}{\algorithmicend\ }%
+\algtext*{Indent}
+\algtext*{EndIndent}
+
 %code options with \lstlisting
 \lstset{frame=tb,
   showstringspaces=false,
