@@ -3,11 +3,13 @@
   \label{alg:payfunc}
   \begin{algorithmic}[1]
     \State Initialisation:
-    \ForAll{$v \in \mathcal{P}$}
-      \State $\mathrm{blocked}\left(v\right) = 0$
-    \EndFor
-    \State Pending = $\emptyset$
-    \State Channels = $\emptyset$
+      \Indent
+      \ForAll{$v \in \mathcal{P}$}
+        \State $\mathrm{blocked}\left(v\right) = 0$
+      \EndFor
+      \State Pending = $\emptyset$
+      \State Channels = $\emptyset$
+      \EndIndent
     \State
     \State Upon receiving (open, $Bob$, $x$, $y$) from $Alice$:
       \If{$\left(Bob, Alice, y, x\right) \in \mathrm{Pending}$}
