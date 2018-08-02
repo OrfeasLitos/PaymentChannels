@@ -134,7 +134,7 @@
     \State
     \State Upon receiving (newChannel, txid, $\mathrm{sid}_{Charlie},
     \mathrm{sid}_{Dave}$) from $Bob$:
-      \If{there exists a tx with $\mathcal{H}\left(\mathrm{tx}\right) == \mathrm{txid}$ on
+      \If{there exists a tx with $\mathcal{H}\left(\mathrm{tx}\right) = \mathrm{txid}$ on
       $\mathcal{G}_{\mathrm{Ledger}}$ and is a valid funding transaction}
         \State $G \leftarrow G \cup \left(\left\{\mathrm{sid}_{Charlie},
         \mathrm{sid}_{Dave}\right\}, \left\{\left(\mathrm{txid},
@@ -144,7 +144,7 @@
       \EndIf
     \State
     \State Upon receiving (closedChannel, txid) from $Bob$:
-      \If{there exists a tx with $\mathcal{H}\left(\mathrm{tx}\right) == \mathrm{txid}$ on
+      \If{there exists a tx with $\mathcal{H}\left(\mathrm{tx}\right) = \mathrm{txid}$ on
       $\mathcal{G}_{\mathrm{Ledger}}$ that closes a funding tx' that corresponds to edge
       $e$ in $G$}
         \State $G \leftarrow G \setminus \left\{e\right\}$
@@ -153,9 +153,9 @@
     \State Upon receiving (pay, $Bob$, $x$) from $\mathcal{E}$:
       \State Send (SendInvoice, $x$) to $Bob$
       \State Wait for response (invoice, $x$, hash) from $Bob$:
-      \If{$\exists e = \left(\mathrm{txid}, \left(\mathrm{sid}_{Alice},
+      \If{$\exists e := \left(\mathrm{txid}, \left(\mathrm{sid}_{Alice},
       y\right), \left(\mathrm{sid}_{Bob}, z\right)\right) \in G: y \geq x$}
-        \State Update $e$ to $e' = \left(\mathrm{txid},
+        \State Update $e$ to $e' := \left(\mathrm{txid},
         \left(\mathrm{sid}_{Alice}, y - x\right),
         \left(\mathrm{sid}_{Bob}, z + x\right)\right)$ \Comment{Primitive
         for Update}
@@ -165,8 +165,8 @@
         hash) for $Bob$
         \State \Comment{Sane fees and timeouts as requested by each hop}
         \State Wait for (preimage) from $Charlie$
-        \If{$\mathcal{H}\left(\mathrm{preimage}\right) == \mathrm{hash}$}
-          \State Let $e = \left(\mathrm{txid}, \left(\mathrm{sid}_{Alice}, y\right),
+        \If{$\mathcal{H}\left(\mathrm{preimage}\right) = \mathrm{hash}$}
+          \State Let $e := \left(\mathrm{txid}, \left(\mathrm{sid}_{Alice}, y\right),
           \left(\mathrm{sid}_{Charlie}, z\right)\right)$ $Alice$'s channel with $Charlie$
           \State Update $e$ to pay $Charlie$ $x$ \Comment{use HTLC primitive}
           \State $G \leftarrow G \setminus \left\{e\right\}$
@@ -186,13 +186,13 @@
       \left\{0,1\right\}^{\mathrm{gazillion}}$
       \State $\mathrm{hash} \leftarrow \mathcal{H}\left(\mathrm{preimage}\right)$
       \State Send (invoice, $x$, hash) to $Bob$
-      \State Wait for update of any channel $e = \left(\mathrm{txid},
+      \State Wait for update of any channel $e := \left(\mathrm{txid},
       \left(\mathrm{sid}_{Alice}, y\right), \left(\mathrm{sid}_{Charlie}, z\right)\right)$
-      to $e' = \left(\mathrm{txid}, \left(\mathrm{sid}_{Alice}, y + x\right),
+      to $e' := \left(\mathrm{txid}, \left(\mathrm{sid}_{Alice}, y + x\right),
       \left(\mathrm{sid}_{Charlie}, z - x\right)\right)$ conditional on $Alice$'s
       knowledge of the preimage of the hash
       \State Send (preimage) to $Charlie$
-      \State Wait for update of $e'$ to $e'' = \left(\mathrm{txid},
+      \State Wait for update of $e'$ to $e'' := \left(\mathrm{txid},
       \left(\mathrm{sid}_{Alice}, y + x\right), \left(\mathrm{sid}_{Charlie}, z -
       x\right)\right)$ unconditional
       \If{$Charlie$ does not update the channel to $e''$}
@@ -203,7 +203,7 @@
     \State
     \State Upon receiving (close, id) from $Alice$:
       \If{$\mathcal{G}_{Ledger}$ has a valid funding tx with
-      $\mathcal{H}\left(\mathrm{tx}\right) == \mathrm{id}$}
+      $\mathcal{H}\left(\mathrm{tx}\right) = \mathrm{id}$}
         \State Try to close cooperatively \Comment{TODO}
         \If{cooperative closing fails} \Comment{TODO}
           \State Close unilaterally \Comment{TODO}
