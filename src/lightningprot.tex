@@ -140,6 +140,10 @@
       \State Return True
     \EndProcedure
     \State
+    \Procedure{P2WPKH}{$pk, \mathrm{funds}$}
+      \State Return \{coins: funds, address: $H\left(pk\right)$\}
+    \EndProcedure
+    \State
     \State TOASK: (a) isValidPubKey() as predicate? (b) t parameter for protocol and all
     functions? where to pass it? (c) P2WSH used normally. Should it be simplified? (I
     think yes)
