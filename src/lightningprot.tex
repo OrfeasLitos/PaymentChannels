@@ -51,7 +51,7 @@
         \State $\And \textsc{isValidOpenTXsResponse}\left(\left(C1a, RD1a\right), pb_2,
         pa_2, pa_3, \mathrm{funds}\right)$)
       \EndIndent
-      \State Send (\texttt{fundingSig}, $\mathcal{F}_{\mathrm{Wallet}}.\text{sigForP2PKH}
+      \State Send (\texttt{fundingSig}, $\mathcal{F}_{\mathrm{Wallet}}.\text{sigForP2WPKH}
       \left(\mathrm{outpoint}\left(\mathrm{initTX}, 0\right), sa_0\right)$
       \State Wait for $F$ to be confirmed on-chain
       \State assert($F$ confirmed) \Comment{dest broadcasts $F$ TODO: correct way to
@@ -61,7 +61,7 @@
     \Procedure{GetOpenKeysAndTX}{$x$}
       \State $\left(\mathrm{initTX}, \left(pa_0, sa_0\right)\right) \gets
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{getTXandKeyWithValue}
-      \left(\mathrm{funds}\right)$ \Comment{Returns tx with 1 p2pkh output of value funds
+      \left(\mathrm{funds}\right)$ \Comment{Returns tx with 1 P2WPKH output of value funds
       and the keypair that spends it for funding tx input}
       \State $\left(pa_1, sa_1\right) \leftarrow
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For funding tx
@@ -88,12 +88,12 @@
       \State inputs: $\left[\left(\mathrm{outpoint}\left(F, 0\right),
       \text{sigFor2-of-2-msig}\left(\mathrm{outpoint}\left(F, 0\right), 0,
       sa_1\right)\right)\right]$
-      \State outputs: $\left[\mathrm{P2PKH}\left(pa_2, \mathrm{funds}\right),
+      \State outputs: $\left[\mathrm{P2WPKH}\left(pa_2, \mathrm{funds}\right),
       \mathrm{RSMC}\left(pa_2, pb_2, 0\right)\right]$
       \State )\}
       \State $RD1b \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
       \State inputs: $\left[\left(\mathrm{outpoint}\left(C1b, 0\right),
-      \text{sigForP2PKH}\left(\mathrm{outpoint}\left(C1b, 0\right),
+      \text{sigForP2WPKH}\left(\mathrm{outpoint}\left(C1b, 0\right),
       sa_2\right)\right)\right]$
       \State outputs: $\left[\mathrm{Delay}\left(pb_3, \mathrm{funds}\right)\right]$
       \State )\}
@@ -105,12 +105,12 @@
       \State inputs: $\left[\left(\mathrm{outpoint}\left(F, 0\right),
       \text{sigFor2-of-2-msig}\left(\mathrm{outpoint}\left(F, 0\right), 1,
       sb_1\right)\right)\right]$
-      \State outputs: $\left[\mathrm{P2PKH}\left(pb_2, 0\right), \mathrm{RSMC}\left(pb_2,
+      \State outputs: $\left[\mathrm{P2WPKH}\left(pb_2, 0\right), \mathrm{RSMC}\left(pb_2,
       pa_2, \mathrm{funds}\right)\right]$
       \State )\}
       \State $RD1a \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
       \State inputs: $\left[\left(\mathrm{outpoint}\left(C1a, 0\right),
-      \text{sigForP2PKH}\left(\mathrm{outpoint}\left(C1b, 0\right),
+      \text{sigForP2WPKH}\left(\mathrm{outpoint}\left(C1b, 0\right),
       sb_2\right)\right)\right]$
       \State outputs: $\left[\mathrm{Delay}\left(pa_3, 0\right)\right]$
       \State )\}
@@ -122,7 +122,7 @@
       \State assert($F$ has exactly 1 output)
       \State assert($F_0 = \text{2-of-2-msig}\left(pa_1, pb_1, \mathrm{funds}\right)$)
       \State assert($C1b$ has exactly 2 outputs)
-      \State assert($C1b_0 = \mathrm{P2PKH}\left(pa_2, 0\right)$)
+      \State assert($C1b_0 = \mathrm{P2WPKH}\left(pa_2, 0\right)$)
       \State assert($C1b_1 = \mathrm{RSMC}\left(pa_2, pb_2, \mathrm{funds}, t\right)$)
       ????
       \State assert($RD1b$ has exactly 1 output)
@@ -133,7 +133,7 @@
     \Procedure{isValidOpenTXsResponse}{$\left(C1a, RD1a\right), pb_2, pa_2, pa_3,
     \mathrm{funds}$}
       \State assert($C1a$ has exactly 2 outputs)
-      \State assert($C1a_0 = \mathrm{P2PKH}\left(pb_2, 0\right)$)
+      \State assert($C1a_0 = \mathrm{P2WPKH}\left(pb_2, 0\right)$)
       \State assert($C1a_1 = \mathrm{RSMC}\left(pb_2, pa_2, 0, t\right)$)
       \State assert($RD1a$ has exactly 1 output)
       \State assert($RD1a_0 = \mathrm{Delay}\left(pa_3, t, 0\right)$)
@@ -143,7 +143,7 @@
     \State TOASK: (a) isValidPubKey() as predicate? (b) t parameter for protocol and all
     functions? where to pass it? (c) P2WSH used normally. Should it be simplified? (I
     think yes)
-    \State TODO: Bob's side, P2PKH(), msig(), RSMC(), Delay(), sigFor\_(), use actual spec
+    \State TODO: Bob's side, P2WPKH(), msig(), RSMC(), Delay(), sigFor\_(), use actual spec
     \State Upon receiving (\texttt{opening}, $x$, tx) from $Bob$:
       \State Wait for tx to be confirmed
       \State $G \leftarrow G \cup \left(\left\{\mathrm{sid}_{Bob}\right\},
@@ -244,7 +244,7 @@
     $\mathrm{Dec}\left(\mathrm{state}_{sid}\right)$) \Comment{blockify() is system
     parameter, how to better specify above?}
     \State Return sum of outputs in \texttt{list} spendable by $Alice$ \Comment{Only
-    P2PKH? Or any kind (e.g. multisigs, funding txs)?}
+    P2WPKH? Or any kind (e.g. multisigs, funding txs)?}
     \State
     \State
     \State Send (\texttt{pay}, $Alice$, $Bob$, $x$) to $\mathcal{F}_{\mathrm{Ledger}}$:
