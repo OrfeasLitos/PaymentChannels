@@ -5,8 +5,8 @@
       \State $\mathrm{blocked} \leftarrow 0$
       \State $G \leftarrow \left(\left\{\mathrm{sid}_{Alice}\right\}, \emptyset\right)$
     \State
-    \State Upon receiving (open, $\mathrm{sid}_{Alice}$, $\mathrm{sid}_{Bob}$, $x$) from
-    $\mathcal{E}$:
+    \State Upon receiving (\texttt{open}, $\mathrm{sid}_{Alice}$, $\mathrm{sid}_{Bob}$,
+    $x$) from $\mathcal{E}$:
       \If{$\mathcal{G}_{\mathrm{Ledger}}.\mathrm{balance}(Alice) - \mathrm{blocked} \geq
       x$}
         \State $\mathrm{blocked} \leftarrow \mathrm{blocked} + x$
@@ -16,18 +16,18 @@
           \State $G \leftarrow G \cup \left(\left\{\mathrm{sid}_{Bob}\right\},
           \left\{\left(\mathcal{H}\left(\mathrm{tx}\right), \left(\mathrm{sid}_{Alice},
           x\right), \left(\mathrm{sid}_{Bob}, 0\right)\right)\right\}\right)$
-          \State Send (opened, $Alice$, $Bob$, $x$, 0,
+          \State Send (\texttt{opened}, $Alice$, $Bob$, $x$, 0,
           $\mathcal{H}\left(\mathrm{tx}\right))$ to $\mathcal{E}$
         \Else
-          \State Send (notOpened, $Alice$, $Bob$, $x$, 0) to $\mathcal{E}$
+          \State Send (\texttt{notOpened}, $Alice$, $Bob$, $x$, 0) to $\mathcal{E}$
         \EndIf
         \State $\mathrm{blocked} \leftarrow \mathrm{blocked} - x$
       \Else
-        \State Send (noFunds, $Alice$, $x$) to $\mathcal{E}$
+        \State Send (\texttt{noFunds}, $Alice$, $x$) to $\mathcal{E}$
       \EndIf
     \State
     \Procedure{OpenChannel}{source, dest, funds}
-      \State Send (proposeChannel, funds) to dest
+      \State Send (\texttt{proposeChannel}, funds) to dest
       \State Wait for response
       \State assert(response = (openChannel, funds),
       \Indent
@@ -36,7 +36,7 @@
       \State $\left(\mathrm{initTX}, \left(pa_0, sa_0\right), \left(pa_1, sa_1\right),
       \left(pa_2, sa_2\right), \left(pa_3, sa_3\right)\right) \gets
       \textsc{GetOpenKeysAndTX}\left(\mathrm{funds}\right)$
-      \State Send (openSendKeys, $\left(pa_1, pa_2, pa_3\right)$) to dest
+      \State Send (\texttt{openSendKeys}, $\left(pa_1, pa_2, pa_3\right)$) to dest
       \State Wait for response
       \State assert(response = (openResponseKeys, $\left(pb_1, pb_2, pb_3\right)$)
       \Indent
@@ -47,7 +47,7 @@
       \State $\left(F, C1b, RD1b\right) \gets
       \textsc{GetOpenTXsSend}\left(\mathrm{initTX}, pa_1, sa_1, pb_1, pa_2, sa_2,
       pb_2, pb_3, \mathrm{funds}\right)$
-      \State Send (openSendTXs, $\left(F, C1b, RD1b\right)$) to dest
+      \State Send (\texttt{openSendTXs}, $\left(F, C1b, RD1b\right)$) to dest
       \State Wait for response
       \State assert(response = (openResponseTXs, $\left(C1a, RD1a\right)$)
       \Indent
@@ -55,7 +55,7 @@
         pa_2, pa_3, \mathrm{funds}\right)$,
         \State dest did not send valid open TXs)
       \EndIndent
-      \State Send (fundingSig, $\mathcal{F}_{\mathrm{Wallet}}.\text{sigForP2PKH}
+      \State Send (\texttt{fundingSig}, $\mathcal{F}_{\mathrm{Wallet}}.\text{sigForP2PKH}
       \left(\mathrm{outpoint}\left(\mathrm{initTX}, 0\right), sa_0\right)$
       \State Wait for $F$ to be confirmed on-chain
       \State assert($F$ confirmed, dest did not broadcast) \Comment{dest broadcasts $F$
@@ -123,16 +123,16 @@
     \State
     \State TODO: isValidPubKey(), isValidOpenTXsSend(), isValidOpenTXsResponse(), Bob's
     side, P2PKH(), msig(), RSMC(), Delay(), sigFor\_(), change messages to texttt
-    \State Upon receiving (opening, $x$, tx) from $Bob$:
+    \State Upon receiving (\texttt{opening}, $x$, tx) from $Bob$:
       \State Wait for tx to be confirmed
       \State $G \leftarrow G \cup \left(\left\{\mathrm{sid}_{Bob}\right\},
       \left\{\left(\mathcal{H}\left(\mathrm{tx}\right), \left(\mathrm{sid}_{Alice},
       0\right), \left(\mathrm{sid}_{Bob}, x\right)\right)\right\}\right)$ \Comment{Add
       $\mathrm{sid}_{Bob}$ to nodes, new channel to edges}
-      \State Send (opened, $Alice$, $Bob$, 0, x, $\mathcal{H}\left(\mathrm{tx}\right))$ to
-      $\mathcal{E}$
+      \State Send (\texttt{opened}, $Alice$, $Bob$, 0, x,
+      $\mathcal{H}\left(\mathrm{tx}\right))$ to $\mathcal{E}$
     \State
-    \State Upon receiving (newChannel, txid, $\mathrm{sid}_{Charlie},
+    \State Upon receiving (\texttt{newChannel}, txid, $\mathrm{sid}_{Charlie},
     \mathrm{sid}_{Dave}$) from $Bob$:
       \If{there exists a tx with $\mathcal{H}\left(\mathrm{tx}\right) = \mathrm{txid}$ on
       $\mathcal{G}_{\mathrm{Ledger}}$ and is a valid funding transaction}
@@ -143,15 +143,15 @@
         balances are $\bot$}
       \EndIf
     \State
-    \State Upon receiving (closedChannel, txid) from $Bob$:
+    \State Upon receiving (\texttt{closedChannel}, txid) from $Bob$:
       \If{there exists a tx with $\mathcal{H}\left(\mathrm{tx}\right) = \mathrm{txid}$ on
       $\mathcal{G}_{\mathrm{Ledger}}$ that closes a funding tx' that corresponds to edge
       $e$ in $G$}
         \State $G \leftarrow G \setminus \left\{e\right\}$
       \EndIf
     \State
-    \State Upon receiving (pay, $Bob$, $x$) from $\mathcal{E}$:
-      \State Send (SendInvoice, $x$) to $Bob$
+    \State Upon receiving (\texttt{pay}, $Bob$, $x$) from $\mathcal{E}$:
+      \State Send (\texttt{SendInvoice}, $x$) to $Bob$
       \State Wait for response (invoice, $x$, hash) from $Bob$:
       \If{$\exists e := \left(\mathrm{txid}, \left(\mathrm{sid}_{Alice},
       y\right), \left(\mathrm{sid}_{Bob}, z\right)\right) \in G: y \geq x$}
@@ -173,25 +173,25 @@
           \State $G \leftarrow G \cup \left\{\left(\mathrm{txid},
           \left(\mathrm{sid}_{Alice}, y - x\right), \left(\mathrm{sid}_{Charlie}, z +
           x\right)\right)\right\}$
-          \State Send (paymentSent, $Bob$, $x$) to $\mathcal{E}$
+          \State Send (\texttt{paymentSent}, $Bob$, $x$) to $\mathcal{E}$
         \Else
-          \State Send (paymentFailed, $Bob$, $x$) to $\mathcal{E}$
+          \State Send (\texttt{paymentFailed}, $Bob$, $x$) to $\mathcal{E}$
         \EndIf
       \Else
-        \State Send (noPath, $Bob$, $x$) to $\mathcal{E}$
+        \State Send (\texttt{noPath}, $Bob$, $x$) to $\mathcal{E}$
       \EndIf
     \State
-    \State Upon receiving (SendInvoice, $x$) from $Bob$:
+    \State Upon receiving (\texttt{SendInvoice}, $x$) from $Bob$:
       \State $\mathrm{preimage} \overset{r}{\leftarrow}
       \left\{0,1\right\}^{\mathrm{gazillion}}$
       \State $\mathrm{hash} \leftarrow \mathcal{H}\left(\mathrm{preimage}\right)$
-      \State Send (invoice, $x$, hash) to $Bob$
+      \State Send (\texttt{invoice}, $x$, hash) to $Bob$
       \State Wait for update of any channel $e := \left(\mathrm{txid},
       \left(\mathrm{sid}_{Alice}, y\right), \left(\mathrm{sid}_{Charlie}, z\right)\right)$
       to $e' := \left(\mathrm{txid}, \left(\mathrm{sid}_{Alice}, y + x\right),
       \left(\mathrm{sid}_{Charlie}, z - x\right)\right)$ conditional on $Alice$'s
       knowledge of the preimage of the hash
-      \State Send (preimage) to $Charlie$
+      \State Send (\texttt{preimage}) to $Charlie$
       \State Wait for update of $e'$ to $e'' := \left(\mathrm{txid},
       \left(\mathrm{sid}_{Alice}, y + x\right), \left(\mathrm{sid}_{Charlie}, z -
       x\right)\right)$ unconditional
@@ -199,9 +199,9 @@
         \State Settle $e'$ on-chain with the preimage and take $x$ from the HTLC provided
         by $Charlie$
       \EndIf
-      \State Send (paymentReceived, $Bob$, $x$) to $\mathcal{E}$
+      \State Send (\texttt{paymentReceived}, $Bob$, $x$) to $\mathcal{E}$
     \State
-    \State Upon receiving (close, id) from $Alice$:
+    \State Upon receiving (\texttt{close}, id) from $Alice$:
       \If{$\mathcal{G}_{Ledger}$ has a valid funding tx with
       $\mathcal{H}\left(\mathrm{tx}\right) = \mathrm{id}$}
         \State Try to close cooperatively \Comment{TODO}
@@ -216,8 +216,8 @@
   \begin{algorithmic}[1]
     \State $\mathcal{F}_{\mathrm{Ledger}}\mathrm{.balance}\left(Alice\right)$:
     \State
-    \State Send (READ, sid) to $\mathcal{F}_{\mathrm{Ledger}}$ \Comment{Whose sid? List is
-    not created by Alice}
+    \State Send (\texttt{READ}, sid) to $\mathcal{F}_{\mathrm{Ledger}}$ \Comment{Whose
+    sid? List is not created by Alice}
     \State Wait for response $\mathrm{state}_{sid}$
     \State Find \texttt{list} of txs in UTXO spendable by $Alice$ (using
     $\mathrm{Dec}\left(\mathrm{state}_{sid}\right)$) \Comment{blockify() is system
@@ -226,10 +226,11 @@
     P2PKH? Or any kind (e.g. multisigs, funding txs)?}
     \State
     \State
-    \State Send (pay, $Alice$, $Bob$, $x$) to $\mathcal{F}_{\mathrm{Ledger}}$:
+    \State Send (\texttt{pay}, $Alice$, $Bob$, $x$) to $\mathcal{F}_{\mathrm{Ledger}}$:
     \State
     \State Create and sign transaction \texttt{tx} that pays $x$ from $Alice$ to $Bob$
     \Comment{Clear enough? How to sign? Is signature needed?}
-    \State Send (SUBMIT, $sid_{Alice}$ \texttt{tx}) to $\mathcal{F}_{\mathrm{Ledger}}$
+    \State Send (\texttt{SUBMIT}, $sid_{Alice}$ \texttt{tx}) to
+    $\mathcal{F}_{\mathrm{Ledger}}$
   \end{algorithmic}
 \hrulefill
