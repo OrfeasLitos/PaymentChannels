@@ -29,10 +29,7 @@
     \Procedure{OpenChannel}{source, dest, funds}
       \State Send (\texttt{proposeChannel}, funds) to dest
       \State Wait for response
-      \State assert(response = (openChannel, funds),
-      \Indent
-        \State dest does not want channel)
-      \EndIndent
+      \State assert(response = (openChannel, funds))
       \State $\left(\mathrm{initTX}, \left(pa_0, sa_0\right), \left(pa_1, sa_1\right),
       \left(pa_2, sa_2\right), \left(pa_3, sa_3\right)\right) \gets
       \textsc{GetOpenKeysAndTX}\left(\mathrm{funds}\right)$
@@ -41,8 +38,7 @@
       \State assert(response = (openResponseKeys, $\left(pb_1, pb_2, pb_3\right)$)
       \Indent
         \State $\And \forall i \in \left[3\right],
-        \mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}\left(pb_i\right)$ = True,
-        \State dest did not send valid public keys)
+        \mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}\left(pb_i\right)$ = True)
       \EndIndent
       \State $\left(F, C1b, RD1b\right) \gets
       \textsc{GetOpenTXsSend}\left(\mathrm{initTX}, pa_1, sa_1, pb_1, pa_2, sa_2,
@@ -52,14 +48,13 @@
       \State assert(response = (openResponseTXs, $\left(C1a, RD1a\right)$)
       \Indent
         \State $\And \textsc{isValidOpenTXsResponse}\left(\left(C1a, RD1a\right), pb_2,
-        pa_2, pa_3, \mathrm{funds}\right)$,
-        \State dest did not send valid open TXs)
+        pa_2, pa_3, \mathrm{funds}\right)$)
       \EndIndent
       \State Send (\texttt{fundingSig}, $\mathcal{F}_{\mathrm{Wallet}}.\text{sigForP2PKH}
       \left(\mathrm{outpoint}\left(\mathrm{initTX}, 0\right), sa_0\right)$
       \State Wait for $F$ to be confirmed on-chain
-      \State assert($F$ confirmed, dest did not broadcast) \Comment{dest broadcasts $F$
-      TODO: correct way to Wait?}
+      \State assert($F$ confirmed) \Comment{dest broadcasts $F$ TODO: correct way to
+      Wait?}
     \EndProcedure
     \State
     \Procedure{GetOpenKeysAndTX}{$x$}
