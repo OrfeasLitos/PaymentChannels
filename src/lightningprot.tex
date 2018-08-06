@@ -29,13 +29,14 @@
     \Procedure{OpenChannel}{source, dest, funds}
       \State Send (\texttt{proposeChannel}, funds) to dest
       \State Wait for response
-      \State assert(response = (openChannel, funds))
+      \State assert(response = (\texttt{openChannel}, funds))
       \State $\left(\mathrm{initTX}, \left(pa_0, sa_0\right), \left(pa_1, sa_1\right),
       \left(pa_2, sa_2\right), \left(pa_3, sa_3\right)\right) \gets
       \textsc{GetOpenKeysAndTX}\left(\mathrm{funds}\right)$
       \State Send (\texttt{openSendKeys}, $\left(pa_1, pa_2, pa_3\right)$) to dest
       \State Wait for response
-      \State assert(response = (openResponseKeys, $\left(pb_1, pb_2, pb_3\right)$)
+      \State assert(response = (\texttt{openResponseKeys}, $\left(pb_1, pb_2,
+      pb_3\right)$)
       \Indent
         \State $\And \forall i \in \left[3\right],
         \mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}\left(pb_i\right)$ = True)
@@ -45,7 +46,7 @@
       pb_2, pb_3, \mathrm{funds}\right)$
       \State Send (\texttt{openSendTXs}, $\left(F, C1b, RD1b\right)$) to dest
       \State Wait for response
-      \State assert(response = (openResponseTXs, $\left(C1a, RD1a\right)$)
+      \State assert(response = (\texttt{openResponseTXs}, $\left(C1a, RD1a\right)$)
       \Indent
         \State $\And \textsc{isValidOpenTXsResponse}\left(\left(C1a, RD1a\right), pb_2,
         pa_2, pa_3, \mathrm{funds}\right)$)
@@ -172,7 +173,7 @@
     \State
     \State Upon receiving (\texttt{pay}, $Bob$, $x$) from $\mathcal{E}$:
       \State Send (\texttt{SendInvoice}, $x$) to $Bob$
-      \State Wait for response (invoice, $x$, hash) from $Bob$:
+      \State Wait for response (\texttt{invoice}, $x$, hash) from $Bob$:
       \If{$\exists e := \left(\mathrm{txid}, \left(\mathrm{sid}_{Alice},
       y\right), \left(\mathrm{sid}_{Bob}, z\right)\right) \in G: y \geq x$}
         \State Update $e$ to $e' := \left(\mathrm{txid},
