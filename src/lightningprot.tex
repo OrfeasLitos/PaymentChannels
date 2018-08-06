@@ -123,6 +123,28 @@
     \State
     \State TODO: isValidPubKey(), isValidOpenTXsSend(), isValidOpenTXsResponse(), Bob's
     side, P2PKH(), msig(), RSMC(), Delay(), sigFor\_(), change messages to texttt
+    \Procedure{isValidOpenTXsSend}{$\left(F, C1b, RD1b\right), pa_1, pb_1, pa_2, pb_2,
+    pb_3, \mathrm{funds}$}
+      \State assert($F$ has exactly 1 output)
+      \State assert($F_0 = \text{2-of-2-msig}\left(pa_1, pb_1, \mathrm{funds}\right)$)
+      \State assert($C1b$ has exactly 2 outputs)
+      \State assert($C1b_0 = \mathrm{P2PKH}\left(pa_2, 0\right)$)
+      \State assert($C1b_1 = \mathrm{RSMC}\left(pa_2, pb_2, t, 0\right)$) ????
+      \State assert($RD1b$ has exactly 1 output)
+      \State assert($RD1b_0 = \mathrm{Delay}\left(pb_3, t, \mathrm{funds}\right)$) ????
+      \State Return True
+    \EndProcedure
+    \State
+    \Procedure{isValidOpenTXsResponse}{$\left(C1a, RD1a\right), pb_2, pa_2, pa_3,
+    \mathrm{funds}$}
+      \State assert($C1a$ has exactly 2 outputs)
+      \State assert($C1a_0 = \mathrm{P2PKH}\left(pb_2, 0\right)$)
+      \State assert($C1a_1 = \mathrm{RSMC}\left(pb_2, pa_2, 0, t\right)$)
+      \State assert($RD1a$ has exactly 1 output)
+      \State assert($RD1a_0 = \mathrm{Delay}\left(pa_3, t, 0\right)$)
+      \State Return True
+    \EndProcedure
+    \State
     \State Upon receiving (\texttt{opening}, $x$, tx) from $Bob$:
       \State Wait for tx to be confirmed
       \State $G \leftarrow G \cup \left(\left\{\mathrm{sid}_{Bob}\right\},
