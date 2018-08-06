@@ -123,7 +123,8 @@
       \State assert($F_0 = \text{2-of-2-msig}\left(pa_1, pb_1, \mathrm{funds}\right)$)
       \State assert($C1b$ has exactly 2 outputs)
       \State assert($C1b_0 = \mathrm{P2PKH}\left(pa_2, 0\right)$)
-      \State assert($C1b_1 = \mathrm{RSMC}\left(pa_2, pb_2, t, 0\right)$) ????
+      \State assert($C1b_1 = \mathrm{RSMC}\left(pa_2, pb_2, \mathrm{funds}, t\right)$)
+      ????
       \State assert($RD1b$ has exactly 1 output)
       \State assert($RD1b_0 = \mathrm{Delay}\left(pb_3, t, \mathrm{funds}\right)$) ????
       \State Return True
@@ -142,8 +143,7 @@
     \State TOASK: (a) isValidPubKey() as predicate? (b) t parameter for protocol and all
     functions? where to pass it? (c) P2WSH used normally. Should it be simplified? (I
     think yes)
-    \State TODO: isValidOpenTXsSend(), Bob's side, P2PKH(), msig(), RSMC(), Delay(),
-    sigFor\_(), use actual spec
+    \State TODO: Bob's side, P2PKH(), msig(), RSMC(), Delay(), sigFor\_(), use actual spec
     \State Upon receiving (\texttt{opening}, $x$, tx) from $Bob$:
       \State Wait for tx to be confirmed
       \State $G \leftarrow G \cup \left(\left\{\mathrm{sid}_{Bob}\right\},
