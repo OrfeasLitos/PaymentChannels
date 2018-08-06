@@ -121,8 +121,6 @@
       \State Return $\left(C1b, RD1b\right)$
     \EndProcedure
     \State
-    \State TODO: isValidPubKey(), isValidOpenTXsSend(), isValidOpenTXsResponse(), Bob's
-    side, P2PKH(), msig(), RSMC(), Delay(), sigFor\_(), change messages to texttt
     \Procedure{isValidOpenTXsSend}{$\left(F, C1b, RD1b\right), pa_1, pb_1, pa_2, pb_2,
     pb_3, \mathrm{funds}$}
       \State assert($F$ has exactly 1 output)
@@ -145,6 +143,8 @@
       \State Return True
     \EndProcedure
     \State
+    \State TODO: isValidOpenTXsSend(), Bob's side, P2PKH(), msig(), RSMC(), Delay(),
+    sigFor\_(), use actual spec
     \State Upon receiving (\texttt{opening}, $x$, tx) from $Bob$:
       \State Wait for tx to be confirmed
       \State $G \leftarrow G \cup \left(\left\{\mathrm{sid}_{Bob}\right\},
