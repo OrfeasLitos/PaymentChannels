@@ -7,26 +7,30 @@
       \State $G \leftarrow \left(\left\{\mathrm{sid}_{Alice}\right\}, \emptyset\right)$
     \EndIndent
     \State
-    \State Upon receiving (\texttt{open}, $\mathrm{sid}_{Alice}$, $\mathrm{sid}_{Bob}$,
-    $x$) from $\mathcal{E}$:
+    \State Upon receiving $\left(\mathtt{open}, \mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
+    \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}\right)$ from $\mathcal{E}$:
     \Indent
-      \If{$\mathcal{G}_{\mathrm{Ledger}}.\mathrm{balance}(Alice) - \mathrm{blocked} \geq
-      x$}
+      \If{$\mathcal{G}_{\mathrm{Ledger}}.\mathrm{balance}(\mathrm{pid}_{Alice}) -
+      \mathrm{blocked} \geq x$}
         \State $\mathrm{blocked} \leftarrow \mathrm{blocked} + x$
-        \State tx $\gets$ \textsc{OpenChannel}($\mathrm{sid}_{Alice}$,
-        $\mathrm{sid}_{Bob}$, $x$)
-        \If{tx is a valid funding transaction}
-          \State $G \leftarrow G \cup \left(\left\{\mathrm{sid}_{Bob}\right\},
-          \left\{\left(\mathcal{H}\left(\mathrm{tx}\right), \left(\mathrm{sid}_{Alice},
-          x\right), \left(\mathrm{sid}_{Bob}, 0\right)\right)\right\}\right)$
-          \State Send (\texttt{opened}, $Alice$, $Bob$, $x$, 0,
-          $\mathcal{H}\left(\mathrm{tx}\right))$ to $\mathcal{E}$
+        \State $\left(\mathrm{txid}, \mathrm{success}\right) \gets
+        \textsc{OpenChannel}\left(\mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
+        \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}\right)$
+        \If{sucess = True}
+          \State $G \leftarrow G \cup \left(\left\{\mathrm{pid}_{Bob}\right\},
+          \left\{\left(\mathrm{txid}, \left(\mathrm{pid}_{Alice}, \mathrm{coins}\right),
+          \left(\mathrm{pid}_{Bob}, 0\right)\right)\right\}\right)$
+          \State Send $\left(\mathtt{opened}, \mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
+          \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}, \mathrm{txid}\right)$ to
+          $\mathcal{E}$
         \Else
-          \State Send (\texttt{notOpened}, $Alice$, $Bob$, $x$, 0) to $\mathcal{E}$
+          \State Send $\left(\mathtt{notOpened}, \mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
+          \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}\right)$ to $\mathcal{E}$
         \EndIf
         \State $\mathrm{blocked} \leftarrow \mathrm{blocked} - x$
       \Else
-        \State Send (\texttt{noFunds}, $Alice$, $x$) to $\mathcal{E}$
+        \State Send $\left(\mathtt{noFunds}, \mathrm{pid}_{Alice}, \mathrm{coins}\right)$
+        to $\mathcal{E}$
       \EndIf
     \EndIndent
     \State
