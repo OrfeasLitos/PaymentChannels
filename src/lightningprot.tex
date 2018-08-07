@@ -4,7 +4,7 @@
     \State Initialisation:
     \Indent
       \State $\mathrm{blocked} \leftarrow 0$
-      \State $G \leftarrow \left(\left\{\mathrm{sid}_{Alice}\right\}, \emptyset\right)$
+      \State $G \leftarrow \left(\left\{\mathrm{pid}_{Alice}\right\}, \emptyset\right)$
     \EndIndent
     \State
     \State Upon receiving $\left(\mathtt{open}, \mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
@@ -159,20 +159,20 @@
     \State
     \State Upon receiving (\texttt{opening}, $x$, tx) from $Bob$:
       \State Wait for tx to be confirmed
-      \State $G \leftarrow G \cup \left(\left\{\mathrm{sid}_{Bob}\right\},
-      \left\{\left(\mathcal{H}\left(\mathrm{tx}\right), \left(\mathrm{sid}_{Alice},
-      0\right), \left(\mathrm{sid}_{Bob}, x\right)\right)\right\}\right)$ \Comment{Add
-      $\mathrm{sid}_{Bob}$ to nodes, new channel to edges}
+      \State $G \leftarrow G \cup \left(\left\{\mathrm{pid}_{Bob}\right\},
+      \left\{\left(\mathcal{H}\left(\mathrm{tx}\right), \left(\mathrm{pid}_{Alice},
+      0\right), \left(\mathrm{pid}_{Bob}, x\right)\right)\right\}\right)$ \Comment{Add
+      $\mathrm{pid}_{Bob}$ to nodes, new channel to edges}
       \State Send (\texttt{opened}, $Alice$, $Bob$, 0, x,
       $\mathcal{H}\left(\mathrm{tx}\right))$ to $\mathcal{E}$
     \State
-    \State Upon receiving (\texttt{newChannel}, txid, $\mathrm{sid}_{Charlie},
-    \mathrm{sid}_{Dave}$) from $Bob$:
+    \State Upon receiving (\texttt{newChannel}, txid, $\mathrm{pid}_{Charlie},
+    \mathrm{pid}_{Dave}$) from $Bob$:
       \If{there exists a tx with $\mathcal{H}\left(\mathrm{tx}\right) = \mathrm{txid}$ on
       $\mathcal{G}_{\mathrm{Ledger}}$ and is a valid funding transaction}
-        \State $G \leftarrow G \cup \left(\left\{\mathrm{sid}_{Charlie},
-        \mathrm{sid}_{Dave}\right\}, \left\{\left(\mathrm{txid},
-        \left(\mathrm{sid}_{Charlie}, \bot\right), \left(\mathrm{sid}_{Dave},
+        \State $G \leftarrow G \cup \left(\left\{\mathrm{pid}_{Charlie},
+        \mathrm{pid}_{Dave}\right\}, \left\{\left(\mathrm{txid},
+        \left(\mathrm{pid}_{Charlie}, \bot\right), \left(\mathrm{pid}_{Dave},
         \bot\right)\right)\right\}\right)$ \Comment{State of channel unknown, thus
         balances are $\bot$}
       \EndIf
@@ -187,11 +187,11 @@
     \State Upon receiving (\texttt{pay}, $Bob$, $x$) from $\mathcal{E}$:
       \State Send (\texttt{SendInvoice}, $x$) to $Bob$
       \State Wait for response (\texttt{invoice}, $x$, hash) from $Bob$:
-      \If{$\exists e := \left(\mathrm{txid}, \left(\mathrm{sid}_{Alice},
-      y\right), \left(\mathrm{sid}_{Bob}, z\right)\right) \in G: y \geq x$}
+      \If{$\exists e := \left(\mathrm{txid}, \left(\mathrm{pid}_{Alice},
+      y\right), \left(\mathrm{pid}_{Bob}, z\right)\right) \in G: y \geq x$}
         \State Update $e$ to $e' := \left(\mathrm{txid},
-        \left(\mathrm{sid}_{Alice}, y - x\right),
-        \left(\mathrm{sid}_{Bob}, z + x\right)\right)$ \Comment{Primitive
+        \left(\mathrm{pid}_{Alice}, y - x\right),
+        \left(\mathrm{pid}_{Bob}, z + x\right)\right)$ \Comment{Primitive
         for Update}
       \ElsIf{there is an $\left(Alice, Charlie, \dots, Bob\right)$ path in $G$ where the
       first hop is of weight at least $x$}
@@ -200,12 +200,12 @@
         \State \Comment{Sane fees and timeouts as requested by each hop}
         \State Wait for (preimage) from $Charlie$
         \If{$\mathcal{H}\left(\mathrm{preimage}\right) = \mathrm{hash}$}
-          \State Let $e := \left(\mathrm{txid}, \left(\mathrm{sid}_{Alice}, y\right),
-          \left(\mathrm{sid}_{Charlie}, z\right)\right)$ $Alice$'s channel with $Charlie$
+          \State Let $e := \left(\mathrm{txid}, \left(\mathrm{pid}_{Alice}, y\right),
+          \left(\mathrm{pid}_{Charlie}, z\right)\right)$ $Alice$'s channel with $Charlie$
           \State Update $e$ to pay $Charlie$ $x$ \Comment{use HTLC primitive}
           \State $G \leftarrow G \setminus \left\{e\right\}$
           \State $G \leftarrow G \cup \left\{\left(\mathrm{txid},
-          \left(\mathrm{sid}_{Alice}, y - x\right), \left(\mathrm{sid}_{Charlie}, z +
+          \left(\mathrm{pid}_{Alice}, y - x\right), \left(\mathrm{pid}_{Charlie}, z +
           x\right)\right)\right\}$
           \State Send (\texttt{paymentSent}, $Bob$, $x$) to $\mathcal{E}$
         \Else
@@ -221,13 +221,13 @@
       \State $\mathrm{hash} \leftarrow \mathcal{H}\left(\mathrm{preimage}\right)$
       \State Send (\texttt{invoice}, $x$, hash) to $Bob$
       \State Wait for update of any channel $e := \left(\mathrm{txid},
-      \left(\mathrm{sid}_{Alice}, y\right), \left(\mathrm{sid}_{Charlie}, z\right)\right)$
-      to $e' := \left(\mathrm{txid}, \left(\mathrm{sid}_{Alice}, y + x\right),
-      \left(\mathrm{sid}_{Charlie}, z - x\right)\right)$ conditional on $Alice$'s
+      \left(\mathrm{pid}_{Alice}, y\right), \left(\mathrm{pid}_{Charlie}, z\right)\right)$
+      to $e' := \left(\mathrm{txid}, \left(\mathrm{pid}_{Alice}, y + x\right),
+      \left(\mathrm{pid}_{Charlie}, z - x\right)\right)$ conditional on $Alice$'s
       knowledge of the preimage of the hash
       \State Send (\texttt{preimage}) to $Charlie$
       \State Wait for update of $e'$ to $e'' := \left(\mathrm{txid},
-      \left(\mathrm{sid}_{Alice}, y + x\right), \left(\mathrm{sid}_{Charlie}, z -
+      \left(\mathrm{pid}_{Alice}, y + x\right), \left(\mathrm{pid}_{Charlie}, z -
       x\right)\right)$ unconditional
       \If{$Charlie$ does not update the channel to $e''$}
         \State Settle $e'$ on-chain with the preimage and take $x$ from the HTLC provided
@@ -250,11 +250,11 @@
   \begin{algorithmic}[1]
     \State $\mathcal{F}_{\mathrm{Ledger}}\mathrm{.balance}\left(Alice\right)$:
     \State
-    \State Send (\texttt{READ}, sid) to $\mathcal{F}_{\mathrm{Ledger}}$ \Comment{Whose
-    sid? List is not created by Alice}
-    \State Wait for response $\mathrm{state}_{sid}$
+    \State Send (\texttt{READ}, pid) to $\mathcal{F}_{\mathrm{Ledger}}$ \Comment{Whose
+    pid? List is not created by Alice}
+    \State Wait for response $\mathrm{state}_{pid}$
     \State Find \texttt{list} of txs in UTXO spendable by $Alice$ (using
-    $\mathrm{Dec}\left(\mathrm{state}_{sid}\right)$) \Comment{blockify() is system
+    $\mathrm{Dec}\left(\mathrm{state}_{pid}\right)$) \Comment{blockify() is system
     parameter, how to better specify above?}
     \State Return sum of outputs in \texttt{list} spendable by $Alice$ \Comment{Only
     P2WPKH? Or any kind (e.g. multisigs, funding txs)?}
@@ -264,7 +264,7 @@
     \State
     \State Create and sign transaction \texttt{tx} that pays $x$ from $Alice$ to $Bob$
     \Comment{Clear enough? How to sign? Is signature needed?}
-    \State Send (\texttt{SUBMIT}, $sid_{Alice}$ \texttt{tx}) to
+    \State Send (\texttt{SUBMIT}, $pid_{Alice}$ \texttt{tx}) to
     $\mathcal{F}_{\mathrm{Ledger}}$
   \end{algorithmic}
 \hrulefill
