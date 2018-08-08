@@ -34,21 +34,33 @@
       \EndIf
     \EndIndent
     \State
-    \Procedure{OpenChannel}{source, dest, funds}
-      \State Send (\texttt{proposeChannel}, funds) to dest
-      \State Wait for response
-      \State assert(response = (\texttt{openChannel}, funds))
-      \State $\left(\mathrm{initTX}, \left(pa_0, sa_0\right), \left(pa_1, sa_1\right),
-      \left(pa_2, sa_2\right), \left(pa_3, sa_3\right)\right) \gets
-      \textsc{GetOpenKeysAndTX}\left(\mathrm{funds}\right)$
-      \State Send (\texttt{openSendKeys}, $\left(pa_1, pa_2, pa_3\right)$) to dest
-      \State Wait for response
-      \State assert(response = (\texttt{openResponseKeys}, $\left(pb_1, pb_2,
-      pb_3\right)$)
+    \Procedure{OpenChannel}{source, dest, coins, delay, bcast}
+      \State $\left(\left(pa_F, sa_F\right), \left(pa_{\mathrm{pay}},
+      sa_{\mathrm{pay}}\right), \left(pa_{\mathrm{dpay}},
+      sa_{\mathrm{dpay}}\right),\right.$
       \Indent
-        \State $\And \forall i \in \left[3\right],
-        \mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}\left(pb_i\right)$ = True)
+        \State $\left.\left(pa_{\mathrm{htlc}}, sa_{\mathrm{htlc}}\right),
+        \left(pa_{\mathrm{com}}, sa_{\mathrm{com}}\right), \left(pa_{\mathrm{rev}},
+        sa_{\mathrm{rev}}\right)\right) \gets \textsc{GetOpenKeys}\left(\right)$
       \EndIndent
+      \State Send (\texttt{openChannel}, coins, delay, bcast,
+      \Indent
+        \State $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
+        pa_{\mathrm{com}}, pa_{\mathrm{rev}}$) to dest
+      \EndIndent
+      \State assert(response = (\texttt{acceptChannel}, minDepth(TODO), delay,
+      \Indent
+        \State $pb_F, pb_{\mathrm{pay}}, pb_{\mathrm{dpay}}, pb_{\mathrm{htlc}},
+        pb_{\mathrm{com}}, pb_{\mathrm{rev}}$) $\And$
+        \State $\forall i \in \left\{F, \mathrm{pay}, \mathrm{dpay}, \mathrm{htlc},
+        \mathrm{com}, \mathrm{rev}\right\},$
+        \State $\mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}\left(pb_i\right)$ =
+        True)
+      \EndIndent
+      \State $\left(F, \mathrm{idx}, \mathrm{sig}\right) \gets
+      \textsc{GetFunding}\left(TODO\right)$
+      \State Send (\texttt{fundingCreated}, TODO
+      % delete start
       \State $\left(F, C1b, RD1b\right) \gets
       \textsc{GetOpenTXsSend}\left(\mathrm{initTX}, pa_1, sa_1, pb_1, pa_2, sa_2,
       pb_2, pb_3, \mathrm{funds}\right)$
@@ -64,34 +76,59 @@
       \State Wait for $F$ to be confirmed on-chain
       \State assert($F$ confirmed) \Comment{dest broadcasts $F$ TODO: correct way to
       Wait?}
+      % delete end
     \EndProcedure
     \State
-    \Procedure{GetOpenKeysAndTX}{$x$}
-      \State $\left(\mathrm{initTX}, \left(pa_0, sa_0\right)\right) \gets
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{getTXandKeyWithValue}
-      \left(\mathrm{funds}\right)$ \Comment{Returns tx with 1 P2WPKH output of value funds
-      and the keypair that spends it for funding tx input}
-      \State $\left(pa_1, sa_1\right) \leftarrow
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For funding tx
-      output}
-      \State $\left(pa_2, sa_2\right) \leftarrow
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For C1a
-      outputs}
-      \State $\left(pa_3, sa_3\right) \leftarrow
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For RD1a
-      output}
-      \State Return $\left(\mathrm{initTX}, \left(pa_0, sa_0\right), \left(pa_1,
-      sa_1\right), \left(pa_2, sa_2\right), \left(pa_3, sa_3\right)\right)$
+    \Procedure{GetOpenKeys}{}
+    % TODO: move elsewhere
+%      \State $\left(\mathrm{initTX}, \left(pa_0, sa_0\right)\right) \gets
+%      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{getTXandKeyWithValue}
+%      \left(\mathrm{funds}\right)$ \Comment{Returns tx with 1 P2WPKH output of value funds
+%      and the keypair that spends it for funding tx input}
+\State TODO: improve comments
+      \State $\left(pa_F, sa_F\right) \leftarrow
+      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For $F$ output}
+      \State $\left(pa_{\mathrm{pay}}, sa_{\mathrm{pay}}\right) \leftarrow
+      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For payment}
+      \State $\left(pa_{\mathrm{dpay}}, sa_{\mathrm{dpay}}\right) \leftarrow
+      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For delayed
+      payment}
+      \State $\left(pa_{\mathrm{htlc}}, sa_{\mathrm{htlc}}\right) \leftarrow
+      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For htlc}
+      \State $\left(pa_{\mathrm{com}}, sa_{\mathrm{com}}\right) \leftarrow
+      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For commitment
+      tx}
+      \State $\left(pa_{\mathrm{rev}}, sa_{\mathrm{rev}}\right) \leftarrow
+      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For revocation
+      tx}
+      \State \Return $\left(\left(pa_F, sa_F\right), \left(pa_{\mathrm{pay}},
+      sa_{\mathrm{pay}}\right), \left(pa_{\mathrm{dpay}},
+      sa_{\mathrm{dpay}}\right),\right.$
+      \Indent
+        \State $\left.\left(pa_{\mathrm{htlc}}, sa_{\mathrm{htlc}}\right),
+        \left(pa_{\mathrm{com}}, sa_{\mathrm{com}}\right), \left(pa_{\mathrm{rev}},
+        sa_{\mathrm{rev}}\right)\right)$
+      \EndIndent
+    \EndProcedure
+    \State
+    \Procedure{GetFunding}{coins, $sa_F, pa_F, pb_F$}
+      \State $F \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
+      \Indent
+      % TODO: move elsewhere
+        %\State inputs: $\left[\left(\mathrm{outpoint}\left(\mathrm{initTX}, 0\right),
+        %\bot\right)\right]$
+        \State outputs: $\left(\text{2-of-2-msig}\left(pa_F, pb_F,
+        \mathrm{coins}\right)\right)$ \Comment{more outputs allowed}
+      \EndIndent
+      \State \})
+      \State idx $\gets 0$
+      \State $\mathrm{sig} \gets \mathcal{F}_{\mathrm{Wallet}}.\textsc{Sign}\left(F,
+      \mathrm{idx}, sa_F\right)$
+      \State \Return $\left(F, \mathrm{sig}\right)$
     \EndProcedure
     \State
     \Procedure{GetOpenTXsSend}{$\mathrm{initTX}, pa_1, sa_1, pb_1, pa_2, sa_2, pb_2, pb_3,
     \mathrm{funds}$}
-      \State $F \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
-      \State inputs: $\left[\left(\mathrm{outpoint}\left(\mathrm{initTX}, 0\right),
-      \bot\right)\right]$
-      \State outputs: $\left[\text{2-of-2-msig}\left(pa_1, pb_1,
-      \mathrm{funds}\right)\right]$
-      \State )\}
       \State $C1b \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
       \State inputs: $\left[\left(\mathrm{outpoint}\left(F, 0\right),
       \text{sigFor2-of-2-msig}\left(\mathrm{outpoint}\left(F, 0\right), 0,
@@ -105,7 +142,7 @@
       sa_2\right)\right)\right]$
       \State outputs: $\left[\mathrm{Delay}\left(pb_3, \mathrm{funds}\right)\right]$
       \State )\}
-      \State Return $\left(F, C1b, RD1b\right)$
+      \State \Return $\left(F, C1b, RD1b\right)$
     \EndProcedure
     \State
     \Procedure{GetOpenTXsRespond}{$F, sb_1, pa_2, pb_2, sb_2, pa_3, \mathrm{funds}$}
@@ -122,7 +159,7 @@
       sb_2\right)\right)\right]$
       \State outputs: $\left[\mathrm{Delay}\left(pa_3, 0\right)\right]$
       \State )\}
-      \State Return $\left(C1b, RD1b\right)$
+      \State \Return $\left(C1b, RD1b\right)$
     \EndProcedure
     \State
     \Procedure{isValidOpenTXsSend}{$\left(F, C1b, RD1b\right), pa_1, pb_1, pa_2, pb_2,
@@ -135,7 +172,7 @@
       ????
       \State assert($RD1b$ has exactly 1 output)
       \State assert($RD1b_0 = \mathrm{Delay}\left(pb_3, t, \mathrm{funds}\right)$) ????
-      \State Return True
+      \State \Return True
     \EndProcedure
     \State
     \Procedure{isValidOpenTXsResponse}{$\left(C1a, RD1a\right), pb_2, pa_2, pa_3,
@@ -145,16 +182,17 @@
       \State assert($C1a_1 = \mathrm{RSMC}\left(pb_2, pa_2, 0, t\right)$)
       \State assert($RD1a$ has exactly 1 output)
       \State assert($RD1a_0 = \mathrm{Delay}\left(pa_3, t, 0\right)$)
-      \State Return True
+      \State \Return True
     \EndProcedure
     \State
     \Procedure{P2WPKH}{$pk, \mathrm{funds}$}
-      \State Return \{coins: funds, address: $H\left(pk\right)$\}
+      \State \Return \{coins: funds, address: $H\left(pk\right)$\}
     \EndProcedure
     \State
     \State TOASK: (a) isValidPubKey() as predicate? (b) t parameter for protocol and all
     functions? where to pass it? (c) P2WSH used normally. Should it be simplified? (I
-    think yes)
+    think yes) (d) temp\_chan\_id needed? (I think not) (e) how to make Sigma protocols
+    images?
     \State TODO: Bob's side, P2WPKH(), msig(), sigFor\_(), use actual spec
     \State
     \State Upon receiving (\texttt{opening}, $x$, tx) from $Bob$:
@@ -256,7 +294,7 @@
     \State Find \texttt{list} of txs in UTXO spendable by $Alice$ (using
     $\mathrm{Dec}\left(\mathrm{state}_{pid}\right)$) \Comment{blockify() is system
     parameter, how to better specify above?}
-    \State Return sum of outputs in \texttt{list} spendable by $Alice$ \Comment{Only
+    \State \Return sum of outputs in \texttt{list} spendable by $Alice$ \Comment{Only
     P2WPKH? Or any kind (e.g. multisigs, funding txs)?}
     \State
     \State
