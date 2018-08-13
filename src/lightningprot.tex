@@ -8,14 +8,25 @@
     \EndIndent
     \State
     \State Upon receiving $\left(\mathtt{open}, \mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
-    \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}\right)$ from $\mathcal{E}$:
+    \mathrm{initTX}, \mathrm{forFundTX}, \mathrm{coins}, \mathrm{delay},
+    \mathrm{bcast}\right)$
+    \Indent
+      \Indent
+        \State from $\mathcal{E}$:
+      \EndIndent
+    \EndIndent
     \Indent
       \If{$\mathcal{G}_{\mathrm{Ledger}}.\mathrm{balance}(\mathrm{pid}_{Alice}) -
       \mathrm{blocked} \geq x$}
         \State $\mathrm{blocked} \leftarrow \mathrm{blocked} + x$
         \State $\left(\mathrm{txid}, \mathrm{success}\right) \gets
-        \textsc{OpenChannel}\left(\mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
-        \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}\right)$
+        \textsc{OpenChannel}\left(\mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},\right.$
+        \Indent
+          \Indent
+            \State $\left.\mathrm{initTX}, \mathrm{forFundTX}, \mathrm{coins},
+            \mathrm{delay}, \mathrm{bcast}\right)$
+          \EndIndent
+        \EndIndent
         \If{sucess = True}
           \State $G \leftarrow G \cup \left(\left\{\mathrm{pid}_{Bob}\right\},
           \left\{\left(\mathrm{txid}, \left(\mathrm{pid}_{Alice}, \mathrm{coins}\right),
@@ -34,7 +45,7 @@
       \EndIf
     \EndIndent
     \State
-    \Function{OpenChannel}{source, dest, coins, delay, bcast}
+    \Function{OpenChannel}{source, dest, initTX, forFundTX, coins, delay, bcast}
       \State $\left(\left(pa_F, sa_F\right), \left(pa_{\mathrm{pay}},
       sa_{\mathrm{pay}}\right), \left(pa_{\mathrm{dpay}},
       sa_{\mathrm{dpay}}\right),\right.$
@@ -111,9 +122,9 @@
       \EndIndent
     \EndFunction
     \State
-    \Function{GetFunding}{coins, $sa_F, pa_F, pb_F$}
       \State $F \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
       \Indent
+    \Function{GetFunding}{coins, tx, $sa_F, pa_F, pb_F$}
       % TODO: move elsewhere
         %\State inputs: $\left[\left(\mathrm{outpoint}\left(\mathrm{initTX}, 0\right),
         %\bot\right)\right]$
