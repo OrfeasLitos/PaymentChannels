@@ -70,24 +70,26 @@
       \State $\left(F, \mathrm{idx}, \mathrm{sig}\right) \gets
       \textsc{GetFunding}\left(\mathrm{forFundTX}, \mathrm{coins}, sa_F, pa_F,
       pb_F\right)$
-      \State Send (\texttt{fundingCreated}, $F$, idx, sig) to dest
-      % delete start
-      \State $\left(F, C1b, RD1b\right) \gets
-      \textsc{GetOpenTXsSend}\left(\mathrm{initTX}, pa_1, sa_1, pb_1, pa_2, sa_2,
-      pb_2, pb_3, \mathrm{funds}\right)$
-      \State Send (\texttt{openSendTXs}, $\left(F, C1b, RD1b\right)$) to dest
-      \State Wait for response
-      \State assert(response = (\texttt{openResponseTXs}, $\left(C1a, RD1a\right)$)
+      \State Send (\texttt{fundingCreated}, $\mathcal{H}\left(F\right)$, idx, sig) to dest
+      \State assert(response = (\texttt{fundingSigned}, id, sig) $\And \mathrm{id} =
+      \mathcal{H}\left(F\right) \oplus \mathrm{idx}$
       \Indent
-        \State $\And \textsc{isValidOpenTXsResponse}\left(\left(C1a, RD1a\right), pb_2,
-        pa_2, pa_3, \mathrm{funds}\right)$)
+        \State $\And \textsc{isValid2-of-2Sig}\left(\mathrm{sig},
+        \textsc{GetCommitment}\left(\right.\right.$
+        \State $\left.\left.\mathcal{H}\left(F\right),\mathrm{idx}, pa_{pay},
+        pb_{pay}\right), 0\right)$)
       \EndIndent
-      \State Send (\texttt{fundingSig}, $\mathcal{F}_{\mathrm{Wallet}}.\text{sigForP2WPKH}
-      \left(\mathrm{outpoint}\left(\mathrm{initTX}, 0\right), sa_0\right)$
-      \State Wait for $F$ to be confirmed on-chain
-      \State assert($F$ confirmed) \Comment{dest broadcasts $F$ TODO: correct way to
-      Wait?}
-      % delete end
+      \State \textsc{Broadcast}$\left(F\right)$
+      \State Wait for minDepth confirmations on $F$
+      \State $\left(pa_{\mathrm{com}2}, sa_{\mathrm{com}2}\right) \gets
+      \textsc{GetCommitmentKey}\left(\right)$
+      \State Send (\texttt{fundingLocked}, id, $pa_{\mathrm{com}2}$) to dest
+      \State assert(response = (\texttt{fundingLocked}, id, $pb_{\mathrm{com}2}$) $\And$
+      \Indent
+        \State $\mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}
+        \left(pb_{\mathrm{com}2}\right)$)
+      \EndIndent
+      \State \Return ($\mathcal{H}\left(F\right)$, id, True)
     \EndFunction
     \State
     \Function{GetOpenKeys}{}
