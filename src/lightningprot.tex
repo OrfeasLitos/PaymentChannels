@@ -64,9 +64,8 @@
         \State $pb_F, pb_{\mathrm{pay}}, pb_{\mathrm{dpay}}, pb_{\mathrm{htlc}},
         pb_{\mathrm{com}}, pb_{\mathrm{rev}}$) $\And$
         \State $\forall i \in \left\{F, \mathrm{pay}, \mathrm{dpay}, \mathrm{htlc},
-        \mathrm{com}, \mathrm{rev}\right\},$
-        \State $\mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}\left(pb_i\right)$ =
-        True)
+        \mathrm{com}, \mathrm{rev}\right\},
+        \mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}\left(pb_i\right)$)
       \EndIndent
       \State $\left(F, \mathrm{idx}, \mathrm{sig}\right) \gets
       \textsc{GetFunding}\left(TODO\right)$
