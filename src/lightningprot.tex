@@ -34,7 +34,7 @@
       \EndIf
     \EndIndent
     \State
-    \Procedure{OpenChannel}{source, dest, coins, delay, bcast}
+    \Function{OpenChannel}{source, dest, coins, delay, bcast}
       \State $\left(\left(pa_F, sa_F\right), \left(pa_{\mathrm{pay}},
       sa_{\mathrm{pay}}\right), \left(pa_{\mathrm{dpay}},
       sa_{\mathrm{dpay}}\right),\right.$
@@ -77,9 +77,9 @@
       \State assert($F$ confirmed) \Comment{dest broadcasts $F$ TODO: correct way to
       Wait?}
       % delete end
-    \EndProcedure
+    \EndFunction
     \State
-    \Procedure{GetOpenKeys}{}
+    \Function{GetOpenKeys}{}
     % TODO: move elsewhere
 %      \State $\left(\mathrm{initTX}, \left(pa_0, sa_0\right)\right) \gets
 %      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{getTXandKeyWithValue}
@@ -109,9 +109,9 @@
         \left(pa_{\mathrm{com}}, sa_{\mathrm{com}}\right), \left(pa_{\mathrm{rev}},
         sa_{\mathrm{rev}}\right)\right)$
       \EndIndent
-    \EndProcedure
+    \EndFunction
     \State
-    \Procedure{GetFunding}{coins, $sa_F, pa_F, pb_F$}
+    \Function{GetFunding}{coins, $sa_F, pa_F, pb_F$}
       \State $F \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
       \Indent
       % TODO: move elsewhere
@@ -125,9 +125,9 @@
       \State $\mathrm{sig} \gets \mathcal{F}_{\mathrm{Wallet}}.\textsc{Sign}\left(F,
       \mathrm{idx}, sa_F\right)$
       \State \Return $\left(F, \mathrm{sig}\right)$
-    \EndProcedure
+    \EndFunction
     \State
-    \Procedure{GetOpenTXsSend}{$\mathrm{initTX}, pa_1, sa_1, pb_1, pa_2, sa_2, pb_2, pb_3,
+    \Function{GetOpenTXsSend}{$\mathrm{initTX}, pa_1, sa_1, pb_1, pa_2, sa_2, pb_2, pb_3,
     \mathrm{funds}$}
       \State $C1b \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
       \State inputs: $\left[\left(\mathrm{outpoint}\left(F, 0\right),
@@ -143,9 +143,9 @@
       \State outputs: $\left[\mathrm{Delay}\left(pb_3, \mathrm{funds}\right)\right]$
       \State )\}
       \State \Return $\left(F, C1b, RD1b\right)$
-    \EndProcedure
+    \EndFunction
     \State
-    \Procedure{GetOpenTXsRespond}{$F, sb_1, pa_2, pb_2, sb_2, pa_3, \mathrm{funds}$}
+    \Function{GetOpenTXsRespond}{$F, sb_1, pa_2, pb_2, sb_2, pa_3, \mathrm{funds}$}
       \State $C1a \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
       \State inputs: $\left[\left(\mathrm{outpoint}\left(F, 0\right),
       \text{sigFor2-of-2-msig}\left(\mathrm{outpoint}\left(F, 0\right), 1,
@@ -160,9 +160,9 @@
       \State outputs: $\left[\mathrm{Delay}\left(pa_3, 0\right)\right]$
       \State )\}
       \State \Return $\left(C1b, RD1b\right)$
-    \EndProcedure
+    \EndFunction
     \State
-    \Procedure{isValidOpenTXsSend}{$\left(F, C1b, RD1b\right), pa_1, pb_1, pa_2, pb_2,
+    \Function{isValidOpenTXsSend}{$\left(F, C1b, RD1b\right), pa_1, pb_1, pa_2, pb_2,
     pb_3, \mathrm{funds}$}
       \State assert($F$ has exactly 1 output)
       \State assert($F_0 = \text{2-of-2-msig}\left(pa_1, pb_1, \mathrm{funds}\right)$)
@@ -173,9 +173,9 @@
       \State assert($RD1b$ has exactly 1 output)
       \State assert($RD1b_0 = \mathrm{Delay}\left(pb_3, t, \mathrm{funds}\right)$) ????
       \State \Return True
-    \EndProcedure
+    \EndFunction
     \State
-    \Procedure{isValidOpenTXsResponse}{$\left(C1a, RD1a\right), pb_2, pa_2, pa_3,
+    \Function{isValidOpenTXsResponse}{$\left(C1a, RD1a\right), pb_2, pa_2, pa_3,
     \mathrm{funds}$}
       \State assert($C1a$ has exactly 2 outputs)
       \State assert($C1a_0 = \mathrm{P2WPKH}\left(pb_2, 0\right)$)
@@ -183,11 +183,11 @@
       \State assert($RD1a$ has exactly 1 output)
       \State assert($RD1a_0 = \mathrm{Delay}\left(pa_3, t, 0\right)$)
       \State \Return True
-    \EndProcedure
+    \EndFunction
     \State
-    \Procedure{P2WPKH}{$pk, \mathrm{funds}$}
+    \Function{P2WPKH}{$pk, \mathrm{funds}$}
       \State \Return \{coins: funds, address: $H\left(pk\right)$\}
-    \EndProcedure
+    \EndFunction
     \State
     \State TOASK: (a) isValidPubKey() as predicate? (b) t parameter for protocol and all
     functions? where to pass it? (c) P2WSH used normally. Should it be simplified? (I
