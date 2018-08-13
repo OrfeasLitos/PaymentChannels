@@ -51,20 +51,20 @@
       sa_{\mathrm{dpay}}\right),\right.$
       \Indent
         \State $\left.\left(pa_{\mathrm{htlc}}, sa_{\mathrm{htlc}}\right),
-        \left(pa_{\mathrm{com}}, sa_{\mathrm{com}}\right), \left(pa_{\mathrm{rev}},
+        \left(pa_{\mathrm{com}1}, sa_{\mathrm{com}1}\right), \left(pa_{\mathrm{rev}},
         sa_{\mathrm{rev}}\right)\right) \gets \textsc{GetOpenKeys}\left(\right)$
       \EndIndent
       \State Send (\texttt{openChannel}, coins, delay, bcast,
       \Indent
         \State $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
-        pa_{\mathrm{com}}, pa_{\mathrm{rev}}$) to dest
+        pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$) to dest
       \EndIndent
       \State assert(response = (\texttt{acceptChannel}, minDepth(TODO), delay,
       \Indent
         \State $pb_F, pb_{\mathrm{pay}}, pb_{\mathrm{dpay}}, pb_{\mathrm{htlc}},
-        pb_{\mathrm{com}}, pb_{\mathrm{rev}}$) $\And$
+        pb_{\mathrm{com}1}, pb_{\mathrm{rev}}$) $\And$
         \State $\forall i \in \left\{F, \mathrm{pay}, \mathrm{dpay}, \mathrm{htlc},
-        \mathrm{com}, \mathrm{rev}\right\},
+        \mathrm{com}1, \mathrm{rev}\right\},
         \mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}\left(pb_i\right)$)
       \EndIndent
       \State $\left(F, \mathrm{idx}, \mathrm{sig}\right) \gets
