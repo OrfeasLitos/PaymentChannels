@@ -99,11 +99,6 @@
     \EndFunction
     \State
     \Function{GetOpenKeys}{}
-    % TODO: move elsewhere
-%      \State $\left(\mathrm{initTX}, \left(pa_0, sa_0\right)\right) \gets
-%      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{getTXandKeyWithValue}
-%      \left(\mathrm{funds}\right)$ \Comment{Returns tx with 1 P2WPKH output of value funds
-%      and the keypair that spends it for funding tx input}
       \State $\left(pa_F, sa_F\right) \leftarrow
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For $F$ output}
       \State $\left(pa_{\mathrm{pay}}, sa_{\mathrm{pay}}\right) \leftarrow
@@ -133,75 +128,11 @@
       \State $\left(F, \mathrm{idx}\right) \gets
       \mathcal{F}_{\mathrm{Wallet}}$.addOutputToTX(tx, 2-of-2-msig$\left(pa_F, pb_F,
       \mathrm{coins}\right)$)
-      % TODO: move elsewhere
-        %\State inputs: $\left[\left(\mathrm{outpoint}\left(\mathrm{initTX}, 0\right),
-        %\bot\right)\right]$
       \State $\mathrm{sig} \gets \mathcal{F}_{\mathrm{Wallet}}.\textsc{Sign}\left(F,
       \mathrm{idx}, sa_F\right)$
       \State \Return $\left(F, \mathrm{idx}, \mathrm{sig}\right)$
     \EndFunction
     \State
-    \Function{GetOpenTXsSend}{$\mathrm{initTX}, pa_1, sa_1, pb_1, pa_2, sa_2, pb_2, pb_3,
-    \mathrm{funds}$}
-      \State $C1b \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
-      \State inputs: $\left[\left(\mathrm{outpoint}\left(F, 0\right),
-      \text{sigFor2-of-2-msig}\left(\mathrm{outpoint}\left(F, 0\right), 0,
-      sa_1\right)\right)\right]$
-      \State outputs: $\left[\mathrm{P2WPKH}\left(pa_2, \mathrm{funds}\right),
-      \mathrm{RSMC}\left(pa_2, pb_2, 0\right)\right]$
-      \State )\}
-      \State $RD1b \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
-      \State inputs: $\left[\left(\mathrm{outpoint}\left(C1b, 0\right),
-      \text{sigForP2WPKH}\left(\mathrm{outpoint}\left(C1b, 0\right),
-      sa_2\right)\right)\right]$
-      \State outputs: $\left[\mathrm{Delay}\left(pb_3, \mathrm{funds}\right)\right]$
-      \State )\}
-      \State \Return $\left(F, C1b, RD1b\right)$
-    \EndFunction
-    \State
-    \Function{GetOpenTXsRespond}{$F, sb_1, pa_2, pb_2, sb_2, pa_3, \mathrm{funds}$}
-      \State $C1a \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
-      \State inputs: $\left[\left(\mathrm{outpoint}\left(F, 0\right),
-      \text{sigFor2-of-2-msig}\left(\mathrm{outpoint}\left(F, 0\right), 1,
-      sb_1\right)\right)\right]$
-      \State outputs: $\left[\mathrm{P2WPKH}\left(pb_2, 0\right), \mathrm{RSMC}\left(pb_2,
-      pa_2, \mathrm{funds}\right)\right]$
-      \State )\}
-      \State $RD1a \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
-      \State inputs: $\left[\left(\mathrm{outpoint}\left(C1a, 0\right),
-      \text{sigForP2WPKH}\left(\mathrm{outpoint}\left(C1b, 0\right),
-      sb_2\right)\right)\right]$
-      \State outputs: $\left[\mathrm{Delay}\left(pa_3, 0\right)\right]$
-      \State )\}
-      \State \Return $\left(C1b, RD1b\right)$
-    \EndFunction
-    \State
-    \Function{isValidOpenTXsSend}{$\left(F, C1b, RD1b\right), pa_1, pb_1, pa_2, pb_2,
-    pb_3, \mathrm{funds}$}
-      \State assert($F$ has exactly 1 output)
-      \State assert($F_0 = \text{2-of-2-msig}\left(pa_1, pb_1, \mathrm{funds}\right)$)
-      \State assert($C1b$ has exactly 2 outputs)
-      \State assert($C1b_0 = \mathrm{P2WPKH}\left(pa_2, 0\right)$)
-      \State assert($C1b_1 = \mathrm{RSMC}\left(pa_2, pb_2, \mathrm{funds}, t\right)$)
-      ????
-      \State assert($RD1b$ has exactly 1 output)
-      \State assert($RD1b_0 = \mathrm{Delay}\left(pb_3, t, \mathrm{funds}\right)$) ????
-      \State \Return True
-    \EndFunction
-    \State
-    \Function{isValidOpenTXsResponse}{$\left(C1a, RD1a\right), pb_2, pa_2, pa_3,
-    \mathrm{funds}$}
-      \State assert($C1a$ has exactly 2 outputs)
-      \State assert($C1a_0 = \mathrm{P2WPKH}\left(pb_2, 0\right)$)
-      \State assert($C1a_1 = \mathrm{RSMC}\left(pb_2, pa_2, 0, t\right)$)
-      \State assert($RD1a$ has exactly 1 output)
-      \State assert($RD1a_0 = \mathrm{Delay}\left(pa_3, t, 0\right)$)
-      \State \Return True
-    \EndFunction
-    \State
-    \Function{P2WPKH}{$pk, \mathrm{funds}$}
-      \State \Return \{coins: funds, address: $H\left(pk\right)$\}
-    \EndFunction
     \State
     \State TOASK: (a) isValidPubKey() as predicate? (b) t parameter for protocol and all
     functions? where to pass it? (c) P2WSH used normally. Should it be simplified? (I
