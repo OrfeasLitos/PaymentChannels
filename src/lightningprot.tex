@@ -19,7 +19,7 @@
       \If{$\mathcal{G}_{\mathrm{Ledger}}.\mathrm{balance}(\mathrm{pid}_{Alice}) -
       \mathrm{blocked} \geq x$}
         \State $\mathrm{blocked} \leftarrow \mathrm{blocked} + x$
-        \State $\left(\mathrm{txid}, \mathrm{success}\right) \gets
+        \State $\left(\mathrm{txid}, \mathrm{id}, \mathrm{success}\right) \gets
         \textsc{OpenChannel}\left(\mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},\right.$
         \Indent
           \Indent
@@ -29,11 +29,16 @@
         \EndIndent
         \If{sucess = True}
           \State $G \leftarrow G \cup \left(\left\{\mathrm{pid}_{Bob}\right\},
-          \left\{\left(\mathrm{txid}, \left(\mathrm{pid}_{Alice}, \mathrm{coins}\right),
-          \left(\mathrm{pid}_{Bob}, 0\right)\right)\right\}\right)$
+          \left\{\left(\mathrm{txid}, \mathrm{id}, \left(\mathrm{pid}_{Alice},
+          \mathrm{coins}\right), \left(\mathrm{pid}_{Bob}, 0\right)\right)\right\}\right)$
           \State Send $\left(\mathtt{opened}, \mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
-          \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}, \mathrm{txid}\right)$ to
-          $\mathcal{E}$
+          \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}, \mathrm{txid},
+          \mathrm{id}\right)$
+          \Indent
+            \Indent
+              \State to $\mathcal{E}$
+            \EndIndent
+          \EndIndent
         \Else
           \State Send $\left(\mathtt{notOpened}, \mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
           \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}\right)$ to $\mathcal{E}$
