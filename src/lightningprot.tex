@@ -133,6 +133,46 @@
       \State \Return $\left(F, \mathrm{idx}, \mathrm{sig}\right)$
     \EndFunction
     \State
+    \State Upon receiving (\texttt{openChannel}, coins, delay, bcast,
+    \Indent
+      \Indent
+        \State $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
+        pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$) from $Bob$:
+      \EndIndent
+    \EndIndent
+    \Indent
+      \State Send (\texttt{recvOpen}, $\mathrm{pid}_{Bob}$, coins, delay, bcast,
+      \Indent
+        \Indent
+          \State $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
+          pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$) to $\mathcal{E}$:
+        \EndIndent
+      \EndIndent
+      \State $\left(\mathrm{txid}, \mathrm{id}, \mathrm{success}\right) \gets
+      \textsc{AcceptChannel}\left(TODO\mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},\right.$
+      \Indent
+        \Indent
+          \State $\left.\mathrm{initTX}, \mathrm{forFundTX}, \mathrm{coins},
+          \mathrm{delay}, \mathrm{bcast}\right)$
+        \EndIndent
+      \EndIndent
+      \If{sucess = True}
+        \State $G \leftarrow G \cup \left(\left\{\mathrm{pid_{Bob}}\right\},
+        \left\{\left(\mathrm{txid}, \mathrm{id}, \left(\mathrm{pid}_{Alice}, 0\right),
+        \left(\mathrm{pid_{Bob}}, \mathrm{coins}\right)\right)\right\}\right)$
+        \State Send $\left(\mathtt{accepted}, \mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
+        \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}, \mathrm{txid}, \mathrm{id}\right)$
+        \Indent
+          \Indent
+            \State to $\mathcal{E}$
+          \EndIndent
+        \EndIndent
+      \Else
+        \State Send $\left(\mathtt{notAccepted}, \mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
+        \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}\right)$ to $\mathcal{E}$
+      \EndIf
+    \EndIndent
+    % here
     \State
     \State TOASK: (a) isValidPubKey() as predicate? (b) t parameter for protocol and all
     functions? where to pass it? (c) P2WSH used normally. Should it be simplified? (I
