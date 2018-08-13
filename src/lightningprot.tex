@@ -68,8 +68,9 @@
         \mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}\left(pb_i\right)$)
       \EndIndent
       \State $\left(F, \mathrm{idx}, \mathrm{sig}\right) \gets
-      \textsc{GetFunding}\left(TODO\right)$
-      \State Send (\texttt{fundingCreated}, TODO
+      \textsc{GetFunding}\left(\mathrm{forFundTX}, \mathrm{coins}, sa_F, pa_F,
+      pb_F\right)$
+      \State Send (\texttt{fundingCreated}, $F$, idx, sig) to dest
       % delete start
       \State $\left(F, C1b, RD1b\right) \gets
       \textsc{GetOpenTXsSend}\left(\mathrm{initTX}, pa_1, sa_1, pb_1, pa_2, sa_2,
@@ -121,20 +122,16 @@
       \EndIndent
     \EndFunction
     \State
-      \State $F \gets \mathcal{F}_{\mathrm{Wallet}}$.getTX(\{
-      \Indent
     \Function{GetFunding}{coins, tx, $sa_F, pa_F, pb_F$}
+      \State $\left(F, \mathrm{idx}\right) \gets
+      \mathcal{F}_{\mathrm{Wallet}}$.addOutputToTX(tx, 2-of-2-msig$\left(pa_F, pb_F,
+      \mathrm{coins}\right)$)
       % TODO: move elsewhere
         %\State inputs: $\left[\left(\mathrm{outpoint}\left(\mathrm{initTX}, 0\right),
         %\bot\right)\right]$
-        \State outputs: $\left(\text{2-of-2-msig}\left(pa_F, pb_F,
-        \mathrm{coins}\right)\right)$ \Comment{more outputs allowed}
-      \EndIndent
-      \State \})
-      \State idx $\gets 0$
       \State $\mathrm{sig} \gets \mathcal{F}_{\mathrm{Wallet}}.\textsc{Sign}\left(F,
       \mathrm{idx}, sa_F\right)$
-      \State \Return $\left(F, \mathrm{sig}\right)$
+      \State \Return $\left(F, \mathrm{idx}, \mathrm{sig}\right)$
     \EndFunction
     \State
     \Function{GetOpenTXsSend}{$\mathrm{initTX}, pa_1, sa_1, pb_1, pa_2, sa_2, pb_2, pb_3,
