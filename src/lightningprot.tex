@@ -104,22 +104,21 @@
 %      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{getTXandKeyWithValue}
 %      \left(\mathrm{funds}\right)$ \Comment{Returns tx with 1 P2WPKH output of value funds
 %      and the keypair that spends it for funding tx input}
-\State TODO: improve comments
       \State $\left(pa_F, sa_F\right) \leftarrow
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For $F$ output}
       \State $\left(pa_{\mathrm{pay}}, sa_{\mathrm{pay}}\right) \leftarrow
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For payment}
+      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For com output
+      to remote}
       \State $\left(pa_{\mathrm{dpay}}, sa_{\mathrm{dpay}}\right) \leftarrow
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For delayed
-      payment}
+      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For com output
+      to self}
       \State $\left(pa_{\mathrm{htlc}}, sa_{\mathrm{htlc}}\right) \leftarrow
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For htlc}
+      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For htlc TODO}
       \State $\left(pa_{\mathrm{com}}, sa_{\mathrm{com}}\right) \leftarrow
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For commitment
-      tx}
+      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For what? TODO}
       \State $\left(pa_{\mathrm{rev}}, sa_{\mathrm{rev}}\right) \leftarrow
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For revocation
-      tx}
+      in com}
       \State \Return $\left(\left(pa_F, sa_F\right), \left(pa_{\mathrm{pay}},
       sa_{\mathrm{pay}}\right), \left(pa_{\mathrm{dpay}},
       sa_{\mathrm{dpay}}\right),\right.$
