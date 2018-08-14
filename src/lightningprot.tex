@@ -155,11 +155,12 @@
       \State Wait for response from $\mathcal{E}$
       \State assert(response = (\texttt{acceptChannel}, minDepth, selfDelay))
       \State $\left(\mathrm{txid}, \mathrm{id}, \mathrm{success}\right) \gets
-      \textsc{AcceptChannel}\left(TODO\mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},\right.$
+      \textsc{AcceptChannel}$(funder, coins, selfDelay,
       \Indent
         \Indent
-          \State $\left.\mathrm{initTX}, \mathrm{forFundTX}, \mathrm{coins},
-          \mathrm{delay}, \mathrm{bcast}\right)$
+          \State remoteDelay, bcast, minDepth,
+          \State $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
+          pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$)
         \EndIndent
       \EndIndent
       \If{sucess = True}
