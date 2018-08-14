@@ -180,7 +180,48 @@
         \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}\right)$ to $\mathcal{E}$
       \EndIf
     \EndIndent
-    % here
+    \State
+    \Function{AcceptChannel}{funder, coins, selfDelay, remoteDelay, bcast, minDepth,
+    $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}}, pa_{\mathrm{com}1},
+    pa_{\mathrm{rev}}$}
+      \State assert($\forall i \in \left\{\mathrm{pay}, \mathrm{dpay}, \mathrm{htlc},
+      \mathrm{com}1, \mathrm{rev}\right\},
+      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}\left(pa_i\right)$)
+      \State $\left(\left(pb_F, sb_F\right), \left(pb_\mathrm{pay},
+      sb_\mathrm{pay}\right), \left(pb_\mathrm{dpay}, sb_\mathrm{dpay}\right),
+      \left(pb_\mathrm{htlc}, sb_\mathrm{htlc}\right),\right.$
+      \State $\left.\left(pb_\mathrm{com}1, sb_\mathrm{com}1\right),
+      \left(pb_\mathrm{rev}, sb_\mathrm{rev}\right)\right) \gets
+      \textsc{GetKeys}\left(\right)$
+      \State Send (\texttt{acceptChannel}, minDepth, selfDelay,
+      \Indent
+        \Indent
+          \State $pb_F, pb_{\mathrm{pay}}, pb_{\mathrm{dpay}}, pb_{\mathrm{htlc}},
+          pb_{\mathrm{com}1}, pb_{\mathrm{rev}}$) to funder
+        \EndIndent
+      \EndIndent
+      \State assert(response = (\texttt{fundingCreated}, txid, idx, sig) $\And$
+      \textsc{isValid2-of-2Sig}(sig, \textsc{GetCommitment}(txid, idx, $pa_{\mathrm{pay}},
+      pb_{\mathrm{pay}}$), 1)) TODO: may change
+      \State $\mathrm{id} \gets \mathrm{txid} \oplus \mathrm{idx}$
+      \State $\mathrm{sig} \gets
+      \mathcal{F}_{\mathrm{Wallet}}.\textsc{SignFunding}\left(\mathrm{txid}, \mathrm{idx},
+      sb_F\right)$
+      \State Send (\texttt{fundingSigned}, id, sig) to funder
+      \State Wait for minDepth confirmations on tx with id txid
+      \State $\left(pb_{\mathrm{com}2}, sb_{\mathrm{com}2}\right) \gets
+      \textsc{GetCommitmentKey}\left(\right)$
+      \State In parallel:
+      \Indent
+        \State Send (\texttt{fundingLocked}, id, $pb_{\mathrm{com}2}$) to funder
+        \State assert(response = (\texttt{fundingLocked}, id, $pa_{\mathrm{com}2}$) $\And$
+        \Indent
+          \State $\mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}
+          \left(pa_{\mathrm{com}2}\right)$)
+        \EndIndent
+      \EndIndent
+      \State \Return (txid, id, True)
+    \EndFunction
     \State
     \State TOASK: (a) isValidPubKey() as predicate? (b) t parameter for protocol and all
     functions? where to pass it? (c) P2WSH used normally. Should it be simplified? (I
