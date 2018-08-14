@@ -75,10 +75,10 @@
       \State $\left(F, \mathrm{idx}, \mathrm{sig}\right) \gets
       \textsc{GetFunding}\left(\mathrm{forFundTX}, \mathrm{coins}, sa_F, pa_F,
       pb_F\right)$
+      \State $\mathrm{id} \gets \mathcal{H}\left(F\right) \oplus \mathrm{idx}$
       \State Send (\texttt{fundingCreated}, $\mathcal{H}\left(F\right)$, idx, sig) to
       fundee
-      \State assert(response = (\texttt{fundingSigned}, id, sig) $\And \mathrm{id} =
-      \mathcal{H}\left(F\right) \oplus \mathrm{idx}$
+      \State assert(response = (\texttt{fundingSigned}, id, sig)
       \Indent
         \State $\And \textsc{isValid2-of-2Sig}\left(\mathrm{sig},
         \textsc{GetCommitment}\left(\right.\right.$
