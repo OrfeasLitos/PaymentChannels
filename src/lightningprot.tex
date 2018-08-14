@@ -137,7 +137,7 @@
       \State \Return $\left(F, \mathrm{idx}, \mathrm{sig}\right)$
     \EndFunction
     \State
-    \State Upon receiving (\texttt{openChannel}, coins, delay, bcast,
+    \State Upon receiving (\texttt{openChannel}, coins, remoteDelay, bcast,
     \Indent
       \Indent
         \State $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
@@ -145,7 +145,7 @@
       \EndIndent
     \EndIndent
     \Indent
-      \State Send (\texttt{recvOpen}, $\mathrm{pid}_{Bob}$, coins, delay, bcast,
+      \State Send (\texttt{recvOpen}, $\mathrm{pid}_{Bob}$, coins, remoteDelay, bcast,
       \Indent
         \Indent
           \State $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
