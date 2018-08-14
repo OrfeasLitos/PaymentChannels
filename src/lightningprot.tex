@@ -64,7 +64,7 @@
         \State $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
         pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$) to fundee
       \EndIndent
-      \State assert(response = (\texttt{acceptChannel}, minDepth(TODO), delay,
+      \State assert(response = (\texttt{acceptChannel}, minDepth, delay,
       \Indent
         \State $pb_F, pb_{\mathrm{pay}}, pb_{\mathrm{dpay}}, pb_{\mathrm{htlc}},
         pb_{\mathrm{com}1}, pb_{\mathrm{rev}}$) $\And$
@@ -112,8 +112,9 @@
       to self}
       \State $\left(pa_{\mathrm{htlc}}, sa_{\mathrm{htlc}}\right) \leftarrow
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For htlc TODO}
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For what? TODO}
       \State $\left(pa_{\mathrm{com}1}, sa_{\mathrm{com}1}\right) \leftarrow
+      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For revocation
+      TODO}
       \State $\left(pa_{\mathrm{rev}}, sa_{\mathrm{rev}}\right) \leftarrow
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For revocation
       in com}
@@ -185,7 +186,6 @@
     functions? where to pass it? (c) P2WSH used normally. Should it be simplified? (I
     think yes) (d) temp\_chan\_id needed? (I think not) (e) how to make Sigma protocols
     images?
-    \State TODO: Bob's side, P2WPKH(), msig(), sigFor\_()
     \State
     \State Upon receiving (\texttt{opening}, $x$, tx) from $Bob$:
       \State Wait for tx to be confirmed
@@ -213,6 +213,7 @@
       $e$ in $G$}
         \State $G \leftarrow G \setminus \left\{e\right\}$
       \EndIf
+    \State TODO: 2-of-2-msig(), Sign(), GetCommitment(), GetCommitmentKey()
     \State
     \State Upon receiving (\texttt{pay}, $Bob$, $x$) from $\mathcal{E}$:
       \State Send (\texttt{SendInvoice}, $x$) to $Bob$
