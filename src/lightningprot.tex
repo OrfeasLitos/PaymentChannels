@@ -20,7 +20,7 @@
       \mathrm{blocked} \geq x$}
         \State $\mathrm{blocked} \leftarrow \mathrm{blocked} + x$
         \State $\left(\mathrm{txid}, \mathrm{id}, \mathrm{success}\right) \gets
-        \textsc{OpenChannel}\left(\mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},\right.$
+        \textsc{OpenChannel}\left(\mathrm{pid}_{Bob},\right.$
         \Indent
           \Indent
             \State $\left.\mathrm{initTX}, \mathrm{forFundTX}, \mathrm{coins},
@@ -50,7 +50,7 @@
       \EndIf
     \EndIndent
     \State
-    \Function{OpenChannel}{source, fundee, initTX, forFundTX, coins, delay, bcast}
+    \Function{OpenChannel}{fundee, initTX, forFundTX, coins, delay, bcast}
       \State $\left(\left(pa_F, sa_F\right), \left(pa_{\mathrm{pay}},
       sa_{\mathrm{pay}}\right), \left(pa_{\mathrm{dpay}},
       sa_{\mathrm{dpay}}\right),\right.$
