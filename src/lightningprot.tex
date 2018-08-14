@@ -152,6 +152,8 @@
           pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$) to $\mathcal{E}$:
         \EndIndent
       \EndIndent
+      \State Wait for response from $\mathcal{E}$
+      \State assert(response = (\texttt{acceptChannel}, minDepth, selfDelay))
       \State $\left(\mathrm{txid}, \mathrm{id}, \mathrm{success}\right) \gets
       \textsc{AcceptChannel}\left(TODO\mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},\right.$
       \Indent
