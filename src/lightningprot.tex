@@ -131,7 +131,8 @@
       \State $\left(F, \mathrm{idx}\right) \gets
       \mathcal{F}_{\mathrm{Wallet}}$.addOutputToTX(tx, 2-of-2-msig$\left(pa_F, pb_F,
       \mathrm{coins}\right)$)
-      \State $\mathrm{sig} \gets \mathcal{F}_{\mathrm{Wallet}}.\textsc{Sign}\left(F,
+      \State $\mathrm{sig} \gets
+      \mathcal{F}_{\mathrm{Wallet}}.\textsc{SignFunding}\left(\mathcal{H}\left(F\right),
       \mathrm{idx}, sa_F\right)$
       \State \Return $\left(F, \mathrm{idx}, \mathrm{sig}\right)$
     \EndFunction
