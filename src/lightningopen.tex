@@ -7,9 +7,18 @@
         \< \sendmessageright{top=(\texttt{openChannel})} \< \< \\
         \< \< \sendmessageright{top=(\texttt{recvOpen})} \< \\
         \< \< \sendmessageleft{top=(\texttt{acceptChannel})} \< \\
-        %TODO
+        \< \sendmessageleft{top=(\texttt{acceptChannel})} \< \< \\
+        \< \sendmessageright{top=(\texttt{fundingCreated})} \< \< \\
+        \< \sendmessageleft{top=(\texttt{fundingSigned})} \< \< \\
+        \sendmessageleft{top=(\texttt{broadcast})} \< \< \< \\
+        \sendmessageright{top=(\texttt{fundingLocked})} \< \<
+        \sendmessageleft{top=(\texttt{fundingLocked})} \< \\
+        \< \sendmessageright{top=(\texttt{fundingLocked})} \< \< \\
+        \< \sendmessageleft{top=(\texttt{fundingLocked})} \< \< \\
         \sendmessageleft{top=(\texttt{opened})} \< \<
         \sendmessageright{top=(\texttt{accepted})} \<
     }}
   \end{center}
+  \label{lightning:fig:open}
+  \caption{Protocol for opening a Lightning channel}
 \end{figure}
