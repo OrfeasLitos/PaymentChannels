@@ -88,7 +88,7 @@
       \State $\mathcal{F}_{\mathrm{Ledger}}.\mathrm{Broadcast}\left(F\right)$
       \State Wait for minDepth confirmations on $F$
       \State $\left(pa_{\mathrm{com}2}, sa_{\mathrm{com}2}\right) \gets
-      \textsc{GetCommitmentKey}\left(\right)$
+      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$
       \State In parallel:
       \Indent
         \State Send (\texttt{fundingLocked}, id, $pa_{\mathrm{com}2}$) to fundee
@@ -211,7 +211,7 @@
       \State Send (\texttt{fundingSigned}, id, sig) to funder
       \State Wait for minDepth confirmations on tx with id txid
       \State $\left(pb_{\mathrm{com}2}, sb_{\mathrm{com}2}\right) \gets
-      \textsc{GetCommitmentKey}\left(\right)$
+      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$
       \State In parallel:
       \Indent
         \State Send (\texttt{fundingLocked}, id, $pb_{\mathrm{com}2}$) to funder
@@ -228,7 +228,7 @@
     functions? where to pass it? (c) P2WSH used normally. Should it be simplified? (I
     think yes) (d) temp\_chan\_id needed? (I think not) (e) how to make Sigma protocols
     images?
-    \State TODO: 2-of-2-msig(), Sign(), GetCommitment(), GetCommitmentKey()
+    \State TODO: 2-of-2-msig(), Sign(), GetCommitment()
     \State
     \State Upon receiving (\texttt{pay}, $Bob$, $x$) from $\mathcal{E}$:
       \State Send (\texttt{SendInvoice}, $x$) to $Bob$
