@@ -10,9 +10,12 @@
         \< \sendmessageleft{top=(\texttt{acceptChannel})} \< \< \\
         \< \sendmessageright{top=(\texttt{fundingCreated})} \< \< \\
         \< \sendmessageleft{top=(\texttt{fundingSigned})} \< \< \\
-        \sendmessageleft{top=(\texttt{broadcast})} \< \< \< \\
-        \sendmessageright{top=(\texttt{fundingLocked})} \< \<
-        \sendmessageleft{top=(\texttt{fundingLocked})} \< \\
+        \sendmessageleft{top=(\texttt{broadcast}), bottom=(TODO: maybe not to
+        $\mathcal{E}$)} \< \< \< \\
+        \sendmessageright{top=(\texttt{fundingLocked}), bottom=(TODO: maybe not
+        from $\mathcal{E}$)} \< \<
+        \sendmessageleft{top=(\texttt{fundingLocked}), bottom=(TODO: maybe not
+        from $\mathcal{E}$)} \< \\
         \< \sendmessageright{top=(\texttt{fundingLocked})} \< \< \\
         \< \sendmessageleft{top=(\texttt{fundingLocked})} \< \< \\
         \sendmessageleft{top=(\texttt{opened})} \< \<
