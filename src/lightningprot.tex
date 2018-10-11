@@ -134,7 +134,7 @@
       \mathcal{F}_{\mathrm{Wallet}}$.addOutputToTX(tx, 2-of-2-msig$\left(pa_F, pb_F,
       \mathrm{coins}\right)$)
       \State $\mathrm{sig} \gets
-      \mathcal{F}_{\mathrm{Wallet}}.\textsc{SignFunding}\left(\mathcal{H}\left(F\right),
+      \mathcal{F}_{\mathrm{Wallet}}.\textsc{Sign}\left(\mathcal{H}\left(F\right),
       \mathrm{idx}, sa_F\right)$
       \State \Return $\left(F, \mathrm{idx}, \mathrm{sig}\right)$
     \EndFunction
@@ -206,8 +206,8 @@
       pb_{\mathrm{pay}}$), 1)) TODO: may change
       \State $\mathrm{id} \gets \mathrm{txid} \oplus \mathrm{idx}$
       \State $\mathrm{sig} \gets
-      \mathcal{F}_{\mathrm{Wallet}}.\textsc{SignFunding}\left(\mathrm{txid}, \mathrm{idx},
-      sb_F\right)$
+      \mathcal{F}_{\mathrm{Wallet}}.\textsc{Sign}\left(\mathrm{txid},
+      \mathrm{idx}, sb_F\right)$
       \State Send (\texttt{fundingSigned}, id, sig) to funder
       \State Wait for minDepth confirmations on tx with id txid
       \State $\left(pb_{\mathrm{com}2}, sb_{\mathrm{com}2}\right) \gets
@@ -228,7 +228,7 @@
     functions? where to pass it? (c) P2WSH used normally. Should it be simplified? (I
     think yes) (d) temp\_chan\_id needed? (I think not) (e) how to make Sigma protocols
     images?
-    \State TODO: 2-of-2-msig(), Sign(), GetCommitment()
+    \State TODO: 2-of-2-msig(), GetCommitment()
     \State
     \State Upon receiving (\texttt{pay}, $Bob$, $x$) from $\mathcal{E}$:
       \State Send (\texttt{SendInvoice}, $x$) to $Bob$
