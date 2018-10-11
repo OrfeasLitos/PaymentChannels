@@ -85,7 +85,7 @@
         \State $\left.\left.\mathcal{H}\left(F\right),\mathrm{idx}, pa_{pay},
         pb_{pay}\right), 0\right)$) TODO: may change
       \EndIndent
-      \State \textsc{Broadcast}$\left(F\right)$
+      \State $\mathcal{F}_{\mathrm{Ledger}}.\mathrm{Broadcast}\left(F\right)$
       \State Wait for minDepth confirmations on $F$
       \State $\left(pa_{\mathrm{com}2}, sa_{\mathrm{com}2}\right) \gets
       \textsc{GetCommitmentKey}\left(\right)$
