@@ -25,6 +25,7 @@
         Bob, x, y\right)\right\}$
         \State create funding tx with id for $Alice, Bob$ with initial balance $x, y$
         respectively
+        \State send a receipt to $Alice$ and $Bob$
         \State send message $\left(\mathrm{opened}, Alice, Bob, x, y, \mathrm{id}\right)$
         to $Alice$
         \State send message $\left(\mathrm{opened}, Bob, Alice, y, x, \mathrm{id}\right)$
@@ -40,6 +41,7 @@
       \If{there is an $Alice \rightarrow Bob$ path of weight $x$}
         \ForAll{$\left(Carol, Dave, y, z, \mathrm{id}\right)$ channel in the path}
           \State Update channel to $\left(Carol, Dave, y - x, z + x, \mathrm{id}\right)$
+          \State send a receipt to $Carol$ and $Dave$
         \EndFor
         \State send message $\left(\mathrm{payed}, Bob, x\right)$ to $Alice$
         \State send message $\left(\mathrm{payedFrom}, Alice, x\right)$ to $Bob$
