@@ -83,7 +83,7 @@
         \State $\And \textsc{isValid2-of-2Sig}\left(\mathrm{sig},
         \textsc{GetCommitment}\left(\right.\right.$
         \State $\left.\left.\mathcal{H}\left(F\right),\mathrm{idx}, pa_{pay},
-        pb_{pay}\right), 0\right)$) TODO: may change
+        pb_{pay}\right), 0\right)$) TODO: may change, rm idx
       \EndIndent
       \State $\mathcal{F}_{\mathrm{Ledger}}.\mathrm{Broadcast}\left(F\right)$
       \State Wait for minDepth confirmations on $F$
@@ -203,7 +203,7 @@
       \EndIndent
       \State assert(response = (\texttt{fundingCreated}, txid, idx, sig) $\And$
       \textsc{isValid2-of-2Sig}(sig, \textsc{GetCommitment}(txid, idx, $pa_{\mathrm{pay}},
-      pb_{\mathrm{pay}}$), 1)) TODO: may change
+      pb_{\mathrm{pay}}$), 1)) TODO: may change, rm idx
       \State $\mathrm{id} \gets \mathrm{txid} \oplus \mathrm{idx}$
       \State $\mathrm{sig} \gets
       \mathcal{F}_{\mathrm{Wallet}}.\textsc{Sign}\left(\mathrm{txid},
@@ -224,10 +224,10 @@
       \State \Return (txid, id, True)
     \EndFunction
     \State
-    \State TOASK: (a) isValidPubKey() as predicate? (b) t parameter for protocol and all
-    functions? where to pass it? (c) P2WSH used normally. Should it be simplified? (I
-    think yes) (d) temp\_chan\_id needed? (I think not) (e) how to make Sigma protocols
-    images?
+    \State TOASK: (a) isValidPubKey() as predicate? (b) to\_self\_delay (or t?)
+    parameter for protocol and all functions? where to pass it? (c) P2WSH used
+    normally. Should it be simplified? (I think yes) (d) temp\_chan\_id needed?
+    (I think not)
     \State TODO: 2-of-2-msig(), GetCommitment()
     \State
     \State Upon receiving (\texttt{pay}, $Bob$, $x$) from $\mathcal{E}$:
