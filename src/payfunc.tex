@@ -17,19 +17,24 @@
         \mathrm{blocked}\left(Alice\right) + x$)
         \State assert($\mathcal{G}_{\mathrm{Ledger}}$.balance($Bob$) $\geq
         \mathrm{blocked}\left(Bob\right)$)
+        \State $\mathrm{Pending} \leftarrow \mathrm{Pending} \setminus
+        \left\{\left(Alice, Bob, x, y\right)\right\}$
         \State $\mathrm{blocked}\left(Bob\right) = \mathrm{blocked}\left(Bob\right) - y$
-        \State id $\overset{r}{\leftarrow} \left\{0, 1\right\}^{\mathrm{gazillion}}$
-        \State $\mathrm{Channels} \leftarrow \mathrm{Channels} \cup \left\{\left(Alice,
-        Bob, x, y, \mathrm{id}\right)\right\}$
+        \State chid $\overset{r}{\leftarrow} \left\{0, 1\right\}^{\mathrm{gazillion}}$
         \State $\mathrm{Pending} \leftarrow \mathrm{Pending} \setminus \left\{\left(Alice,
         Bob, x, y\right)\right\}$
-        \State create funding tx with id for $Alice, Bob$ with initial balance $x, y$
-        respectively
-        \State send a receipt to $Alice$ and $Bob$
-        \State send message $\left(\mathrm{opened}, Alice, Bob, x, y, \mathrm{id}\right)$
-        to $Alice$
-        \State send message $\left(\mathrm{opened}, Bob, Alice, y, x, \mathrm{id}\right)$
-        to $Bob$
+        \State tx $\gets \left(\textsc{Funding}\left(Alice, Bob, x, y\right),
+        \mathrm{chid}, \tau_L, Bob\right)$
+        \State add funding tx to \texttt{buffer}
+        \State $\mathtt{receipt} = \left(\mathrm{chid}, x, y, Alice, Bob,
+        \tau_L, 0\right)$
+        \State $\mathrm{Channels} \leftarrow \mathrm{Channels} \cup
+        \left\{\mathtt{receipt}\right\}$
+        \State send \texttt{receipt} to $Alice$ and $Bob$
+        %\State send message $\left(\mathrm{opened}, Alice, Bob, x, y, \mathrm{id}\right)$
+        %to $Alice$
+        %\State send message $\left(\mathrm{opened}, Bob, Alice, y, x, \mathrm{id}\right)$
+        %to $Bob$
       \Else
         \State $\mathrm{Pending} \leftarrow \mathrm{Pending} \cup \left\{\left(Alice, Bob,
         x, y\right)\right\}$
@@ -37,11 +42,14 @@
         \mathrm{blocked}\left(Alice\right) + x$
       \EndIf
     \State
-    \State Upon receiving (pay, $Bob$, $x$) from $Alice$:
-      \If{there is an $Alice \rightarrow Bob$ path of weight $x$}
-        \ForAll{$\left(Carol, Dave, y, z, \mathrm{id}\right)$ channel in the path}
-          \State Update channel to $\left(Carol, Dave, y - x, z + x, \mathrm{id}\right)$
-          \State send a receipt to $Carol$ and $Dave$
+    \State Upon receiving $\left(\textsc{pay}, Bob, x,
+    \vec{\mathtt{receipt}}\right)$ from $Alice$:
+      \If{there is an $Alice \rightarrow Bob$ path of weight $x$ and
+      $\vec{\mathtt{receipt}}$ corresponds to the saved (latest) respective channels}
+        \State TODO: elaborate/revise if
+        \ForAll{$\left(Carol, Dave, y, z, \mathrm{chid}\right)$ channel in the path}
+          \State Update channel to $\left(Carol, Dave, y - x, z + x, \mathrm{chid}\right)$
+          \State send a new \texttt{receipt} to $Carol$ and $Dave$
         \EndFor
         \State send message $\left(\mathrm{payed}, Bob, x\right)$ to $Alice$
         \State send message $\left(\mathrm{payedFrom}, Alice, x\right)$ to $Bob$
@@ -49,8 +57,10 @@
         \State send message $\left(\mathrm{noPath}, Bob, x\right)$ to $Alice$
       \EndIf
     \State
-    \State Upon receiving (close, id) from $Alice$:
-      \If{$\mathcal{G}_{Ledger}$ has a valid funding tx with id}
+    \State Upon receiving (close, \texttt{receipt}) from $Alice$:
+      \If{\texttt{receipt} corresponds to the saved (latest) $Alice-Bob$ channel
+      and $\mathcal{G}_{Ledger}$ has a valid funding tx with chid}
+        \State TODO: fix if
         \State close that channel
       \EndIf
   \end{algorithmic}
