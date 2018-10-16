@@ -67,10 +67,13 @@
     \State
     \State Upon receiving (\textsc{close}, \texttt{receipt}) from $Alice$:
     \Indent
-      \If{\texttt{receipt} corresponds to the saved (latest) $Alice-Bob$ channel
-      and $\mathcal{G}_{Ledger}$ has a valid funding tx with chid}
-        \State TODO: fix if
-        \State close that channel
+      \If{\texttt{receipt} contains $Alice$ and is contained in \texttt{receipts}}
+        \State $\mathtt{txid} \overset{r}{\gets} \left\{0,
+        1\right\}^{\mathrm{gazillion}}$
+        \State $\mathtt{tx} \gets
+        \left(\textsc{Closing}\left(\mathtt{receipt}\right), \mathtt{txid},
+        \tau_L, Alice\right)$
+        \State add \texttt{tx} to \texttt{buffer}
       \EndIf
     \EndIndent
   \end{algorithmic}
