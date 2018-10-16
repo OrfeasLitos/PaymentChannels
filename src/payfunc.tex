@@ -12,6 +12,7 @@
       \EndIndent
     \State
     \State Upon receiving (open, $Bob$, $x$, $y$) from $Alice$:
+    \Indent
       \If{$\left(Bob, Alice, y, x\right) \in \mathrm{Pending}$}
         \State assert($\mathcal{G}_{\mathrm{Ledger}}$.balance($Alice$) $\geq
         \mathrm{blocked}\left(Alice\right) + x$)
@@ -41,11 +42,13 @@
         \State $\mathrm{blocked}\left(Alice\right) \leftarrow
         \mathrm{blocked}\left(Alice\right) + x$
       \EndIf
+    \EndIndent
     \State
     \State Upon receiving $\left(\textsc{pay}, Bob, x,
     \vec{\mathtt{receipt}}\right)$ from $Alice$:
       \If{there is an $Alice \rightarrow Bob$ path of weight $x$ and
       $\vec{\mathtt{receipt}}$ corresponds to the saved (latest) respective channels}
+    \Indent
         \State TODO: elaborate/revise if
         \ForAll{$\left(Carol, Dave, y, z, \mathrm{chid}\right)$ channel in the path}
           \State Update channel to $\left(Carol, Dave, y - x, z + x, \mathrm{chid}\right)$
@@ -56,12 +59,15 @@
       \Else
         \State send message $\left(\mathrm{noPath}, Bob, x\right)$ to $Alice$
       \EndIf
+    \EndIndent
     \State
     \State Upon receiving (close, \texttt{receipt}) from $Alice$:
+    \Indent
       \If{\texttt{receipt} corresponds to the saved (latest) $Alice-Bob$ channel
       and $\mathcal{G}_{Ledger}$ has a valid funding tx with chid}
         \State TODO: fix if
         \State close that channel
       \EndIf
+    \EndIndent
   \end{algorithmic}
 \end{algorithm}
