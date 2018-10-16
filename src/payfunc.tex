@@ -22,10 +22,10 @@
         \left\{\left(Bob, Alice, y, x\right)\right\}$
         \State $\mathrm{blocked}\left(Bob\right) = \mathrm{blocked}\left(Bob\right) - y$
         \State chid $\overset{r}{\leftarrow} \left\{0, 1\right\}^{\mathrm{gazillion}}$
-        \State tx $\gets \left(\textsc{Funding}\left(Alice, Bob, x, y\right),
+        \State $\mathtt{tx} \gets \left(\textsc{Funding}\left(Alice, Bob, x, y\right),
         \mathrm{chid}, \tau_L, Bob\right)$
-        \State add funding tx to \texttt{buffer}
         \State $\mathtt{receipt} = \left(\mathrm{chid}, x, y, Alice, Bob,
+        \State add \texttt{tx} to \texttt{buffer}
         \tau_L, 0\right)$
         \State $\mathrm{Channels} \leftarrow \mathrm{Channels} \cup
         \left\{\mathtt{receipt}\right\}$
