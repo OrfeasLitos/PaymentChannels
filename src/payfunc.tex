@@ -41,20 +41,27 @@
       \EndIf
     \EndIndent
     \State
-    \State Upon receiving $\left(\textsc{pay}, Bob, x,
-    \vec{\mathtt{receipt}}\right)$ from $Alice$:
-      \If{there is an $Alice \rightarrow Bob$ path of weight $x$ and
-      $\vec{\mathtt{receipt}}$ corresponds to the saved (latest) respective channels}
+    \State Upon receiving $\left(\textsc{pay}, Bob, x, \overrightarrow{\mathtt{path}},
+    \mathtt{receipt}\right)$ from $Alice$:
     \Indent
-        \State TODO: elaborate/revise if
-        \ForAll{$\left(Carol, Dave, y, z, \mathrm{chid}\right)$ channel in the path}
-          \State Update channel to $\left(Carol, Dave, y - x, z + x, \mathrm{chid}\right)$
-          \State send a new \texttt{receipt} to $Carol$ and $Dave$
+      \If{$\overrightarrow{\mathtt{path}}$ consists of players where all
+      adjacent pairs have a $\left(y, \_\right)$-receipt in \texttt{receipts}
+      for some $y \geq x$ and $\mathtt{receipt} = \left(\_, \_, Alice, Bob, \_,
+      \_, \_\right) \in \mathtt{receipts}$}
+        \ForAll{$\left(Carol, Dave\right)$ pairs in
+        $\overrightarrow{\mathtt{path}}$}
+          \State $\mathtt{oldReceipt} \gets \left(Carol, Dave, y, z,
+          \mathrm{chid}\right) \in \mathtt{receipts}$
+          \State $\mathtt{newReceipt} \gets \left(Carol, Dave, y - x, z + x,
+          \mathrm{chid}\right)$
+          \State replace \texttt{oldReceipt} with \texttt{newReceipt} in
+          \texttt{receipts}
+          \State send \texttt{newReceipt} to $Carol$ and $Dave$
         \EndFor
         \State send message $\left(\textsc{payed}, Bob, x\right)$ to $Alice$
         \State send message $\left(\textsc{payedFrom}, Alice, x\right)$ to $Bob$
       \Else
-        \State send message $\left(\textsc{noPath}, Bob, x\right)$ to $Alice$
+        \State send message $\left(\textsc{invalidPath}, Bob, x\right)$ to $Alice$
       \EndIf
     \EndIndent
     \State
