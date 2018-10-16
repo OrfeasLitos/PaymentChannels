@@ -7,18 +7,18 @@
       \ForAll{$v \in \mathcal{P}$}
         \State $\mathrm{blocked}\left(v\right) = 0$
       \EndFor
-      \State Pending = $\emptyset$
+      \State \texttt{pending} = $\emptyset$
       \State Channels = $\emptyset$
       \EndIndent
     \State
     \State Upon receiving (\textsc{open}, $Bob$, $x$, $y$) from $Alice$:
     \Indent
-      \If{$\left(Bob, Alice, y, x\right) \in \mathrm{Pending}$}
+      \If{$\left(Bob, Alice, y, x\right) \in \mathtt{pending}$}
         \State assert($\mathcal{G}_{\mathrm{Ledger}}$.balance($Alice$) $\geq
         \mathrm{blocked}\left(Alice\right) + x$)
         \State assert($\mathcal{G}_{\mathrm{Ledger}}$.balance($Bob$) $\geq
         \mathrm{blocked}\left(Bob\right)$)
-        \State $\mathrm{Pending} \leftarrow \mathrm{Pending} \setminus
+        \State $\mathtt{pending} \leftarrow \mathtt{pending} \setminus
         \left\{\left(Bob, Alice, y, x\right)\right\}$
         \State $\mathrm{blocked}\left(Bob\right) = \mathrm{blocked}\left(Bob\right) - y$
         \State chid $\overset{r}{\leftarrow} \left\{0, 1\right\}^{\mathrm{gazillion}}$
@@ -35,7 +35,7 @@
         %\State send message $\left(\mathrm{opened}, Bob, Alice, y, x, \mathrm{id}\right)$
         %to $Bob$
       \Else
-        \State $\mathrm{Pending} \leftarrow \mathrm{Pending} \cup \left\{\left(Alice, Bob,
+        \State $\mathtt{pending} \leftarrow \mathtt{pending} \cup \left\{\left(Alice, Bob,
         x, y\right)\right\}$
         \State $\mathrm{blocked}\left(Alice\right) \leftarrow
         \mathrm{blocked}\left(Alice\right) + x$
