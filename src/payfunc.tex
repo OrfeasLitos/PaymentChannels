@@ -18,8 +18,8 @@
         \mathrm{blocked}\left(Alice\right) + x$)
         \State assert($\mathcal{G}_{\mathrm{Ledger}}$.balance($Bob$) $\geq
         \mathrm{blocked}\left(Bob\right)$)
-        \State $\mathtt{pending} \leftarrow \mathtt{pending} \setminus
-        \left\{\left(Bob, Alice, y, x\right)\right\}$
+        \State remove $\left\{\left(Bob, Alice, y, x\right)\right\}$ from
+        \texttt{pending}
         \State $\mathrm{blocked}\left(Bob\right) = \mathrm{blocked}\left(Bob\right) - y$
         \State chid $\overset{r}{\leftarrow} \left\{0, 1\right\}^{\mathrm{gazillion}}$
         \State $\mathtt{tx} \gets \left(\textsc{Funding}\left(Alice, Bob, x, y\right),
@@ -35,8 +35,8 @@
         %\State send message $\left(\mathrm{opened}, Bob, Alice, y, x, \mathrm{id}\right)$
         %to $Bob$
       \Else
-        \State $\mathtt{pending} \leftarrow \mathtt{pending} \cup \left\{\left(Alice, Bob,
-        x, y\right)\right\}$
+        \State add $\left\{\left(Alice, Bob, x, y\right)\right\}$ to
+        \texttt{pending}
         \State $\mathrm{blocked}\left(Alice\right) \leftarrow
         \mathrm{blocked}\left(Alice\right) + x$
       \EndIf
