@@ -19,11 +19,9 @@
         \State assert($\mathcal{G}_{\mathrm{Ledger}}$.balance($Bob$) $\geq
         \mathrm{blocked}\left(Bob\right)$)
         \State $\mathrm{Pending} \leftarrow \mathrm{Pending} \setminus
-        \left\{\left(Alice, Bob, x, y\right)\right\}$
+        \left\{\left(Bob, Alice, y, x\right)\right\}$
         \State $\mathrm{blocked}\left(Bob\right) = \mathrm{blocked}\left(Bob\right) - y$
         \State chid $\overset{r}{\leftarrow} \left\{0, 1\right\}^{\mathrm{gazillion}}$
-        \State $\mathrm{Pending} \leftarrow \mathrm{Pending} \setminus \left\{\left(Alice,
-        Bob, x, y\right)\right\}$
         \State tx $\gets \left(\textsc{Funding}\left(Alice, Bob, x, y\right),
         \mathrm{chid}, \tau_L, Bob\right)$
         \State add funding tx to \texttt{buffer}
