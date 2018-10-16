@@ -11,7 +11,7 @@
       \State Channels = $\emptyset$
       \EndIndent
     \State
-    \State Upon receiving (open, $Bob$, $x$, $y$) from $Alice$:
+    \State Upon receiving (\textsc{open}, $Bob$, $x$, $y$) from $Alice$:
     \Indent
       \If{$\left(Bob, Alice, y, x\right) \in \mathrm{Pending}$}
         \State assert($\mathcal{G}_{\mathrm{Ledger}}$.balance($Alice$) $\geq
@@ -54,14 +54,14 @@
           \State Update channel to $\left(Carol, Dave, y - x, z + x, \mathrm{chid}\right)$
           \State send a new \texttt{receipt} to $Carol$ and $Dave$
         \EndFor
-        \State send message $\left(\mathrm{payed}, Bob, x\right)$ to $Alice$
-        \State send message $\left(\mathrm{payedFrom}, Alice, x\right)$ to $Bob$
+        \State send message $\left(\textsc{payed}, Bob, x\right)$ to $Alice$
+        \State send message $\left(\textsc{payedFrom}, Alice, x\right)$ to $Bob$
       \Else
-        \State send message $\left(\mathrm{noPath}, Bob, x\right)$ to $Alice$
+        \State send message $\left(\textsc{noPath}, Bob, x\right)$ to $Alice$
       \EndIf
     \EndIndent
     \State
-    \State Upon receiving (close, \texttt{receipt}) from $Alice$:
+    \State Upon receiving (\textsc{close}, \texttt{receipt}) from $Alice$:
     \Indent
       \If{\texttt{receipt} corresponds to the saved (latest) $Alice-Bob$ channel
       and $\mathcal{G}_{Ledger}$ has a valid funding tx with chid}
