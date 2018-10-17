@@ -4,10 +4,12 @@
     \State Initialisation:
     \Indent
       \State $\mathrm{blocked} \leftarrow 0$
-      \State $G \leftarrow \left(\left\{\mathrm{pid}_{Alice}\right\}, \emptyset\right)$
+      \State $G \leftarrow \left(\left\{\mathrm{pid}_{Alice}\right\},
+      \emptyset\right)$
     \EndIndent
     \State
-    \State Upon receiving $\left(\mathtt{open}, \mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
+    \State Upon receiving $\left(\mathtt{open}, \mathrm{pid}_{Alice},
+    \mathrm{pid}_{Bob},
     \mathrm{forFundTX}, \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}\right)$
     \Indent
       \Indent
@@ -15,8 +17,8 @@
       \EndIndent
     \EndIndent
     \Indent
-      \If{$\mathcal{G}_{\mathrm{Ledger}}.\mathrm{balance}(\mathrm{pid}_{Alice}) -
-      \mathrm{blocked} \geq x$}
+      \If{$\mathcal{G}_{\mathrm{Ledger}}.\mathrm{balance}(\mathrm{pid}_{Alice})
+      - \mathrm{blocked} \geq x$}
         \State $\mathrm{blocked} \leftarrow \mathrm{blocked} + x$
         \State $\left(\mathrm{txid}, \mathrm{id}, \mathrm{success}\right) \gets
         \textsc{OpenChannel}\left(\mathrm{pid}_{Bob},\right.$
@@ -29,23 +31,25 @@
         \If{sucess = True}
           \State $G \leftarrow G \cup \left(\left\{\mathrm{pid}_{Bob}\right\},
           \left\{\left(\mathrm{txid}, \mathrm{id}, \left(\mathrm{pid}_{Alice},
-          \mathrm{coins}\right), \left(\mathrm{pid}_{Bob}, 0\right)\right)\right\}\right)$
-          \State Send $\left(\mathtt{opened}, \mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
-          \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}, \mathrm{txid},
-          \mathrm{id}\right)$
+          \mathrm{coins}\right), \left(\mathrm{pid}_{Bob},
+          0\right)\right)\right\}\right)$
+          \State Send $\left(\mathtt{opened}, \mathrm{pid}_{Alice},
+          \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay}, \mathrm{bcast},
+          \mathrm{txid}, \mathrm{id}\right)$
           \Indent
             \Indent
               \State to $\mathcal{E}$
             \EndIndent
           \EndIndent
         \Else
-          \State Send $\left(\mathtt{notOpened}, \mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
-          \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}\right)$ to $\mathcal{E}$
+          \State Send $\left(\mathtt{notOpened}, \mathrm{pid}_{Alice},
+          \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay},
+          \mathrm{bcast}\right)$ to $\mathcal{E}$
         \EndIf
         \State $\mathrm{blocked} \leftarrow \mathrm{blocked} - x$
       \Else
-        \State Send $\left(\mathtt{noFunds}, \mathrm{pid}_{Alice}, \mathrm{coins}\right)$
-        to $\mathcal{E}$
+        \State Send $\left(\mathtt{noFunds}, \mathrm{pid}_{Alice},
+        \mathrm{coins}\right)$ to $\mathcal{E}$
       \EndIf
     \EndIndent
     \State
@@ -55,8 +59,9 @@
       sa_{\mathrm{dpay}}\right),\right.$
       \Indent
         \State $\left.\left(pa_{\mathrm{htlc}}, sa_{\mathrm{htlc}}\right),
-        \left(pa_{\mathrm{com}1}, sa_{\mathrm{com}1}\right), \left(pa_{\mathrm{rev}},
-        sa_{\mathrm{rev}}\right)\right) \gets \textsc{GetKeys}\left(\right)$
+        \left(pa_{\mathrm{com}1}, sa_{\mathrm{com}1}\right),
+        \left(pa_{\mathrm{rev}}, sa_{\mathrm{rev}}\right)\right) \gets
+        \textsc{GetKeys}\left(\right)$
       \EndIndent
       \State Send (\texttt{openChannel}, coins, delay, bcast,
       \Indent
@@ -67,16 +72,16 @@
       \Indent
         \State $pb_F, pb_{\mathrm{pay}}, pb_{\mathrm{dpay}}, pb_{\mathrm{htlc}},
         pb_{\mathrm{com}1}, pb_{\mathrm{rev}}$) $\And$
-        \State $\forall i \in \left\{F, \mathrm{pay}, \mathrm{dpay}, \mathrm{htlc},
-        \mathrm{com}1, \mathrm{rev}\right\},
+        \State $\forall i \in \left\{F, \mathrm{pay}, \mathrm{dpay},
+        \mathrm{htlc}, \mathrm{com}1, \mathrm{rev}\right\},
         \mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}\left(pb_i\right)$)
       \EndIndent
       \State $\left(F, \mathrm{idx}, \mathrm{sig}\right) \gets
       \textsc{GetFunding}\left(\mathrm{forFundTX}, \mathrm{coins}, sa_F, pa_F,
       pb_F\right)$
       \State $\mathrm{id} \gets \mathcal{H}\left(F\right) \oplus \mathrm{idx}$
-      \State Send (\texttt{fundingCreated}, $\mathcal{H}\left(F\right)$, idx, sig) to
-      fundee
+      \State Send (\texttt{fundingCreated}, $\mathcal{H}\left(F\right)$, idx,
+      sig) to fundee
       \State assert(response = (\texttt{fundingSigned}, id, sig)
       \Indent
         \State $\And \textsc{isValid2-of-2Sig}\left(\mathrm{sig},
@@ -91,7 +96,8 @@
       \State In parallel:
       \Indent
         \State Send (\texttt{fundingLocked}, id, $pa_{\mathrm{com}2}$) to fundee
-        \State assert(response = (\texttt{fundingLocked}, id, $pb_{\mathrm{com}2}$) $\And$
+        \State assert(response = (\texttt{fundingLocked}, id,
+        $pb_{\mathrm{com}2}$) $\And$
         \Indent
           \State $\mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}
           \left(pb_{\mathrm{com}2}\right)$)
@@ -102,13 +108,14 @@
     \State
     \Function{GetKeys}{}
       \State $\left(pa_F, sa_F\right) \leftarrow
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For $F$ output}
+      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For
+      $F$ output}
       \State $\left(pa_{\mathrm{pay}}, sa_{\mathrm{pay}}\right) \leftarrow
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For com output
-      to remote}
+      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For
+      com output to remote}
       \State $\left(pa_{\mathrm{dpay}}, sa_{\mathrm{dpay}}\right) \leftarrow
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For com output
-      to self}
+      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For
+      com output to self}
       \State $\left(pa_{\mathrm{htlc}}, sa_{\mathrm{htlc}}\right) \leftarrow
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For
       htlc output to self}
@@ -116,22 +123,22 @@
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For
       deriving all keys}
       \State $\left(pa_{\mathrm{rev}}, sa_{\mathrm{rev}}\right) \leftarrow
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For revocation
-      in com}
+      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For
+      revocation in com}
       \State \Return $\left(\left(pa_F, sa_F\right), \left(pa_{\mathrm{pay}},
       sa_{\mathrm{pay}}\right), \left(pa_{\mathrm{dpay}},
       sa_{\mathrm{dpay}}\right),\right.$
       \Indent
         \State $\left.\left(pa_{\mathrm{htlc}}, sa_{\mathrm{htlc}}\right),
-        \left(pa_{\mathrm{com}1}, sa_{\mathrm{com}1}\right), \left(pa_{\mathrm{rev}},
-        sa_{\mathrm{rev}}\right)\right)$
+        \left(pa_{\mathrm{com}1}, sa_{\mathrm{com}1}\right),
+        \left(pa_{\mathrm{rev}}, sa_{\mathrm{rev}}\right)\right)$
       \EndIndent
     \EndFunction
     \State
     \Function{GetFunding}{coins, tx, $sa_F, pa_F, pb_F$}
       \State $\left(F, \mathrm{idx}\right) \gets
-      \mathcal{F}_{\mathrm{Wallet}}$.addOutputToTX(tx, 2-of-2-msig$\left(pa_F, pb_F,
-      \mathrm{coins}\right)$)
+      \mathcal{F}_{\mathrm{Wallet}}$.addOutputToTX(tx, 2-of-2-msig$\left(pa_F,
+      pb_F, \mathrm{coins}\right)$)
       \State $\mathrm{sig} \gets
       \mathcal{F}_{\mathrm{Wallet}}.\textsc{Sign}\left(\mathcal{H}\left(F\right),
       \mathrm{idx}, sa_F\right)$
@@ -146,11 +153,13 @@
       \EndIndent
     \EndIndent
     \Indent
-      \State Send (\texttt{recvOpen}, $\mathrm{pid}_{Bob}$, coins, remoteDelay, bcast,
+      \State Send (\texttt{recvOpen}, $\mathrm{pid}_{Bob}$, coins, remoteDelay,
+      bcast,
       \Indent
         \Indent
-          \State $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
-          pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$) to $\mathcal{E}$:
+          \State $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}},
+          pa_{\mathrm{htlc}}, pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$) to
+          $\mathcal{E}$:
         \EndIndent
       \EndIndent
       \State Wait for response from $\mathcal{E}$
@@ -160,32 +169,35 @@
       \Indent
         \Indent
           \State remoteDelay, bcast, minDepth,
-          \State $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
-          pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$)
+          \State $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}},
+          pa_{\mathrm{htlc}}, pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$)
         \EndIndent
       \EndIndent
       \If{sucess = True}
         \State $G \leftarrow G \cup \left(\left\{\mathrm{pid_{Bob}}\right\},
-        \left\{\left(\mathrm{txid}, \mathrm{id}, \left(\mathrm{pid}_{Alice}, 0\right),
-        \left(\mathrm{pid_{Bob}}, \mathrm{coins}\right)\right)\right\}\right)$
-        \State Send $\left(\mathtt{accepted}, \mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
-        \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}, \mathrm{txid}, \mathrm{id}\right)$
+        \left\{\left(\mathrm{txid}, \mathrm{id}, \left(\mathrm{pid}_{Alice},
+        0\right), \left(\mathrm{pid_{Bob}},
+        \mathrm{coins}\right)\right)\right\}\right)$
+        \State Send $\left(\mathtt{accepted}, \mathrm{pid}_{Alice},
+        \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay}, \mathrm{bcast},
+        \mathrm{txid}, \mathrm{id}\right)$
         \Indent
           \Indent
             \State to $\mathcal{E}$
           \EndIndent
         \EndIndent
       \Else
-        \State Send $\left(\mathtt{notAccepted}, \mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
-        \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}\right)$ to $\mathcal{E}$
+        \State Send $\left(\mathtt{notAccepted}, \mathrm{pid}_{Alice},
+        \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay},
+        \mathrm{bcast}\right)$ to $\mathcal{E}$
       \EndIf
     \EndIndent
     \State
-    \Function{AcceptChannel}{funder, coins, selfDelay, remoteDelay, bcast, minDepth,
-    $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}}, pa_{\mathrm{com}1},
-    pa_{\mathrm{rev}}$}
-      \State assert($\forall i \in \left\{\mathrm{pay}, \mathrm{dpay}, \mathrm{htlc},
-      \mathrm{com}1, \mathrm{rev}\right\},
+    \Function{AcceptChannel}{funder, coins, selfDelay, remoteDelay, bcast,
+    minDepth, $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
+    pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$}
+      \State assert($\forall i \in \left\{\mathrm{pay}, \mathrm{dpay},
+      \mathrm{htlc}, \mathrm{com}1, \mathrm{rev}\right\},
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}\left(pa_i\right)$)
       \State $\left(\left(pb_F, sb_F\right), \left(pb_\mathrm{pay},
       sb_\mathrm{pay}\right), \left(pb_\mathrm{dpay}, sb_\mathrm{dpay}\right),
@@ -196,13 +208,13 @@
       \State Send (\texttt{acceptChannel}, minDepth, selfDelay,
       \Indent
         \Indent
-          \State $pb_F, pb_{\mathrm{pay}}, pb_{\mathrm{dpay}}, pb_{\mathrm{htlc}},
-          pb_{\mathrm{com}1}, pb_{\mathrm{rev}}$) to funder
+          \State $pb_F, pb_{\mathrm{pay}}, pb_{\mathrm{dpay}},
+          pb_{\mathrm{htlc}}, pb_{\mathrm{com}1}, pb_{\mathrm{rev}}$) to funder
         \EndIndent
       \EndIndent
       \State assert(response = (\texttt{fundingCreated}, txid, idx, sig) $\And$
-      \textsc{isValid2-of-2Sig}(sig, \textsc{GetCommitment}(txid, idx, $pa_{\mathrm{pay}},
-      pb_{\mathrm{pay}}$), 1)) TODO: may change, rm idx
+      \textsc{isValid2-of-2Sig}(sig, \textsc{GetCommitment}(txid, idx,
+      $pa_{\mathrm{pay}}, pb_{\mathrm{pay}}$), 1)) TODO: may change, rm idx
       \State $\mathrm{id} \gets \mathrm{txid} \oplus \mathrm{idx}$
       \State $\mathrm{sig} \gets
       \mathcal{F}_{\mathrm{Wallet}}.\textsc{Sign}\left(\mathrm{txid},
@@ -214,7 +226,8 @@
       \State In parallel:
       \Indent
         \State Send (\texttt{fundingLocked}, id, $pb_{\mathrm{com}2}$) to funder
-        \State assert(response = (\texttt{fundingLocked}, id, $pa_{\mathrm{com}2}$) $\And$
+        \State assert(response = (\texttt{fundingLocked}, id,
+        $pa_{\mathrm{com}2}$) $\And$
         \Indent
           \State $\mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}
           \left(pa_{\mathrm{com}2}\right)$)
@@ -228,8 +241,8 @@
     normally. Should it be simplified? (I think yes) (d) temp\_chan\_id needed?
     (I think not)
     \State TODO: 2-of-2-msig(), GetCommitment()
-    \State TODO: make coins, delay, selfDelay system parameters, do away with bcast and
-    remove forFundTX
+    \State TODO: make coins, delay, selfDelay system parameters, do away with
+    bcast and remove forFundTX
     \State TODO: make $G$ look more like \texttt{receipts} of
     $\mathcal{F}_{\mathrm{PayNet}}$
     \State TODO: ask what happens with custom minDepth vs centralized
@@ -246,20 +259,21 @@
         \left(\mathrm{pid}_{Alice}, y - x\right),
         \left(\mathrm{pid}_{Bob}, z + x\right)\right)$ \Comment{Primitive
         for Update}
-      \ElsIf{there is an $\left(Alice, Charlie, \dots, Bob\right)$ path in $G$ where the
-      first hop is of weight at least $x$}
-        \State Send a Sphinx~\cite{sphinx} message with the correct HTLCs (containing
-        hash) for $Bob$
+      \ElsIf{there is an $\left(Alice, Charlie, \dots, Bob\right)$ path in $G$
+      where the first hop is of weight at least $x$}
+        \State Send a Sphinx~\cite{sphinx} message with the correct HTLCs
+        (containing hash) for $Bob$
         \State \Comment{Sane fees and timeouts as requested by each hop}
         \State Wait for (preimage) from $Charlie$
         \If{$\mathcal{H}\left(\mathrm{preimage}\right) = \mathrm{hash}$}
-          \State Let $e := \left(\mathrm{txid}, \left(\mathrm{pid}_{Alice}, y\right),
-          \left(\mathrm{pid}_{Charlie}, z\right)\right)$ $Alice$'s channel with $Charlie$
+          \State Let $e := \left(\mathrm{txid}, \left(\mathrm{pid}_{Alice},
+          y\right), \left(\mathrm{pid}_{Charlie}, z\right)\right)$ $Alice$'s
+          channel with $Charlie$
           \State Update $e$ to pay $Charlie$ $x$ \Comment{use HTLC primitive}
           \State $G \leftarrow G \setminus \left\{e\right\}$
           \State $G \leftarrow G \cup \left\{\left(\mathrm{txid},
-          \left(\mathrm{pid}_{Alice}, y - x\right), \left(\mathrm{pid}_{Charlie}, z +
-          x\right)\right)\right\}$
+          \left(\mathrm{pid}_{Alice}, y - x\right),
+          \left(\mathrm{pid}_{Charlie}, z + x\right)\right)\right\}$
           \State Send (\texttt{paymentSent}, $Bob$, $x$) to $\mathcal{E}$
         \Else
           \State Send (\texttt{paymentFailed}, $Bob$, $x$) to $\mathcal{E}$
@@ -271,20 +285,22 @@
     \State Upon receiving (\texttt{SendInvoice}, $x$) from $Bob$:
       \State $\mathrm{preimage} \overset{r}{\leftarrow}
       \left\{0,1\right\}^{\mathrm{gazillion}}$
-      \State $\mathrm{hash} \leftarrow \mathcal{H}\left(\mathrm{preimage}\right)$
+      \State $\mathrm{hash} \leftarrow
+      \mathcal{H}\left(\mathrm{preimage}\right)$
       \State Send (\texttt{invoice}, $x$, hash) to $Bob$
       \State Wait for update of any channel $e := \left(\mathrm{txid},
-      \left(\mathrm{pid}_{Alice}, y\right), \left(\mathrm{pid}_{Charlie}, z\right)\right)$
-      to $e' := \left(\mathrm{txid}, \left(\mathrm{pid}_{Alice}, y + x\right),
-      \left(\mathrm{pid}_{Charlie}, z - x\right)\right)$ conditional on $Alice$'s
-      knowledge of the preimage of the hash
+      \left(\mathrm{pid}_{Alice}, y\right), \left(\mathrm{pid}_{Charlie},
+      z\right)\right)$ to $e' := \left(\mathrm{txid},
+      \left(\mathrm{pid}_{Alice}, y + x\right), \left(\mathrm{pid}_{Charlie}, z
+      - x\right)\right)$ conditional on $Alice$'s knowledge of the preimage of
+      the hash
       \State Send (\texttt{preimage}) to $Charlie$
       \State Wait for update of $e'$ to $e'' := \left(\mathrm{txid},
-      \left(\mathrm{pid}_{Alice}, y + x\right), \left(\mathrm{pid}_{Charlie}, z -
-      x\right)\right)$ unconditional
+      \left(\mathrm{pid}_{Alice}, y + x\right), \left(\mathrm{pid}_{Charlie}, z
+      - x\right)\right)$ unconditional
       \If{$Charlie$ does not update the channel to $e''$}
-        \State Settle $e'$ on-chain with the preimage and take $x$ from the HTLC provided
-        by $Charlie$
+        \State Settle $e'$ on-chain with the preimage and take $x$ from the HTLC
+        provided by $Charlie$
       \EndIf
       \State Send (\texttt{paymentReceived}, $Bob$, $x$) to $\mathcal{E}$
     \State
@@ -303,20 +319,21 @@
   \begin{algorithmic}[1]
     \State $\mathcal{F}_{\mathrm{Ledger}}\mathrm{.balance}\left(Alice\right)$:
     \State
-    \State Send (\texttt{READ}, pid) to $\mathcal{F}_{\mathrm{Ledger}}$ \Comment{Whose
-    pid? List is not created by Alice}
+    \State Send (\texttt{READ}, pid) to $\mathcal{F}_{\mathrm{Ledger}}$
+    \Comment{TODO: Whose pid? List is not created by Alice}
     \State Wait for response $\mathrm{state}_{pid}$
     \State Find \texttt{list} of txs in UTXO spendable by $Alice$ (using
-    $\mathrm{Dec}\left(\mathrm{state}_{pid}\right)$) \Comment{blockify() is system
-    parameter, how to better specify above?}
-    \State \Return sum of outputs in \texttt{list} spendable by $Alice$ \Comment{Only
-    P2WPKH? Or any kind (e.g. multisigs, funding txs)?}
+    $\mathrm{Dec}\left(\mathrm{state}_{pid}\right)$) \Comment{blockify() is
+    system parameter, how to better specify above?}
+    \State \Return sum of outputs in \texttt{list} spendable by $Alice$
+    \Comment{Only P2WPKH? Or any kind (e.g. multisigs, funding txs)?}
     \State
     \State
-    \State Send (\texttt{pay}, $Alice$, $Bob$, $x$) to $\mathcal{F}_{\mathrm{Ledger}}$:
+    \State Send (\texttt{pay}, $Alice$, $Bob$, $x$) to
+    $\mathcal{F}_{\mathrm{Ledger}}$:
     \State
-    \State Create and sign transaction \texttt{tx} that pays $x$ from $Alice$ to $Bob$
-    \Comment{Clear enough? How to sign? Is signature needed?}
+    \State Create and sign transaction \texttt{tx} that pays $x$ from $Alice$ to
+    $Bob$ \Comment{TODO: Clear enough? How to sign? Is signature needed?}
     \State Send (\texttt{SUBMIT}, $pid_{Alice}$ \texttt{tx}) to
     $\mathcal{F}_{\mathrm{Ledger}}$
   \end{algorithmic}
