@@ -8,8 +8,7 @@
     \EndIndent
     \State
     \State Upon receiving $\left(\mathtt{open}, \mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
-    \mathrm{initTX}, \mathrm{forFundTX}, \mathrm{coins}, \mathrm{delay},
-    \mathrm{bcast}\right)$
+    \mathrm{forFundTX}, \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}\right)$
     \Indent
       \Indent
         \State from $\mathcal{E}$:
@@ -23,8 +22,8 @@
         \textsc{OpenChannel}\left(\mathrm{pid}_{Bob},\right.$
         \Indent
           \Indent
-            \State $\left.\mathrm{initTX}, \mathrm{forFundTX}, \mathrm{coins},
-            \mathrm{delay}, \mathrm{bcast}\right)$
+            \State $\left.\mathrm{forFundTX}, \mathrm{coins}, \mathrm{delay},
+            \mathrm{bcast}\right)$
           \EndIndent
         \EndIndent
         \If{sucess = True}
@@ -50,7 +49,7 @@
       \EndIf
     \EndIndent
     \State
-    \Function{OpenChannel}{fundee, initTX, forFundTX, coins, delay, bcast}
+    \Function{OpenChannel}{fundee, forFundTX, coins, delay, bcast}
       \State $\left(\left(pa_F, sa_F\right), \left(pa_{\mathrm{pay}},
       sa_{\mathrm{pay}}\right), \left(pa_{\mathrm{dpay}},
       sa_{\mathrm{dpay}}\right),\right.$
