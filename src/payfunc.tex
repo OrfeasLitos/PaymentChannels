@@ -41,13 +41,20 @@
       \EndIf
     \EndIndent
     \State
-    \State Upon receiving $\left(\textsc{pay}, Bob, x, \overrightarrow{\mathtt{path}},
-    \mathtt{receipt}\right)$ from $Alice$:
+    \State Upon receiving $\left(\textsc{pay}, Bob, x,
+    \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from $Alice$:
     \Indent
-      \If{$\overrightarrow{\mathtt{path}}$ consists of players where all
-      adjacent pairs have a $\left(y, \_\right)$-receipt in \texttt{receipts}
-      for some $y \geq x$ and $\mathtt{receipt} = \left(\_, \_, Alice, Bob, \_,
-      \_, \_\right) \in \mathtt{receipts}$}
+      \State condition 1: $\overrightarrow{\mathtt{path}}$ consists of players
+      where for every adjacent $\left(Carol, Dave\right)$ pair there is a
+      $\mathtt{receipt}'$ in \texttt{receipts} with $Carol$ and $Dave$ and where
+      $Carol$ has at least $x$. Also, $\mathtt{receipt}'$ corresponds to (has
+      the same chid with) an unclosed \textsc{open-channel} transaction that
+      exists both in $\mathtt{state}_{Carol}$ and $\mathtt{state}_{Dave}$ (i.e.
+      there is no \textsc{close-channel} transaction with a receipt with the
+      same chid in either state)
+      \State condition 2: \texttt{receipt} is in \texttt{receipts} and contains
+      $Alice$ and $Bob$.
+      \If{both conditions hold}
         \ForAll{$\left(Carol, Dave\right)$ pairs in
         $\overrightarrow{\mathtt{path}}$}
           \State $\mathtt{oldReceipt} \gets \left(Carol, Dave, y, z,
