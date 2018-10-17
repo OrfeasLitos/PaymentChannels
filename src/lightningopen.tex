@@ -1,25 +1,22 @@
 \begin{figure}[H]
   \begin{center}
     \fbox{\pseudocode{%
-        \mathcal{E} \< \textbf{Alice} \< \textbf{Bob} \< \mathcal{E} \\
-        [][\hline]
-        \sendmessageright{top=(\texttt{open})} \< \< \<\\
-        \< \sendmessageright{top=(\texttt{openChannel})} \< \< \\
-        \< \< \sendmessageright{top=(\texttt{recvOpen})} \< \\
-        \< \< \sendmessageleft{top=(\texttt{acceptChannel})} \< \\
-        \< \sendmessageleft{top=(\texttt{acceptChannel})} \< \< \\
-        \< \sendmessageright{top=(\texttt{fundingCreated})} \< \< \\
-        \< \sendmessageleft{top=(\texttt{fundingSigned})} \< \< \\
-        \sendmessageleft{top=(\texttt{broadcast}), bottom=(TODO: maybe not to
-        $\mathcal{E}$)} \< \< \< \\
-        \sendmessageright{top=(\texttt{fundingLocked}), bottom=(TODO: maybe not
-        from $\mathcal{E}$)} \< \<
-        \sendmessageleft{top=(\texttt{fundingLocked}), bottom=(TODO: maybe not
-        from $\mathcal{E}$)} \< \\
-        \< \sendmessageright{top=(\texttt{fundingLocked})} \< \< \\
-        \< \sendmessageleft{top=(\texttt{fundingLocked})} \< \< \\
-        \sendmessageleft{top=(\texttt{opened})} \< \<
-        \sendmessageright{top=(\texttt{accepted})} \<
+        \mathcal{F}_{\mathrm{Ledger}} \< \textbf{Alice} \< \textbf{Bob} \<
+        \mathcal{E} \\ [][\hline]
+        \< \sendmessageleftx[229pt]{8}{\texttt{open}} \< \\
+        \< \sendmessageright{top=\texttt{openChannel}} \< \< \\
+        \< \< \sendmessageright{top=\texttt{recvOpen}} \< \\
+        \< \< \sendmessageleft{top=\texttt{acceptChannel}} \< \\
+        \< \sendmessageleft{top=\texttt{acceptChannel}} \< \< \\
+        \< \sendmessageright{top=\texttt{fundingCreated}} \< \< \\
+        \< \sendmessageleft{top=\texttt{fundingSigned}} \< \< \\
+        \sendmessageleft{top=\texttt{broadcast}} \< \< \< \\
+        \sendmessageright{top=\texttt{fundingLocked}} \< \< \< \\
+        \< \sendmessagerightx{8}{\texttt{fundingLocked}\text{ TODO: PUT LEFT}} \< \< \\
+        \< \sendmessageright{top=\texttt{fundingLocked}} \< \< \\
+        \< \sendmessageleft{top=\texttt{fundingLocked}} \< \< \\
+        \< \sendmessagerightx[229pt]{8}{\texttt{opened}} \< \\
+        \< \< \sendmessageright{top=\texttt{accepted}} \<
     }}
   \end{center}
   \label{lightning:fig:open}
