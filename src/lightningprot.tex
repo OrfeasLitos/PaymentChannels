@@ -83,7 +83,7 @@
         \State $\And \textsc{isValid2-of-2Sig}\left(\mathrm{sig},
         \textsc{GetCommitment}\left(\right.\right.$
         \State $\left.\left.\mathcal{H}\left(F\right),\mathrm{idx}, pa_{pay},
-        pb_{pay}\right), 0\right)$) TODO: may change, rm idx
+        pb_{pay}\right), 0\right)$) TODO: may change
       \EndIndent
       \State $\mathcal{F}_{\mathrm{Ledger}}.\mathrm{Broadcast}\left(F\right)$
       \State Wait for minDepth confirmations on $F$
@@ -211,7 +211,7 @@
       \EndIndent
       \State assert(response = (\texttt{fundingCreated}, txid, idx, sig) $\And$
       \textsc{isValid2-of-2Sig}(sig, \textsc{GetCommitment}(txid, idx,
-      $pa_{\mathrm{pay}}, pb_{\mathrm{pay}}$), 1)) TODO: may change, rm idx
+      $pa_{\mathrm{pay}}, pb_{\mathrm{pay}}$), 1)) TODO: may change
       \State $\mathrm{chid} \gets \mathrm{txid} \oplus \mathrm{idx}$
       \State $\mathrm{sig} \gets
       \mathcal{F}_{\mathrm{Wallet}}.\textsc{Sign}\left(\mathrm{txid},
