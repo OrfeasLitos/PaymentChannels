@@ -28,11 +28,11 @@
             \mathrm{bcast}\right)$
           \EndIndent
         \EndIndent
-        \If{sucess = True}
           \State $G \leftarrow G \cup \left(\left\{\mathrm{pid}_{Bob}\right\},
           \left\{\left(\mathrm{txid}, \mathrm{chid}, \left(\mathrm{pid}_{Alice},
           \mathrm{coins}\right), \left(\mathrm{pid}_{Bob},
           0\right)\right)\right\}\right)$
+        \If{success = True}
           \State Send $\left(\mathtt{opened}, \mathrm{pid}_{Alice},
           \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay}, \mathrm{bcast},
           \mathrm{txid}, \mathrm{chid}\right)$
@@ -175,7 +175,7 @@
           pa_{\mathrm{htlc}}, pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$)
         \EndIndent
       \EndIndent
-      \If{sucess = True}
+      \If{success = True}
         \State $G \leftarrow G \cup \left(\left\{\mathrm{pid_{Bob}}\right\},
         \left\{\left(\mathrm{txid}, \mathrm{chid}, \left(\mathrm{pid}_{Alice},
         0\right), \left(\mathrm{pid_{Bob}},
