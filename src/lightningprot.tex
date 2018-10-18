@@ -9,13 +9,8 @@
     \EndIndent
     \State
     \State Upon receiving $\left(\mathtt{open}, \mathrm{pid}_{Alice},
-    \mathrm{pid}_{Bob},
-    \mathrm{forFundTX}, \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}\right)$
-    \Indent
-      \Indent
-        \State from $\mathcal{E}$:
-      \EndIndent
-    \EndIndent
+    \mathrm{pid}_{Bob}, \mathrm{forFundTX}, \mathrm{coins}, \mathrm{delay},
+    \mathrm{bcast}\right)$ from $\mathcal{E}$:
     \Indent
       \If{$\mathcal{G}_{\mathrm{Ledger}}.\mathrm{balance}(\mathrm{pid}_{Alice})
       - \mathrm{blocked} \geq x$}
