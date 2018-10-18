@@ -80,6 +80,7 @@
       \textsc{GetFunding}\left(\mathrm{forFundTX}, \mathrm{coins}, sa_F, pa_F,
       pb_F\right)$
       \State $\mathrm{id} \gets \mathcal{H}\left(F\right) \oplus \mathrm{idx}$
+      \Comment{This is how chid is derived in LND}
       \State Send (\texttt{fundingCreated}, $\mathcal{H}\left(F\right)$, idx,
       sig) to fundee
       \State assert(response = (\texttt{fundingSigned}, id, sig)
