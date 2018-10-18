@@ -25,8 +25,8 @@
         \State $\mathtt{tx} \gets \left(\textsc{Funding}\left(Alice, Bob, x, y\right),
         \mathrm{chid}, \tau_L, Bob\right)$
         \State add \texttt{tx} to \texttt{buffer}
-        \State $\mathtt{receipt} = \left(x, y, Alice, Bob, \mathrm{chid},
-        \tau_L, 0\right)$
+        \State $\mathtt{receipt} \gets \left(x, y, Alice, Bob,
+        \mathrm{chid}\right)$
         \State add \texttt{receipt} to \texttt{receipts}
         \State send \texttt{receipt} to $Alice$ and $Bob$
         %\State send message $\left(\mathrm{opened}, Alice, Bob, x, y, \mathrm{id}\right)$
