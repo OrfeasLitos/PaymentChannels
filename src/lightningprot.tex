@@ -20,7 +20,7 @@
       \If{$\mathcal{G}_{\mathrm{Ledger}}.\mathrm{balance}(\mathrm{pid}_{Alice})
       - \mathrm{blocked} \geq x$}
         \State $\mathrm{blocked} \leftarrow \mathrm{blocked} + x$
-        \State $\left(\mathrm{txid}, \mathrm{id}, \mathrm{success}\right) \gets
+        \State $\left(\mathrm{txid}, \mathrm{chid}, \mathrm{success}\right) \gets
         \textsc{OpenChannel}\left(\mathrm{pid}_{Bob},\right.$
         \Indent
           \Indent
@@ -30,12 +30,12 @@
         \EndIndent
         \If{sucess = True}
           \State $G \leftarrow G \cup \left(\left\{\mathrm{pid}_{Bob}\right\},
-          \left\{\left(\mathrm{txid}, \mathrm{id}, \left(\mathrm{pid}_{Alice},
+          \left\{\left(\mathrm{txid}, \mathrm{chid}, \left(\mathrm{pid}_{Alice},
           \mathrm{coins}\right), \left(\mathrm{pid}_{Bob},
           0\right)\right)\right\}\right)$
           \State Send $\left(\mathtt{opened}, \mathrm{pid}_{Alice},
           \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay}, \mathrm{bcast},
-          \mathrm{txid}, \mathrm{id}\right)$
+          \mathrm{txid}, \mathrm{chid}\right)$
           \Indent
             \Indent
               \State to $\mathcal{E}$
@@ -79,11 +79,11 @@
       \State $\left(F, \mathrm{idx}, \mathrm{sig}\right) \gets
       \textsc{GetFunding}\left(\mathrm{forFundTX}, \mathrm{coins}, sa_F, pa_F,
       pb_F\right)$
-      \State $\mathrm{id} \gets \mathcal{H}\left(F\right) \oplus \mathrm{idx}$
+      \State $\mathrm{chid} \gets \mathcal{H}\left(F\right) \oplus \mathrm{idx}$
       \Comment{This is how chid is derived in LND}
       \State Send (\texttt{fundingCreated}, $\mathcal{H}\left(F\right)$, idx,
       sig) to fundee
-      \State assert(response = (\texttt{fundingSigned}, id, sig)
+      \State assert(response = (\texttt{fundingSigned}, chid, sig)
       \Indent
         \State $\And \textsc{isValid2-of-2Sig}\left(\mathrm{sig},
         \textsc{GetCommitment}\left(\right.\right.$
@@ -96,15 +96,16 @@
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$
       \State In parallel:
       \Indent
-        \State Send (\texttt{fundingLocked}, id, $pa_{\mathrm{com}2}$) to fundee
-        \State assert(response = (\texttt{fundingLocked}, id,
+        \State Send (\texttt{fundingLocked}, chid, $pa_{\mathrm{com}2}$) to
+        fundee
+        \State assert(response = (\texttt{fundingLocked}, chid,
         $pb_{\mathrm{com}2}$) $\And$
         \Indent
           \State $\mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}
           \left(pb_{\mathrm{com}2}\right)$)
         \EndIndent
       \EndIndent
-      \State \Return ($\mathcal{H}\left(F\right)$, id, True)
+      \State \Return ($\mathcal{H}\left(F\right)$, chid, True)
     \EndFunction
     \State
     \Function{GetKeys}{}
@@ -165,7 +166,7 @@
       \EndIndent
       \State Wait for response from $\mathcal{E}$
       \State assert(response = (\texttt{acceptChannel}, minDepth, selfDelay))
-      \State $\left(\mathrm{txid}, \mathrm{id}, \mathrm{success}\right) \gets
+      \State $\left(\mathrm{txid}, \mathrm{chid}, \mathrm{success}\right) \gets
       \textsc{AcceptChannel}$(funder, coins, selfDelay,
       \Indent
         \Indent
@@ -176,12 +177,12 @@
       \EndIndent
       \If{sucess = True}
         \State $G \leftarrow G \cup \left(\left\{\mathrm{pid_{Bob}}\right\},
-        \left\{\left(\mathrm{txid}, \mathrm{id}, \left(\mathrm{pid}_{Alice},
+        \left\{\left(\mathrm{txid}, \mathrm{chid}, \left(\mathrm{pid}_{Alice},
         0\right), \left(\mathrm{pid_{Bob}},
         \mathrm{coins}\right)\right)\right\}\right)$
         \State Send $\left(\mathtt{accepted}, \mathrm{pid}_{Alice},
         \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay}, \mathrm{bcast},
-        \mathrm{txid}, \mathrm{id}\right)$
+        \mathrm{txid}, \mathrm{chid}\right)$
         \Indent
           \Indent
             \State to $\mathcal{E}$
@@ -216,25 +217,26 @@
       \State assert(response = (\texttt{fundingCreated}, txid, idx, sig) $\And$
       \textsc{isValid2-of-2Sig}(sig, \textsc{GetCommitment}(txid, idx,
       $pa_{\mathrm{pay}}, pb_{\mathrm{pay}}$), 1)) TODO: may change, rm idx
-      \State $\mathrm{id} \gets \mathrm{txid} \oplus \mathrm{idx}$
+      \State $\mathrm{chid} \gets \mathrm{txid} \oplus \mathrm{idx}$
       \State $\mathrm{sig} \gets
       \mathcal{F}_{\mathrm{Wallet}}.\textsc{Sign}\left(\mathrm{txid},
       \mathrm{idx}, sb_F\right)$
-      \State Send (\texttt{fundingSigned}, id, sig) to funder
+      \State Send (\texttt{fundingSigned}, chid, sig) to funder
       \State Wait for minDepth confirmations on tx with id txid
       \State $\left(pb_{\mathrm{com}2}, sb_{\mathrm{com}2}\right) \gets
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$
       \State In parallel:
       \Indent
-        \State Send (\texttt{fundingLocked}, id, $pb_{\mathrm{com}2}$) to funder
-        \State assert(response = (\texttt{fundingLocked}, id,
+        \State Send (\texttt{fundingLocked}, chid, $pb_{\mathrm{com}2}$) to
+        funder
+        \State assert(response = (\texttt{fundingLocked}, chid,
         $pa_{\mathrm{com}2}$) $\And$
         \Indent
           \State $\mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}
           \left(pa_{\mathrm{com}2}\right)$)
         \EndIndent
       \EndIndent
-      \State \Return (txid, id, True)
+      \State \Return (txid, chid, True)
     \EndFunction
     \State
     \State TOASK: (a) isValidPubKey() as predicate? (b) to\_self\_delay (or t?)
@@ -305,9 +307,9 @@
       \EndIf
       \State Send (\texttt{paymentReceived}, $Bob$, $x$) to $\mathcal{E}$
     \State
-    \State Upon receiving (\texttt{close}, id) from $Alice$:
+    \State Upon receiving (\texttt{close}, chid) from $Alice$:
       \If{$\mathcal{G}_{Ledger}$ has a valid funding tx with
-      $\mathcal{H}\left(\mathrm{tx}\right) = \mathrm{id}$}
+      $\mathcal{H}\left(\mathrm{tx}\right) = \mathrm{chid}$}
         \State Try to close cooperatively \Comment{TODO}
         \If{cooperative closing fails} \Comment{TODO}
           \State Close unilaterally \Comment{TODO}
