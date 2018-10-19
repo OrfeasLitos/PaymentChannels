@@ -125,6 +125,23 @@
       \EndIndent
     \EndFunction
     \State
+    \Function{GetFunding}{$x, sa_F, pa_F, pb_F, Alice$} \Comment{w/o
+    forFundTX, w/ Alice}
+      \State $\mathtt{tx} \gets
+      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{getTX}\left(Alice, x\right)$
+      \Comment{$Alice$ can add a $x$-valued output and broadcast result}
+      \State \texttt{witnessScript} $\gets$ "2 " + $pa_F$ + " " + $pb_F$ + " 2
+      \texttt{OP\_CHECKMULTISIG}"
+      \State \texttt{hash} $\gets$ SHA256(\texttt{witnessScript})
+      \State $\left(F, \mathrm{idx}\right) \gets \mathtt{tx}$.addedOutput(
+      \{scriptPubKey: "0 " + \texttt{hash}, value: coins\}) \Comment{TODO:
+      continue from here}
+      \State $\mathrm{sig} \gets
+      \mathcal{F}_{\mathrm{Wallet}}.\textsc{Sign}\left(\mathcal{H}\left(F\right),
+      \mathrm{idx}, sa_F\right)$
+      \State \Return $\left(F, \mathrm{idx}, \mathrm{sig}\right)$
+    \EndFunction
+    \State
     \Function{GetFunding}{coins, tx, $sa_F, pa_F, pb_F$}
       \State $\left(F, \mathrm{idx}\right) \gets
       \mathcal{F}_{\mathrm{Wallet}}$.addOutputToTX(tx, 2-of-2-msig$\left(pa_F,
