@@ -12,6 +12,7 @@
       \EndIndent
     \State
     \State Upon receiving (\textsc{open}, $Bob$, $x$, $y$) from $Alice$:
+    \Comment{TOASK: add TX for funding?}
     \Indent
       \If{$\left(Bob, Alice, y, x\right) \in \mathtt{pending}$}
         \State assert($\mathcal{G}_{\mathrm{Ledger}}$.balance($Alice$) $\geq
