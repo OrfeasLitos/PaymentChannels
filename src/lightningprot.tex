@@ -14,14 +14,9 @@
       \If{$\mathcal{G}_{\mathrm{Ledger}}.\mathrm{balance}(\mathrm{pid}_{Alice})
       - \mathrm{blocked} \geq x$}
         \State $\mathrm{blocked} \leftarrow \mathrm{blocked} + x$
-        \State $\left(\mathrm{txid}, \mathrm{chid}, \mathrm{success}\right) \gets
-        \textsc{OpenChannel}\left(\mathrm{pid}_{Bob},\right.$
-        \Indent
-          \Indent
-            \State $\left.\mathrm{forFundTX}, \mathrm{coins}, \mathrm{delay},
-            \mathrm{bcast}\right)$
-          \EndIndent
-        \EndIndent
+        \State $\left(\mathrm{txid}, \mathrm{chid}, \mathrm{success}\right)
+        \gets \textsc{OpenChannel}\left(\mathrm{pid}_{Bob}, \mathrm{forFundTX},
+        \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}\right)$
         \If{success = True}
           \State add $\left(\mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
           \mathrm{coins}, 0, \mathrm{chid}, \mathrm{txid}\right)$ to $G$
