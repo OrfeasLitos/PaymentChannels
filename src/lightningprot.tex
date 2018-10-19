@@ -248,7 +248,8 @@
     \State TODO: use basepoints instead of pubkeys (x2)
     \State TODO: Change GetFunding
     \State
-    \State Upon receiving (\texttt{pay}, $Bob$, $x$) from $\mathcal{E}$:
+    \State Upon receiving (\texttt{pay}, $Bob$, $x$,
+    $\overrightarrow{\mathtt{path}}$, \texttt{receipt}) from $\mathcal{E}$:
       \State Send (\texttt{SendInvoice}, $x$) to $Bob$
       \State Wait for response (\texttt{invoice}, $x$, hash) from $Bob$:
       \If{$\exists e := \left(\mathrm{txid}, \left(\mathrm{pid}_{Alice},
