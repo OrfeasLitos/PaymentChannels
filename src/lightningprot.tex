@@ -130,12 +130,13 @@
       \State $\mathtt{tx} \gets
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{getTX}\left(Alice, x\right)$
       \Comment{$Alice$ can add a $x$-valued output and broadcast result}
-      \State \texttt{witnessScript} $\gets$ "2 " + $pa_F$ + " " + $pb_F$ + " 2
-      \texttt{OP\_CHECKMULTISIG}"
-      \State \texttt{hash} $\gets$ SHA256(\texttt{witnessScript})
-      \State $\left(F, \mathrm{idx}\right) \gets \mathtt{tx}$.addedOutput(
-      \{scriptPubKey: "0 " + \texttt{hash}, value: coins\}) \Comment{TODO:
-      continue from here}
+      \State $\mathtt{witnessScript} \gets \text{"2 "} \Vert pa_F \Vert \text{"
+      "} \Vert pb_F \Vert \text{" 2 \texttt{OP\_CHECKMULTISIG}"}$
+      \State \texttt{sPK} $\gets \text{"0 "} \Vert
+      \textsc{SHA256}\left(\mathtt{witnessScript}\right)$
+      \State $\left(F, \mathrm{idx}\right) \gets
+      \mathtt{tx}$.\textsc{addOutput}(\{scriptPubKey: \texttt{sPK}, value:
+      $x$\})
       \State $\mathrm{sig} \gets
       \mathcal{F}_{\mathrm{Wallet}}.\textsc{Sign}\left(\mathcal{H}\left(F\right),
       \mathrm{idx}, sa_F\right)$
