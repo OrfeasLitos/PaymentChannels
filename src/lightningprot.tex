@@ -137,9 +137,10 @@
       \State $\left(F, \mathrm{idx}\right) \gets
       \mathtt{tx}$.\textsc{addOutput}(\{scriptPubKey: \texttt{sPK}, value:
       $x$\})
+      \State $\mathtt{commitment} \gets \textsc{Commitment}\left(TODO\right)$
       \State $\mathrm{sig} \gets
-      \mathcal{F}_{\mathrm{Wallet}}.\textsc{Sign}\left(\mathcal{H}\left(F\right),
-      \mathrm{idx}, sa_F\right)$
+      \mathcal{F}_{\mathrm{Wallet}}.\textsc{Sign}\left(\mathtt{commitment},
+      sa_F\right)$ \Comment{TODO: continue (add inputs here)}
       \State \Return $\left(F, \mathrm{idx}, \mathrm{sig}\right)$
     \EndFunction
     \State
