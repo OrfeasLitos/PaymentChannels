@@ -7,8 +7,7 @@
       \ForAll{$v \in \mathcal{P}$}
         \State $\mathrm{blocked}\left(v\right) = 0$
       \EndFor
-      \State \texttt{pending} = $\emptyset$
-      \State Channels = $\emptyset$
+      \State $\mathtt{pending}, \mathtt{receipts} \gets \emptyset$
       \EndIndent
     \State
     \State Upon receiving (\textsc{open}, $Bob$, $x$, $y$) from $Alice$:
