@@ -19,7 +19,8 @@
         \State $\mathrm{blocked}\left(Alice\right) \leftarrow
         \mathrm{blocked}\left(Alice\right) + x$
         \State send $\left(Alice, Bob, x, y, \mathrm{AliceDelay},
-        \mathrm{forFundTX}\right)$ to $Bob$
+        \mathrm{forFundTX}\right)$ to $Bob$ \Comment{TODO: send correct message
+        to Bob with keys instead of forFundTX, as in protocol}
       \EndIf
     \EndIndent
     \State
@@ -52,7 +53,9 @@
         %to $Bob$
       \EndIf
     \EndIndent
-    \State
+    \State \Comment{DISCUSS: do we care for things that can happen in the
+    all-malicious case?}
+    \State \Comment{eg update based on older state}
     \State Upon receiving $\left(\textsc{pay}, Bob, x,
     \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from $Alice$:
     \Indent
