@@ -70,9 +70,11 @@
       \If{both conditions hold}
         \ForAll{$\left(Carol, Dave\right)$ pairs in
         $\overrightarrow{\mathtt{path}}$}
-          \State $\mathtt{oldReceipt} \gets \left(Carol, Dave, y, z,
+          \State $\mathtt{oldRec} \gets \left(Carol, Dave, y, z,
+          \mathrm{CarolDelay}, \mathrm{DaveDelay}, \mathrm{seq},
           \mathrm{chid}\right) \in \mathtt{receipts}$
-          \State $\mathtt{newReceipt} \gets \left(Carol, Dave, y - x, z + x,
+          \State $\mathtt{newRec} \gets \left(Carol, Dave, y - x, z + x,
+          \mathrm{CarolDelay}, \mathrm{DaveDelay}, \mathrm{seq} + 1,
           \mathrm{chid}\right)$
           \State replace \texttt{oldReceipt} with \texttt{newReceipt} in
           \texttt{receipts}
