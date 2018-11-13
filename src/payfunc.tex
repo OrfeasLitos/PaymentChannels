@@ -10,34 +10,47 @@
       \State $\mathtt{pending}, \mathtt{receipts} \gets \emptyset$
       \EndIndent
     \State
-    \State Upon receiving (\textsc{open}, $Bob$, $x$, $y$) from $Alice$:
-    \Comment{TOASK: add TX for funding?}
+    \State Upon receiving $\left(\textsc{openChannel}, Alice, Bob, x, y,
+    \mathrm{AliceDelay}, \mathrm{forFundTX}\right)$ from $Alice$:
     \Indent
-      \If{$\left(Bob, Alice, y, x\right) \in \mathtt{pending}$}
+      \If{there is no $\left(Alice, Bob, x, y, \_, \_\right)$ in
+      \texttt{pending}}
+        \State add $\left(Alice, Bob, x, y, \mathrm{AliceDelay},
+        \mathrm{forFundTX}\right)$ to \texttt{pending}
+        \State $\mathrm{blocked}\left(Alice\right) \leftarrow
+        \mathrm{blocked}\left(Alice\right) + x$
+        \State send $\left(Alice, Bob, x, y, \mathrm{AliceDelay},
+        \mathrm{forFundTX}\right)$ to $Bob$
+      \EndIf
+    \EndIndent
+    \State
+    \State Upon receiving $\left(\textsc{acceptChannel}, Alice, Bob, x, y,
+    \mathrm{BobDelay}\right)$ from $Bob$:
+    \Indent
+      \If{$\left(Alice, Bob, x, y, \_, \_\right) \in \mathtt{pending}$}
         \State assert($\mathcal{G}_{\mathrm{Ledger}}$.balance($Alice$) $\geq
         \mathrm{blocked}\left(Alice\right) + x$)
         \State assert($\mathcal{G}_{\mathrm{Ledger}}$.balance($Bob$) $\geq
         \mathrm{blocked}\left(Bob\right)$)
-        \State remove $\left\{\left(Bob, Alice, y, x\right)\right\}$ from
+        \State AliceDelay, forFundTX $\gets$ last 2 elements in $\left(Alice,
+        Bob, x, y, \_, \_\right)$
+        \State remove $\left(Alice, Bob, x, y, \_, \_\right)$ from
         \texttt{pending}
-        \State $\mathrm{blocked}\left(Bob\right) = \mathrm{blocked}\left(Bob\right) - y$
-        \State chid $\overset{r}{\leftarrow} \left\{0, 1\right\}^{\mathrm{gazillion}}$
-        \State $\mathtt{tx} \gets \left(\textsc{Funding}\left(Alice, Bob, x, y\right),
-        \mathrm{chid}, \tau_L, Bob\right)$
+        \State $\mathrm{blocked}\left(Alice\right) \gets
+        \mathrm{blocked}\left(Alice\right) - x$
+        \State chid $\overset{r}{\gets} \left\{0,
+        1\right\}^{\mathrm{gazillion}}$
+        \State $\mathtt{tx} \gets \left(\textsc{Funding}\left(Alice, Bob, x, y,
+        \mathrm{forFundTX}\right), \mathrm{chid}, \tau_L, Bob\right)$
         \State add \texttt{tx} to \texttt{buffer}
         \State $\mathtt{receipt} \gets \left(x, y, Alice, Bob,
-        \mathrm{chid}\right)$
+        \mathrm{AliceDelay}, \mathrm{BobDelay}, 0, \mathrm{chid}\right)$
         \State add \texttt{receipt} to \texttt{receipts}
         \State send \texttt{receipt} to $Alice$ and $Bob$
         %\State send message $\left(\mathrm{opened}, Alice, Bob, x, y, \mathrm{id}\right)$
         %to $Alice$
         %\State send message $\left(\mathrm{opened}, Bob, Alice, y, x, \mathrm{id}\right)$
         %to $Bob$
-      \Else
-        \State add $\left\{\left(Alice, Bob, x, y\right)\right\}$ to
-        \texttt{pending}
-        \State $\mathrm{blocked}\left(Alice\right) \leftarrow
-        \mathrm{blocked}\left(Alice\right) + x$
       \EndIf
     \EndIndent
     \State
