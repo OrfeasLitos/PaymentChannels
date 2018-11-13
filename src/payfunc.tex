@@ -78,9 +78,8 @@
           \State $\mathtt{newRec} \gets \left(Carol, Dave, y - x, z + x,
           \mathrm{CarolDelay}, \mathrm{DaveDelay}, \mathrm{seq} + 1,
           \mathrm{chid}\right)$
-          \State replace \texttt{oldReceipt} with \texttt{newReceipt} in
-          \texttt{receipts}
           \State send \texttt{newReceipt} to $Carol$ and $Dave$
+          \State add \texttt{newReceipt} to \texttt{receipts}
         \EndFor
         \State send message $\left(\textsc{payed}, Bob, x\right)$ to $Alice$
         \State send message $\left(\textsc{payedFrom}, Alice, x\right)$ to $Bob$
