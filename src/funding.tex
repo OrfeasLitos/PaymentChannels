@@ -1,8 +1,9 @@
 \begin{algorithm}
-  \caption{$\textsc{Funding}\left(Alice, Bob, x, y\right)$}
+  \caption{$\textsc{Funding}\left(Alice, Bob, x, y, \mathrm{forFundTX}\right)$}
   \label{alg:payfunc}
   \begin{algorithmic}[1]
     \State \Return a valid transaction with payload
-    $\left(\textsc{open-channel}, Alice, Bob, x, y\right)$
+    $\left(\textsc{open-channel}, Alice, Bob, x, y\right)$ \Comment{TODO: decide
+    what to do with forFundTX}
   \end{algorithmic}
 \end{algorithm}
