@@ -43,7 +43,7 @@
         \State send \textsc{Read} to $\mathcal{G}_{\mathrm{Clock}}$ and assign
         reply to $\tau_L$
         \State $\mathtt{tx} \gets \left(\textsc{Funding}\left(Alice, Bob, x, y,
-        \mathrm{forFundTX}\right), \mathrm{chid}, \tau_L, Bob\right)$
+        \mathrm{forFundTX}\right), \tau_L\right)$
         \State add \texttt{tx} to \texttt{buffer}
         \State $\mathtt{receipt} \gets \left(x, y, Alice, Bob,
         \mathrm{AliceDelay}, \mathrm{BobDelay}, 0, \mathrm{chid}\right)$
@@ -95,24 +95,18 @@
     \Indent
       \If{\texttt{receipt} contains $Alice$ and is contained in \texttt{receipts}}
         \State AliceDelay $\gets$ AliceDelay of \texttt{receipt}
-        \State $Bob \gets$ the other party in \texttt{receipt}
-        \State $\mathtt{txid} \overset{r}{\gets} \left\{0,
-        1\right\}^{\mathrm{gazillion}}$
         \State send \textsc{Read} to $\mathcal{G}_{\mathrm{Clock}}$ and assign
         reply to $\tau_L$
         \State $\mathtt{tx} \gets
-        \left(\textsc{Closing}\left(\mathtt{receipt}\right), \mathtt{txid},
-        \tau_L, Alice\right)$
+        \left(\textsc{Closing}\left(\mathtt{receipt}\right), \tau_L\right)$
         \State add \texttt{tx} to \texttt{buffer}
         \State Upon receiving (\textsc{close}, \texttt{receipt'}) from $Bob$
         within AliceDelay blocks:
         \If{\texttt{receipt} and \texttt{receipt'} have the same id and
         \texttt{receipt'} has a greater sequence number than \texttt{receipt}}
-          \State $\mathtt{txid'} \overset{r}{\gets} \left\{0,
-          1\right\}^{\mathrm{gazillion}}$
           \State $\mathtt{tx'} \gets
           \left(\textsc{Revoke}\left(\mathtt{receipt}, \mathtt{receipt'}\right),
-          \mathtt{txid'}, \tau_L, Bob\right)$
+          \tau_L\right)$
           \State add \texttt{tx'} to \texttt{buffer} \Comment{TODO: specify
           validate(\texttt{buffer}, \texttt{tx})}
         \EndIf
