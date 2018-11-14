@@ -1,0 +1,66 @@
+A well-formed transaction contains:
+\begin{itemize}
+  \item A list of inputs
+  \item A list of outputs
+\end{itemize}
+All inputs must be connected to valid, unconnected (unspent) outputs in the
+state.
+
+A well-formed input contains:
+\begin{itemize}
+  \item A reference to the output it spends
+  \item The features of the input, along with relevant data
+\end{itemize}
+
+A well-formed output contains:
+\begin{itemize}
+  \item A value in coins
+  \item The features of the output, along with relevant data
+\end{itemize}
+
+Available features:
+\begin{itemize}
+  \item Multiple signatures. Needed data:
+  \begin{itemize}
+    \item Output
+    \begin{itemize}
+      \item List of eligible public keys (if empty, anyone can spend)
+      \item Number of signatures needed to spend (at most equal to the size of the
+      list)
+    \end{itemize}
+    \item Input
+    \begin{itemize}
+      \item As many signatures as needed by the referenced output, created by
+      private keys that correspond to the public keys specified in the
+      referenced output
+    \end{itemize}
+  \end{itemize}
+  \item Absolute locktime. Needed data for output:
+  \begin{itemize}
+    \item blocks, time or bottom
+    \item If not bottom, the minimum block number/time after which output can be
+    spent. If bottom, output can be spent immediately after being added to the
+    state.
+  \end{itemize}
+  \item Relative locktime. Needed data for output:
+  \begin{itemize}
+    \item blocks, time or bottom
+    \item If not bottom, the minimum block number/time that has to be included
+    in the state before the output can be spent. If bottom, output can be spent
+    immediately after being added to the state.
+  \end{itemize}
+  \item Hashlock. Needed data:
+  \begin{itemize}
+    \item Output: hash or bottom
+    \item Input: If corresponding feature is a hash in the referenced
+    output, the input must include a preimage to that hash.
+  \end{itemize}
+\end{itemize}
+
+An output may specify more than one valid spending method. Each method must
+specify exactly which features are used and the relevant data. An input that
+corresponds to any of the specified methods can spend the output.
+
+Lastly, the sum of values of the outputs referenced by the inputs of the
+transaction (to-be-spent outputs) should be greater than or equal to the sum of
+values of the outputs of the transaction.
