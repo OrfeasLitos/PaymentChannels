@@ -3,8 +3,13 @@
   \mathrm{BobDelay}, \mathrm{forFundTX}\right)$}
   \label{alg:payfunc}
   \begin{algorithmic}[1]
+    \State check that forFundTX is a well-formed transaction with x + y coins
+    spare
+    \State $\left(pa_F, sa_F\right) \gets \mathrm{generateKey}\left(\right)$
+    \State $\left(pb_F, sb_F\right) \gets \mathrm{generateKey}\left(\right)$
+    \State \Comment{TODO: complete Funding Closing et al. based on the
+    specification}
     \State \Return a valid transaction with payload
-    $\left(\textsc{open-channel}, Alice, Bob, x, y\right)$ \Comment{TODO: decide
-    what to do with forFundTX}
+    $\left(\textsc{open-channel}, Alice, Bob, x, y\right)$
   \end{algorithmic}
 \end{algorithm}
