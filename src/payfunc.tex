@@ -40,6 +40,8 @@
         \mathrm{blocked}\left(Alice\right) - x$
         \State chid $\overset{r}{\gets} \left\{0,
         1\right\}^{\mathrm{gazillion}}$
+        \State send \textsc{Read} to $\mathcal{G}_{\mathrm{Clock}}$ and assign
+        reply to $\tau_L$
         \State $\mathtt{tx} \gets \left(\textsc{Funding}\left(Alice, Bob, x, y,
         \mathrm{forFundTX}\right), \mathrm{chid}, \tau_L, Bob\right)$
         \State add \texttt{tx} to \texttt{buffer}
