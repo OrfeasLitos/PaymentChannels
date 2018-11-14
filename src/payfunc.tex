@@ -41,7 +41,8 @@
         \State send \textsc{Read} to $\mathcal{G}_{\mathrm{Clock}}$ and assign
         reply to $\tau_L$
         \State $\mathtt{tx} \gets \left(\textsc{Funding}\left(Alice, Bob, x, y,
-        \mathrm{forFundTX}\right), \tau_L\right)$
+        \mathrm{AliceDelay}, \mathrm{BobDelay}, \mathrm{forFundTX}\right),
+        \tau_L\right)$
         \State add \texttt{tx} to \texttt{buffer}
         \State Choose a unique channel ID chid
         \State $\mathtt{receipt} \gets \left(x, y, Alice, Bob,
