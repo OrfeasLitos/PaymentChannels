@@ -98,6 +98,8 @@
         \State $Bob \gets$ the other party in \texttt{receipt}
         \State $\mathtt{txid} \overset{r}{\gets} \left\{0,
         1\right\}^{\mathrm{gazillion}}$
+        \State send \textsc{Read} to $\mathcal{G}_{\mathrm{Clock}}$ and assign
+        reply to $\tau_L$
         \State $\mathtt{tx} \gets
         \left(\textsc{Closing}\left(\mathtt{receipt}\right), \mathtt{txid},
         \tau_L, Alice\right)$
