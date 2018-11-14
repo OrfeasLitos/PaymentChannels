@@ -52,15 +52,15 @@ Available features:
   \item Hashlock. Needed data:
   \begin{itemize}
     \item Output: hash or bottom
-    \item Input: If corresponding feature is a hash in the referenced
-    output, the input must include a preimage to that hash.
+    \item Input: If corresponding feature in the referenced output is a hash,
+    the input must include a preimage to that hash, otherwise nothing.
   \end{itemize}
 \end{itemize}
 
 An output may specify more than one valid spending method. Each method must
-specify exactly which features are used and the relevant data. An input that
-corresponds to any of the specified methods can spend the output.
+specify exactly which features are used and the relevant data. An input can use
+any of the specified methods to spend the output.
 
-Lastly, the sum of values of the outputs referenced by the inputs of the
+Lastly, the sum of coins of the outputs referenced by the inputs of the
 transaction (to-be-spent outputs) should be greater than or equal to the sum of
-values of the outputs of the transaction.
+coins of the outputs of the transaction.
