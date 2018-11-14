@@ -38,8 +38,7 @@
         \texttt{pending}
         \State $\mathrm{blocked}\left(Alice\right) \gets
         \mathrm{blocked}\left(Alice\right) - x$
-        \State chid $\overset{r}{\gets} \left\{0,
-        1\right\}^{\mathrm{gazillion}}$
+        \State Choose a unique channel ID chid
         \State send \textsc{Read} to $\mathcal{G}_{\mathrm{Clock}}$ and assign
         reply to $\tau_L$
         \State $\mathtt{tx} \gets \left(\textsc{Funding}\left(Alice, Bob, x, y,
