@@ -4,63 +4,44 @@ A well-formed transaction contains:
   \item A list of outputs
   \item An arbitrary payload (optional)
 \end{itemize}
-All inputs must be connected to valid, unconnected (unspent) outputs in the
-state.
-
-A well-formed input contains:
-\begin{itemize}
-  \item A reference to the output it spends
-  \item The features of the input, along with relevant data
-\end{itemize}
+Each input must be connected to a single valid, previously unconnected (unspent)
+output in the state.
 
 A well-formed output contains:
 \begin{itemize}
   \item A value in coins
-  \item The features of the output, along with relevant data
+  \item A list of spending methods. An input that spends this output must
+  specify exactly one of the available spending methods.
 \end{itemize}
 
-Available features:
+A well-formed spending method contains any combination of the following:
 \begin{itemize}
-  \item Multiple signatures. Needed data:
-  \begin{itemize}
-    \item Output
-    \begin{itemize}
-      \item List of eligible public keys (if empty, anyone can spend)
-      \item Number of signatures needed to spend (at most equal to the size of the
-      list)
-    \end{itemize}
-    \item Input
-    \begin{itemize}
-      \item As many signatures as needed by the referenced output, created by
-      private keys that correspond to the public keys specified in the
-      referenced output
-    \end{itemize}
-  \end{itemize}
-  \item Absolute locktime. Needed data for output:
-  \begin{itemize}
-    \item blocks, time or bottom
-    \item If not bottom, the minimum block number/time after which output can be
-    spent. If bottom, output can be spent immediately after being added to the
-    state.
-  \end{itemize}
-  \item Relative locktime. Needed data for output:
-  \begin{itemize}
-    \item blocks, time or bottom
-    \item If not bottom, the minimum block number/time that has to be included
-    in the state before the output can be spent. If bottom, output can be spent
-    immediately after being added to the state.
-  \end{itemize}
-  \item Hashlock. Needed data:
-  \begin{itemize}
-    \item Output: hash or bottom
-    \item Input: If corresponding feature in the referenced output is a hash,
-    the input must include a preimage to that hash, otherwise nothing.
-  \end{itemize}
+  \item Public keys in disjunctive normal form. An input that spends using this
+  spending method must contain signatures made with the private keys that
+  correspond to the public keys of one of the conjunctions. If empty, no
+  signatures are needed.
+  \item Absolute locktime in block height, transaction height or time. The
+  output can be spent by an input to a transaction that is added to the state
+  after the specified block height, transaction height or time. If empty, output
+  can be spent immediately after being added to the state.
+  \item Relative locktime in block height, transaction height or time. The
+  output can be spent by an input that is added to the state after the current
+  output has been part of the state for the specified number of blocks,
+  transactions or time. If empty, output can be spent immediately after being
+  added to the state.
+  \item Hashlock value. The output can be spent by an input that contains a
+  preimage that hashes to the hashlock value. If empty, the input does not need
+  to specify a preimage.
 \end{itemize}
 
-An output may specify more than one valid spending method. Each method must
-specify exactly which features are used and the relevant data. An input can use
-any of the specified methods to spend the output.
+A well-formed input contains:
+\begin{itemize}
+  \item A reference to the output and the spending method it spends
+  \item A set of signatures that correspond to one of the conjunctions of public
+  keys in the referred spending method (if needed)
+  \item A preimage that hashes to the hashlock value of the referred spending
+  method (if needed)
+\end{itemize}
 
 Lastly, the sum of coins of the outputs referenced by the inputs of the
 transaction (to-be-spent outputs) should be greater than or equal to the sum of
