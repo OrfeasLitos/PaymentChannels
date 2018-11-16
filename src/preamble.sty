@@ -77,10 +77,11 @@
 \newcommand\semihuge{\@setfontsize\semihuge{19.22}{23.88}}
 \makeatother
 
-%UC environments
+%UC environments and commands
 \newenvironment{ucEnv}[1]{\begin{mdframed}{\centering\textbf{#1}\par}\small\vspace{\baselineskip}\noindent}{\end{mdframed}}
 \newenvironment{functionality}[1]{\begin{ucEnv}{Functionality #1}}{\end{ucEnv}}
 \newenvironment{protocol}[1]{\begin{ucEnv}{Protocol #1}}{\end{ucEnv}}
+\newcommand{\funcsection}[1]{\vspace{0.7em}\hrule\vspace{1.5em}\par\noindent\emph{#1:}\vspace{0.5em}}
 
 %environment for separate proof
 \newenvironment{sepproof}[1]{\noindent \textbf{#1}}{\qed \smallskip \ \\}

@@ -1,12 +1,24 @@
 \begin{functionality}{$\mathcal{F}_{\mathrm{PayNet}}$}
   \label{alg:payfunc}
+  \funcsection{Interface (messages from $\mathcal{E}$)}
+    \begin{itemize}
+      \item openChannel(peer, amount, etc)
+      \item closeChannel(outpoint, etc)
+      \item addinvoice(value, expiration time, memo)
+      \item payinvoice(invoice)
+      \item lookupinvoice(invoice?)
+    \end{itemize}
+    Discussion: I avoided connect(), I added acceptChannel(), what about
+    invoices?
+  \funcsection{Pseudocode}
   \begin{algorithmic}[1]
     \State Initialisation:
       \Indent
       \ForAll{$v \in \mathcal{P}$}
         \State $\mathrm{blocked}\left(v\right) \gets 0$
+        \State $\mathtt{receipts}\left(v\right) \gets \emptyset$
       \EndFor
-      \State $\mathtt{pending}, \mathtt{receipts} \gets \emptyset$
+      \State $\mathtt{pending}, \mathtt{channels} \gets \emptyset$
       \EndIndent
     \State
     \State Upon receiving $\left(\textsc{openChannel}, Alice, Bob, x, y,
@@ -46,11 +58,20 @@
         \mathrm{forFundTX}\right), \tau_L\right)$
         \State add \texttt{tx} to \texttt{buffer}
         \State Choose a unique channel ID chid
-        \State $\mathtt{receipt} \gets \left(x, y, Alice, Bob,
+        \State $\mathtt{channel} \gets \left(x, y, Alice, Bob,
         \mathrm{AliceDelay}, \mathrm{BobDelay}, \left(pa_F, sa_F\right),
         \left(pb_F, sb_F\right), 0, \mathrm{chid}\right)$
-        \State add \texttt{receipt} to \texttt{receipts}
-        \State send \texttt{receipt} to $Alice$ and $Bob$
+        \State add \texttt{channel} to \texttt{channels}
+        \State $\mathtt{receipt}_{Alice} \gets \left(x, y, Alice, Bob,
+        \left(pa_F, sa_F\right), 0, \mathrm{chid}\right)$
+        \State add $\mathtt{receipt}_{Alice} \text{ to }
+        \mathtt{receipts}\left(Alice\right)$
+        \State send $\mathtt{receipt}_{Alice} \text{ to } Alice$
+        \State $\mathtt{receipt}_{Bob} \gets \left(x, y, Alice, Bob,
+        \left(pb_F, sb_F\right), 0, \mathrm{chid}\right)$
+        \State add $\mathtt{receipt}_{Bob} \text{ to }
+        \mathtt{receipts}\left(Bob\right)$
+        \State send $\mathtt{receipt}_{Bob} \text{ to } Bob$
         %\State send message $\left(\mathrm{opened}, Alice, Bob, x, y, \mathrm{id}\right)$
         %to $Alice$
         %\State send message $\left(\mathrm{opened}, Bob, Alice, y, x, \mathrm{id}\right)$
