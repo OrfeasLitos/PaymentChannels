@@ -1,15 +1,18 @@
 \begin{algorithm}
-  \caption{$\textsc{Funding}\left(Alice, Bob, x, y, \mathrm{AliceDelay},
-  \mathrm{BobDelay}, \mathrm{forFundTX}\right)$}
+  \caption{$\textsc{Funding}\left(Alice, Bob, x, y, pa_F, pb_F,
+  \mathrm{forFundTX}\right)$}
   \label{alg:payfunc}
   \begin{algorithmic}[1]
     \State check that forFundTX is a well-formed transaction with x + y coins
     spare
-    \State $\left(pa_F, sa_F\right) \gets \mathrm{generateKey}\left(\right)$
-    \State $\left(pb_F, sb_F\right) \gets \mathrm{generateKey}\left(\right)$
-    \State \Comment{TODO: complete Funding Closing et al. based on the
-    specification}
-    \State \Return a valid transaction with payload
-    $\left(\textsc{open-channel}, Alice, Bob, x, y\right)$
+    \State $\mathrm{fundOutput} \gets \left\{\right.$
+    \Indent
+      \State value: $x + y,$
+      \State spending methods: $\left[\left\{ \text{public keys}: \left(pa_F
+      \wedge pb_F\right)\right\}\right]$
+    \EndIndent
+    \State $\left.\right\}$
+    \State add fundOutput to forFundTX
+    \State \Return $\mathrm{forFundTX}$
   \end{algorithmic}
 \end{algorithm}
