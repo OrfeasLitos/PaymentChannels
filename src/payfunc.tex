@@ -27,6 +27,8 @@
       \If{there is no $\left(Alice, Bob, x, y, \_, \_, \_\right)$ in
       \texttt{pending}}
         \State $\left(pa_F, sa_F\right) \gets \mathrm{genKey}\left(\right)$
+        \Comment{TOASK: Bob expects key, but seems too "plumbing" for
+        functionality. What to do?}
         \State add $\left(Alice, Bob, x, y, \mathrm{AliceDelay}, \left(pa_F,
         sa_F\right), \mathrm{forFundTX}\right)$ to \texttt{pending}
         \State $\mathrm{blocked}\left(Alice\right) \leftarrow
@@ -45,7 +47,7 @@
         \State assert($\mathcal{G}_{\mathrm{Ledger}}$.balance($Alice$) $\geq
         \mathrm{blocked}\left(Alice\right) + x$)
         \State assert($\mathcal{G}_{\mathrm{Ledger}}$.balance($Bob$) $\geq
-        \mathrm{blocked}\left(Bob\right)$)
+        \mathrm{blocked}\left(Bob\right)$) \Comment{TODO: define balance}
         \State AliceDelay, $\left(pa_F, sa_F\right)$, forFundTX $\gets$ last 3
         elements in $\left(Alice, Bob, x, y, \_, \_, \_\right)$
         \State remove $\left(Alice, Bob, x, y, \_, \_, \_\right)$ from
