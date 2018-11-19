@@ -16,7 +16,6 @@
       \Indent
       \ForAll{$v \in \mathcal{P}$}
         \State $\mathrm{blocked}\left(v\right) \gets 0$
-        \State $\mathtt{receipts}\left(v\right) \gets \emptyset$
       \EndFor
       \State $\mathtt{pending}, \mathtt{channels} \gets \emptyset$
       \EndIndent
@@ -59,24 +58,13 @@
         %\mathrm{forFundTX}\right), \tau_L\right)$
         %\State add \texttt{tx} to \texttt{buffer}
         \State Choose a unique channel ID chid
-        \State $\mathtt{channel} \gets \left(x, y, Alice, Bob,
+        \State $\mathtt{channel} \gets \left(Alice, Bob, x, y,
         \mathrm{AliceDelay}, \mathrm{BobDelay}, 0, \mathrm{chid}\right)$
         \State add \texttt{channel} to \texttt{channels}
-        \State $\mathtt{receipt}_{Alice} \gets \left(x, y, Alice, Bob, 0,
+        \State $\mathtt{receipt} \gets \left(Alice, Bob, x, y,
         \mathrm{chid}\right)$
-        \State add $\mathtt{receipt}_{Alice} \text{ to }
-        \mathtt{receipts}\left(Alice\right)$
-        \State $\mathtt{receipt}_{Bob} \gets \left(x, y, Alice, Bob, 0,
-        \mathrm{chid}\right)$
-        \State add $\mathtt{receipt}_{Bob} \text{ to }
-        \mathtt{receipts}\left(Bob\right)$
-        \State \Return $\mathtt{receipt}_{Alice} \text{ and }
-        \mathtt{receipt}_{Bob} \text{ to } Alice \text{ and } Bob \text{
-        respectively}$
-        %\State send message $\left(\mathrm{opened}, Alice, Bob, x, y, \mathrm{id}\right)$
-        %to $Alice$
-        %\State send message $\left(\mathrm{opened}, Bob, Alice, y, x, \mathrm{id}\right)$
-        %to $Bob$
+        \State \Return $\mathtt{receipt} \text{ to } Alice \text{ and } Bob$
+        \Comment{Multiple returns?}
       \EndIf
     \EndIndent
     \State \Comment{DISCUSS: do we care for things that can happen in the
@@ -87,25 +75,23 @@
     \Indent
       \State condition 1: $\overrightarrow{\mathtt{path}}$ consists of players
       where for every adjacent $\left(Carol, Dave\right)$ pair there is a
-      $\mathtt{receipt}'$ in \texttt{receipts} with $Carol$ and $Dave$ and where
-      $Carol$ has at least $x$. Also, $\mathtt{receipt}'$ corresponds to (has
-      the same chid with) an unclosed \textsc{open-channel} transaction that
-      exists both in $\mathtt{state}_{Carol}$ and $\mathtt{state}_{Dave}$ (i.e.
-      there is no \textsc{close-channel} transaction with a receipt with the
-      same chid in either state)
-      \State condition 2: \texttt{receipt} is in \texttt{receipts} and contains
-      $Alice$ with at least $x$ coins.
+      \texttt{channel} in \texttt{channels} with $Carol$ and $Dave$ and where
+      $Carol$ has at least $x$.
+      \State condition 2: \texttt{receipt} has the same ID as a channel in
+      \texttt{channels} where $Alice$ has at least $x$ coins.
+      \Comment{TODISCUSS: this excludes updates based on old states}
       \If{both condition 1 and condition 2 hold}
         \ForAll{$\left(Carol, Dave\right)$ pairs in
         $\overrightarrow{\mathtt{path}}$}
-          \State $\mathtt{oldRec} \gets \left(Carol, Dave, y, z,
+          \State $\mathtt{oldCh} \gets \left(Carol, Dave, y, z,
           \mathrm{CarolDelay}, \mathrm{DaveDelay}, \mathrm{seq},
-          \mathrm{chid}\right) \in \mathtt{receipts}$
-          \State $\mathtt{newRec} \gets \left(Carol, Dave, y - x, z + x,
+          \mathrm{chid}\right) \in \mathtt{channels}$
+          \State $\mathtt{newCh} \gets \left(Carol, Dave, y - x, z + x,
           \mathrm{CarolDelay}, \mathrm{DaveDelay}, \mathrm{seq} + 1,
           \mathrm{chid}\right)$
-          \State add \texttt{newRec} to \texttt{receipts}
-          \State send \texttt{newRec} to $Carol$ and $Dave$
+          \State add \texttt{newCh} to \texttt{channels}
+          \State send $\left(Carol, Dave, y - x, z + x, \mathrm{chid}\right)$ to
+          $Carol$ and $Dave$ \Comment{TODISCUSS: sending, not returning}
         \EndFor
         \State send message $\left(\textsc{payed}, Bob, x\right)$ to $Alice$
         \State send message $\left(\textsc{payedFrom}, Alice, x\right)$ to $Bob$
@@ -117,8 +103,10 @@
     \State
     \State Upon receiving (\textsc{close}, \texttt{receipt}) from $Alice$:
     \Indent
-      \If{\texttt{receipt} contains $Alice$ and is contained in \texttt{receipts}}
-        \State AliceDelay $\gets$ AliceDelay of \texttt{receipt}
+      \If{\texttt{receipt} contains $Alice$ and corresponds to a
+      \texttt{channel} in \texttt{channels} (i.e. there is a \texttt{channel}
+      that contains the \texttt{receipt} elements)}
+        \State AliceDelay $\gets$ AliceDelay of \texttt{channel}
         \State send \textsc{Read} to $\mathcal{G}_{\mathrm{Clock}}$ and assign
         reply to $\tau_L$
         \State $\mathtt{tx} \gets
@@ -134,8 +122,8 @@
           \State add \texttt{tx'} to \texttt{buffer} \Comment{TODO: specify
           validate(\texttt{buffer}, \texttt{tx})}
         \EndIf
-        \State remove all receipts with the same id as \texttt{receipt} from
-        \texttt{receipts}
+        \State remove all items in \texttt{channels} with the same chid as
+        \texttt{receipt}
       \EndIf
     \EndIndent
   \end{algorithmic}
