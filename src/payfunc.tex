@@ -9,8 +9,6 @@
       \item pay(invoice)
       \item checkBalance(invoice?)
     \end{itemize}
-    Discussion: I avoided connect(), I added acceptChannel(), what about
-    invoices?
   \funcsection{Pseudocode}
   \begin{algorithmic}[1]
     \State Initialisation:
@@ -104,7 +102,7 @@
         \EndFor
         \State send message $\left(\textsc{payed}, Bob, x\right)$ to $Alice$
         \State send message $\left(\textsc{payedFrom}, Alice, x\right)$ to $Bob$
-      \Else
+      \Else \Comment{TODISCUSS: which messages to send and how?}
         \State send message $\left(\textsc{invalidPath}, Bob, x\right)$ to
         $Alice$
       \EndIf
