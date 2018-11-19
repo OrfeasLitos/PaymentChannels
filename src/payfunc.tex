@@ -3,10 +3,10 @@
   \funcsection{Interface (messages from $\mathcal{E}$)}
     \begin{itemize}
       \item openChannel(peer, amount, etc)
+      \item acceptChannel(peer, amount, etc)
       \item closeChannel(outpoint, etc)
-      \item addinvoice(value, expiration time, memo)
-      \item payinvoice(invoice)
-      \item lookupinvoice(invoice?)
+      \item pay(invoice)
+      \item checkBalance(invoice?)
     \end{itemize}
     Discussion: I avoided connect(), I added acceptChannel(), what about
     invoices?
