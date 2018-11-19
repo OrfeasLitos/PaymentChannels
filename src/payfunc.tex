@@ -61,7 +61,7 @@
         \State $\mathtt{channel} \gets \left(Alice, Bob, x, y,
         \mathrm{AliceDelay}, \mathrm{BobDelay}, 0, \mathrm{chid}\right)$
         \State add \texttt{channel} to \texttt{channels}
-        \State $\mathtt{receipt} \gets \left(Alice, Bob, x, y,
+        \State $\mathtt{receipt} \gets \left(Alice, Bob, x, y, 0,
         \mathrm{chid}\right)$
         \State \Return $\mathtt{receipt} \text{ to } Alice \text{ and } Bob$
         \Comment{Multiple returns?}
@@ -77,8 +77,8 @@
       where for every adjacent $\left(Carol, Dave\right)$ pair there is a
       \texttt{channel} in \texttt{channels} with $Carol$ and $Dave$ and where
       $Carol$ has at least $x$.
-      \State condition 2: \texttt{receipt} has the same ID as a channel in
-      \texttt{channels} where $Alice$ has at least $x$ coins.
+      \State condition 2: \texttt{receipt} has the same ID and sequence number
+      as a channel in \texttt{channels} where $Alice$ has at least $x$ coins.
       \Comment{TODISCUSS: this excludes updates based on old states}
       \If{both condition 1 and condition 2 hold}
         \ForAll{$\left(Carol, Dave\right)$ pairs in
@@ -90,8 +90,9 @@
           \mathrm{CarolDelay}, \mathrm{DaveDelay}, \mathrm{seq} + 1,
           \mathrm{chid}\right)$
           \State add \texttt{newCh} to \texttt{channels}
-          \State send $\left(Carol, Dave, y - x, z + x, \mathrm{chid}\right)$ to
-          $Carol$ and $Dave$ \Comment{TODISCUSS: sending, not returning}
+          \State send $\left(Carol, Dave, y - x, z + x, \mathrm{seq} + 1,
+          \mathrm{chid}\right)$ to $Carol$ and $Dave$ \Comment{TODISCUSS:
+          sending, not returning}
         \EndFor
         \State send message $\left(\textsc{payed}, Bob, x\right)$ to $Alice$
         \State send message $\left(\textsc{payedFrom}, Alice, x\right)$ to $Bob$
