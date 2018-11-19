@@ -117,10 +117,9 @@
       that contains the \texttt{receipt} elements)}
         \State AliceDelay $\gets$ AliceDelay of \texttt{channel}
         \State send \textsc{Read} to $\mathcal{G}_{\mathrm{Clock}}$ and assign
-        \State $\mathtt{tx} \gets
-        \left(\textsc{Closing}\left(\mathtt{receipt}\right), \tau_L\right)$
-        \State add \texttt{tx} to \texttt{buffer}
         reply to $\tau$
+        \State send $\left(\textsc{closeChannel}, \mathtt{channel},
+        \tau\right)$ to $\mathcal{A}$
         \State Upon receiving (\textsc{close}, \texttt{receipt'}) from $Bob$
         within AliceDelay blocks: \Comment{DISCUSS: what is a block?}
         \If{\texttt{receipt'} corresponds to a \texttt{channel'} in
