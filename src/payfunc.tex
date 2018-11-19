@@ -31,8 +31,9 @@
         sa_F\right), \mathrm{forFundTX}\right)$ to \texttt{pending}
         \State $\mathrm{blocked}\left(Alice\right) \leftarrow
         \mathrm{blocked}\left(Alice\right) + x$
-        \State send $\left(Alice, Bob, x, y, \mathrm{AliceDelay}, pa_F\right)$
-        to $Bob$ \Comment{TODO: add more keys, as in protocol}
+        \State \Return $\left(Alice, Bob, x, y, \mathrm{AliceDelay},
+        pa_F\right)$ to $Bob$ \Comment{1. TODO: add more keys, as in protocol.
+        2. TOASK: return to Bob but Alice called?}
       \EndIf
     \EndIndent
     \State
@@ -66,12 +67,13 @@
         \left(pa_F, sa_F\right), 0, \mathrm{chid}\right)$
         \State add $\mathtt{receipt}_{Alice} \text{ to }
         \mathtt{receipts}\left(Alice\right)$
-        \State send $\mathtt{receipt}_{Alice} \text{ to } Alice$
         \State $\mathtt{receipt}_{Bob} \gets \left(x, y, Alice, Bob,
         \left(pb_F, sb_F\right), 0, \mathrm{chid}\right)$
         \State add $\mathtt{receipt}_{Bob} \text{ to }
         \mathtt{receipts}\left(Bob\right)$
-        \State send $\mathtt{receipt}_{Bob} \text{ to } Bob$
+        \State \Return $\mathtt{receipt}_{Alice} \text{ and }
+        \mathtt{receipt}_{Bob} \text{ to } Alice \text{ and } Bob \text{
+        respectively}$
         %\State send message $\left(\mathrm{opened}, Alice, Bob, x, y, \mathrm{id}\right)$
         %to $Alice$
         %\State send message $\left(\mathrm{opened}, Bob, Alice, y, x, \mathrm{id}\right)$
