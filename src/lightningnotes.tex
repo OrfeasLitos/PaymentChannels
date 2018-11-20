@@ -2,5 +2,7 @@
 \begin{itemize}
   \item The relevant part of the specification can be found at
   \url{https://github.com/lightningnetwork/lightning-rfc/blob/master/02-peer-protocol.md}.
-  \item Currently only the opener (sender) of a channel funds it.
+  \item In the current LND implementation and BOLT specification, only the
+  opener (sender) of a channel funds it initially. In the present work, we allow
+  both sides to fund the channel.
 \end{itemize}
