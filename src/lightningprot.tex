@@ -339,27 +339,3 @@
       \EndIf
   \end{algorithmic}
 \hrulefill
-\ \\ \noindent {Connection with $\mathcal{F}_{\mathrm{Ledger}}$}
-  \label{alg:temp:formalfledger}
-  \begin{algorithmic}[1]
-    \State $\mathcal{F}_{\mathrm{Ledger}}\mathrm{.balance}\left(Alice\right)$:
-    \State
-    \State Send (\texttt{READ}, pid) to $\mathcal{F}_{\mathrm{Ledger}}$
-    \Comment{TODO: Whose pid? List is not created by Alice}
-    \State Wait for response $\mathrm{state}_{pid}$
-    \State Find \texttt{list} of txs in UTXO spendable by $Alice$ (using
-    $\mathrm{Dec}\left(\mathrm{state}_{pid}\right)$) \Comment{blockify() is
-    system parameter, how to better specify above?}
-    \State \Return sum of outputs in \texttt{list} spendable by $Alice$
-    \Comment{Only P2WPKH? Or any kind (e.g. multisigs, funding txs)?}
-    \State
-    \State
-    \State Send (\texttt{pay}, $Alice$, $Bob$, $x$) to
-    $\mathcal{F}_{\mathrm{Ledger}}$:
-    \State
-    \State Create and sign transaction \texttt{tx} that pays $x$ from $Alice$ to
-    $Bob$ \Comment{TODO: Clear enough? How to sign? Is signature needed?}
-    \State Send (\texttt{SUBMIT}, $pid_{Alice}$ \texttt{tx}) to
-    $\mathcal{F}_{\mathrm{Ledger}}$
-  \end{algorithmic}
-\hrulefill
