@@ -30,7 +30,7 @@
         \State $\mathrm{blocked}\left(Alice\right) \leftarrow
         \mathrm{blocked}\left(Alice\right) + x$
         \State \Return $\left(Alice, Bob, x, y, \mathrm{AliceDelay}\right)$ to
-        $Bob$ \Comment{TOASK: return to Bob but Alice called?}
+        $Bob$ \Comment{DISCUSS: return to Bob but Alice called?}
       \EndIf
     \EndIndent
     \State
@@ -84,7 +84,7 @@
       $Carol$ has at least $x$.
       \State condition 2: \texttt{receipt} has the same ID and sequence number
       as a channel in \texttt{channels} where $Alice$ has at least $x$ coins.
-      \Comment{TODISCUSS: this excludes updates based on old states}
+      \Comment{DISCUSS: this excludes updates based on old states}
       \If{both condition 1 and condition 2 hold}
         \ForAll{$\left(Carol, Dave\right)$ pairs in
         $\overrightarrow{\mathtt{path}}$}
@@ -96,12 +96,12 @@
           \mathrm{chid}\right)$
           \State add \texttt{newCh} to \texttt{channels}
           \State send $\left(Carol, Dave, y - x, z + x, \mathrm{seq} + 1,
-          \mathrm{chid}\right)$ to $Carol$ and $Dave$ \Comment{TODISCUSS:
-          sending, not returning}
+          \mathrm{chid}\right)$ to $Carol$ and $Dave$ \Comment{DISCUSS: sending,
+          not returning}
         \EndFor
         \State send message $\left(\textsc{payed}, Bob, x\right)$ to $Alice$
         \State send message $\left(\textsc{payedFrom}, Alice, x\right)$ to $Bob$
-      \Else \Comment{TODISCUSS: which messages to send and how?}
+      \Else \Comment{DISCUSS: which messages to send and how?}
         \State send message $\left(\textsc{invalidPath}, Bob, x\right)$ to
         $Alice$
       \EndIf
