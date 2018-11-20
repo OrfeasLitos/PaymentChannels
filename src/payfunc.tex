@@ -3,11 +3,10 @@
   \label{alg:payfunc}
   \funcsection{Interface (messages from $\mathcal{E}$)}
     \begin{itemize}
-      \item openChannel(peer, amount, etc)
-      \item acceptChannel(peer, amount, etc)
-      \item closeChannel(outpoint, etc)
-      \item pay(invoice)
-      \item checkBalance(invoice?)
+      \item openChannel(self, peer, selfCoins, peerCoins, selfDelay, forFundTX)
+      \item acceptChannel(peer, self, peerCoins, selfCoins, selfDelay)
+      \item closeChannel(receipt)
+      \item pay(peer, coins, path, receipt)
     \end{itemize}
   \funcsection{Pseudocode}
   \begin{algorithmic}[1]
