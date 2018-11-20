@@ -23,8 +23,10 @@
     \State Upon receiving $\left(\textsc{openChannel}, Alice, Bob, x, y,
     \mathrm{AliceDelay}, \mathrm{forFundTX}\right)$ from $Alice$:
     \Indent
-      \If{there is no $\left(Alice, Bob, x, y, \_, \_, \_\right)$ in
-      \texttt{pending}}
+      \State add an $\left(Alice \wedge Bob\right)$ output of value $x + y$ to
+      forFundTX and assign resulting transaction to fundingTX
+      \If{validate(\texttt{state}, fundingTX) = 1 AND there is no $\left(Alice,
+      Bob, x, y, \_, \_\right)$ in \texttt{pending}}
         \State add $\left(Alice, Bob, x, y, \mathrm{AliceDelay},
         \mathrm{forFundTX}\right)$ to \texttt{pending}
         \State $\mathrm{blocked}\left(Alice\right) \leftarrow
