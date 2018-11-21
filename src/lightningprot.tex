@@ -21,8 +21,6 @@
       negotiation}
       \State ensure that there is no $\left(Alice, Bob, \dots\right)$
       in \texttt{pending}
-      \State add $\left(Alice, Bob, x, y, \mathrm{AliceDelay},
-      \mathrm{fundingTX}\right)$ to \texttt{pending}
       \State choose unique temporary ID tempid
       \State $\left(\left(pa_F, sa_F\right), \left(pa_{\mathrm{pay}},
       sa_{\mathrm{pay}}\right), \left(pa_{\mathrm{dpay}},
@@ -30,6 +28,13 @@
       sa_{\mathrm{htlc}}\right), \left(pa_{\mathrm{com}1},
       sa_{\mathrm{com}1}\right),\right.$ $\left.\left(pa_{\mathrm{rev}},
       sa_{\mathrm{rev}}\right)\right) \gets \textsc{GetKeys}\left(\right)$
+      \State add $\left(Alice, Bob, x, y, \mathrm{AliceDelay},
+      \mathrm{forFundTX}, \left(pa_F, sa_F\right), \left(pa_{\mathrm{pay}},
+      sa_{\mathrm{pay}}\right),\right.$ $\left.\left(pa_{\mathrm{dpay}},
+      sa_{\mathrm{dpay}}\right), \left(pa_{\mathrm{htlc}},
+      sa_{\mathrm{htlc}}\right), \left(pa_{\mathrm{com}1},
+      sa_{\mathrm{com}1}\right),\right.$ $\left.\left(pa_{\mathrm{rev}},
+      sa_{\mathrm{rev}}\right), \mathrm{tempid}\right)$ to \texttt{pending}
       \State Send (\textsc{openChannel}, $x, y$, AliceDelay, bcast, $pa_F,
       pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
       pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$, tempid) to $Bob$
