@@ -76,10 +76,25 @@
     \EndIndent
     \State
 
+    \State Upon receiving (\textsc{acceptChannel}, BobDelay, $pb_F,
+    pb_{\mathrm{pay}}, pb_{\mathrm{dpay}}, pb_{\mathrm{htlc}},
+    pb_{\mathrm{com}1}, pb_{\mathrm{rev}}$, tempid) from $Bob$ (self is
+    $Alice$):
+    \Indent
+      \State ensure that there is a unique $\left(\dots, \mathrm{tempid}\right)$
+      entry in \texttt{pending}
+      \State retrieve elements of entry
+      \State add output $\left(pa_F \wedge pb_F\right)$ to forFundTX and assign
+      result to $F$
+      \State let idx be the position of the output in the transaction
       \State $\mathrm{chid} \gets \mathcal{H}\left(F\right) \oplus \mathrm{idx}$
       \Comment{This is how chid is derived in LND}
-      \State Send (\texttt{fundingCreated}, $\mathcal{H}\left(F\right)$, idx,
-      sig) to fundee
+      \State $\mathrm{AliceSig} \gets \mathrm{sign}\left(F, sa_F\right)$
+      \State Send (\texttt{fundingCreated}, tempid, $\mathcal{H}\left(F\right)$,
+      idx, AliceSig) to $Bob$
+    \EndIndent
+    \State
+
       \State assert(response = (\texttt{fundingSigned}, chid, sig)
       \Indent
         \State $\And \textsc{isValid2-of-2Sig}\left(\mathrm{sig},
