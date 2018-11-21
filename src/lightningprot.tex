@@ -1,4 +1,4 @@
-\ \\ \noindent {$\Pi_{\mathrm{LN}}$} The protocol is executed by player $Alice$.
+\ \\ \noindent {$\Pi_{\mathrm{LN}}$}
   \label{alg:lightningprot}
   \begin{algorithmic}[1]
     \State Initialisation:
@@ -9,7 +9,7 @@
     \State
     \State Upon receiving $\left(\textsc{openChannel}, \mathrm{pid}_{Alice},
     \mathrm{pid}_{Bob}, x, y, \mathrm{AliceDelay}, \mathrm{forFundTX}\right)$
-    from $\mathcal{E}$:
+    from $\mathcal{E}$ (self is $Alice$):
     \Indent
       \State ensure that forFundTX has inputs spendable by $Alice$ of total
       value at least $x$ and by $Bob$ of total value at least $y$
@@ -18,10 +18,19 @@
       \State ensure that validate($\mathtt{state}_{Alice}$, fundingTX) = 1
       \State ensure that there is no $\left(Alice, Bob, \_, \_, \_, \_\right)$
       in \texttt{pending}
-      \State $\left(\mathrm{txid}, \mathrm{chid}, \mathrm{success}\right)
-      \gets \textsc{OpenChannel}\left(\mathrm{pid}_{Bob}, \mathrm{forFundTX},
-      \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}\right)$
-      \State $\mathtt{blocked} \gets \mathtt{blocked} + x$
+      \State add $\left(Alice, Bob, x, y, \mathrm{AliceDelay},
+      \mathrm{fundingTX}\right)$ to \texttt{pending}
+      \State $\left(\left(pa_F, sa_F\right), \left(pa_{\mathrm{pay}},
+      sa_{\mathrm{pay}}\right), \left(pa_{\mathrm{dpay}},
+      sa_{\mathrm{dpay}}\right), \left(pa_{\mathrm{htlc}},
+      sa_{\mathrm{htlc}}\right), \left(pa_{\mathrm{com}1},
+      sa_{\mathrm{com}1}\right),\right.$ $\left.\left(pa_{\mathrm{rev}},
+      sa_{\mathrm{rev}}\right)\right) \gets \textsc{GetKeys}\left(\right)$
+      \State Send (\textsc{openChannel}, $x, y$, AliceDelay, bcast, $pa_F,
+      pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
+      pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$) to $Bob$
+    \EndIndent
+    \State
       \If{success = True}
         \State add $\left(\mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
         \mathrm{coins}, 0, \mathrm{chid}, \mathrm{txid}\right)$ to
