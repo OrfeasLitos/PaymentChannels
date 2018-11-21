@@ -8,6 +8,7 @@
       \item breakChannel(receipt)
       \item pay(peer, coins, path, receipt)
     \end{itemize}
+
   \funcsection{Pseudocode}
   \begin{algorithmic}[1]
     \State Initialisation:
@@ -20,6 +21,7 @@
       \State $\mathtt{pending}, \mathtt{channels} \gets \emptyset$
       \EndIndent
     \State
+
     \State Upon receiving $\left(\textsc{createChannel}, Alice, Bob, x, y,
     \mathrm{AliceDelay}, \mathrm{forFundTX}\right)$ from $Alice$:
     \Indent
@@ -40,6 +42,7 @@
       return to Bob but Alice called?}
     \EndIndent
     \State
+
     \State Upon receiving $\left(\textsc{endorseChannel}, Alice, Bob, x, y,
     \mathrm{BobDelay}, \mathrm{tempid}\right)$ from $Bob$: \Comment{This message
     does not exist in LND, because only one side funds the channel there.}
@@ -83,6 +86,7 @@
     \State \Comment{DISCUSS: do we care for things that can happen in the
     all-malicious case?}
     \State \Comment{eg update based on older state}
+
     \State Upon receiving $\left(\textsc{pay}, Bob, x,
     \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from $Alice$:
     \Indent
@@ -115,6 +119,7 @@
       \EndIf
     \EndIndent
     \State
+
     \State Upon receiving (\textsc{breakChannel}, \texttt{receipt}) from $Alice$:
     \Indent
       \State ensure that \texttt{receipt} contains $Alice$ and corresponds to a

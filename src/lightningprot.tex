@@ -7,6 +7,7 @@
       \State $\mathtt{channels} \gets \emptyset$
     \EndIndent
     \State
+
     \State Upon receiving $\left(\textsc{openChannel}, \mathrm{pid}_{Alice},
     \mathrm{pid}_{Bob}, x, y, \mathrm{AliceDelay}, \mathrm{forFundTX}\right)$
     from $\mathcal{E}$ (self is $Alice$):
@@ -145,6 +146,7 @@
       \EndIndent
     \EndFunction
     \State
+
     \Function{GetFunding}{$x, sa_F, pa_F, pb_F, Alice$} \Comment{w/o
     forFundTX, w/ Alice}
       \State $\mathtt{tx} \gets
@@ -164,6 +166,7 @@
       \State \Return $\left(F, \mathrm{idx}, \mathrm{sig}\right)$
     \EndFunction
     \State
+
     \Function{GetFunding}{coins, tx, $sa_F, pa_F, pb_F$}
       \State $\left(F, \mathrm{idx}\right) \gets
       \mathcal{F}_{\mathrm{Wallet}}$.addOutputToTX(tx, 2-of-2-msig$\left(pa_F,
@@ -222,6 +225,7 @@
       \EndIf
     \EndIndent
     \State
+
     \Function{AcceptChannel}{funder, coins, selfDelay, remoteDelay, bcast,
     minDepth, $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
     pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$}
@@ -241,6 +245,7 @@
           pb_{\mathrm{htlc}}, pb_{\mathrm{com}1}, pb_{\mathrm{rev}}$) to funder
         \EndIndent
       \EndIndent
+
       \State assert(response = (\texttt{fundingCreated}, txid, idx, sig) $\And$
       \textsc{isValid2-of-2Sig}(sig, \textsc{GetCommitment}(txid, idx,
       $pa_{\mathrm{pay}}, pb_{\mathrm{pay}}$), 1)) TODO: may change
@@ -266,6 +271,7 @@
       \State \Return (txid, chid, True)
     \EndFunction
     \State
+
     \State TOASK: (a) isValidPubKey() as predicate? (b) to\_self\_delay (or t?)
     parameter for protocol and all functions? where to pass it? (c) P2WSH used
     normally. Should it be simplified? (I think yes) (d) temp\_chan\_id needed?
@@ -280,6 +286,7 @@
     \State TODO: use basepoints instead of pubkeys (x2)
     \State TODO: Change GetFunding
     \State
+
     \State Upon receiving (\texttt{pay}, $Bob$, $x$,
     $\overrightarrow{\mathtt{path}}$, \texttt{receipt}) from $\mathcal{E}$:
       \State Send (\texttt{SendInvoice}, $x$) to $Bob$
