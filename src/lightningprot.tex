@@ -14,12 +14,12 @@
     \Indent
       \State ensure that forFundTX has inputs spendable by $Alice$ of total
       value at least $x$ and by $Bob$ of total value at least $y$
-      \State ensure that there is no $\left(Alice, Bob, \_, \_, \_, \_\right)$
       \State ensure that it is possible to add a $x + y$-valued output to
       forFundTX
       \State \Comment{TODO: [Both funding] changes protocol start from [adding
       an output to given tx] to [creating an entirely new tx] after key
       negotiation}
+      \State ensure that there is no $\left(Alice, Bob, \dots\right)$
       in \texttt{pending}
       \State add $\left(Alice, Bob, x, y, \mathrm{AliceDelay},
       \mathrm{fundingTX}\right)$ to \texttt{pending}
