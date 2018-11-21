@@ -31,6 +31,18 @@
       pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$) to $Bob$
     \EndIndent
     \State
+
+    \State Upon receiving (\textsc{openChannel}, $x, y$, AliceDelay, bcast,
+    $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
+    pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$) from $Alice$ (self is $Bob$):
+    \Indent
+      \State ensure that there is no $\left(Alice, Bob, \dots\right)$ in
+      \texttt{pending}
+      \State add $\left(Alice, Bob, x, y, \mathrm{AliceDelay}, \mathrm{bcast},
+      pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
+      pa_{\mathrm{com}1}, pa_{\mathrm{rev}}\right)$ to \texttt{pending}
+      \State Send (\textsc{endorseChannel}, $\mathrm{pid}_{Alice},
+      \mathrm{pid}_{Bob}, x, y$, AliceDelay, bcast) to $\mathcal{E}$
       \If{success = True}
         \State add $\left(\mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
         \mathrm{coins}, 0, \mathrm{chid}, \mathrm{txid}\right)$ to
