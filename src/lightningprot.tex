@@ -62,7 +62,8 @@
     $\mathcal{E}$ (self is $Bob$)
     \Indent
       \State ensure that there is a unique $\left(\dots, \mathrm{tempid}\right)$
-      entry in \texttt{pending}
+      entry in \texttt{pending} with elements as should be after handling an
+      \textsc{openChannel} message from $Alice$
       \State $\left(\left(pb_F, sb_F\right), \left(pb_\mathrm{pay},
       sb_\mathrm{pay}\right), \left(pb_\mathrm{dpay}, sb_\mathrm{dpay}\right),
       \left(pb_\mathrm{htlc}, sb_\mathrm{htlc}\right),\right.$
@@ -82,7 +83,8 @@
     $Alice$):
     \Indent
       \State ensure that there is a unique $\left(\dots, \mathrm{tempid}\right)$
-      entry in \texttt{pending}
+      entry in \texttt{pending} with elements as should be after handling an
+      \textsc{openChannel} message from $\mathcal{E}$
       \State retrieve elements of entry
       \State add output $\left(pa_F \wedge pb_F\right)$ to forFundTX and assign
       result to $F$
