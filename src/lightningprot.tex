@@ -5,7 +5,7 @@
     \Indent
       \State $\mathtt{blocked} \gets 0$
       \State $\mathtt{pending} \gets \emptyset$
-      \State $G \gets \emptyset$
+      \State $\mathtt{channels} \gets \emptyset$
     \EndIndent
     \State
     \State Upon receiving $\left(\textsc{openChannel}, \mathrm{pid}_{Alice},
@@ -25,7 +25,8 @@
       \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}\right)$
       \If{success = True}
         \State add $\left(\mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
-        \mathrm{coins}, 0, \mathrm{chid}, \mathrm{txid}\right)$ to $G$
+        \mathrm{coins}, 0, \mathrm{chid}, \mathrm{txid}\right)$ to
+        \texttt{channels}
         \Comment{TODO: add delay, bcast}
         \State Send $\left(\mathtt{opened}, \mathrm{pid}_{Alice},
         \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay}, \mathrm{bcast},
@@ -186,7 +187,8 @@
       \EndIndent
       \If{success = True}
         \State add $\left(\mathrm{pid}_{Alice}, \mathrm{pid_{Bob}}, 0,
-        \mathrm{coins}, \mathrm{chid}, \mathrm{txid}\right)$ to $G$
+        \mathrm{coins}, \mathrm{chid}, \mathrm{txid}\right)$ to
+        \texttt{channels}
         \Comment{TODO: add delay, bcast}
         \State Send $\left(\mathtt{accepted}, \mathrm{pid}_{Alice},
         \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay}, \mathrm{bcast},
@@ -254,7 +256,7 @@
     \State TODO: 2-of-2-msig(), GetCommitment()
     \State TODO: make coins, delay, selfDelay system parameters, do away with
     bcast and remove forFundTX
-    \State TODO: make $G$ look more like \texttt{receipts} of
+    \State TODO: make \texttt{channels} look more like \texttt{channels} of
     $\mathcal{F}_{\mathrm{PayNet}}$
     \State TODO: ask what happens with custom minDepth vs centralized
     \texttt{state}
@@ -269,20 +271,21 @@
         \State CONDITIONS FROM PAYNET START
         \State condition 1: $\overrightarrow{\mathtt{path}}$ consists of players
         where for every adjacent $\left(Carol, Dave\right)$ pair there is a
-        $\mathtt{receipt}'$ in $G$ with $Carol$ and $Dave$ and where $Carol$ has
-        at least $x$. Also, $\mathtt{receipt}'$ corresponds to (has the same
-        chid with) an unclosed \textsc{open-channel} transaction that exists
-        both in $\mathtt{state}_{Carol}$ and $\mathtt{state}_{Dave}$ (i.e. there
-        is no \textsc{close-channel} transaction with a receipt with the same
-        chid in either state)
-        \State condition 2: \texttt{receipt} is in $G$ and contains $Alice$ with
-        at least $x$ coins.
+        $\mathtt{receipt}'$ in \texttt{channels} with $Carol$ and $Dave$ and
+        where $Carol$ has at least $x$. Also, $\mathtt{receipt}'$ corresponds to
+        (has the same chid with) an unclosed \textsc{open-channel} transaction
+        that exists both in $\mathtt{state}_{Carol}$ and $\mathtt{state}_{Dave}$
+        (i.e. there is no \textsc{close-channel} transaction with a receipt with
+        the same chid in either state)
+        \State condition 2: \texttt{receipt} is in \texttt{channels} and
+        contains $Alice$ with at least $x$ coins.
         \State CONDITIONS FROM PAYNET END
       \EndIndent
       \If{no hops}
       \Comment{TODO: code htlc hops, here is old: $\exists e :=
       \left(\mathrm{txid}, \left(\mathrm{pid}_{Alice}, y\right),
-      \left(\mathrm{pid}_{Bob}, z\right)\right) \in G: y \geq x$}
+      \left(\mathrm{pid}_{Bob}, z\right)\right) \in \mathtt{channels}: y \geq
+      x$}
         \State Update $e$ to $e' := \left(\mathrm{txid},
         \left(\mathrm{pid}_{Alice}, y - x\right),
         \left(\mathrm{pid}_{Bob}, z + x\right)\right)$ \Comment{Primitive
@@ -297,8 +300,10 @@
           y\right), \left(\mathrm{pid}_{Charlie}, z\right)\right)$ $Alice$'s
           channel with $Charlie$
           \State Update $e$ to pay $Charlie$ $x$ \Comment{use HTLC primitive}
-          \State $G \leftarrow G \setminus \left\{e\right\}$
-          \State $G \leftarrow G \cup \left\{\left(\mathrm{txid},
+          \State $\mathtt{channels} \leftarrow \mathtt{channels} \setminus
+          \left\{e\right\}$
+          \State $\mathtt{channels} \leftarrow \mathtt{channels} \cup
+          \left\{\left(\mathrm{txid},
           \left(\mathrm{pid}_{Alice}, y - x\right),
           \left(\mathrm{pid}_{Charlie}, z + x\right)\right)\right\}$
           \State Send (\texttt{paymentSent}, $Bob$, $x$) to $\mathcal{E}$
