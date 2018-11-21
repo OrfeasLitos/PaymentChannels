@@ -19,10 +19,10 @@
       \State ensure that validate($\mathtt{state}_{Alice}$, fundingTX) = 1
       \State ensure that there is no $\left(Alice, Bob, \_, \_, \_, \_\right)$
       in \texttt{pending}
-      \State $\mathtt{blocked} \leftarrow \mathtt{blocked} + x$
       \State $\left(\mathrm{txid}, \mathrm{chid}, \mathrm{success}\right)
       \gets \textsc{OpenChannel}\left(\mathrm{pid}_{Bob}, \mathrm{forFundTX},
       \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}\right)$
+      \State $\mathtt{blocked} \gets \mathtt{blocked} + x$
       \If{success = True}
         \State add $\left(\mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
         \mathrm{coins}, 0, \mathrm{chid}, \mathrm{txid}\right)$ to
@@ -41,7 +41,7 @@
         \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay},
         \mathrm{bcast}\right)$ to $\mathcal{E}$
       \EndIf
-      \State $\mathtt{blocked} \leftarrow \mathtt{blocked} - x$
+      \State $\mathtt{blocked} \gets \mathtt{blocked} - x$
     \EndIndent
     \State
     \Function{OpenChannel}{fundee, forFundTX, coins, delay, bcast}
@@ -100,22 +100,22 @@
     \EndFunction
     \State
     \Function{GetKeys}{}
-      \State $\left(pa_F, sa_F\right) \leftarrow
+      \State $\left(pa_F, sa_F\right) \gets
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For
       $F$ output}
-      \State $\left(pa_{\mathrm{pay}}, sa_{\mathrm{pay}}\right) \leftarrow
+      \State $\left(pa_{\mathrm{pay}}, sa_{\mathrm{pay}}\right) \gets
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For
       com output to remote}
-      \State $\left(pa_{\mathrm{dpay}}, sa_{\mathrm{dpay}}\right) \leftarrow
+      \State $\left(pa_{\mathrm{dpay}}, sa_{\mathrm{dpay}}\right) \gets
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For
       com output to self}
-      \State $\left(pa_{\mathrm{htlc}}, sa_{\mathrm{htlc}}\right) \leftarrow
+      \State $\left(pa_{\mathrm{htlc}}, sa_{\mathrm{htlc}}\right) \gets
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For
       htlc output to self}
-      \State $\left(pa_{\mathrm{com}1}, sa_{\mathrm{com}1}\right) \leftarrow
+      \State $\left(pa_{\mathrm{com}1}, sa_{\mathrm{com}1}\right) \gets
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For
       deriving all keys}
-      \State $\left(pa_{\mathrm{rev}}, sa_{\mathrm{rev}}\right) \leftarrow
+      \State $\left(pa_{\mathrm{rev}}, sa_{\mathrm{rev}}\right) \gets
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For
       revocation in com}
       \State \Return $\left(\left(pa_F, sa_F\right), \left(pa_{\mathrm{pay}},
@@ -300,9 +300,9 @@
           y\right), \left(\mathrm{pid}_{Charlie}, z\right)\right)$ $Alice$'s
           channel with $Charlie$
           \State Update $e$ to pay $Charlie$ $x$ \Comment{use HTLC primitive}
-          \State $\mathtt{channels} \leftarrow \mathtt{channels} \setminus
+          \State $\mathtt{channels} \gets \mathtt{channels} \setminus
           \left\{e\right\}$
-          \State $\mathtt{channels} \leftarrow \mathtt{channels} \cup
+          \State $\mathtt{channels} \gets \mathtt{channels} \cup
           \left\{\left(\mathrm{txid},
           \left(\mathrm{pid}_{Alice}, y - x\right),
           \left(\mathrm{pid}_{Charlie}, z + x\right)\right)\right\}$
@@ -315,10 +315,9 @@
       \EndIf
     \State
     \State Upon receiving (\texttt{SendInvoice}, $x$) from $Bob$:
-      \State $\mathrm{preimage} \overset{r}{\leftarrow}
+      \State $\mathrm{preimage} \overset{r}{\gets}
       \left\{0,1\right\}^{\mathrm{gazillion}}$
-      \State $\mathrm{hash} \leftarrow
-      \mathcal{H}\left(\mathrm{preimage}\right)$
+      \State $\mathrm{hash} \gets \mathcal{H}\left(\mathrm{preimage}\right)$
       \State Send (\texttt{invoice}, $x$, hash) to $Bob$
       \State Wait for update of any channel $e := \left(\mathrm{txid},
       \left(\mathrm{pid}_{Alice}, y\right), \left(\mathrm{pid}_{Charlie},
