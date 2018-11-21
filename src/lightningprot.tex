@@ -100,24 +100,18 @@
     \EndFunction
     \State
     \Function{GetKeys}{}
-      \State $\left(pa_F, sa_F\right) \gets
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For
-      $F$ output}
+      \State $\left(pa_F, sa_F\right) \gets \mathrm{genKey}\left(\right)$
+      \Comment{For $F$ output}
       \State $\left(pa_{\mathrm{pay}}, sa_{\mathrm{pay}}\right) \gets
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For
-      com output to remote}
+      \mathrm{genKey}\left(\right)$ \Comment{For com output to remote}
       \State $\left(pa_{\mathrm{dpay}}, sa_{\mathrm{dpay}}\right) \gets
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For
-      com output to self}
+      \mathrm{genKey}\left(\right)$ \Comment{For com output to self}
       \State $\left(pa_{\mathrm{htlc}}, sa_{\mathrm{htlc}}\right) \gets
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For
-      htlc output to self}
+      \mathrm{genKey}\left(\right)$ \Comment{For htlc output to self}
       \State $\left(pa_{\mathrm{com}1}, sa_{\mathrm{com}1}\right) \gets
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For
-      deriving all keys}
+      \mathrm{genKey}\left(\right)$ \Comment{For deriving all keys}
       \State $\left(pa_{\mathrm{rev}}, sa_{\mathrm{rev}}\right) \gets
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$ \Comment{For
-      revocation in com}
+      \mathrm{genKey}\left(\right)$ \Comment{For revocation in com}
       \State \Return $\left(\left(pa_F, sa_F\right), \left(pa_{\mathrm{pay}},
       sa_{\mathrm{pay}}\right), \left(pa_{\mathrm{dpay}},
       sa_{\mathrm{dpay}}\right),\right.$
