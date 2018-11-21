@@ -53,54 +53,29 @@
       pa_{\mathrm{com}1}, pa_{\mathrm{rev}}, \mathrm{tempid}\right)$ to
       \texttt{pending}
       \State Send (\textsc{endorseChannel}, $\mathrm{pid}_{Alice},
-      \mathrm{pid}_{Bob}, x, y$, AliceDelay, bcast) to $\mathcal{E}$
-      \If{success = True}
-        \State add $\left(\mathrm{pid}_{Alice}, \mathrm{pid}_{Bob},
-        \mathrm{coins}, 0, \mathrm{chid}, \mathrm{txid}\right)$ to
-        \texttt{channels}
-        \Comment{TODO: add delay, bcast}
-        \State Send $\left(\mathtt{opened}, \mathrm{pid}_{Alice},
-        \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay}, \mathrm{bcast},
-        \mathrm{txid}, \mathrm{chid}\right)$
-        \Indent
-          \Indent
-            \State to $\mathcal{E}$
-          \EndIndent
-        \EndIndent
-      \Else
-        \State Send $\left(\mathtt{notOpened}, \mathrm{pid}_{Alice},
-        \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay},
-        \mathrm{bcast}\right)$ to $\mathcal{E}$
-      \EndIf
       \mathrm{pid}_{Bob}, x, y$, AliceDelay, bcast, tempid) to $\mathcal{E}$
     \EndIndent
     \State
-    \Function{OpenChannel}{fundee, forFundTX, coins, delay, bcast}
-      \State $\left(\left(pa_F, sa_F\right), \left(pa_{\mathrm{pay}},
-      sa_{\mathrm{pay}}\right), \left(pa_{\mathrm{dpay}},
-      sa_{\mathrm{dpay}}\right),\right.$
-      \Indent
-        \State $\left.\left(pa_{\mathrm{htlc}}, sa_{\mathrm{htlc}}\right),
-        \left(pa_{\mathrm{com}1}, sa_{\mathrm{com}1}\right),
-        \left(pa_{\mathrm{rev}}, sa_{\mathrm{rev}}\right)\right) \gets
-        \textsc{GetKeys}\left(\right)$
-      \EndIndent
-      \State Send (\texttt{openChannel}, coins, delay, bcast,
-      \Indent
-        \State $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
-        pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$) to fundee
-      \EndIndent
-      \State assert(response = (\texttt{acceptChannel}, minDepth, delay,
-      \Indent
-        \State $pb_F, pb_{\mathrm{pay}}, pb_{\mathrm{dpay}}, pb_{\mathrm{htlc}},
-        pb_{\mathrm{com}1}, pb_{\mathrm{rev}}$) $\And$
-        \State $\forall i \in \left\{F, \mathrm{pay}, \mathrm{dpay},
-        \mathrm{htlc}, \mathrm{com}1, \mathrm{rev}\right\},
-        \mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}\left(pb_i\right)$)
-      \EndIndent
-      \State $\left(F, \mathrm{idx}, \mathrm{sig}\right) \gets
-      \textsc{GetFunding}\left(\mathrm{forFundTX}, \mathrm{coins}, sa_F, pa_F,
-      pb_F\right)$
+
+    \State Upon receiving $\left(\textsc{endorseChannel}, \mathrm{pid}_{Alice},
+    \mathrm{pid}_{Bob}, x, y, \mathrm{BobDelay}, \mathrm{tempid}\right)$ from
+    $\mathcal{E}$ (self is $Bob$)
+    \Indent
+      \State ensure that there is a unique $\left(\dots, \mathrm{tempid}\right)$
+      entry in \texttt{pending}
+      \State $\left(\left(pb_F, sb_F\right), \left(pb_\mathrm{pay},
+      sb_\mathrm{pay}\right), \left(pb_\mathrm{dpay}, sb_\mathrm{dpay}\right),
+      \left(pb_\mathrm{htlc}, sb_\mathrm{htlc}\right),\right.$
+      \State $\left.\left(pb_\mathrm{com}1, sb_\mathrm{com}1\right),
+      \left(pb_\mathrm{rev}, sb_\mathrm{rev}\right)\right) \gets
+      \textsc{GetKeys}\left(\right)$
+      \State add generated keys to \texttt{pending} entry
+      \State Send (\texttt{acceptChannel}, BobDelay, $pb_F,
+      pb_{\mathrm{pay}}, pb_{\mathrm{dpay}}, pb_{\mathrm{htlc}},
+      pb_{\mathrm{com}1}, pb_{\mathrm{rev}}$, tempid) to $Alice$
+    \EndIndent
+    \State
+
       \State $\mathrm{chid} \gets \mathcal{H}\left(F\right) \oplus \mathrm{idx}$
       \Comment{This is how chid is derived in LND}
       \State Send (\texttt{fundingCreated}, $\mathcal{H}\left(F\right)$, idx,
