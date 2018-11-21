@@ -20,6 +20,7 @@
       in \texttt{pending}
       \State add $\left(Alice, Bob, x, y, \mathrm{AliceDelay},
       \mathrm{fundingTX}\right)$ to \texttt{pending}
+      \State choose unique temporary ID tempid
       \State $\left(\left(pa_F, sa_F\right), \left(pa_{\mathrm{pay}},
       sa_{\mathrm{pay}}\right), \left(pa_{\mathrm{dpay}},
       sa_{\mathrm{dpay}}\right), \left(pa_{\mathrm{htlc}},
@@ -28,19 +29,21 @@
       sa_{\mathrm{rev}}\right)\right) \gets \textsc{GetKeys}\left(\right)$
       \State Send (\textsc{openChannel}, $x, y$, AliceDelay, bcast, $pa_F,
       pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
-      pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$) to $Bob$
+      pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$, tempid) to $Bob$
     \EndIndent
     \State
 
     \State Upon receiving (\textsc{openChannel}, $x, y$, AliceDelay, bcast,
     $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
-    pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$) from $Alice$ (self is $Bob$):
+    pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$, tempid) from $Alice$ (self is
+    $Bob$):
     \Indent
-      \State ensure that there is no $\left(Alice, Bob, \dots\right)$ in
+      \State ensure that there is no $\left(\dots, \mathrm{tempid}\right)$ in
       \texttt{pending}
       \State add $\left(Alice, Bob, x, y, \mathrm{AliceDelay}, \mathrm{bcast},
       pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
-      pa_{\mathrm{com}1}, pa_{\mathrm{rev}}\right)$ to \texttt{pending}
+      pa_{\mathrm{com}1}, pa_{\mathrm{rev}}, \mathrm{tempid}\right)$ to
+      \texttt{pending}
       \State Send (\textsc{endorseChannel}, $\mathrm{pid}_{Alice},
       \mathrm{pid}_{Bob}, x, y$, AliceDelay, bcast) to $\mathcal{E}$
       \If{success = True}
@@ -61,6 +64,7 @@
         \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay},
         \mathrm{bcast}\right)$ to $\mathcal{E}$
       \EndIf
+      \mathrm{pid}_{Bob}, x, y$, AliceDelay, bcast, tempid) to $\mathcal{E}$
     \EndIndent
     \State
     \Function{OpenChannel}{fundee, forFundTX, coins, delay, bcast}

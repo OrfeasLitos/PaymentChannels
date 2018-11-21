@@ -30,28 +30,30 @@
       \State ensure that validate(\texttt{state}, fundingTX) = 1
       \State ensure that there is no $\left(Alice, Bob, \_, \_, \_, \_\right)$
       in \texttt{pending}
+      \State choose unique temporary ID tempid
       \State add $\left(Alice, Bob, x, y, \mathrm{AliceDelay},
-      \mathrm{forFundTX}\right)$ to \texttt{pending}
+      \mathrm{forFundTX}, \mathrm{tempid}\right)$ to \texttt{pending}
       \State $\mathtt{blocked}\left(Alice\right) \leftarrow
       \mathtt{blocked}\left(Alice\right) + x$
       \State \Return $\left(\textsc{endorseChannel}, Alice, Bob, x, y,
-      \mathrm{AliceDelay}\right)$ to $Bob$ \Comment{DISCUSS: return to Bob but
-      Alice called?}
+      \mathrm{AliceDelay}, \mathrm{tempid}\right)$ to $Bob$ \Comment{DISCUSS:
+      return to Bob but Alice called?}
     \EndIndent
     \State
     \State Upon receiving $\left(\textsc{endorseChannel}, Alice, Bob, x, y,
-    \mathrm{BobDelay}\right)$ from $Bob$: \Comment{This message does not exist
-    in LND, because only one side funds the channel there.}
+    \mathrm{BobDelay}, \mathrm{tempid}\right)$ from $Bob$: \Comment{This message
+    does not exist in LND, because only one side funds the channel there.}
     \Indent
-      \State ensure that $\left(Alice, Bob, x, y, \_, \_\right) \in \mathtt{pending}$
+      \State ensure that $\left(Alice, Bob, x, y, \_, \_, \mathrm{tempid}\right)
+      \in \mathtt{pending}$
       \State ensure that onChainBalance($Alice$) $\geq
       \mathtt{blocked}\left(Alice\right) + x$
       \State ensure that onChainBalance($Bob$) $\geq
       \mathtt{blocked}\left(Bob\right)$
       \State AliceDelay, forFundTX $\gets$ last 2 elements in $\left(Alice,
       Bob, x, y, \_, \_\right)$
-      \State remove $\left(Alice, Bob, x, y, \_, \_\right)$ from
-      \texttt{pending}
+      \State remove $\left(Alice, Bob, x, y, \_, \_, \mathrm{tempid}\right)$
+      from \texttt{pending}
       \State $\mathrm{onChainBalance}\left(Alice\right) \gets
       \mathrm{onChainBalance}\left(Alice\right) - x$
       \State $\mathrm{onChainBalance}\left(Bob\right) \gets
@@ -68,6 +70,7 @@
       %\mathrm{forFundTX}\right), \tau_L\right)$
       %\State add \texttt{tx} to \texttt{buffer}
       \State Choose a unique channel ID chid
+      \State forget tempid
       \State $\mathtt{channel} \gets \left(Alice, Bob, x, y,
       \mathrm{AliceDelay}, \mathrm{BobDelay}, 0, \mathrm{chid}\right)$
       \State add \texttt{channel} to \texttt{channels}
