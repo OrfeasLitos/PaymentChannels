@@ -3,7 +3,7 @@
   \begin{algorithmic}[1]
     \State Initialisation:
     \Indent
-      \State $\mathrm{blocked} \gets 0$
+      \State $\mathtt{blocked} \gets 0$
       \State $\mathtt{pending} \gets \emptyset$
       \State $G \gets \emptyset$
     \EndIndent
@@ -19,7 +19,7 @@
       \State ensure that validate($\mathtt{state}_{Alice}$, fundingTX) = 1
       \State ensure that there is no $\left(Alice, Bob, \_, \_, \_, \_\right)$
       in \texttt{pending}
-      \State $\mathrm{blocked} \leftarrow \mathrm{blocked} + x$
+      \State $\mathtt{blocked} \leftarrow \mathtt{blocked} + x$
       \State $\left(\mathrm{txid}, \mathrm{chid}, \mathrm{success}\right)
       \gets \textsc{OpenChannel}\left(\mathrm{pid}_{Bob}, \mathrm{forFundTX},
       \mathrm{coins}, \mathrm{delay}, \mathrm{bcast}\right)$
@@ -40,7 +40,7 @@
         \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay},
         \mathrm{bcast}\right)$ to $\mathcal{E}$
       \EndIf
-      \State $\mathrm{blocked} \leftarrow \mathrm{blocked} - x$
+      \State $\mathtt{blocked} \leftarrow \mathtt{blocked} - x$
     \EndIndent
     \State
     \Function{OpenChannel}{fundee, forFundTX, coins, delay, bcast}

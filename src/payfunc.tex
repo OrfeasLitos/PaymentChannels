@@ -13,7 +13,7 @@
     \State Initialisation:
       \Indent
       \ForAll{$v \in \mathcal{P}$}
-        \State $\mathrm{blocked}\left(v\right) \gets 0$
+        \State $\mathtt{blocked}\left(v\right) \gets 0$
       \EndFor
       \State save balances (map from players to coins) as onChainBalance
       \Comment{DISCUSS: how to handle balance?}
@@ -32,8 +32,8 @@
       in \texttt{pending}
       \State add $\left(Alice, Bob, x, y, \mathrm{AliceDelay},
       \mathrm{forFundTX}\right)$ to \texttt{pending}
-      \State $\mathrm{blocked}\left(Alice\right) \leftarrow
-      \mathrm{blocked}\left(Alice\right) + x$
+      \State $\mathtt{blocked}\left(Alice\right) \leftarrow
+      \mathtt{blocked}\left(Alice\right) + x$
       \State \Return $\left(\textsc{proposeChannel}, Alice, Bob, x, y,
       \mathrm{AliceDelay}\right)$ to $Bob$ \Comment{DISCUSS: return to Bob but
       Alice called?}
@@ -45,9 +45,9 @@
     \Indent
       \State ensure that $\left(Alice, Bob, x, y, \_, \_\right) \in \mathtt{pending}$
       \State ensure that onChainBalance($Alice$) $\geq
-      \mathrm{blocked}\left(Alice\right) + x$
+      \mathtt{blocked}\left(Alice\right) + x$
       \State ensure that onChainBalance($Bob$) $\geq
-      \mathrm{blocked}\left(Bob\right)$
+      \mathtt{blocked}\left(Bob\right)$
       \State AliceDelay, forFundTX $\gets$ last 2 elements in $\left(Alice,
       Bob, x, y, \_, \_\right)$
       \State remove $\left(Alice, Bob, x, y, \_, \_\right)$ from
@@ -56,8 +56,8 @@
       \mathrm{onChainBalance}\left(Alice\right) - x$
       \State $\mathrm{onChainBalance}\left(Bob\right) \gets
       \mathrm{onChainBalance}\left(Alice\right) - y$
-      \State $\mathrm{blocked}\left(Alice\right) \gets
-      \mathrm{blocked}\left(Alice\right) - x$
+      \State $\mathtt{blocked}\left(Alice\right) \gets
+      \mathtt{blocked}\left(Alice\right) - x$
       \State send \textsc{Read} to $\mathcal{G}_{\mathrm{Clock}}$ and assign
       reply to $\tau$
       \State send $\left(\textsc{openChannel}, Alice, Bob, x, y,
