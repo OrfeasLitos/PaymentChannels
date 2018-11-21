@@ -34,8 +34,9 @@
       \mathrm{forFundTX}\right)$ to \texttt{pending}
       \State $\mathrm{blocked}\left(Alice\right) \leftarrow
       \mathrm{blocked}\left(Alice\right) + x$
-      \State \Return $\left(Alice, Bob, x, y, \mathrm{AliceDelay}\right)$ to
-      $Bob$ \Comment{DISCUSS: return to Bob but Alice called?}
+      \State \Return $\left(\textsc{proposeChannel}, Alice, Bob, x, y,
+      \mathrm{AliceDelay}\right)$ to $Bob$ \Comment{DISCUSS: return to Bob but
+      Alice called?}
     \EndIndent
     \State
     \State Upon receiving $\left(\textsc{acceptChannel}, Alice, Bob, x, y,
