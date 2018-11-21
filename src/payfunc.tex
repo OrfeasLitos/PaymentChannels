@@ -3,9 +3,9 @@
   \label{alg:payfunc}
   \funcsection{Interface (messages from $\mathcal{E}$)}
     \begin{itemize}
-      \item openChannel(self, peer, selfCoins, peerCoins, selfDelay, forFundTX)
-      \item acceptChannel(peer, self, peerCoins, selfCoins, selfDelay)
-      \item closeChannel(receipt)
+      \item createChannel(self, peer, selfCoins, peerCoins, selfDelay, forFundTX)
+      \item endorseChannel(peer, self, peerCoins, selfCoins, selfDelay)
+      \item breakChannel(receipt)
       \item pay(peer, coins, path, receipt)
     \end{itemize}
   \funcsection{Pseudocode}
@@ -20,7 +20,7 @@
       \State $\mathtt{pending}, \mathtt{channels} \gets \emptyset$
       \EndIndent
     \State
-    \State Upon receiving $\left(\textsc{openChannel}, Alice, Bob, x, y,
+    \State Upon receiving $\left(\textsc{createChannel}, Alice, Bob, x, y,
     \mathrm{AliceDelay}, \mathrm{forFundTX}\right)$ from $Alice$:
     \Indent
       \State ensure that forFundTX has inputs spendable by $Alice$ of total
@@ -39,7 +39,7 @@
       Alice called?}
     \EndIndent
     \State
-    \State Upon receiving $\left(\textsc{acceptChannel}, Alice, Bob, x, y,
+    \State Upon receiving $\left(\textsc{endorseChannel}, Alice, Bob, x, y,
     \mathrm{BobDelay}\right)$ from $Bob$: \Comment{This message does not exist
     in LND, because only one side funds the channel there.}
     \Indent
@@ -111,7 +111,7 @@
       \EndIf
     \EndIndent
     \State
-    \State Upon receiving (\textsc{close}, \texttt{receipt}) from $Alice$:
+    \State Upon receiving (\textsc{breakChannel}, \texttt{receipt}) from $Alice$:
     \Indent
       \State ensure that \texttt{receipt} contains $Alice$ and corresponds to a
       \texttt{channel} in \texttt{channels} (i.e. there is a \texttt{channel}
@@ -121,8 +121,8 @@
       reply to $\tau$
       \State send $\left(\textsc{closeChannel}, \mathtt{channel},
       \tau\right)$ to $\mathcal{A}$
-      \State Upon receiving (\textsc{close}, \texttt{receipt'}) from $Bob$
-      within AliceDelay blocks: \Comment{DISCUSS: what is a block?}
+      \State Upon receiving (\textsc{breakChannel}, \texttt{receipt'}) from
+      $Bob$ within AliceDelay blocks: \Comment{DISCUSS: what is a block?}
       \If{\texttt{receipt'} corresponds to a \texttt{channel'} in
       \texttt{channels} and (\texttt{receipt}, \texttt{receipt'}) have the
       same chid and \texttt{receipt'} has a greater sequence number than
