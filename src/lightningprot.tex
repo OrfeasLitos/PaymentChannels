@@ -17,8 +17,8 @@
       \State add an $\left(Alice \wedge Bob\right)$ output of value $x + y$ to
       forFundTX and assign resulting transaction to fundingTX
       \State ensure that validate($\mathtt{state}_{Alice}$, fundingTX) = 1
-      \State ensure that there is no $\left(Alice, Bob, x, y, \_, \_\right)$ in
-      \texttt{pending}
+      \State ensure that there is no $\left(Alice, Bob, \_, \_, \_, \_\right)$
+      in \texttt{pending}
       \State $\mathrm{blocked} \leftarrow \mathrm{blocked} + x$
       \State $\left(\mathrm{txid}, \mathrm{chid}, \mathrm{success}\right)
       \gets \textsc{OpenChannel}\left(\mathrm{pid}_{Bob}, \mathrm{forFundTX},
