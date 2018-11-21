@@ -3,7 +3,6 @@
   \begin{algorithmic}[1]
     \State Initialisation:
     \Indent
-      \State $\mathtt{blocked} \gets 0$
       \State $\mathtt{pending} \gets \emptyset$
       \State $\mathtt{channels} \gets \emptyset$
     \EndIndent
@@ -41,7 +40,6 @@
         \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay},
         \mathrm{bcast}\right)$ to $\mathcal{E}$
       \EndIf
-      \State $\mathtt{blocked} \gets \mathtt{blocked} - x$
     \EndIndent
     \State
     \Function{OpenChannel}{fundee, forFundTX, coins, delay, bcast}
