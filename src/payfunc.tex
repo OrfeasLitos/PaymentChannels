@@ -53,9 +53,6 @@
       value at least $x$ and by $Bob$ of total value at least $y$
       \State ensure that it is possible to add a $x + y$-valued output to
       forFundTX
-      \State \Comment{TODO: [Both funding] changes protocol start from [adding
-      an output to given tx] to [creating an entirely new tx] after key
-      negotiation}
       \State ensure that there is no $\left(Alice, Bob, \_, \_, \_, \_\right)$
       in \texttt{pending}
       \State choose unique temporary ID tempid
@@ -109,9 +106,6 @@
       to } Alice \text{ and } Bob$
       \Comment{Multiple returns?}
     \EndIndent
-    \State \Comment{DISCUSS: do we care for things that can happen in the
-    all-malicious case?}
-    \State \Comment{eg update based on older state}
 
     \State Upon receiving $\left(\textsc{pay}, Bob, x,
     \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from $Alice$:
