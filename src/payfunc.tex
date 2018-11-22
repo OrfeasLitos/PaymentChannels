@@ -75,9 +75,9 @@
     \Indent
       \State ensure that $\left(Alice, Bob, x, y, \_, \_, \mathrm{tempid}\right)
       \in \mathtt{pending}$
-      \State ensure that onChainBalance($Alice$) $\geq
+      \State ensure that $\mathtt{onChainBalance}\left(Alice\right) \geq
       \mathtt{blocked}\left(Alice\right) + x$
-      \State ensure that onChainBalance($Bob$) $\geq
+      \State ensure that $\mathtt{onChainBalance}\left(Bob\right) \geq
       \mathtt{blocked}\left(Bob\right)$
       \State AliceDelay, forFundTX $\gets$ last 2 elements in $\left(Alice,
       Bob, x, y, \_, \_\right)$
