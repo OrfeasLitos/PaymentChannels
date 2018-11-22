@@ -91,7 +91,13 @@
       \State let idx be the position of the output in the transaction
       \State $\mathrm{chid} \gets \mathcal{H}\left(F\right) \oplus \mathrm{idx}$
       \Comment{This is how chid is derived in LND}
-      \State $\mathrm{AliceSig} \gets \mathrm{sign}\left(F, sa_F\right)$
+      \State com1b $\gets \textsc{getCommitment}\left(F, \mathrm{idx},
+      1, \mathrm{BobDelay}, pa_{\mathrm{rev}}, pb_{\mathrm{dpay}},
+      pa_{\mathrm{pay}}\right)$ TODO: find if
+      offered\footnote{\url{https://github.com/lightningnetwork/lightning-rfc/blob/master/03-transactions.md\#offered-htlc-outputs}}/received\footnote{\url{https://github.com/lightningnetwork/lightning-rfc/blob/master/03-transactions.md\#received-htlc-outputs}}
+      HTLC outputs needed
+      \State $\mathrm{AliceSig} \gets \mathrm{sign}\left(\mathrm{com1},
+      sa_F\right)$
       \State Send (\texttt{fundingCreated}, tempid, $\mathcal{H}\left(F\right)$,
       idx, AliceSig) to $Bob$
     \EndIndent
