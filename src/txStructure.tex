@@ -46,3 +46,13 @@ A well-formed input contains:
 Lastly, the sum of coins of the outputs referenced by the inputs of the
 transaction (to-be-spent outputs) should be greater than or equal to the sum of
 coins of the outputs of the transaction.
+
+We say that an unspent output is currently exclusively spendable by a player
+$Alice$ with a public key $pk$ and a hash list $hl$ if for each spending method
+one of the following two holds:
+\begin{itemize}
+  \item It still has a locktime that has not expired and thus is currently
+  unspendable, or
+  \item The only specified public key is $pk$ and if there is a hashlock, its
+  hash is contained in $hl$.
+\end{itemize}
