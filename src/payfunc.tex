@@ -3,6 +3,7 @@
   \funcsection{Interface (messages from $\mathcal{E}$)}
     \begin{itemize}
       \item register(pubKey, hashList)
+      \item setDelay(delay)
       \item createChannel(self, peer, selfCoins, peerCoins, selfDelay, forFundTX)
       \item endorseChannel(peer, self, peerCoins, selfCoins, selfDelay)
       \item breakChannel(receipt)
@@ -15,7 +16,8 @@
       \Indent
       \ForAll{$v \in \mathcal{P}$}
         \State $\mathtt{blocked}\left(v\right),
-        \mathtt{onChainBalance}\left(v\right) \gets 0$
+        \mathtt{onChainBalance}\left(v\right), \mathtt{delay}\left(v\right)
+        \gets 0$
         \State $\mathtt{pubKey}\left(v\right), \mathtt{hashList}\left(v\right)
         \gets \bot$
       \EndFor
@@ -45,6 +47,17 @@
       (for the case of expired timelocks)
       \State ignore message if $Alice$ has not registered
     \EndIndent
+    \State
+
+    \State BEGIN LIGHTNING FUNCTIONALITY-SPECIFIC
+    \State Upon receiving $\left(\textsc{setDelay}, \mathrm{AliceDelay}\right)$
+    from $Alice$:
+    \Indent
+      \State $\mathtt{delay}\left(v\right) \gets \mathrm{AliceDelay}$
+    \EndIndent
+    \State
+
+    \State END LIGHTNING FUNCTIONALITY-SPECIFIC
 
     \State BEGIN ROBUST FUNCTIONALITY-SPECIFIC
     \State Upon receiving $\left(\textsc{createChannel}, Alice, Bob, x, y,
