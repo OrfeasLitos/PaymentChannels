@@ -46,6 +46,7 @@
       \State ignore message if $Alice$ has not registered
     \EndIndent
 
+    \State BEGIN ROBUST FUNCTIONALITY-SPECIFIC
     \State Upon receiving $\left(\textsc{createChannel}, Alice, Bob, x, y,
     \mathrm{AliceDelay}, \mathrm{forFundTX}\right)$ from $Alice$:
     \Indent
@@ -106,6 +107,7 @@
       to } Alice \text{ and } Bob$
       \Comment{Multiple returns?}
     \EndIndent
+    \State END ROBUST FUNCTIONALITY-SPECIFIC
 
     \State Upon receiving $\left(\textsc{pay}, Bob, x,
     \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from $Alice$:
