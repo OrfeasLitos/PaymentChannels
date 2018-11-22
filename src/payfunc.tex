@@ -1,8 +1,8 @@
-\begin{functionality}{$\mathcal{F}_{\mathrm{PayNet}}
-\left(\mathrm{balances}\right)$}
+\begin{functionality}{$\mathcal{F}_{\mathrm{PayNet}}$}
   \label{alg:payfunc}
   \funcsection{Interface (messages from $\mathcal{E}$)}
     \begin{itemize}
+      \item register(pubKey, hashList)
       \item createChannel(self, peer, selfCoins, peerCoins, selfDelay, forFundTX)
       \item endorseChannel(peer, self, peerCoins, selfCoins, selfDelay)
       \item breakChannel(receipt)
@@ -14,13 +14,37 @@
     \State Initialisation:
       \Indent
       \ForAll{$v \in \mathcal{P}$}
-        \State $\mathtt{blocked}\left(v\right) \gets 0$
+        \State $\mathtt{blocked}\left(v\right),
+        \mathtt{onChainBalance}\left(v\right) \gets 0$
+        \State $\mathtt{pubKey}\left(v\right), \mathtt{hashList}\left(v\right)
+        \gets \bot$
       \EndFor
-      \State save balances (map from players to coins) as onChainBalance
-      \Comment{DISCUSS: how to handle balance?}
       \State $\mathtt{pending}, \mathtt{channels} \gets \emptyset$
       \EndIndent
     \State
+
+    \State Upon receiving $\left(\textsc{register}, \mathrm{pubKey},
+    \mathrm{hashList}\right)$ from $Alice$:
+    \Indent
+      \State ensure that $\mathtt{pubKey}\left(v\right) =
+      \mathtt{hashList}\left(v\right) = \bot$
+      \State ensure that pubKey is not assigned to another player
+      \State $\mathtt{pubKey}\left(v\right) \gets \mathrm{pubKey}$
+      \State $\mathtt{hashList}\left(v\right) \gets \mathrm{hashList}$
+      \State send (\textsc{Read}) to $\mathcal{G}_{\mathrm{Ledger}}$ as $Alice$
+      and assign reply to $\Sigma_{Alice}$
+      \State count all coins currently exclusively spendable by $Alice$ in
+      $\Sigma_{Alice}$ and assign result to
+      $\mathtt{onChainBalance}\left(Alice\right)$
+    \EndIndent
+    \State
+
+    \State Upon receiving any message from $Alice$:
+    \Indent
+      \State recalculate all on-chain balances for players that have registered
+      (for the case of expired timelocks)
+      \State ignore message if $Alice$ has not registered
+    \EndIndent
 
     \State Upon receiving $\left(\textsc{createChannel}, Alice, Bob, x, y,
     \mathrm{AliceDelay}, \mathrm{forFundTX}\right)$ from $Alice$:
