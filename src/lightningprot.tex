@@ -103,30 +103,116 @@
     \EndIndent
     \State
 
-      \State assert(response = (\texttt{fundingSigned}, chid, sig)
-      \Indent
-        \State $\And \textsc{isValid2-of-2Sig}\left(\mathrm{sig},
-        \textsc{GetCommitment}\left(\right.\right.$
-        \State $\left.\left.\mathcal{H}\left(F\right),\mathrm{idx}, pa_{pay},
-        pb_{pay}\right), 0\right)$) TODO: may change
-      \EndIndent
-      \State $\mathcal{F}_{\mathrm{Ledger}}.\mathrm{Broadcast}\left(F\right)$
-      \State Wait for minDepth confirmations on $F$
-      \State $\left(pa_{\mathrm{com}2}, sa_{\mathrm{com}2}\right) \gets
+    \State Upon receiving (\textsc{fundingCreated}, txid, idx, AliceSig) from
+    $Alice$ (self is $Bob$):
+      \State ensure that there is a unique $\left(\dots, \mathrm{tempid}\right)$
+      entry in \texttt{pending} with elements as should be after handling an
+      \textsc{endorseChannel} message
+      \State retrieve elements of entry
+      \State com1b $\gets \textsc{getCommitment}\left(F, \mathrm{idx}, 1,
+      \mathrm{BobDelay}, pa_{\mathrm{rev}}, pb_{\mathrm{dpay}},
+      pa_{\mathrm{pay}}\right)$ TODO: find if offered/received HTLC outputs
+      needed
+      \State ensure that AliceSig signs com1b with the private key of $pa_F$
+      \State CONTINUE
+      \State $\mathrm{chid} \gets \mathrm{txid} \oplus \mathrm{idx}$
+      \State $\mathrm{BobSig} \gets \mathrm{sign}\left(\mathrm{txid},
+      \mathrm{idx}, sb_F\right)$
+      \State Send (\texttt{fundingSigned}, chid, sig) to funder
+      \State Wait for minDepth confirmations on tx with id txid
+      \State $\left(pb_{\mathrm{com}2}, sb_{\mathrm{com}2}\right) \gets
       \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$
       \State In parallel:
       \Indent
-        \State Send (\texttt{fundingLocked}, chid, $pa_{\mathrm{com}2}$) to
-        fundee
+        \State Send (\texttt{fundingLocked}, chid, $pb_{\mathrm{com}2}$) to
+        funder
         \State assert(response = (\texttt{fundingLocked}, chid,
-        $pb_{\mathrm{com}2}$) $\And$
+        $pa_{\mathrm{com}2}$) $\And$
         \Indent
           \State $\mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}
-          \left(pb_{\mathrm{com}2}\right)$)
+          \left(pa_{\mathrm{com}2}\right)$)
         \EndIndent
       \EndIndent
-      \State \Return ($\mathcal{H}\left(F\right)$, chid, True)
-    \EndFunction
+      \State \Return (txid, chid, True)
+    \State
+
+% openChannel from E to Alice OK
+% openChannel from Alice to Bob OK
+% endorseChannel from Bob to E OK
+% endorseChannel from E to Bob OK
+% acceptChannel from Bob to Alice OK
+% fundingCreated from Alice to Bob
+% fundingSigned from Bob to Alice
+% fundingLocked from Alice to Bob
+% fundingLocked from Bob to Alice
+
+% for fundingLocked from A to B or the other way
+%      \State add $\left(\mathrm{pid}_{Alice}, \mathrm{pid}_{Bob}, x, y,
+%      \mathrm{chid}, \mathrm{txid}\right)$ to \texttt{channels} \Comment{TODO:
+%      add delay, bcast}
+%      \State Send $\left(\textsc{Receipt}, \mathrm{pid}_{Alice},
+%      \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay}, \mathrm{bcast},
+%      \mathrm{txid}, \mathrm{chid}\right)$ to $\mathcal{E}$ \Comment{TODO:
+%      build receipt. DISCUSS: difference in Receipt message timing with
+%      functionality?}
+
+% for fundingLocked
+%      \State $\left(\mathrm{txid}, \mathrm{chid}, \mathrm{success}\right) \gets
+%      \textsc{AcceptChannel}$(funder, coins, selfDelay,
+%      \Indent
+%        \Indent
+%          \State remoteDelay, bcast, minDepth,
+%          \State $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}},
+%          pa_{\mathrm{htlc}}, pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$)
+%        \EndIndent
+%      \EndIndent
+%      \If{success = True}
+%        \State add $\left(\mathrm{pid}_{Alice}, \mathrm{pid_{Bob}}, 0,
+%        \mathrm{coins}, \mathrm{chid}, \mathrm{txid}\right)$ to
+%        \texttt{channels}
+%        \Comment{TODO: add delay, bcast}
+%        \State Send $\left(\mathtt{accepted}, \mathrm{pid}_{Alice},
+%        \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay}, \mathrm{bcast},
+%        \mathrm{txid}, \mathrm{chid}\right)$
+%        \Indent
+%          \Indent
+%            \State to $\mathcal{E}$
+%          \EndIndent
+%        \EndIndent
+%      \Else
+%        \State Send $\left(\mathtt{notAccepted}, \mathrm{pid}_{Alice},
+%        \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay},
+%        \mathrm{bcast}\right)$ to $\mathcal{E}$
+%      \EndIf
+%    \EndIndent
+
+% for fundingSigned from Bob to Alice
+%    \Function{OpenChannel}{fundee, forFundTX, coins, delay, bcast}
+%      \State assert(response = (\texttt{fundingSigned}, chid, sig)
+%      \Indent
+%        \State $\And \textsc{isValid2-of-2Sig}\left(\mathrm{sig},
+%        \textsc{GetCommitment}\left(\right.\right.$
+%        \State $\left.\left.\mathcal{H}\left(F\right),\mathrm{idx}, pa_{pay},
+%        pb_{pay}\right), 0\right)$) TODO: may change
+%      \EndIndent
+%      \State $\mathcal{F}_{\mathrm{Ledger}}.\mathrm{Broadcast}\left(F\right)$
+%      \State Wait for minDepth confirmations on $F$
+%      \State $\left(pa_{\mathrm{com}2}, sa_{\mathrm{com}2}\right) \gets
+%      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$
+%      \State In parallel:
+%      \Indent
+%        \State Send (\texttt{fundingLocked}, chid, $pa_{\mathrm{com}2}$) to
+%        fundee
+%        \State assert(response = (\texttt{fundingLocked}, chid,
+%        $pb_{\mathrm{com}2}$) $\And$
+%        \Indent
+%          \State $\mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}
+%          \left(pb_{\mathrm{com}2}\right)$)
+%        \EndIndent
+%      \EndIndent
+%      \State \Return ($\mathcal{H}\left(F\right)$, chid, True)
+%    \EndFunction
+
     \State
     \Function{GetKeys}{}
       \State $\left(pa_F, sa_F\right) \gets \mathrm{genKey}\left(\right)$
@@ -180,100 +266,6 @@
       \mathcal{F}_{\mathrm{Wallet}}.\textsc{Sign}\left(\mathcal{H}\left(F\right),
       \mathrm{idx}, sa_F\right)$
       \State \Return $\left(F, \mathrm{idx}, \mathrm{sig}\right)$
-    \EndFunction
-    \State
-    \State Upon receiving (\texttt{openChannel}, coins, remoteDelay, bcast,
-    \Indent
-      \Indent
-        \State $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
-        pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$) from $Bob$:
-      \EndIndent
-    \EndIndent
-    \Indent
-      \State Send (\texttt{recvOpen}, $\mathrm{pid}_{Bob}$, coins, remoteDelay,
-      bcast,
-      \Indent
-        \Indent
-          \State $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}},
-          pa_{\mathrm{htlc}}, pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$) to
-          $\mathcal{E}$:
-        \EndIndent
-      \EndIndent
-      \State Wait for response from $\mathcal{E}$
-      \State assert(response = (\texttt{acceptChannel}, minDepth, selfDelay))
-      \State $\left(\mathrm{txid}, \mathrm{chid}, \mathrm{success}\right) \gets
-      \textsc{AcceptChannel}$(funder, coins, selfDelay,
-      \Indent
-        \Indent
-          \State remoteDelay, bcast, minDepth,
-          \State $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}},
-          pa_{\mathrm{htlc}}, pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$)
-        \EndIndent
-      \EndIndent
-      \If{success = True}
-        \State add $\left(\mathrm{pid}_{Alice}, \mathrm{pid_{Bob}}, 0,
-        \mathrm{coins}, \mathrm{chid}, \mathrm{txid}\right)$ to
-        \texttt{channels}
-        \Comment{TODO: add delay, bcast}
-        \State Send $\left(\mathtt{accepted}, \mathrm{pid}_{Alice},
-        \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay}, \mathrm{bcast},
-        \mathrm{txid}, \mathrm{chid}\right)$
-        \Indent
-          \Indent
-            \State to $\mathcal{E}$
-          \EndIndent
-        \EndIndent
-      \Else
-        \State Send $\left(\mathtt{notAccepted}, \mathrm{pid}_{Alice},
-        \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay},
-        \mathrm{bcast}\right)$ to $\mathcal{E}$
-      \EndIf
-    \EndIndent
-    \State
-
-    \Function{AcceptChannel}{funder, coins, selfDelay, remoteDelay, bcast,
-    minDepth, $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
-    pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$}
-      \State assert($\forall i \in \left\{\mathrm{pay}, \mathrm{dpay},
-      \mathrm{htlc}, \mathrm{com}1, \mathrm{rev}\right\},
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}\left(pa_i\right)$)
-      \State $\left(\left(pb_F, sb_F\right), \left(pb_\mathrm{pay},
-      sb_\mathrm{pay}\right), \left(pb_\mathrm{dpay}, sb_\mathrm{dpay}\right),
-      \left(pb_\mathrm{htlc}, sb_\mathrm{htlc}\right),\right.$
-      \State $\left.\left(pb_\mathrm{com}1, sb_\mathrm{com}1\right),
-      \left(pb_\mathrm{rev}, sb_\mathrm{rev}\right)\right) \gets
-      \textsc{GetKeys}\left(\right)$
-      \State Send (\texttt{acceptChannel}, minDepth, selfDelay,
-      \Indent
-        \Indent
-          \State $pb_F, pb_{\mathrm{pay}}, pb_{\mathrm{dpay}},
-          pb_{\mathrm{htlc}}, pb_{\mathrm{com}1}, pb_{\mathrm{rev}}$) to funder
-        \EndIndent
-      \EndIndent
-
-      \State assert(response = (\texttt{fundingCreated}, txid, idx, sig) $\And$
-      \textsc{isValid2-of-2Sig}(sig, \textsc{GetCommitment}(txid, idx,
-      $pa_{\mathrm{pay}}, pb_{\mathrm{pay}}$), 1)) TODO: may change
-      \State $\mathrm{chid} \gets \mathrm{txid} \oplus \mathrm{idx}$
-      \State $\mathrm{sig} \gets
-      \mathcal{F}_{\mathrm{Wallet}}.\textsc{Sign}\left(\mathrm{txid},
-      \mathrm{idx}, sb_F\right)$
-      \State Send (\texttt{fundingSigned}, chid, sig) to funder
-      \State Wait for minDepth confirmations on tx with id txid
-      \State $\left(pb_{\mathrm{com}2}, sb_{\mathrm{com}2}\right) \gets
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$
-      \State In parallel:
-      \Indent
-        \State Send (\texttt{fundingLocked}, chid, $pb_{\mathrm{com}2}$) to
-        funder
-        \State assert(response = (\texttt{fundingLocked}, chid,
-        $pa_{\mathrm{com}2}$) $\And$
-        \Indent
-          \State $\mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}
-          \left(pa_{\mathrm{com}2}\right)$)
-        \EndIndent
-      \EndIndent
-      \State \Return (txid, chid, True)
     \EndFunction
     \State
 
