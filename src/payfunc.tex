@@ -125,14 +125,19 @@
     \State Upon receiving $\left(\textsc{pay}, Bob, x,
     \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from $Alice$:
     \Indent
-      \State condition 1: $\overrightarrow{\mathtt{path}}$ consists of players
+      \State send $\left(\textsc{pay}, Bob, x, \overrightarrow{\mathtt{path}},
+      \mathtt{receipt}\right)$ to $\mathcal{A}$
+      \State receive reply $\left(\left\{\textsc{okPay}, \textsc{noPay}\right\},
+      Bob, x, \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from
+      $\mathcal{A}$
+      \State condition 1: reply is \textsc{okPay}
+      \State condition 2: $\overrightarrow{\mathtt{path}}$ consists of players
       where for every adjacent $\left(Carol, Dave\right)$ pair there is a
       \texttt{channel} in \texttt{channels} with $Carol$ and $Dave$ and where
       $Carol$ has at least $x$.
-      \State condition 2: \texttt{receipt} has the same ID and sequence number
+      \State condition 3: \texttt{receipt} has the same ID and sequence number
       as a channel in \texttt{channels} where $Alice$ has at least $x$ coins.
-      \Comment{DISCUSS: this excludes updates based on old states}
-      \If{both condition 1 and condition 2 hold}
+      \If{both condition 1, 2 and 3 hold}
         \ForAll{$\left(Carol, Dave\right)$ pairs in
         $\overrightarrow{\mathtt{path}}$}
           \State $\mathtt{oldCh} \gets \left(Carol, Dave, y, z,
