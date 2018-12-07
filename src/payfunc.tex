@@ -57,7 +57,36 @@
     \EndIndent
     \State
 
+    \State Upon receiving $\left(\textsc{createChannel}, Alice, Bob, x,
+    \mathrm{forFundTX}\right)$ from $Alice$:
+    \Indent
+      \State ensure that forFundTX has inputs spendable by $Alice$ of total
+      value at least $x$
+      \State ensure that it is possible to add a $x$-valued output to forFundTX
+      \State choose unique channel ID chid
+      \State $\mathrm{onChainBalance}\left(Alice\right) \gets
+      \mathrm{onChainBalance}\left(Alice\right) - x$
+      \State send \textsc{Read} to $\mathcal{G}_{\mathrm{Clock}}$ and assign
+      reply to $\tau$
+      \State send $\left(\textsc{openChannel}, Alice, Bob, x, 0,
+      \mathrm{forFundTX}, \tau\right)$ to $\mathcal{A}$ \Comment{Keys generated
+      and tx submitted by simulator TODO: may need delays}
+      % for Simulator
+      %\State $\mathtt{tx} \gets \left(\textsc{Funding}\left(x, y, pa_F, pb_F,
+      %\mathrm{forFundTX}\right), \tau_L\right)$
+      %\State add \texttt{tx} to \texttt{buffer}
+      \State $\mathtt{channel} \gets \left(Alice, Bob, x, 0,
+      \mathtt{delay}\left(Alice\right), \mathtt{delay}\left(Bob\right), 0,
+      \mathrm{chid}\right)$
+      \State add \texttt{channel} to \texttt{channels}
+      \State $\mathtt{receipt} \gets \left(Alice, Bob, x, 0, 0,
+      \mathrm{chid}\right)$
+      \State \Return $\left(\textsc{Receipt}, \mathtt{receipt}\right) \text{
+      to } Alice \text{ and } Bob$
+      \Comment{Multiple returns?}
+    \EndIndent
     \State END LIGHTNING FUNCTIONALITY-SPECIFIC
+    \State
 
     \State BEGIN ROBUST FUNCTIONALITY-SPECIFIC
     \State Upon receiving $\left(\textsc{createChannel}, Alice, Bob, x, y,
