@@ -152,10 +152,8 @@
           not returning. TODO: add message label}
         \EndFor
         \State send message $\left(\textsc{payed}, Bob, x\right)$ to $Alice$
+        \Comment{DISCUSS: which messages to send and how?}
         \State send message $\left(\textsc{payedFrom}, Alice, x\right)$ to $Bob$
-      \Else \Comment{DISCUSS: which messages to send and how?}
-        \State send message $\left(\textsc{invalidPath}, Bob, x\right)$ to
-        $Alice$
       \EndIf
     \EndIndent
     \State
