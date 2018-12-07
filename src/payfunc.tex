@@ -36,8 +36,8 @@
       \State send (\textsc{Read}) to $\mathcal{G}_{\mathrm{Ledger}}$ as $Alice$
       and assign reply to $\Sigma_{Alice}$
       \State count all coins currently exclusively spendable by $Alice$ in
-      $\Sigma_{Alice}$ and assign result to
-      $\mathtt{onChainBalance}\left(Alice\right)$
+      $\Sigma_{Alice}$ (with pubKey and possibly a preimage of a hash in
+      hashList) and assign result to $\mathtt{onChainBalance}\left(Alice\right)$
     \EndIndent
     \State
 
