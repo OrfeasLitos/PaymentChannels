@@ -130,6 +130,8 @@
       \State receive reply $\left(\left\{\textsc{okPay}, \textsc{noPay}\right\},
       Bob, x, \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from
       $\mathcal{A}$
+      % TODO for Simulator: keep track of malicious differences with what
+      % F_PayNet keeps track of
       \State condition 1: reply is \textsc{okPay}
       \State condition 2: $\overrightarrow{\mathtt{path}}$ consists of players
       where for every adjacent $\left(Carol, Dave\right)$ pair there is a
