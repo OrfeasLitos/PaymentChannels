@@ -25,19 +25,16 @@
       \EndIndent
     \State
 
-    \State Upon receiving $\left(\textsc{register}, \mathrm{pubKey},
-    \mathrm{hashList}\right)$ from $Alice$:
+    \State Upon receiving $\left(\textsc{register}\right)$ from $Alice$:
     \Indent
-      \State ensure that $\mathtt{pubKey}\left(v\right) =
-      \mathtt{hashList}\left(v\right) = \bot$
-      \State ensure that pubKey is not assigned to another player
-      \State $\mathtt{pubKey}\left(v\right) \gets \mathrm{pubKey}$
-      \State $\mathtt{hashList}\left(v\right) \gets \mathrm{hashList}$
       \State send (\textsc{Read}) to $\mathcal{G}_{\mathrm{Ledger}}$ as $Alice$
       and assign reply to $\Sigma_{Alice}$
       \State count all coins currently exclusively spendable by $Alice$ in
       $\Sigma_{Alice}$ (with pubKey and possibly a preimage of a hash in
       hashList) and assign result to $\mathtt{onChainBalance}\left(Alice\right)$
+      \State send $\left(\textsc{register}, Alice\right)$ to $\mathcal{S}$
+      \State assign reply to $\left(\mathtt{pubkey}\left(Alice\right),
+      \mathtt{hashList}\left(Alice\right)\right)$
     \EndIndent
     \State
 
