@@ -14,11 +14,11 @@
   \begin{algorithmic}[1]
     \State Initialisation:
       \Indent
-      \ForAll{$v \in \mathcal{P}$}
-        \State $\mathtt{blocked}\left(v\right),
-        \mathtt{onChainBalance}\left(v\right), \mathtt{delay}\left(v\right)
+      \ForAll{$V \in \mathcal{P}$}
+        \State $\mathtt{blocked}\left(V\right),
+        \mathtt{onChainBalance}\left(V\right), \mathtt{delay}\left(V\right)
         \gets 0$
-        \State $\mathtt{pubKey}\left(v\right), \mathtt{hashList}\left(v\right)
+        \State $\mathtt{pubKey}\left(V\right), \mathtt{hashList}\left(V\right)
         \gets \bot$
       \EndFor
       \State $\mathtt{pending}, \mathtt{channels} \gets \emptyset$
