@@ -155,39 +155,67 @@
     \State Upon receiving $\left(\textsc{pay}, Bob, x,
     \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from $Alice$:
     \Indent
+      \State ensure that $\mathtt{receipt}$ corresponds to a channel \texttt{ch}
+      between $Alice$ and $\overrightarrow{\mathtt{path}}\left[1\right]$.
+      \State ensure that $Alice$ has at least $x$ in \texttt{ch}.
       \State send $\left(\textsc{pay}, Bob, x, \overrightarrow{\mathtt{path}},
-      \mathtt{receipt}\right)$ to $\mathcal{A}$
-      \State receive reply $\left(\left\{\textsc{okPay}, \textsc{noPay}\right\},
-      Bob, x, \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from
-      $\mathcal{A}$
+      \mathtt{receipt}\right)$ to $\mathcal{S}$ and ensure reply is
+      \textsc{okPay}
       % TODO for Simulator: keep track of malicious differences with what
       % F_PayNet keeps track of
-      \State condition 1: reply is \textsc{okPay} \Comment{TODO: maybe
-      unnecessary}
-      \State condition 2: $\overrightarrow{\mathtt{path}}$ consists of players
-      where for every adjacent $\left(Carol, Dave\right)$ pair there is a
-      \texttt{channel} in \texttt{channels} with $Carol$ and $Dave$ and where
-      $Carol$ has at least $x$.
-      \State condition 3: \texttt{receipt} has the same ID and sequence number
-      as a channel in \texttt{channels} where $Alice$ has at least $x$ coins.
-      \If{conditions 1, 2 and 3 all hold}
-        \ForAll{$\left(Carol, Dave\right)$ pairs in
-        $\overrightarrow{\mathtt{path}}$}
-          \State $\mathtt{oldCh} \gets \left(Carol, Dave, y, z,
-          \mathrm{CarolDelay}, \mathrm{DaveDelay}, \mathrm{seq},
-          \mathrm{chid}\right) \in \mathtt{channels}$
-          \State $\mathtt{newCh} \gets \left(Carol, Dave, y - x, z + x,
-          \mathrm{CarolDelay}, \mathrm{DaveDelay}, \mathrm{seq} + 1,
-          \mathrm{chid}\right)$
-          \State add \texttt{newCh} to \texttt{channels}
-          \State send $\left(Carol, Dave, y - x, z + x, \mathrm{seq} + 1,
-          \mathrm{chid}\right)$ to $Carol$ and $Dave$ \Comment{DISCUSS: sending,
-          not returning. TODO: add message label}
-        \EndFor
-        \State send message $\left(\textsc{payed}, Bob, x\right)$ to $Alice$
-        \Comment{DISCUSS: which messages to send and how?}
-        \State send message $\left(\textsc{payedFrom}, Alice, x\right)$ to $Bob$
-      \EndIf
+      \ForAll{$\left(Carol, Dave\right)$ pairs in
+      $\overrightarrow{\mathtt{path}}$}
+        % if F_PayNet thinks that both are honest
+        %   build Carol -> Dave msg and send it to Simulator
+        %   expect simple OK for reply (all replies will come whenever,
+        %   shouldn't block here)
+        %   build Dave -> Carol msg and ... repeat until hop is over
+        % else if F_PayNet thinks that only Carol is honest
+        %   build Carol -> Dave msg and send it to Simulator
+        %   expect whatever the protocol Carol would expect as reply from Dave
+        %   ... repeat until hop is over
+        % else if F_PayNet thinks that only Dave is honest
+        %   send (nextHop, Carol, Dave, <other payment data>) to Simulator
+        %   expect simple OK for reply
+        %   build Dave -> Carol msg and ... repeat until hop is over
+        % else if F_PayNet thinks both are malicious
+        %   send (nextHop, Carol, Dave, <other payment data>) to Simulator
+        %   expect simple OK for reply
+        %   ... repeat <number of messages needed> times
+      \EndFor
+      \ForAll{$\left(Carol, Dave\right)$ pairs in
+      $\overrightarrow{\mathtt{path}}$ in reverse order}
+        % if F_PayNet thinks that both are honest
+        %   build Carol -> Dave msg and send it to Simulator
+        %   expect simple OK for reply (all replies will come whenever,
+        %   shouldn't block here)
+        %   build Dave -> Carol msg and ... repeat until hop is over
+        % else if F_PayNet thinks that only Carol is honest
+        %   build Carol -> Dave msg and send it to Simulator
+        %   expect whatever the protocol Carol would expect as reply from Dave
+        %   ... repeat until hop is over
+        % else if F_PayNet thinks that only Dave is honest
+        %   send (nextHop, Carol, Dave, <other payment data>) to Simulator
+        %   expect simple OK for reply
+        %   build Dave -> Carol msg and ... repeat until hop is over
+        % else if F_PayNet thinks both are malicious
+        %   send (nextHop, Carol, Dave, <other payment data>) to Simulator
+        %   expect simple OK for reply
+        %   ... repeat <number of messages needed> times
+        \State $\mathtt{oldCh} \gets \left(Carol, Dave, y, z,
+        \mathrm{CarolDelay}, \mathrm{DaveDelay}, \mathrm{seq},
+        \mathrm{chid}\right) \in \mathtt{channels}$
+        \State $\mathtt{newCh} \gets \left(Carol, Dave, y - x, z + x,
+        \mathrm{CarolDelay}, \mathrm{DaveDelay}, \mathrm{seq} + 1,
+        \mathrm{chid}\right)$
+        \State add \texttt{newCh} to \texttt{channels}
+        \State send $\left(Carol, Dave, y - x, z + x, \mathrm{seq} + 1,
+        \mathrm{chid}\right)$ to $Carol$ and $Dave$ \Comment{DISCUSS: sending,
+        not returning. TODO: add message label}
+      \EndFor
+      \State send message $\left(\textsc{payed}, Bob, x\right)$ to $Alice$
+      \Comment{DISCUSS: which messages to send and how?}
+      \State send message $\left(\textsc{payedFrom}, Alice, x\right)$ to $Bob$
     \EndIndent
     \State
 
