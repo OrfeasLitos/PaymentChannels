@@ -21,7 +21,8 @@
         \State $\mathtt{pubKey}\left(V\right), \mathtt{hashList}\left(V\right)
         \gets \bot$
       \EndFor
-      \State $\mathtt{pending}, \mathtt{channels} \gets \emptyset$
+      \State $\mathtt{pendingOpen}, \mathtt{pendingClose}, \mathtt{channels}
+      \gets \emptyset$
       \EndIndent
     \State
 
@@ -60,30 +61,58 @@
     \Indent
       \State ensure $\mathrm{onChainBalance}\left(Alice\right) \geq x$
       \State choose unique channel ID chid
-      \State $\mathrm{onChainBalance}\left(Alice\right) \gets
-      \mathrm{onChainBalance}\left(Alice\right) - x$
-      \State send \textsc{Read} to $\mathcal{G}_{\mathrm{Clock}}$ and assign
-      reply to $\tau$
-      \State send $\left(\textsc{openChannel}, Alice, Bob, x, 0, \tau\right)$ to
-      $\mathcal{S}$ \Comment{Keys generated and tx submitted by simulator TODO:
-      may need delays}
-      % for Simulator
-      %\State ensure that forFundTX has inputs spendable by $Alice$ of total
-      %value at least $x$
-      %\State ensure that it is possible to add a $x$-valued output to forFundTX
-      %
-      %\State $\mathtt{tx} \gets \left(\textsc{Funding}\left(x, y, pa_F, pb_F,
-      %\mathrm{forFundTX}\right), \tau_L\right)$
-      %\State add \texttt{tx} to \texttt{buffer}
-      \State $\mathtt{channel} \gets \left(Alice, Bob, x, 0,
-      \mathtt{delay}\left(Alice\right), \mathtt{delay}\left(Bob\right), 0,
-      \mathrm{chid}\right)$
-      \State add \texttt{channel} to \texttt{channels}
-      \State $\mathtt{receipt} \gets \left(Alice, Bob, x, 0,
-      \mathrm{chid}\right)$
-      \State \Return $\left(\textsc{Receipt}, \mathtt{receipt}\right) \text{
-      to } Alice \text{ and } Bob$
-      \Comment{Multiple returns?}
+      \State send $\left(\textsc{getForFundTX}, Alice, x\right)$ to
+      $\mathcal{S}$ and assign reply to forFundTX
+      \State $\left(pk_a, sk_a\right) \gets \mathrm{KeyGen}\left(\right)$
+      \State $\left(pk_b, sk_b\right) \gets \mathrm{KeyGen}\left(\right)$
+      \State $F \gets \mathrm{forFundTX}.\mathrm{addOutput}\left(\mathrm{value}
+      = x, \mathrm{spMethod} = \left[\left(pk_a \wedge
+      pk_b\right)\right]\right)$
+      \State send $\left(\textsc{submit}, F\right)$ as $Alice$ to
+      $\mathcal{G}_{\mathrm{Ledger}}$
+      \State add $\left(Alice, Bob, x, 0, \mathtt{delay}\left(Alice\right),
+      \mathtt{delay}\left(Bob\right), \left(pk_a, sk_a\right), \left(pk_a,
+      sk_a\right), F, \mathrm{chid}\right)$ to \texttt{pendingOpen}
+      \State send $\left(\textsc{pendingOpen}, Alice, Bob, F,
+      \mathrm{chid}\right)$ to $\mathcal{S}$ \Comment{May not need chid}
+      % Simulator has to keep track of which participant hasn't received receipt
+      % yet
+    \EndIndent
+    \State
+
+    \State Upon receiving $\left(\textsc{poll}\right)$ from $Alice$:
+    \Indent
+      \State send $\left(\textsc{poll}, Alice\right)$ to $\mathcal{S}$ and
+      assign reply to (updates, opens)
+      \State $\mathrm{ret} \gets \emptyset$
+      \For{(chid, $x$, justReported) in updates}
+        \If{justReported}
+          \State move $x$ coins from 1st to 2nd player of the chid channel,
+          increment sequence number, save new version to \texttt{channels}
+          % TODO: receive/generate and store needed txs for update
+        \EndIf
+        \State add $Alice$'s \texttt{receipt} from the latest state of channel
+        chid to ret
+      \EndFor
+      \For{(chid, justReported) in opens}
+        \If{justReported}
+          % NOTE: checking the ledger for F may be redundant
+          \State Let $F$ the funding transaction in chid entry of
+          \texttt{pendingOpen}
+          \State send (\textsc{read}) as $Alice$ to $\mathcal{G}_{Ledger}$ and
+          assign reply to $\Sigma_{Alice}$
+          \State ensure that $F$ is in $\Sigma_{Alice}$
+          \State $\mathrm{onChainBalance}\left(Alice\right) \gets
+          \mathrm{onChainBalance}\left(Alice\right) - x$
+          \State append sequence number 0 to chid entry in \texttt{pendingOpen}
+          and move it to \texttt{channels}
+        \EndIf
+        \State add $Alice$'s \texttt{receipt} from channel chid to ret
+      \EndFor
+      % NOTE: here are the receipt contents
+      %\State $\mathtt{receipt} \gets \left(Alice, Bob, x, 0,
+      %\mathrm{chid}\right)$
+      \State \Return (\textsc{poll}, ret) $Alice$
     \EndIndent
     \State END LIGHTNING FUNCTIONALITY-SPECIFIC
     \State
