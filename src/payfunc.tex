@@ -11,24 +11,37 @@
 
   \funcsection{Pseudocode}
   \begin{algorithmic}[1]
-    \Function{receipt}{\texttt{channel}}
+    \Function{receiptFromChannel}{\texttt{channel}}
       \State $\left(Alice, Bob, x, y, \mathtt{delay}\left(Alice\right),
       \mathtt{delay}\left(Bob\right), seq, \mathrm{chid}\right) \gets
       \mathtt{channel}$
-      \State \Return $\left(Alice, Bob, x, y, \mathrm{chid}\right)$
+      \State \Return $\left(\mathtt{receipt}, Alice, Bob, x, y,
+      \mathrm{chid}\right)$
+    \EndFunction
+    \State
+
+    \Function{channelFromReceipt}{\texttt{receipt}}
+      \State $\left(Alice, Bob, x, y, \mathrm{chid}\right) \gets
+      \mathtt{receipt}$
+      \If{there is a $\mathtt{channel} \in \mathtt{channels}$ with id chid}
+        \State \Return that \texttt{channel}
+      \Else
+        \State \Return $\bot$
+      \EndIf
     \EndFunction
     \State
 
     \State Initialisation:
     \Indent
-      \State $\mathtt{channels} \gets \emptyset$
+      \State $\mathtt{channels}, \mathtt{corrupted} \gets \emptyset$
     \EndIndent
     \State
 
     \State Upon receiving $\left(\textsc{register}\right)$ from $Alice$:
     \Indent
-      \State $\mathtt{delay}\left(Alice\right) \gets 1\mathrm{day}$
-      \Comment{default delay}
+      \State $\mathtt{delay}\left(Alice\right) \gets$ 1 day \Comment{default
+      delay}
+      \State $\mathtt{pendingUpdates}\left(Alice\right) \gets \emptyset$
       \State send $\left(\textsc{register}, Alice\right)$ to $\mathcal{S}$
       \State assign reply to $\mathtt{onChainBalance}\left(Alice\right)$
       \State $\mathtt{offChainBalance} \gets 0$
@@ -39,20 +52,14 @@
     $\left(\textsc{register}\right)$ from $Alice$:
     \Indent
       \State ignore message if $Alice$ has not registered
-      \State send (\textsc{Read}) to $\mathcal{G}_{\mathrm{Ledger}}$ as $Alice$
-      and assign reply to $\Sigma_{Alice}$
-      \State count all coins currently exclusively spendable by $Alice$ in
-      $\Sigma_{Alice}$ (with $\mathtt{pubKey}\left(Alice\right)$ and possibly a
-      preimage of a hash in $\mathtt{hashList}\left(Alice\right)$) and assign
-      result to $\mathtt{onChainBalance}\left(Alice\right)$ \Comment{TOASK:
-      should I specify further?}
     \EndIndent
     \State
 
-    \State Upon receiving $\left(\textsc{setDelay}, \mathrm{delay}\right)$
-    from $Alice$: \Comment{TODO: maybe remove delays}
+    \State Upon receiving $\left(\textsc{setDelay}, \mathrm{delay}\right)$ from
+    $Alice$:
     \Indent
       \State $\mathtt{delay}\left(Alice\right) \gets \mathrm{delay}$
+      \State send $\left(\textsc{delay}, Alice\right)$ to $\mathcal{S}$
     \EndIndent
     \State
 
@@ -62,8 +69,9 @@
       \State ensure $\mathrm{onChainBalance}\left(Alice\right) \geq x$
       \State choose unique channel ID chid
       \State send $\left(\textsc{openChannel}, Alice, Bob, x\right)$ to
-      $\mathcal{S}$ and ensure reply is \textsc{channelOpened} %TODO: split and
-      %robustify reply
+      $\mathcal{S}$
+      \State ensure reply is $\left(\textsc{channelOpened}, Alice, Bob, x,
+      0\right)$
       \State $\mathrm{onChainBalance}\left(Alice\right) \gets
       \mathrm{onChainBalance}\left(Alice\right) - x$
       \State $\mathrm{offChainBalance}\left(Alice\right) \gets
@@ -72,42 +80,75 @@
       \mathtt{delay}\left(Bob\right), 0, \mathrm{chid}\right)$ to
       \texttt{channels}
       \State mark newly added channel as unreported to $Bob$
-      \State send (\textsc{channelOpened}, \textsc{receipt}(\texttt{channel}))
-      to $Alice$
+      \State send (\textsc{channelOpened},
+      \textsc{receiptFromChannel}(\texttt{channel})) to $Alice$
     \EndIndent
     \State
 
     \State Upon receiving $\left(\textsc{poll}\right)$ from $Alice$:
     \Indent
-      \State $res \gets \emptyset$
-      \ForAll{unreported open \texttt{channel}s that contain $Alice$}
-        \State add \textsc{receipt}(\texttt{channel}) to $res$
-        \State mark \texttt{channel} as reported
+      \State send $\left(\textsc{poll}, Alice\right)$ to $\mathcal{S}$
+      and assign reply to (\texttt{newChannels}, \texttt{closedChannels})
+      \State $\mathtt{res.updates} \gets
+      \mathtt{pendingUpdates}\left(Alice\right)$
+      \State $\mathtt{pendingUpdates}\left(Alice\right) \gets \emptyset$
+      \ForAll{$\mathtt{channel}\text{s} \in \mathtt{newChannels}$}
+        \State add \textsc{receiptFromChannel}(\texttt{channel}) to
+        \texttt{res.new}
       \EndFor
-      \ForAll{unreported closed \texttt{channel}s that contained $Alice$}
-      \Comment{TODO: write better}
-        \State add \textsc{closingState}(\texttt{channel}) to $res$
-        \State remove \texttt{channel} from \texttt{channels}
+      \ForAll{$\mathtt{channel}\text{s} \in \mathtt{closedChannels}$}
+        \State add \textsc{receiptFromChannel}(\texttt{channel}) to
+        \texttt{res.closed}
       \EndFor
-      \State \Return (\textsc{poll}, ret) $Alice$
+      \State \Return (\textsc{poll}, \texttt{res}) $Alice$
     \EndIndent
 
     \State Upon receiving $\left(\textsc{pay}, Bob, x,
     \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from $Alice$:
     \Indent
-      %TODO
+      \State ensure that \texttt{receipt} corresponds to an open
+      \texttt{channel} and $Alice$ has at least $x$ coins in it.
+      \State ensure that $\overrightarrow{\mathtt{path}}$ contains a series of
+      channels that all contain at least $x$ to the correct direction
+      \State send $\left(\textsc{pay}, Alice, Bob, x,
+      \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to $\mathcal{S}$
+      \State ensure reply is $\left(\textsc{payedBy}, Charlie\right)$
+      \Comment{$\mathcal{S}$ can also reply (\textsc{notPayed})}
+      \If{($Charlie \neq Alice$ and $Charlie \notin \mathtt{corrupted}$) or \\
+        \Indent
+          \Indent
+            $Charlie \notin \overrightarrow{\mathtt{path}}$}
+          \EndIndent
+        \EndIndent
+        \State halt
+      \Else
+        \ForAll{$\mathtt{channel}\text{s} \in \overrightarrow{\mathtt{path}}$
+        starting with the one where $Charlie$ pays}
+          \State transfer $x$ from the first to the second member
+          \State update both \texttt{offChainBalance}s
+          \State add \texttt{channel} to both \texttt{pendingUpdate}s
+        \EndFor
+      \EndIf
     \EndIndent
     \State
+
+    \State Idle: TODO poll for slowpokes
+    \State
+
+    \State Upon receiving $\left(\textsc{corrupted}, Alice\right)$ from
+    $\mathcal{S}$:
+    \Indent
+      \State add $Alice$ to \texttt{corrupted}
+    \EndIndent
 
     \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from $Alice$:
     \Indent
       \State ensure that \texttt{receipt} corresponds to an open
       $\mathtt{channel} \in \mathtt{channels}$ that contains $Alice$
-      \State $\left(Alice, Bob, x, y, \mathrm{delayAlice}, \mathrm{delayBob},
-      \mathrm{seq}, \mathrm{chid}\right) \gets \mathtt{channel}$ \Comment{or the
-      other way around if $Bob$ opened the channel}
-      \State send (\textsc{closeChannel}, \texttt{channel}) to $\mathcal{S}$ and
-      ensure reply is (\textsc{channelClosed}, \texttt{channel})%TODO: split
+      \State send (\textsc{closeChannel}, \texttt{channel}, $Alice$) to
+      $\mathcal{S}$
+      \State ensure reply is (\textsc{channelClosed}, \texttt{channel})
+      \State extract $Alice, Bob, x, y$ from \texttt{channel}
       \State $\mathtt{onChainBalance}\left(Alice\right) \gets
       \mathtt{onChainBalance}\left(Alice\right) + x$
       \State $\mathtt{onChainBalance}\left(Bob\right) \gets
@@ -116,7 +157,6 @@
       \mathtt{offChainBalance}\left(Alice\right) - x$
       \State $\mathtt{offChainBalance}\left(Bob\right) \gets
       \mathtt{offChainBalance}\left(Bob\right) - y$
-      \State mark \textsc{channel} as unreported closed to $Bob$
       \State send (\textsc{channelClosed}, \texttt{channel}) to $Alice$
     \EndIndent
   \end{algorithmic}
