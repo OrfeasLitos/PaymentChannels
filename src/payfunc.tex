@@ -20,17 +20,6 @@
     \EndFunction
     \State
 
-    \Function{channelFromReceipt}{\texttt{receipt}}
-      \State $\left(Alice, Bob, x, y, \mathrm{chid}\right) \gets
-      \mathtt{receipt}$
-      \If{there is a $\mathtt{channel} \in \mathtt{channels}$ with id chid}
-        \State \Return that \texttt{channel}
-      \Else
-        \State \Return $\bot$
-      \EndIf
-    \EndFunction
-    \State
-
     \State Initialisation:
     \Indent
       \State $\mathtt{channels}, \mathtt{corrupted} \gets \emptyset$
