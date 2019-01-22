@@ -91,6 +91,7 @@
       \EndFor
       \State \Return (\textsc{poll}, \texttt{res}) $Alice$
     \EndIndent
+    \State
 
     \State Upon receiving $\left(\textsc{pay}, Bob, x,
     \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from $Alice$:
@@ -103,19 +104,16 @@
       \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to $\mathcal{S}$
       \State ensure reply is $\left(\textsc{payedBy}, Charlie\right)$
       \Comment{$\mathcal{S}$ can also reply (\textsc{notPayed})}
-      \If{($Charlie \neq Alice$ and $Charlie \notin \mathtt{corrupted}$) or \\
-        \Indent
-          \Indent
-            $Charlie \notin \overrightarrow{\mathtt{path}}$}
-          \EndIndent
-        \EndIndent
+      \If{($Charlie \neq Alice$ and $Charlie \notin \mathtt{corrupted}$) or
+      $Charlie \notin \overrightarrow{\mathtt{path}}$}
         \State halt
       \Else
         \ForAll{$\mathtt{channel}\text{s} \in \overrightarrow{\mathtt{path}}$
         starting with the one where $Charlie$ pays}
           \State transfer $x$ from the first to the second member
           \State update both \texttt{offChainBalance}s
-          \State add \texttt{channel} to both \texttt{pendingUpdate}s
+          \State add \textsc{receiptFromChannel}(\texttt{channel}) to both
+          \texttt{pendingUpdate}s
         \EndFor
       \EndIf
     \EndIndent
@@ -129,6 +127,7 @@
     \Indent
       \State add $Alice$ to \texttt{corrupted}
     \EndIndent
+    \State
 
     \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from $Alice$:
     \Indent
