@@ -32,7 +32,10 @@
       delay}
       \State $\mathtt{pendingUpdates}\left(Alice\right) \gets \emptyset$
       \State send $\left(\textsc{register}, Alice\right)$ to $\mathcal{S}$
-      \State assign reply to $\mathtt{onChainBalance}\left(Alice\right)$
+\EndIndent
+    \State Upon receiving $\left(\textsc{registerDone},Alice, x\right)$ from $\mathcal{S}$:
+\Indent 
+      \State  $\mathtt{onChainBalance}\left(Alice\right) \gets x$
       \State $\mathtt{offChainBalance} \gets 0$
     \EndIndent
     \State
@@ -55,18 +58,19 @@
     \State Upon receiving $\left(\textsc{openChannel}, Alice, Bob, x\right)$
     from $Alice$:
     \Indent
-      \State ensure $\mathrm{onChainBalance}\left(Alice\right) \geq x$
-      \State choose unique channel ID chid
-      \State send $\left(\textsc{openChannel}, Alice, Bob, x\right)$ to
+      \State choose unique channel ID fchid
+      \State send $\left(\textsc{openChannel}, Alice, Bob, x, fchid \right)$ to
       $\mathcal{S}$
-      \State ensure reply is $\left(\textsc{channelOpened}, Alice, Bob, x,
-      0\right)$
-      \State $\mathrm{onChainBalance}\left(Alice\right) \gets
-      \mathrm{onChainBalance}\left(Alice\right) - x$
+    \EndIndent
+
+      \State Upon receiving is $\left(\textsc{channelOpened},   
+      fchid, pchid \right)$  from $\mathcal{S}$
+      \Indent
+      \State \aggelos{ensure $pchid$ transaction exists for $x$ outgoing from Alice's account to channel (otherwise ignore).}
       \State $\mathrm{offChainBalance}\left(Alice\right) \gets
       \mathrm{offChainBalance}\left(Alice\right) + x$
       \State add $\left(Alice, Bob, x, 0, \mathtt{delay}\left(Alice\right),
-      \mathtt{delay}\left(Bob\right), 0, \mathrm{chid}\right)$ to
+      \mathtt{delay}\left(Bob\right), 0, \mathrm{fchid}, \mathrm{pchid}\right)$ to
       \texttt{channels}
       \State mark newly added channel as unreported to $Bob$
       \State send (\textsc{channelOpened},
@@ -76,8 +80,8 @@
 
     \State Upon receiving $\left(\textsc{poll}\right)$ from $Alice$:
     \Indent
-      \State send $\left(\textsc{poll}, Alice\right)$ to $\mathcal{S}$
-      and assign reply to (\texttt{newChannels}, \texttt{closedChannels})
+      \State \aggelos{ read from clock and if more than delay (Alice) from previous poll, mark negligent in time interval T.}
+      \State \aggelos{ read from ledger and scan for ...  (\texttt{newChannels}, \texttt{closedChannels}) for Alice (just say the below with words) + revoked channels. (the func can detect this using the channel version ).} \aggelos{for revoked channel - call the closed channel code.}
       \State $\mathtt{res.updates} \gets
       \mathtt{pendingUpdates}\left(Alice\right)$
       \State $\mathtt{pendingUpdates}\left(Alice\right) \gets \emptyset$
@@ -99,20 +103,21 @@
       \State ensure that \texttt{receipt} corresponds to an open
       \texttt{channel} and $Alice$ has at least $x$ coins in it.
       \State ensure that $\overrightarrow{\mathtt{path}}$ contains a series of
-      channels that all contain at least $x$ to the correct direction
+      channels that all contain at least $x$ to the correct direction \aggelos{maybe weaken this to not checking balances. }
       \State send $\left(\textsc{pay}, Alice, Bob, x,
-      \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to $\mathcal{S}$
-      \State ensure reply is $\left(\textsc{payedBy}, Charlie\right)$
-      \Comment{$\mathcal{S}$ can also reply (\textsc{notPayed})}
-      \If{($Charlie \neq Alice$ and $Charlie \notin \mathtt{corrupted}$) or
+      \overrightarrow{\mathtt{path}}, \mathtt{receipt}, payid\right)$ to $\mathcal{S}$
+    \EndIndent
+      \State Upon receiving reply is $\left(\textsc{SettlePay}, payid, Charlie\right)$ from $\mathcal{S}$
+      \Indent
+      \If{($Charlie \neq Alice$ and $Charlie \notin \{  \mathtt{corrupted}, \mathtt{negligent}\} $) or
       $Charlie \notin \overrightarrow{\mathtt{path}}$}
-        \State halt
+        \State halt \aggelos{ignore?}
       \Else
+                \State update both \texttt{offChainBalance}s \aggelos{for the end points}
         \ForAll{$\mathtt{channel}\text{s} \in \overrightarrow{\mathtt{path}}$
-        starting with the one where $Charlie$ pays}
-          \State transfer $x$ from the first to the second member
-          \State update both \texttt{offChainBalance}s
-          \State add \textsc{receiptFromChannel}(\texttt{channel}) to both
+        starting with the one where $Charlie$ pays \aggelos{improve}}
+          \State transfer $x$ from the first to the second member \aggelos{if not possible revert all and ignore - increment channel version. }
+          \State add \textsc{receiptFromChannel}(\texttt{channel}) \aggelos{Use sc only for labels} to both
           \texttt{pendingUpdate}s
         \EndFor
       \EndIf
@@ -126,7 +131,7 @@
     \EndIndent
     \State
 
-    \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from $Alice$:
+    \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from $Alice$ \aggelos{(or $\mathcal{S}$) ?? }
     \Indent
       \State ensure that \texttt{receipt} corresponds to an open
       $\mathtt{channel} \in \mathtt{channels}$ that contains $Alice$
@@ -136,6 +141,7 @@
       \State extract $Alice, Bob, x, y$ from \texttt{channel}
       \State $\mathtt{onChainBalance}\left(Alice\right) \gets
       \mathtt{onChainBalance}\left(Alice\right) + x$
+      \State \aggelos{check incoming transaction for Alice, Bob for respective amounts}
       \State $\mathtt{onChainBalance}\left(Bob\right) \gets
       \mathtt{onChainBalance}\left(Bob\right) + y$
       \State $\mathtt{offChainBalance}\left(Alice\right) \gets
@@ -146,14 +152,15 @@
     \EndIndent
     \State
 
-    \State When idle: \Comment{TODO: Discuss}
+    \State At the end of each activation: \Comment{TODO: Discuss}
     \Indent
-      \ForAll{$Alice \notin \mathtt{corrupted}$}
-        \If{the minimum delay($Alice$) for all her channels is about to pass}
-          \State check $\mathcal{G}_{\mathrm{Ledger}}$ for revoked closes
-          \State if found, inform $\mathcal{S}$
-        \EndIf
-      \EndFor
+    \State verify  onChainbalance() for all parties is consistent with ledger (if not roll back the state and ignore command of activation).
+  %    \ForAll{$Alice \notin \mathtt{corrupted}$}
+  %      \If{the minimum delay($Alice$) for all her channels is about to pass}
+  %        \State check $\mathcal{G}_{\mathrm{Ledger}}$ for revoked closes
+  %        \State if found, inform $\mathcal{S}$
+  %      \EndIf
+  %    \EndFor
     \EndIndent
   \end{algorithmic}
 \end{functionality}
