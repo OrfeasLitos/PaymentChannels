@@ -119,9 +119,6 @@
     \EndIndent
     \State
 
-    \State Idle: TODO poll for slowpokes
-    \State
-
     \State Upon receiving $\left(\textsc{corrupted}, Alice\right)$ from
     $\mathcal{S}$:
     \Indent
@@ -146,6 +143,17 @@
       \State $\mathtt{offChainBalance}\left(Bob\right) \gets
       \mathtt{offChainBalance}\left(Bob\right) - y$
       \State send (\textsc{channelClosed}, \texttt{channel}) to $Alice$
+    \EndIndent
+    \State
+
+    \State When idle: \Comment{TODO: Discuss}
+    \Indent
+      \ForAll{$Alice \notin \mathtt{corrupted}$}
+        \If{the minimum delay($Alice$) for all her channels is about to pass}
+          \State check $\mathcal{G}_{\mathrm{Ledger}}$ for revoked closes
+          \State if found, inform $\mathcal{S}$
+        \EndIf
+      \EndFor
     \EndIndent
   \end{algorithmic}
 \end{functionality}
