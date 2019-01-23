@@ -27,11 +27,10 @@
   asymptotics, keys]{cryptocode}
 \usepackage[framemethod=TikZ]{mdframed}
 
-%indentation for algorithm
+% indentation for algorithm
 \algdef{SE}[SUBALG]{Indent}{EndIndent}{}{\algorithmicend\ }%
 \algtext*{Indent}
 \algtext*{EndIndent}
-
 
 % Command for comments by Aggelos and Orfeas
 \long\def\red#1\par{\par\bigskip{\color{red}#1}\par}
@@ -45,9 +44,7 @@
 \newcommand{\aggelos}[1]{\authnote{\color{magenta}Aggelos}{#1}}
 \newcommand{\orfeas}[1]{\authnote{\color{blue}Orfeas}{#1}}
 
-
-
-%code options with \lstlisting
+% code options with \lstlisting
 \lstset{frame=tb,
   showstringspaces=false,
   columns=flexible,
@@ -77,7 +74,7 @@
    \advance\c@lstnumber\@ne\relax}%
 }
 
-%bitcoin character
+% bitcoin character
 \def\bitcoin{%
   \leavevmode
   \vtop{\offinterlineskip %\bfseries
@@ -87,39 +84,39 @@
     \vrule height .3ex width .15ex\hfil}
     \vbox{\copy2\box0}\box2}}
 
-%fontsize between \LARGE and \huge
+% fontsize between \LARGE and \huge
 \makeatletter
 \newcommand\semihuge{\@setfontsize\semihuge{19.22}{23.88}}
 \makeatother
 
-%UC environments and commands
+% UC environments and commands
 \newenvironment{ucEnv}[1]{\begin{mdframed}{\centering\textbf{#1}\par}\small\vspace{\baselineskip}\noindent}{\end{mdframed}}
 \newenvironment{functionality}[1]{\begin{ucEnv}{Functionality #1}}{\end{ucEnv}}
 \newenvironment{protocol}[1]{\begin{ucEnv}{Protocol #1}}{\end{ucEnv}}
 \newcommand{\funcsection}[1]{\vspace{0.7em}\hrule\vspace{1.5em}\par\noindent\emph{#1:}\vspace{0.5em}}
 
-%environment for separate proof
+% environment for separate proof
 \newenvironment{sepproof}[1]{\noindent \textbf{#1}}{\qed \smallskip \ \\}
 
-%environment for proof sketch
+% environment for proof sketch
 \newenvironment{proofsketch}{\noindent \textit{Proof Sketch.}}{\qed \smallskip \ \\}
 
-%page style set to plain
+% page style set to plain
 \pagestyle{plain}
 
-%bibliography style set to splncs
+% bibliography style set to splncs
 \bibliographystyle{splncs}
 
-%PDF bookmarks
+% PDF bookmarks
 \definecolor{darkblue}{rgb}{0.0,0.0,0.3}
 \hypersetup{colorlinks,breaklinks,
     linkcolor=darkblue,urlcolor=darkblue,
     anchorcolor=darkblue,citecolor=darkblue}
 
-%custom figures counter
+% custom figures counter
 \newcounter{figcount}
 \newcommand{\figlabel}[1]{\refstepcounter{figcount}\arabic{figcount}\label{#1}}
 
-%Add argmin and argmax commands
+% argmin and argmax commands
 \DeclareMathOperator*{\argmax}{argmax}
 \DeclareMathOperator*{\argmin}{argmin}
