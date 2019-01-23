@@ -7,6 +7,9 @@ A well-formed transaction contains:
 Each input must be connected to a single valid, previously unconnected (unspent)
 output in the state.
 
+We assume a one-way, collision-free hash function $\mathcal{H}$ that creates the
+id of each transaction.
+
 A well-formed output contains:
 \begin{itemize}
   \item A value in coins
