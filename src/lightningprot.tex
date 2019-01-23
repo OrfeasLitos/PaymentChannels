@@ -8,18 +8,18 @@
     \EndIndent
     \State
 
-    \State Upon receiving $\left(\textsc{openChannel}, \mathrm{pid}_{Alice},
-    \mathrm{pid}_{Bob}, x, y, \mathrm{AliceDelay}, \mathrm{forFundTX}\right)$
-    from $\mathcal{E}$ (self is $Alice$):
+    \State Upon receiving $\left(\textsc{openChannel}, \mathrm{pid}_{\alice},
+    \mathrm{pid}_{\bob}, x, y, \mathrm{AliceDelay}, \mathrm{forFundTX}\right)$
+    from $\mathcal{E}$ (self is \textit{Alice}):
     \Indent
-      \State ensure that forFundTX has inputs spendable by $Alice$ of total
-      value at least $x$ and by $Bob$ of total value at least $y$
+      \State ensure that forFundTX has inputs spendable by \textit{Alice} of total
+      value at least $x$ and by \textit{Bob} of total value at least $y$
       \State ensure that it is possible to add a $x + y$-valued output to
       forFundTX
       \State \Comment{TODO: [Both funding] changes protocol start from [adding
       an output to given tx] to [creating an entirely new tx] after key
       negotiation}
-      \State ensure that there is no $\left(Alice, Bob, \dots\right)$
+      \State ensure that there is no $\left(\alice, \bob, \dots\right)$
       in \texttt{pending}
       \State choose unique temporary ID tempid
       \State $\left(\left(pa_F, sa_F\right), \left(pa_{\mathrm{pay}},
@@ -28,7 +28,7 @@
       sa_{\mathrm{htlc}}\right), \left(pa_{\mathrm{com}1},
       sa_{\mathrm{com}1}\right),\right.$ $\left.\left(pa_{\mathrm{rev}},
       sa_{\mathrm{rev}}\right)\right) \gets \textsc{GetKeys}\left(\right)$
-      \State add $\left(Alice, Bob, x, y, \mathrm{AliceDelay},
+      \State add $\left(\alice, \bob, x, y, \mathrm{AliceDelay},
       \mathrm{forFundTX}, \left(pa_F, sa_F\right), \left(pa_{\mathrm{pay}},
       sa_{\mathrm{pay}}\right),\right.$ $\left.\left(pa_{\mathrm{dpay}},
       sa_{\mathrm{dpay}}\right), \left(pa_{\mathrm{htlc}},
@@ -37,33 +37,33 @@
       sa_{\mathrm{rev}}\right), \mathrm{tempid}\right)$ to \texttt{pending}
       \State Send (\textsc{openChannel}, $x, y$, AliceDelay, bcast, $pa_F,
       pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
-      pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$, tempid) to $Bob$
+      pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$, tempid) to \textit{Bob}
     \EndIndent
     \State
 
     \State Upon receiving (\textsc{openChannel}, $x, y$, AliceDelay, bcast,
     $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
-    pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$, tempid) from $Alice$ (self is
-    $Bob$):
+    pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$, tempid) from \textit{Alice} (self is
+    \textit{Bob}):
     \Indent
       \State ensure that there is no $\left(\dots, \mathrm{tempid}\right)$ in
       \texttt{pending}
-      \State add $\left(Alice, Bob, x, y, \mathrm{AliceDelay}, \mathrm{bcast},
+      \State add $\left(\alice, \bob, x, y, \mathrm{AliceDelay}, \mathrm{bcast},
       pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
       pa_{\mathrm{com}1}, pa_{\mathrm{rev}}, \mathrm{tempid}\right)$ to
       \texttt{pending}
-      \State Send (\textsc{endorseChannel}, $\mathrm{pid}_{Alice},
-      \mathrm{pid}_{Bob}, x, y$, AliceDelay, bcast, tempid) to $\mathcal{E}$
+      \State Send (\textsc{endorseChannel}, $\mathrm{pid}_{\alice},
+      \mathrm{pid}_{\bob}, x, y$, AliceDelay, bcast, tempid) to $\mathcal{E}$
     \EndIndent
     \State
 
-    \State Upon receiving $\left(\textsc{endorseChannel}, \mathrm{pid}_{Alice},
-    \mathrm{pid}_{Bob}, x, y, \mathrm{BobDelay}, \mathrm{tempid}\right)$ from
-    $\mathcal{E}$ (self is $Bob$)
+    \State Upon receiving $\left(\textsc{endorseChannel}, \mathrm{pid}_{\alice},
+    \mathrm{pid}_{\bob}, x, y, \mathrm{BobDelay}, \mathrm{tempid}\right)$ from
+    $\mathcal{E}$ (self is \textit{Bob})
     \Indent
       \State ensure that there is a unique $\left(\dots, \mathrm{tempid}\right)$
       entry in \texttt{pending} with elements as should be after handling an
-      \textsc{openChannel} message from $Alice$
+      \textsc{openChannel} message from \textit{Alice}
       \State $\left(\left(pb_F, sb_F\right), \left(pb_\mathrm{pay},
       sb_\mathrm{pay}\right), \left(pb_\mathrm{dpay}, sb_\mathrm{dpay}\right),
       \left(pb_\mathrm{htlc}, sb_\mathrm{htlc}\right),\right.$
@@ -73,14 +73,14 @@
       \State add generated keys to \texttt{pending} entry
       \State Send (\texttt{acceptChannel}, BobDelay, $pb_F,
       pb_{\mathrm{pay}}, pb_{\mathrm{dpay}}, pb_{\mathrm{htlc}},
-      pb_{\mathrm{com}1}, pb_{\mathrm{rev}}$, tempid) to $Alice$
+      pb_{\mathrm{com}1}, pb_{\mathrm{rev}}$, tempid) to \textit{Alice}
     \EndIndent
     \State
 
     \State Upon receiving (\textsc{acceptChannel}, BobDelay, $pb_F,
     pb_{\mathrm{pay}}, pb_{\mathrm{dpay}}, pb_{\mathrm{htlc}},
-    pb_{\mathrm{com}1}, pb_{\mathrm{rev}}$, tempid) from $Bob$ (self is
-    $Alice$):
+    pb_{\mathrm{com}1}, pb_{\mathrm{rev}}$, tempid) from \textit{Bob} (self is
+    \textit{Alice}):
     \Indent
       \State ensure that there is a unique $\left(\dots, \mathrm{tempid}\right)$
       entry in \texttt{pending} with elements as should be after handling an
@@ -99,12 +99,12 @@
       \State $\mathrm{AliceSig} \gets \mathrm{sign}\left(\mathrm{com1},
       sa_F\right)$
       \State Send (\texttt{fundingCreated}, tempid, $\mathcal{H}\left(F\right)$,
-      idx, AliceSig) to $Bob$
+      idx, AliceSig) to \textit{Bob}
     \EndIndent
     \State
 
     \State Upon receiving (\textsc{fundingCreated}, txid, idx, AliceSig) from
-    $Alice$ (self is $Bob$):
+    \textit{Alice} (self is \textit{Bob}):
       \State ensure that there is a unique $\left(\dots, \mathrm{tempid}\right)$
       entry in \texttt{pending} with elements as should be after handling an
       \textsc{endorseChannel} message
@@ -147,11 +147,11 @@
 % fundingLocked from Bob to Alice
 
 % for fundingLocked from A to B or the other way
-%      \State add $\left(\mathrm{pid}_{Alice}, \mathrm{pid}_{Bob}, x, y,
+%      \State add $\left(\mathrm{pid}_{\alice}, \mathrm{pid}_{\bob}, x, y,
 %      \mathrm{chid}, \mathrm{txid}\right)$ to \texttt{channels} \Comment{TODO:
 %      add delay, bcast}
-%      \State Send $\left(\textsc{Receipt}, \mathrm{pid}_{Alice},
-%      \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay}, \mathrm{bcast},
+%      \State Send $\left(\textsc{Receipt}, \mathrm{pid}_{\alice},
+%      \mathrm{pid}_{\bob}, \mathrm{coins}, \mathrm{delay}, \mathrm{bcast},
 %      \mathrm{txid}, \mathrm{chid}\right)$ to $\mathcal{E}$ \Comment{TODO:
 %      build receipt. DISCUSS: difference in Receipt message timing with
 %      functionality?}
@@ -167,12 +167,12 @@
 %        \EndIndent
 %      \EndIndent
 %      \If{success = True}
-%        \State add $\left(\mathrm{pid}_{Alice}, \mathrm{pid_{Bob}}, 0,
+%        \State add $\left(\mathrm{pid}_{\alice}, \mathrm{pid_{\bob}}, 0,
 %        \mathrm{coins}, \mathrm{chid}, \mathrm{txid}\right)$ to
 %        \texttt{channels}
 %        \Comment{TODO: add delay, bcast}
-%        \State Send $\left(\mathtt{accepted}, \mathrm{pid}_{Alice},
-%        \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay}, \mathrm{bcast},
+%        \State Send $\left(\mathtt{accepted}, \mathrm{pid}_{\alice},
+%        \mathrm{pid}_{\bob}, \mathrm{coins}, \mathrm{delay}, \mathrm{bcast},
 %        \mathrm{txid}, \mathrm{chid}\right)$
 %        \Indent
 %          \Indent
@@ -180,8 +180,8 @@
 %          \EndIndent
 %        \EndIndent
 %      \Else
-%        \State Send $\left(\mathtt{notAccepted}, \mathrm{pid}_{Alice},
-%        \mathrm{pid}_{Bob}, \mathrm{coins}, \mathrm{delay},
+%        \State Send $\left(\mathtt{notAccepted}, \mathrm{pid}_{\alice},
+%        \mathrm{pid}_{\bob}, \mathrm{coins}, \mathrm{delay},
 %        \mathrm{bcast}\right)$ to $\mathcal{E}$
 %      \EndIf
 %    \EndIndent
@@ -238,11 +238,11 @@
     \EndFunction
     \State
 
-    \Function{GetFunding}{$x, sa_F, pa_F, pb_F, Alice$} \Comment{w/o
+    \Function{GetFunding}{$x, sa_F, pa_F, pb_F, \alice$} \Comment{w/o
     forFundTX, w/ Alice}
       \State $\mathtt{tx} \gets
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{getTX}\left(Alice, x\right)$
-      \Comment{$Alice$ can add a $x$-valued output and broadcast result}
+      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{getTX}\left(\alice, x\right)$
+      \Comment{\textit{Alice} can add a $x$-valued output and broadcast result}
       \State $\mathtt{witnessScript} \gets \text{"2 "} \Vert pa_F \Vert \text{"
       "} \Vert pb_F \Vert \text{" 2 \texttt{OP\_CHECKMULTISIG}"}$
       \State \texttt{sPK} $\gets \text{"0 "} \Vert
@@ -274,10 +274,10 @@
     \State TODO: Change GetFunding
     \State
 
-    \State Upon receiving (\texttt{pay}, $Bob$, $x$,
+    \State Upon receiving (\texttt{pay}, \textit{Bob}, $x$,
     $\overrightarrow{\mathtt{path}}$, \texttt{receipt}) from $\mathcal{E}$:
-      \State Send (\texttt{SendInvoice}, $x$) to $Bob$
-      \State Wait for response (\texttt{invoice}, $x$, hash) from $Bob$:
+      \State Send (\texttt{SendInvoice}, $x$) to \textit{Bob}
+      \State Wait for response (\texttt{invoice}, $x$, hash) from \textit{Bob}:
       \Indent
         \State CONDITIONS FROM PAYNET START
         \State condition 1: $\overrightarrow{\mathtt{path}}$ consists of players
@@ -289,64 +289,64 @@
         (i.e. there is no \textsc{close-channel} transaction with a receipt with
         the same chid in either state)
         \State condition 2: \texttt{receipt} is in \texttt{channels} and
-        contains $Alice$ with at least $x$ coins.
+        contains \textit{Alice} with at least $x$ coins.
         \State CONDITIONS FROM PAYNET END
       \EndIndent
       \If{no hops}
       \Comment{TODO: code htlc hops, here is old: $\exists e :=
-      \left(\mathrm{txid}, \left(\mathrm{pid}_{Alice}, y\right),
-      \left(\mathrm{pid}_{Bob}, z\right)\right) \in \mathtt{channels}: y \geq
+      \left(\mathrm{txid}, \left(\mathrm{pid}_{\alice}, y\right),
+      \left(\mathrm{pid}_{\bob}, z\right)\right) \in \mathtt{channels}: y \geq
       x$}
         \State Update $e$ to $e' := \left(\mathrm{txid},
-        \left(\mathrm{pid}_{Alice}, y - x\right),
-        \left(\mathrm{pid}_{Bob}, z + x\right)\right)$ \Comment{Primitive
+        \left(\mathrm{pid}_{\alice}, y - x\right),
+        \left(\mathrm{pid}_{\bob}, z + x\right)\right)$ \Comment{Primitive
         for Update, make same with conditions}
       \ElsIf{hops}
         \State Send a Sphinx~\cite{sphinx} message with the correct HTLCs
-        (containing hash) for $Bob$
+        (containing hash) for \textit{Bob}
         \State \Comment{Sane fees and timeouts as requested by each hop}
         \State Wait for (preimage) from $Charlie$
         \If{$\mathcal{H}\left(\mathrm{preimage}\right) = \mathrm{hash}$}
-          \State Let $e := \left(\mathrm{txid}, \left(\mathrm{pid}_{Alice},
-          y\right), \left(\mathrm{pid}_{Charlie}, z\right)\right)$ $Alice$'s
+          \State Let $e := \left(\mathrm{txid}, \left(\mathrm{pid}_{\alice},
+          y\right), \left(\mathrm{pid}_{Charlie}, z\right)\right)$ \textit{Alice}'s
           channel with $Charlie$
           \State Update $e$ to pay $Charlie$ $x$ \Comment{use HTLC primitive}
           \State $\mathtt{channels} \gets \mathtt{channels} \setminus
           \left\{e\right\}$
           \State $\mathtt{channels} \gets \mathtt{channels} \cup
           \left\{\left(\mathrm{txid},
-          \left(\mathrm{pid}_{Alice}, y - x\right),
+          \left(\mathrm{pid}_{\alice}, y - x\right),
           \left(\mathrm{pid}_{Charlie}, z + x\right)\right)\right\}$
-          \State Send (\texttt{paymentSent}, $Bob$, $x$) to $\mathcal{E}$
+          \State Send (\texttt{paymentSent}, \textit{Bob}, $x$) to $\mathcal{E}$
         \Else
-          \State Send (\texttt{paymentFailed}, $Bob$, $x$) to $\mathcal{E}$
+          \State Send (\texttt{paymentFailed}, \textit{Bob}, $x$) to $\mathcal{E}$
         \EndIf
       \Else \Comment{Invalid payment}
-        \State Send (\texttt{noPath}, $Bob$, $x$) to $\mathcal{E}$
+        \State Send (\texttt{noPath}, \textit{Bob}, $x$) to $\mathcal{E}$
       \EndIf
     \State
-    \State Upon receiving (\texttt{SendInvoice}, $x$) from $Bob$:
+    \State Upon receiving (\texttt{SendInvoice}, $x$) from \textit{Bob}:
       \State $\mathrm{preimage} \overset{r}{\gets}
       \left\{0,1\right\}^{\mathrm{gazillion}}$
       \State $\mathrm{hash} \gets \mathcal{H}\left(\mathrm{preimage}\right)$
-      \State Send (\texttt{invoice}, $x$, hash) to $Bob$
+      \State Send (\texttt{invoice}, $x$, hash) to \textit{Bob}
       \State Wait for update of any channel $e := \left(\mathrm{txid},
-      \left(\mathrm{pid}_{Alice}, y\right), \left(\mathrm{pid}_{Charlie},
+      \left(\mathrm{pid}_{\alice}, y\right), \left(\mathrm{pid}_{Charlie},
       z\right)\right)$ to $e' := \left(\mathrm{txid},
-      \left(\mathrm{pid}_{Alice}, y + x\right), \left(\mathrm{pid}_{Charlie}, z
-      - x\right)\right)$ conditional on $Alice$'s knowledge of the preimage of
+      \left(\mathrm{pid}_{\alice}, y + x\right), \left(\mathrm{pid}_{Charlie}, z
+      - x\right)\right)$ conditional on \textit{Alice}'s knowledge of the preimage of
       the hash
       \State Send (\texttt{preimage}) to $Charlie$
       \State Wait for update of $e'$ to $e'' := \left(\mathrm{txid},
-      \left(\mathrm{pid}_{Alice}, y + x\right), \left(\mathrm{pid}_{Charlie}, z
+      \left(\mathrm{pid}_{\alice}, y + x\right), \left(\mathrm{pid}_{Charlie}, z
       - x\right)\right)$ unconditional
       \If{$Charlie$ does not update the channel to $e''$}
         \State Settle $e'$ on-chain with the preimage and take $x$ from the HTLC
         provided by $Charlie$
       \EndIf
-      \State Send (\texttt{paymentReceived}, $Bob$, $x$) to $\mathcal{E}$
+      \State Send (\texttt{paymentReceived}, \textit{Bob}, $x$) to $\mathcal{E}$
     \State
-    \State Upon receiving (\texttt{close}, chid) from $Alice$:
+    \State Upon receiving (\texttt{close}, chid) from \textit{Alice}:
       \If{$\mathcal{G}_{Ledger}$ has a valid funding tx with
       $\mathcal{H}\left(\mathrm{tx}\right) = \mathrm{chid}$}
         \State Try to close cooperatively \Comment{TODO}
