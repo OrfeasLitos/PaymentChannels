@@ -1,5 +1,10 @@
 \begin{functionality}{$\mathcal{F}_{\mathrm{PayNet}}$}
   \label{alg:payfunc}
+  \funcsection{Parameters}
+    \begin{itemize}
+      \item one-way, collision-free hash function $\mathcal{H}$
+    \end{itemize}
+
   \funcsection{Interface (messages from $\mathcal{E}$)}
     \begin{itemize}
       \item (\textsc{register})
@@ -12,11 +17,11 @@
   \funcsection{Pseudocode}
   \begin{algorithmic}[1]
     \Function{receiptFromChannel}{\texttt{channel}}
-      \State $\left(Alice, Bob, x, y, \mathtt{delay}\left(Alice\right),
-      \mathtt{delay}\left(Bob\right), seq, \mathrm{chid}\right) \gets
-      \mathtt{channel}$
-      \State \Return $\left(\mathtt{receipt}, Alice, Bob, x, y,
-      \mathrm{chid}\right)$
+      \State $\left(\alice, \bob, x, y, \mathtt{delay}\left(\alice\right),
+      \mathtt{delay}\left(\bob\right), seq, \mathit{fchid},
+      \mathit{pchid}\right) \gets \mathtt{channel}$
+      \State \Return $\left(\mathtt{receipt}, \alice, \bob, x, y,
+      \mathit{pchid}\right)$
     \EndFunction
     \State
 
@@ -26,65 +31,86 @@
     \EndIndent
     \State
 
-    \State Upon receiving $\left(\textsc{register}\right)$ from $Alice$:
+    \State Upon receiving $\left(\textsc{register}\right)$ from \textit{Alice}:
     \Indent
-      \State $\mathtt{delay}\left(Alice\right) \gets$ 1 day \Comment{default
+      \State $\mathtt{delay}\left(\alice\right) \gets$ 1 day \Comment{default
       delay}
-      \State $\mathtt{pendingUpdates}\left(Alice\right) \gets \emptyset$
-      \State send $\left(\textsc{register}, Alice\right)$ to $\mathcal{S}$
-\EndIndent
-    \State Upon receiving $\left(\textsc{registerDone},Alice, x\right)$ from $\mathcal{S}$:
-\Indent 
-      \State  $\mathtt{onChainBalance}\left(Alice\right) \gets x$
-      \State $\mathtt{offChainBalance} \gets 0$
+      \State $\mathtt{pendingUpdates}\left(\alice\right) \gets \emptyset$
+      \State send $\left(\textsc{register}, \alice\right)$ to $\mathcal{S}$
+    \EndIndent
+    \State
+
+    \State Upon receiving $\left(\textsc{registerDone}, \alice, x,
+    \mathrm{pubKey}\right)$ from $\mathcal{S}$: \Comment{TODO: may not require
+    on/offChBal}
+    \Indent
+      \State $\mathtt{onChainBalance}\left(\alice\right) \gets x$
+      \State $\mathtt{offChainBalance}\left(\alice\right) \gets 0$
+      \State $\mathtt{pubKey}\left(\alice\right) \gets \mathrm{pubKey}$
     \EndIndent
     \State
 
     \State Upon receiving any message except for
-    $\left(\textsc{register}\right)$ from $Alice$:
+    $\left(\textsc{register}\right)$ from \textit{Alice}:
     \Indent
-      \State ignore message if $Alice$ has not registered
+      \State ignore message if \textit{Alice} has not registered
     \EndIndent
     \State
 
     \State Upon receiving $\left(\textsc{setDelay}, \mathrm{delay}\right)$ from
-    $Alice$:
+    \textit{Alice}:
     \Indent
-      \State $\mathtt{delay}\left(Alice\right) \gets \mathrm{delay}$
-      \State send $\left(\textsc{delay}, Alice\right)$ to $\mathcal{S}$
+      \State $\mathtt{delay}\left(\alice\right) \gets \mathrm{delay}$
+      \State send $\left(\textsc{delay}, \alice\right)$ to $\mathcal{S}$
     \EndIndent
     \State
 
-    \State Upon receiving $\left(\textsc{openChannel}, Alice, Bob, x\right)$
-    from $Alice$:
+    \State Upon receiving $\left(\textsc{openChannel}, \alice, \bob, x\right)$
+    from \textit{Alice}:
     \Indent
       \State choose unique channel ID fchid
-      \State send $\left(\textsc{openChannel}, Alice, Bob, x, fchid \right)$ to
-      $\mathcal{S}$
-    \EndIndent
-
-      \State Upon receiving is $\left(\textsc{channelOpened},   
-      fchid, pchid \right)$  from $\mathcal{S}$
-      \Indent
-      \State \aggelos{ensure $pchid$ transaction exists for $x$ outgoing from Alice's account to channel (otherwise ignore).}
-      \State $\mathrm{offChainBalance}\left(Alice\right) \gets
-      \mathrm{offChainBalance}\left(Alice\right) + x$
-      \State add $\left(Alice, Bob, x, 0, \mathtt{delay}\left(Alice\right),
-      \mathtt{delay}\left(Bob\right), 0, \mathrm{fchid}, \mathrm{pchid}\right)$ to
-      \texttt{channels}
-      \State mark newly added channel as unreported to $Bob$
-      \State send (\textsc{channelOpened},
-      \textsc{receiptFromChannel}(\texttt{channel})) to $Alice$
+      \State send $\left(\textsc{openChannel}, \alice, \bob, x,
+      \mathit{fchid}\right)$ to $\mathcal{S}$
+      \State $\mathtt{pending}\left(\mathit{fchid}\right) \gets \left(\alice,
+      \bob, x\right)$
     \EndIndent
     \State
 
-    \State Upon receiving $\left(\textsc{poll}\right)$ from $Alice$:
+    \State Upon receiving is $\left(\textsc{channelOpened}, \mathit{fchid},
+    \mathit{pchid}\right)$ from $\mathcal{S}$
     \Indent
-      \State \aggelos{ read from clock and if more than delay (Alice) from previous poll, mark negligent in time interval T.}
+      \State send (\textsc{read}) to $\mathcal{G}_{\mathrm{Ledger}}$ as
+      \textit{Alice} and assign reply to $\Sigma_{\alice}$
+      \State $\left(\alice, \bob, x\right) \gets
+      \mathtt{pending}\left(\mathit{fchid}\right)$
+      \State ensure that there exists a transaction $\mathtt{tx} \in
+      \Sigma_{\alice}$ with a $\left(x,
+      \mathtt{pubKey}\left(\alice\right)\right)$ input and a $\left(x,
+      \mathtt{pubKey}\left(\alice\right) \wedge
+      \mathtt{pubkey}\left(Bob\right)\right)$ output such that
+      $\mathcal{H}\left(\mathtt{tx}\right) = \mathit{pchid}$. \orfeas{hash
+      function?}
+      \State $\mathtt{pending}\left(\mathit{fchid}\right) \gets \bot$
+      \State $\mathrm{offChainBalance}\left(\alice\right) \gets
+      \mathrm{offChainBalance}\left(\alice\right) + x$ \orfeas{remove}
+      \State $\mathtt{channel} \gets \left(\alice, \bob, x, 0,
+      \mathtt{delay}\left(\alice\right), \mathtt{delay}\left(\bob\right), 0,
+      \mathit{fchid}, \mathit{pchid}\right)$
+      \State add \texttt{channel} to \texttt{channels} and
+      \texttt{newChannels}(\textit{Bob})
+      \State send (\textsc{channelOpened},
+      \texttt{receiptFromChannel}(\texttt{channel})) to \textit{Alice}
+      \orfeas{or could let Alice to poll}
+    \EndIndent
+    \State
+
+    \State Upon receiving $\left(\textsc{poll}\right)$ from \textit{Alice}:
+    \Indent
+      \State \aggelos{ read from clock and if more than delay (\textit{Alice}) from previous poll, mark negligent in time interval T.}
       \State \aggelos{ read from ledger and scan for ...  (\texttt{newChannels}, \texttt{closedChannels}) for Alice (just say the below with words) + revoked channels. (the func can detect this using the channel version ).} \aggelos{for revoked channel - call the closed channel code.}
       \State $\mathtt{res.updates} \gets
-      \mathtt{pendingUpdates}\left(Alice\right)$
-      \State $\mathtt{pendingUpdates}\left(Alice\right) \gets \emptyset$
+      \mathtt{pendingUpdates}\left(\alice\right)$
+      \State $\mathtt{pendingUpdates}\left(\alice\right) \gets \emptyset$
       \ForAll{$\mathtt{channel}\text{s} \in \mathtt{newChannels}$}
         \State add \textsc{receiptFromChannel}(\texttt{channel}) to
         \texttt{res.new}
@@ -93,23 +119,23 @@
         \State add \textsc{receiptFromChannel}(\texttt{channel}) to
         \texttt{res.closed}
       \EndFor
-      \State \Return (\textsc{poll}, \texttt{res}) $Alice$
+      \State \Return (\textsc{poll}, \texttt{res}) \textit{Alice}
     \EndIndent
     \State
 
-    \State Upon receiving $\left(\textsc{pay}, Bob, x,
-    \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from $Alice$:
+    \State Upon receiving $\left(\textsc{pay}, \bob, x,
+    \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from \textit{Alice}:
     \Indent
       \State ensure that \texttt{receipt} corresponds to an open
-      \texttt{channel} and $Alice$ has at least $x$ coins in it.
+      \texttt{channel} and \textit{Alice} has at least $x$ coins in it.
       \State ensure that $\overrightarrow{\mathtt{path}}$ contains a series of
       channels that all contain at least $x$ to the correct direction \aggelos{maybe weaken this to not checking balances. }
-      \State send $\left(\textsc{pay}, Alice, Bob, x,
+      \State send $\left(\textsc{pay}, \alice, \bob, x,
       \overrightarrow{\mathtt{path}}, \mathtt{receipt}, payid\right)$ to $\mathcal{S}$
     \EndIndent
       \State Upon receiving reply is $\left(\textsc{SettlePay}, payid, Charlie\right)$ from $\mathcal{S}$
       \Indent
-      \If{($Charlie \neq Alice$ and $Charlie \notin \{  \mathtt{corrupted}, \mathtt{negligent}\} $) or
+      \If{($Charlie \neq \alice$ and $Charlie \notin \{  \mathtt{corrupted}, \mathtt{negligent}\} $) or
       $Charlie \notin \overrightarrow{\mathtt{path}}$}
         \State halt \aggelos{ignore?}
       \Else
@@ -124,39 +150,39 @@
     \EndIndent
     \State
 
-    \State Upon receiving $\left(\textsc{corrupted}, Alice\right)$ from
+    \State Upon receiving $\left(\textsc{corrupted}, \alice\right)$ from
     $\mathcal{S}$:
     \Indent
-      \State add $Alice$ to \texttt{corrupted}
+      \State add \textit{Alice} to \texttt{corrupted}
     \EndIndent
     \State
 
-    \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from $Alice$ \aggelos{(or $\mathcal{S}$) ?? }
+    \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from \textit{Alice} \aggelos{(or $\mathcal{S}$) ?? }
     \Indent
       \State ensure that \texttt{receipt} corresponds to an open
-      $\mathtt{channel} \in \mathtt{channels}$ that contains $Alice$
-      \State send (\textsc{closeChannel}, \texttt{channel}, $Alice$) to
+      $\mathtt{channel} \in \mathtt{channels}$ that contains \textit{Alice}
+      \State send (\textsc{closeChannel}, \texttt{channel}, \textit{Alice}) to
       $\mathcal{S}$
       \State ensure reply is (\textsc{channelClosed}, \texttt{channel})
-      \State extract $Alice, Bob, x, y$ from \texttt{channel}
-      \State $\mathtt{onChainBalance}\left(Alice\right) \gets
-      \mathtt{onChainBalance}\left(Alice\right) + x$
+      \State extract $\alice, \bob, x, y$ from \texttt{channel}
+      \State $\mathtt{onChainBalance}\left(\alice\right) \gets
+      \mathtt{onChainBalance}\left(\alice\right) + x$
       \State \aggelos{check incoming transaction for Alice, Bob for respective amounts}
-      \State $\mathtt{onChainBalance}\left(Bob\right) \gets
-      \mathtt{onChainBalance}\left(Bob\right) + y$
-      \State $\mathtt{offChainBalance}\left(Alice\right) \gets
-      \mathtt{offChainBalance}\left(Alice\right) - x$
-      \State $\mathtt{offChainBalance}\left(Bob\right) \gets
-      \mathtt{offChainBalance}\left(Bob\right) - y$
-      \State send (\textsc{channelClosed}, \texttt{channel}) to $Alice$
+      \State $\mathtt{onChainBalance}\left(\bob\right) \gets
+      \mathtt{onChainBalance}\left(\bob\right) + y$
+      \State $\mathtt{offChainBalance}\left(\alice\right) \gets
+      \mathtt{offChainBalance}\left(\alice\right) - x$
+      \State $\mathtt{offChainBalance}\left(\bob\right) \gets
+      \mathtt{offChainBalance}\left(\bob\right) - y$
+      \State send (\textsc{channelClosed}, \texttt{channel}) to \textit{Alice}
     \EndIndent
     \State
 
     \State At the end of each activation: \Comment{TODO: Discuss}
     \Indent
     \State verify  onChainbalance() for all parties is consistent with ledger (if not roll back the state and ignore command of activation).
-  %    \ForAll{$Alice \notin \mathtt{corrupted}$}
-  %      \If{the minimum delay($Alice$) for all her channels is about to pass}
+  %    \ForAll{$\alice \notin \mathtt{corrupted}$}
+  %      \If{the minimum delay(\textit{Alice}) for all her channels is about to pass}
   %        \State check $\mathcal{G}_{\mathrm{Ledger}}$ for revoked closes
   %        \State if found, inform $\mathcal{S}$
   %      \EndIf
