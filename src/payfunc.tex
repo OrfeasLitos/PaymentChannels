@@ -36,7 +36,7 @@
     \Indent
       \State $\mathtt{delay}\left(\alice\right) \gets \mathrm{delay}$
       \State $\mathtt{pendingUpdates}\left(\alice\right) \gets \emptyset$
-      \State $\mathtt{negligent}\left(\alice\right) \gets \emptyset$
+      \State $\mathtt{blindTime}\left(\alice\right) \gets \emptyset$
       \State send (\textsc{read}) to \clock{} as \alice{} and assign reply to
       \texttt{lastPoll}(\alice)
       \State send $\left(\textsc{register}, \alice, \mathrm{delay}\right)$ to
@@ -99,7 +99,7 @@
       \texttt{newChannels}(\bob)
       \State send (\textsc{channelOpened},
       \texttt{receiptFromChannel}(\texttt{channel})) to \alice
-      \orfeas{or could let \alice{} to poll}
+      \orfeas{or could let \alice{} poll}
     \EndIndent
     \State
 
@@ -110,8 +110,9 @@
       \State send (\textsc{read}) to \clock{} as \alice and assign reply to
       $\tau$
       \If{$\mathrm{deadline} < \tau$}
-        \State add $\left[\mathrm{deadline}, \mathrm{deadline} + \tau -
-        1\right]$ to \texttt{negligent}(\alice)
+        \State add $\left[\mathtt{lastpoll}\left(\alice\right), \tau -
+        \texttt{delay}\left(\alice\right) - 1\right]$ to
+        \texttt{blindTime}(\alice)
       \EndIf
       \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
       $\Sigma_{\alice}$
@@ -124,11 +125,12 @@
       and add their receipts to \texttt{closedChannels}(\alice)
       \State scan $\Sigma_{\alice}$ for malicioulsy closed channels that contain
       \alice{} and exist in \texttt{channels} (spends of funding txs that have
-      an older channel version than stored), send (\textsc{closeChannel},
-      \texttt{channel}) to \simulator, ensure reply is (\textsc{channelClosed},
-      \texttt{channel}), ensure that corresponding txs exist on-chain
-      \orfeas{TODO}, remove them from \texttt{channels} and add their receipts
-      to \texttt{closedChannels}(\alice)
+      an older channel version than stored), if not broadcast in
+      \texttt{blindTime}(\alice) send (\textsc{closeChannel}, \texttt{channel})
+      to \simulator, ensure reply is (\textsc{channelClosed}, \texttt{channel}),
+      ensure that corresponding txs exist on-chain \orfeas{TODO}, remove them
+      from \texttt{channels} and add their receipts to
+      \texttt{closedChannels}(\alice)
       \State clear \texttt{newChannels}(\alice),
       \texttt{closedChannels}(\alice), texttt{pendingUpdates}(\alice) and send
       them to \alice
