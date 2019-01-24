@@ -67,40 +67,41 @@
     from \alice:
     \Indent
       \State choose unique channel ID \textit{fchid}
-      \State $\mathtt{pendingOpen}\left(\mathit{fchid}\right) \gets \left(\alice,
-      \bob, x\right)$
+      \State $\mathtt{pendingOpen}\left(\mathit{fchid}\right) \gets
+      \left(\alice, \bob, x\right)$
       \State send $\left(\textsc{openChannel}, \alice, \bob, x,
       \mathit{fchid}\right)$ to \simulator
     \EndIndent
     \State
 
-    \State Upon receiving is $\left(\textsc{channelOpened}, \mathit{fchid},
-    \mathit{pchid}\right)$ from \simulator
+    \State Upon receiving is $\left(\textsc{channelOpened}, \alice, \bob, x,
+    \mathit{fchid}, \mathit{pchid}\right)$ from \simulator
     \Indent
       \State ensure that there is no $\mathtt{channel} \in \mathtt{channels}$
-      with id \textit{pchid}
+      with id \textit{pchid} or \textit{fchid}
       \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
       $\Sigma_{\alice}$
-      \State $\left(\alice, \bob, x\right) \gets
-      \mathtt{pendingOpen}\left(\mathit{fchid}\right)$
-      \State ensure that there exists a transaction $\mathtt{tx} \in
-      \Sigma_{\alice}$ with a $\left(x,
-      \mathtt{pubKey}\left(\alice\right)\right)$ input and a $\left(x,
-      \mathtt{pubKey}\left(\alice\right) \wedge
-      \mathtt{pubkey}\left(\bob\right)\right)$ output such that
-      $\mathcal{H}\left(\mathtt{tx}\right) = \mathit{pchid}$. \orfeas{hash
-      function?}
-      \State $\mathtt{pendingOpen}\left(\mathit{fchid}\right) \gets \bot$
-      \State $\mathrm{offChainBalance}\left(\alice\right) \gets
-      \mathrm{offChainBalance}\left(\alice\right) + x$ \orfeas{remove}
+      \State for some $\mathrm{payer} \in \left\{\alice, \bob\right\}$, ensure
+      that there exists a transaction $\mathtt{tx} \in \Sigma_{\alice}$ with a
+      $\left(x, \mathtt{pubKey}\left(\mathrm{payer}\right)\right)$ input, a
+      $\left(x, \mathtt{pubKey}\left(\alice\right) \wedge
+      \mathtt{pubkey}\left(\bob\right)\right)$ output and a transaction ID
+      \textit{pchid}.
+      \If{payer is honest} \Comment{otherwise $\mathcal{A}$ decided to open
+      channel}
+        \State ensure that $\mathtt{pendingOpen}\left(\mathit{fchid}\right)
+        = \left(\alice, \bob, x\right)$
+        \State $\mathtt{pendingOpen}\left(\mathit{fchid}\right) \gets \bot$
+      \EndIf
+      \State $\mathrm{offChainBalance}\left(\mathrm{payer}\right) \gets
+      \mathrm{offChainBalance}\left(\mathrm{payer}\right) + x$ \orfeas{remove}
+      \State $\mathrm{onChainBalance}\left(\mathrm{payer}\right) \gets
+      \mathrm{offChainBalance}\left(\mathrm{payer}\right) - x$ \orfeas{remove}
       \State $\mathtt{channel} \gets \left(\alice, \bob, x, 0,
       \mathtt{delay}\left(\alice\right), \mathtt{delay}\left(\bob\right), 0,
       \mathit{fchid}, \mathit{pchid}\right)$
-      \State add \texttt{channel} to \texttt{channels} and
-      \texttt{newChannels}(\bob)
-      \State send (\textsc{channelOpened},
-      \texttt{receiptFromChannel}(\texttt{channel})) to \alice
-      \orfeas{or could let \alice{} poll}
+      \State add \texttt{channel} to \texttt{channels} and receipt to
+      \texttt{newChannels}(\{\alice, \bob\})
     \EndIndent
     \State
 
