@@ -15,24 +15,18 @@
       \item (\textsc{pay}, peer, coins, path, receipt)
     \end{itemize}
 
-  \funcsection{Pseudocode}
+  \funcsection{Initialisation}
   \begin{algorithmic}[1]
-    \Function{receiptFromChannel}{\texttt{channel}}
-      \State $\left(\alice, \bob, x, y, \mathtt{delay}\left(\alice\right),
-      \mathtt{delay}\left(\bob\right), seq, \mathit{fchid},
-      \mathit{pchid}\right) \gets \mathtt{channel}$
-      \State \Return $\left(\mathtt{receipt}, \alice, \bob, x, y,
-      \mathit{pchid}\right)$
-    \EndFunction
-    \State
-
     \State Initialisation:
     \Indent
       \State $\mathtt{channels}, \mathtt{pendingPay}, \mathtt{corrupted} \gets
       \emptyset$
     \EndIndent
     \State
+  \end{algorithmic}
 
+  \funcsection{Responses to messages}
+  \begin{algorithmic}[1]
     \State Upon receiving $\left(\textsc{register}, \mathrm{delay}\right)$ from
     \alice:
     \Indent
@@ -47,8 +41,7 @@
     \State
 
     \State Upon receiving $\left(\textsc{registerDone}, \alice, x,
-    \mathrm{pubKey}\right)$ from \simulator: \Comment{TODO: may not require
-    on/offChBal}
+    \mathrm{pubKey}\right)$ from \simulator:
     \Indent
       \State $\mathtt{onChainBalance}\left(\alice\right) \gets x$
       \State $\mathtt{offChainBalance}\left(\alice\right) \gets 0$
@@ -61,6 +54,13 @@
     $\left(\textsc{register}\right)$ from \alice:
     \Indent
       \State ignore message if \alice has not registered
+    \EndIndent
+    \State
+
+    \State Upon receiving $\left(\textsc{corrupted}, \alice\right)$ from
+    \simulator:
+    \Indent
+      \State add \alice{} to \texttt{corrupted}
     \EndIndent
     \State
 
@@ -95,55 +95,15 @@
         \State $\mathtt{pendingOpen}\left(\mathit{fchid}\right) \gets \bot$
       \EndIf
       \State $\mathrm{offChainBalance}\left(\mathrm{payer}\right) \gets
-      \mathrm{offChainBalance}\left(\mathrm{payer}\right) + x$ \orfeas{remove}
+      \mathrm{offChainBalance}\left(\mathrm{payer}\right) + x$ \orfeas{remove
+      on/offChainBalance?}
       \State $\mathrm{onChainBalance}\left(\mathrm{payer}\right) \gets
-      \mathrm{offChainBalance}\left(\mathrm{payer}\right) - x$ \orfeas{remove}
+      \mathrm{offChainBalance}\left(\mathrm{payer}\right) - x$
       \State $\mathtt{channel} \gets \left(\alice, \bob, x, 0,
       \mathtt{delay}\left(\alice\right), \mathtt{delay}\left(\bob\right), 0,
       \mathit{fchid}, \mathit{pchid}\right)$
       \State add \texttt{channel} to \texttt{channels} and receipt to
       \texttt{newChannels}(\{\alice, \bob\})
-    \EndIndent
-    \State
-
-    \State Upon receiving $\left(\textsc{poll}\right)$ from \alice:
-    \Indent
-      \State send (\textsc{read}) to \clock{} as \alice and assign reply to
-      $\tau$
-      \If{$\mathtt{lastPoll}\left(\alice\right) +
-      \mathtt{delay}\left(\alice\right) < \tau$}
-        \State add $\left[\mathtt{lastpoll}\left(\alice\right), \tau -
-        \texttt{delay}\left(\alice\right) - 1\right]$ to
-        \texttt{blindTime}(\alice)
-      \EndIf
-      \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
-      $\Sigma_{\alice}$
-      \State scan $\Sigma_{\alice}$ for honestly closed channels that contain
-      \alice{} and exist in \texttt{channels} (txs that spend funding txs that
-      have the same channel version as stored), remove them from
-      \texttt{channels} and add their receipts to
-      \texttt{closedChannels}(\alice)
-      \State scan $\Sigma_{\alice}$ for malicioulsy closed channels that contain
-      \alice{} and exist in \texttt{channels} (txs that spend funding txs that
-      have an older channel version than stored)
-      \ForAll{every maliciously closed channel of which the spending txs can
-      still be spent by \alice} \Comment{If \alice{} is negligent, she may be
-      unable to punish}
-        \If{\alice cannot spend those spending txs}
-          \State ensure that \alice has been negligent in the last interval
-        \EndIf
-        \State send (\textsc{closeChannel}, \texttt{channel}) to \simulator
-        \orfeas{TODO: split in two messages}
-        \State ensure reply is (\textsc{channelClosed}, \texttt{channel})
-        \State ensure that corresponding txs exist on-chain and pay \alice the
-        entire \texttt{channel} value
-        \State add the receipt of \texttt{channel} to
-        \texttt{closedChannels}(\alice)
-        \State remove \texttt{channel} from \texttt{channels}
-      \EndFor
-      \State clear \texttt{newChannels}(\alice),
-      \texttt{closedChannels}(\alice), \texttt{pendingUpdates}(\alice) and send
-      them to \alice
     \EndIndent
     \State
 
@@ -188,10 +148,10 @@
             \State update \texttt{channel} to the next version and transfer $x$
             from \texttt{payer} to \texttt{payee}
             \State add \texttt{channel} receipt to both parties'
-            \texttt{pendingUpdate}
+            \texttt{pendingUpdates}
           \Else
             \State revert all updates and remove them from
-            \texttt{pendingUpdate}
+            \texttt{pendingUpdates}
             \State \orfeas{entire if may be avoided by simply not sending a
             message to \alice}
             \If{all players on path from \alice{} up to and including failed
@@ -200,7 +160,7 @@
               \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to \alice
             \Else
               \State send (\textsc{reportNotPaid}, \textit{payid}) to
-              \simulator \orfeas{TODO: break to new message}
+              \simulator \orfeas{TODO: split in two messages}
               \If{reply from \simulator is (\textsc{doReport}, \textit{payid})}
                 \State send $\left(\textsc{notPaid}, \bob, x,
                 \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to
@@ -219,13 +179,6 @@
           \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to \alice
         \EndIf
       \EndIf
-    \EndIndent
-    \State
-
-    \State Upon receiving $\left(\textsc{corrupted}, \alice\right)$ from
-    \simulator:
-    \Indent
-      \State add \alice{} to \texttt{corrupted}
     \EndIndent
     \State
 
@@ -269,7 +222,48 @@
     \EndIndent
     \State
 
-    \State At the end of each activation: \Comment{TODO: Discuss}
+    \State Upon receiving $\left(\textsc{poll}\right)$ from \alice:
+    \Indent
+      \State send (\textsc{read}) to \clock{} as \alice and assign reply to
+      $\tau$
+      \If{$\mathtt{lastPoll}\left(\alice\right) +
+      \mathtt{delay}\left(\alice\right) < \tau$}
+        \State add $\left[\mathtt{lastpoll}\left(\alice\right), \tau -
+        \texttt{delay}\left(\alice\right) - 1\right]$ to
+        \texttt{blindTime}(\alice)
+      \EndIf
+      \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
+      $\Sigma_{\alice}$
+      \State scan $\Sigma_{\alice}$ for honestly closed channels that contain
+      \alice{} and exist in \texttt{channels} (txs that spend funding txs that
+      have the same channel version as stored), remove them from
+      \texttt{channels} and add their receipts to
+      \texttt{closedChannels}(\alice)
+      \State scan $\Sigma_{\alice}$ for malicioulsy closed channels that contain
+      \alice{} and exist in \texttt{channels} (txs that spend funding txs that
+      have an older channel version than stored)
+      \ForAll{every maliciously closed channel of which the spending txs can
+      still be spent by \alice} \Comment{If \alice{} is negligent, she may be
+      unable to punish}
+        \If{\alice cannot spend those spending txs}
+          \State ensure that \alice has been negligent in the last interval
+        \EndIf
+        \State send (\textsc{closeChannel}, \texttt{channel}) to \simulator
+        \orfeas{TODO: split in two messages}
+        \State ensure reply is (\textsc{channelClosed}, \texttt{channel})
+        \State ensure that corresponding txs exist on-chain and pay \alice the
+        entire \texttt{channel} value
+        \State add the receipt of \texttt{channel} to
+        \texttt{closedChannels}(\alice)
+        \State remove \texttt{channel} from \texttt{channels}
+      \EndFor
+      \State clear \texttt{newChannels}(\alice),
+      \texttt{closedChannels}(\alice), \texttt{pendingUpdates}(\alice) and send
+      them to \alice
+    \EndIndent
+    \State
+
+    \State At the end of each activation: \orfeas{can this part completely go?}
     \Indent
     \State verify  onChainbalance() for all parties is consistent with ledger (if not roll back the state and ignore command of activation).
     \EndIndent
