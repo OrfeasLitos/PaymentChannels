@@ -108,32 +108,32 @@
 
     \State Upon receiving $\left(\textsc{poll}\right)$ from \alice:
     \Indent
-      \State $\mathrm{deadline} \gets \mathtt{lastPoll}\left(\alice\right) +
-      \mathtt{delay}\left(\alice\right)$
       \State send (\textsc{read}) to \clock{} as \alice and assign reply to
       $\tau$
-      \If{$\mathrm{deadline} < \tau$}
+      \If{$\mathtt{lastPoll}\left(\alice\right) +
+      \mathtt{delay}\left(\alice\right) < \tau$}
         \State add $\left[\mathtt{lastpoll}\left(\alice\right), \tau -
         \texttt{delay}\left(\alice\right) - 1\right]$ to
         \texttt{blindTime}(\alice)
       \EndIf
       \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
       $\Sigma_{\alice}$
-      \State scan $\Sigma_{\alice}$ for new channels for \alice{} (\_ $\wedge
-      \mathtt{pubKey}\left(\alice\right)$ outputs) and add their receipts to
-      \texttt{newChannels}(\alice) and to \texttt{channels}
       \State scan $\Sigma_{\alice}$ for honestly closed channels that contain
-      \alice{} and exist in \texttt{channels} (spends of funding txs that have
-      the same channel version as stored), remove them from \texttt{channels}
-      and add their receipts to \texttt{closedChannels}(\alice)
-      \State scan $\Sigma_{\alice}$ for malicioulsy closed channels that contain
-      \alice{} and exist in \texttt{channels} (spends of funding txs that have
-      an older channel version than stored), if not broadcast in
-      \texttt{blindTime}(\alice) send (\textsc{closeChannel}, \texttt{channel})
-      to \simulator, ensure reply is (\textsc{channelClosed}, \texttt{channel}),
-      ensure that corresponding txs exist on-chain \orfeas{TODO}, remove them
-      from \texttt{channels} and add their receipts to
+      \alice{} and exist in \texttt{channels} (txs that spend funding txs that
+      have the same channel version as stored), remove them from
+      \texttt{channels} and add their receipts to
       \texttt{closedChannels}(\alice)
+      \State scan $\Sigma_{\alice}$ for malicioulsy closed channels that contain
+      \alice{} and exist in \texttt{channels} (txs that spend funding txs that
+      have an older channel version than stored)
+      \ForAll{every maliciously closed channel of which the spending txs can
+      still be spent by \alice}
+        \State send (\textsc{closeChannel}, \texttt{channel}) to \simulator,
+        ensure reply is (\textsc{channelClosed}, \texttt{channel}), ensure that
+        corresponding txs exist on-chain, remove it from \texttt{channels} and
+        add its receipt to \texttt{closedChannels}(\alice) \orfeas{TODO:
+        split in two messages}
+      \EndFor
       \State clear \texttt{newChannels}(\alice),
       \texttt{closedChannels}(\alice), \texttt{pendingUpdates}(\alice) and send
       them to \alice
