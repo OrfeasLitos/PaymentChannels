@@ -37,12 +37,12 @@
 \def\showauthnotes{1}
 \ifthenelse{\showauthnotes=1}
 {
-\newcommand{\authnote}[2]{{ \footnotesize \bf{[#1: #2]~}}}
+\newcommand{\authnote}[3]{{ \footnotesize \bf{#1[#2: #3]~}}}
 %\newcommand{\authnote}[2]{{ \tt {[#1: #2]~}}}
 }
 { \newcommand{\authnote}[2]{} }
-\newcommand{\aggelos}[1]{\authnote{\color{magenta}Aggelos}{#1}}
-\newcommand{\orfeas}[1]{\authnote{\color{blue}Orfeas}{#1}}
+\newcommand{\aggelos}[1]{\authnote{\color{magenta}}{Aggelos}{#1}}
+\newcommand{\orfeas}[1]{\authnote{\color{blue}}{Orfeas}{#1}}
 
 % code options with \lstlisting
 \lstset{frame=tb,
