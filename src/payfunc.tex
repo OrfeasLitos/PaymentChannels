@@ -127,12 +127,16 @@
       \alice{} and exist in \texttt{channels} (txs that spend funding txs that
       have an older channel version than stored)
       \ForAll{every maliciously closed channel of which the spending txs can
-      still be spent by \alice}
-        \State send (\textsc{closeChannel}, \texttt{channel}) to \simulator,
-        ensure reply is (\textsc{channelClosed}, \texttt{channel}), ensure that
-        corresponding txs exist on-chain, remove it from \texttt{channels} and
-        add its receipt to \texttt{closedChannels}(\alice) \orfeas{TODO:
-        split in two messages}
+      still be spent by \alice} \Comment{If \alice{} is negligent, she may be
+      unable to punish}
+        \State send (\textsc{closeChannel}, \texttt{channel}) to \simulator
+        \orfeas{TODO: split in two messages}
+        \State ensure reply is (\textsc{channelClosed}, \texttt{channel})
+        \State ensure that corresponding txs exist on-chain and pay \alice the
+        entire \texttt{channel} value
+        \State add the receipt of \texttt{channel} to
+        \texttt{closedChannels}(\alice)
+        \State remove \texttt{channel} from \texttt{channels}
       \EndFor
       \State clear \texttt{newChannels}(\alice),
       \texttt{closedChannels}(\alice), \texttt{pendingUpdates}(\alice) and send
