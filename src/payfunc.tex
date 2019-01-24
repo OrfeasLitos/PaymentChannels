@@ -31,12 +31,15 @@
     \EndIndent
     \State
 
-    \State Upon receiving $\left(\textsc{register}\right)$ from \textit{Alice}:
+    \State Upon receiving $\left(\textsc{register}, \mathrm{delay}\right)$ from
+    \textit{Alice}:
     \Indent
-      \State $\mathtt{delay}\left(\alice\right) \gets$ 1 day \Comment{default
-      delay}
+      \State $\mathtt{delay}\left(\alice\right) \gets \mathrm{delay}$
       \State $\mathtt{pendingUpdates}\left(\alice\right) \gets \emptyset$
-      \State send $\left(\textsc{register}, \alice\right)$ to $\mathcal{S}$
+      \State send (\textsc{read}) to $\mathcal{G}_{\mathrm{Clock}}$ as
+      \alice and assign reply to \texttt{lastPoll}(\alice)
+      \State send $\left(\textsc{register}, \alice, \mathrm{delay}\right)$ to
+      $\mathcal{S}$
     \EndIndent
     \State
 
@@ -54,14 +57,6 @@
     $\left(\textsc{register}\right)$ from \textit{Alice}:
     \Indent
       \State ignore message if \textit{Alice} has not registered
-    \EndIndent
-    \State
-
-    \State Upon receiving $\left(\textsc{setDelay}, \mathrm{delay}\right)$ from
-    \textit{Alice}:
-    \Indent
-      \State $\mathtt{delay}\left(\alice\right) \gets \mathrm{delay}$
-      \State send $\left(\textsc{delay}, \alice\right)$ to $\mathcal{S}$
     \EndIndent
     \State
 
