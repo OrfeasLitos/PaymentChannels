@@ -27,7 +27,8 @@
 
     \State Initialisation:
     \Indent
-      \State $\mathtt{channels}, \mathtt{corrupted} \gets \emptyset$
+      \State $\mathtt{channels}, \mathtt{pendingPay}, \mathtt{corrupted} \gets
+      \emptyset$
     \EndIndent
     \State
 
@@ -132,7 +133,7 @@
       from \texttt{channels} and add their receipts to
       \texttt{closedChannels}(\alice)
       \State clear \texttt{newChannels}(\alice),
-      \texttt{closedChannels}(\alice), texttt{pendingUpdates}(\alice) and send
+      \texttt{closedChannels}(\alice), \texttt{pendingUpdates}(\alice) and send
       them to \alice
     \EndIndent
     \State
@@ -140,28 +141,74 @@
     \State Upon receiving $\left(\textsc{pay}, \bob, x,
     \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from \alice:
     \Indent
-      \State ensure that \texttt{receipt} corresponds to an open
-      \texttt{channel} and \alice has at least $x$ coins in it.
-      \State ensure that $\overrightarrow{\mathtt{path}}$ contains a series of
-      channels that all contain at least $x$ to the correct direction \aggelos{maybe weaken this to not checking balances. }
+      \State ensure that \texttt{receipt} corresponds to a \texttt{channel}
+      where \alice{} has at least $x$
+      \State ensure that $\overrightarrow{\mathtt{path}}$ consists of channels
+      \State ensure that each consecutive pair of channels in
+      $\overrightarrow{\mathtt{path}}$ has a common member
+      \State choose unique payment ID \textit{payid}
+      \State add $\left(\alice, \bob, x, \overrightarrow{\mathtt{path}},
+      \mathit{payid}\right)$ to \texttt{pendingPay}
       \State send $\left(\textsc{pay}, \alice, \bob, x,
-      \overrightarrow{\mathtt{path}}, \mathtt{receipt}, payid\right)$ to
-      \simulator
+      \overrightarrow{\mathtt{path}}, \mathtt{receipt}, \mathit{payid}\right)$
+      to \simulator
     \EndIndent
-      \State Upon receiving reply is $\left(\textsc{SettlePay}, payid,
-      Charlie\right)$ from \simulator
-      \Indent
-      \If{($Charlie \neq \alice$ and $Charlie \notin \{  \mathtt{corrupted}, \mathtt{negligent}\} $) or
-      $Charlie \notin \overrightarrow{\mathtt{path}}$}
-        \State halt \aggelos{ignore?}
+    \State
+
+    \State Upon receiving $\left(\textsc{resolvePay}, \mathit{payid},
+    \charlie\right)$ from \simulator
+    \Indent
+      \State retrieve $\left(\alice, \bob, x,
+      \overrightarrow{\mathtt{path}}\right)$ pending payment with ID
+      \textit{payid} and remove it from \texttt{pendingPay}
+      \If{($\charlie \neq \alice$ and $\charlie \notin \mathtt{corrupted}$) or
+      $\charlie \notin \overrightarrow{\mathtt{path}}$}
+        \State halt \aggelos{or ignore?}
+        \State \orfeas{In the protocol, even negligent players cannot lose money
+        here because the next hop is done by the protocol (without permission
+        from the environment). So I removed \texttt{negligent} from the check
+        above.}
       \Else
-                \State update both \texttt{offChainBalance}s \aggelos{for the end points}
         \ForAll{$\mathtt{channel}\text{s} \in \overrightarrow{\mathtt{path}}$
-        starting with the one where $Charlie$ pays \aggelos{improve}}
-          \State transfer $x$ from the first to the second member \aggelos{if not possible revert all and ignore - increment channel version. }
-          \State add \textsc{receiptFromChannel}(\texttt{channel}) \aggelos{Use sc only for labels} to both
-          \texttt{pendingUpdate}s
+        starting from the one where \charlie{} pays}
+          \State in the first iteration, \charlie is \texttt{payer}. In
+          subsequent iterations, \texttt{payer} is the unique player that has
+          been paid but has not paid. The other \texttt{channel} party is
+          \texttt{payee}
+          \If{\texttt{payer} has $x$ or more in \texttt{channel}}
+            \State update \texttt{channel} to the next version and transfer $x$
+            from \texttt{payer} to \texttt{payee}
+            \State add \texttt{channel} receipt to both parties'
+            \texttt{pendingUpdate}
+          \Else
+            \State revert all updates and remove them from
+            \texttt{pendingUpdate}
+            \State \orfeas{entire if may be avoided by simply not sending a
+            message to \alice}
+            \If{all players on path from \alice{} up to and including failed
+            \texttt{payer} are honest}
+              \State send $\left(\textsc{notPaid}, \bob, x,
+              \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to \alice
+            \Else
+              \State send (\textsc{reportNotPaid}, \textit{payid}) to
+              \simulator \orfeas{TODO: break to new message}
+              \If{reply from \simulator is (\textsc{doReport}, \textit{payid})}
+                \State send $\left(\textsc{notPaid}, \bob, x,
+                \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to
+                \alice
+              \EndIf
+            \EndIf
+            \State \orfeas{end of possibly avoidable if}
+          \EndIf
         \EndFor
+        \State $\mathtt{offChainBalance}\left(\charlie\right) \gets
+        \mathtt{offChainBalance}\left(\charlie\right) - x$
+        \State $\mathtt{offChainBalance}\left(\bob\right) \gets
+        \mathtt{offChainBalance}\left(\bob\right) + x$
+        \If{\charlie{} = \alice}
+          \State send $\left(\textsc{paid}, \bob, x,
+          \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to \alice
+        \EndIf
       \EndIf
     \EndIndent
     \State
