@@ -1,4 +1,4 @@
-\begin{functionality}{$\mathcal{F}_{\mathrm{PayNet}}$}
+\begin{functionality}{\fpaynet}
   \label{alg:payfunc}
   \funcsection{Parameters}
     \begin{itemize}
@@ -36,15 +36,15 @@
     \Indent
       \State $\mathtt{delay}\left(\alice\right) \gets \mathrm{delay}$
       \State $\mathtt{pendingUpdates}\left(\alice\right) \gets \emptyset$
-      \State send (\textsc{read}) to $\mathcal{G}_{\mathrm{Clock}}$ as
-      \alice and assign reply to \texttt{lastPoll}(\alice)
+      \State send (\textsc{read}) to \clock{} as \alice{} and assign reply to
+      \texttt{lastPoll}(\alice)
       \State send $\left(\textsc{register}, \alice, \mathrm{delay}\right)$ to
-      $\mathcal{S}$
+      \simulator
     \EndIndent
     \State
 
     \State Upon receiving $\left(\textsc{registerDone}, \alice, x,
-    \mathrm{pubKey}\right)$ from $\mathcal{S}$: \Comment{TODO: may not require
+    \mathrm{pubKey}\right)$ from \simulator: \Comment{TODO: may not require
     on/offChBal}
     \Indent
       \State $\mathtt{onChainBalance}\left(\alice\right) \gets x$
@@ -65,17 +65,17 @@
     \Indent
       \State choose unique channel ID fchid
       \State send $\left(\textsc{openChannel}, \alice, \bob, x,
-      \mathit{fchid}\right)$ to $\mathcal{S}$
+      \mathit{fchid}\right)$ to \simulator
       \State $\mathtt{pending}\left(\mathit{fchid}\right) \gets \left(\alice,
       \bob, x\right)$
     \EndIndent
     \State
 
     \State Upon receiving is $\left(\textsc{channelOpened}, \mathit{fchid},
-    \mathit{pchid}\right)$ from $\mathcal{S}$
+    \mathit{pchid}\right)$ from \simulator
     \Indent
-      \State send (\textsc{read}) to $\mathcal{G}_{\mathrm{Ledger}}$ as
-      \alice and assign reply to $\Sigma_{\alice}$
+      \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
+      $\Sigma_{\alice}$
       \State $\left(\alice, \bob, x\right) \gets
       \mathtt{pending}\left(\mathit{fchid}\right)$
       \State ensure that there exists a transaction $\mathtt{tx} \in
@@ -127,9 +127,11 @@
       \State ensure that $\overrightarrow{\mathtt{path}}$ contains a series of
       channels that all contain at least $x$ to the correct direction \aggelos{maybe weaken this to not checking balances. }
       \State send $\left(\textsc{pay}, \alice, \bob, x,
-      \overrightarrow{\mathtt{path}}, \mathtt{receipt}, payid\right)$ to $\mathcal{S}$
+      \overrightarrow{\mathtt{path}}, \mathtt{receipt}, payid\right)$ to
+      \simulator
     \EndIndent
-      \State Upon receiving reply is $\left(\textsc{SettlePay}, payid, Charlie\right)$ from $\mathcal{S}$
+      \State Upon receiving reply is $\left(\textsc{SettlePay}, payid,
+      Charlie\right)$ from \simulator
       \Indent
       \If{($Charlie \neq \alice$ and $Charlie \notin \{  \mathtt{corrupted}, \mathtt{negligent}\} $) or
       $Charlie \notin \overrightarrow{\mathtt{path}}$}
@@ -147,18 +149,19 @@
     \State
 
     \State Upon receiving $\left(\textsc{corrupted}, \alice\right)$ from
-    $\mathcal{S}$:
+    \simulator:
     \Indent
       \State add \alice{} to \texttt{corrupted}
     \EndIndent
     \State
 
-    \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from \alice \aggelos{(or $\mathcal{S}$) ?? }
+    \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from \alice
+    \aggelos{(or \simulator) ?? }
     \Indent
       \State ensure that \texttt{receipt} corresponds to an open
       $\mathtt{channel} \in \mathtt{channels}$ that contains \alice
       \State send (\textsc{closeChannel}, \texttt{channel}, \alice) to
-      $\mathcal{S}$
+      \simulator
       \State ensure reply is (\textsc{channelClosed}, \texttt{channel})
       \State extract $\alice, \bob, x, y$ from \texttt{channel}
       \State $\mathtt{onChainBalance}\left(\alice\right) \gets
@@ -179,8 +182,8 @@
     \State verify  onChainbalance() for all parties is consistent with ledger (if not roll back the state and ignore command of activation).
   %    \ForAll{$\alice \notin \mathtt{corrupted}$}
   %      \If{the minimum delay(\alice) for all her channels is about to pass}
-  %        \State check $\mathcal{G}_{\mathrm{Ledger}}$ for revoked closes
-  %        \State if found, inform $\mathcal{S}$
+  %        \State check \ledger for revoked closes
+  %        \State if found, inform \simulator
   %      \EndIf
   %    \EndFor
     \EndIndent
