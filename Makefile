@@ -4,6 +4,11 @@ all: paymentChannels.pdf
 paymentChannels.pdf: src/*
 	export TEXINPUTS=.:./src//:; \
 	pdflatex paymentChannels.tex; \
+	rm -rf paymentChannels.aux paymentChannels.log paymentChannels.out paymentChannels.toc paymentChannels.lof paymentChannels.lot paymentChannels.bbl paymentChannels.blg
+
+bib: src/*
+	export TEXINPUTS=.:./src//:; \
+	pdflatex paymentChannels.tex; \
 	bibtex paymentChannels.aux; \
 	pdflatex paymentChannels.tex; \
 	pdflatex paymentChannels.tex; \
