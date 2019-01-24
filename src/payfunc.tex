@@ -221,24 +221,40 @@
     \State
 
     \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from \alice
-    \aggelos{(or \simulator) ?? }
+    \aggelos{(or \simulator) ?? } \orfeas{@Aggelos: why \simulator?}
     \Indent
       \State ensure that \texttt{receipt} corresponds to an open
-      $\mathtt{channel} \in \mathtt{channels}$ that contains \alice
-      \State send (\textsc{closeChannel}, \texttt{channel}, \alice) to
-      \simulator
-      \State ensure reply is (\textsc{channelClosed}, \texttt{channel})
-      \State extract $\alice, \bob, x, y$ from \texttt{channel}
+      \texttt{channel} that contains \alice
+      \State retrieve \textit{fchid} from \texttt{channel}
+      \State $\mathtt{pendingClose}\left(\mathit{fchid}\right) \gets \alice$
+      \State send (\textsc{closeChannel}, \textit{fchid}, \alice) to \simulator
+    \EndIndent
+    \State
+
+    \State Upon receiving (\textsc{channelClosed}, \textit{fchid}) from
+    \simulator:
+    \Indent
+      \State $\alice \gets \mathtt{pendingClose}\left(\mathit{fchid}\right)$
+      \State retrieve $\bob, x, y, \mathit{pchid}$ from \texttt{channel}
+      with ID \textit{fchid}
+      \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
+      $\Sigma_{\alice}$
+      \State ensure that transaction with ID \textit{pchid} is in
+      $\Sigma_{\alice}$, is spent, $x$ of its coins are spendable or
+      will be spendable exclusively by \alice{} and $y$ of its coins are
+      spendable exclusively by \bob
+      \State add receipt of \texttt{channel} to \texttt{closedChannels}(\bob)
+      \State remove \texttt{channel} from \texttt{channels}
       \State $\mathtt{onChainBalance}\left(\alice\right) \gets
       \mathtt{onChainBalance}\left(\alice\right) + x$
-      \State \aggelos{check incoming transaction for \alice, \bob for respective amounts}
       \State $\mathtt{onChainBalance}\left(\bob\right) \gets
       \mathtt{onChainBalance}\left(\bob\right) + y$
       \State $\mathtt{offChainBalance}\left(\alice\right) \gets
       \mathtt{offChainBalance}\left(\alice\right) - x$
       \State $\mathtt{offChainBalance}\left(\bob\right) \gets
       \mathtt{offChainBalance}\left(\bob\right) - y$
-      \State send (\textsc{channelClosed}, \texttt{channel}) to \alice
+      \State send (\textsc{channelClosed}, receipt from \texttt{channel}) to
+      \alice
     \EndIndent
     \State
 
