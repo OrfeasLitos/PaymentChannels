@@ -129,6 +129,9 @@
       \ForAll{every maliciously closed channel of which the spending txs can
       still be spent by \alice} \Comment{If \alice{} is negligent, she may be
       unable to punish}
+        \If{\alice cannot spend those spending txs}
+          \State ensure that \alice has been negligent in the last interval
+        \EndIf
         \State send (\textsc{closeChannel}, \texttt{channel}) to \simulator
         \orfeas{TODO: split in two messages}
         \State ensure reply is (\textsc{channelClosed}, \texttt{channel})
