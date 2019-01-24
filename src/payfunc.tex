@@ -241,14 +241,16 @@
     \simulator:
     \Indent
       \State $\alice \gets \mathtt{pendingClose}\left(\mathit{fchid}\right)$
-      \State retrieve $\bob, x, y, \mathit{pchid}$ from \texttt{channel}
-      with ID \textit{fchid}
+      \State retrieve $\charlie, \bob, x, y, \mathit{pchid}$ from
+      \texttt{channel} with ID \textit{fchid}
+      \State ensure that $\charlie{} = \alice$
       \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
       $\Sigma_{\alice}$
       \State ensure that transaction with ID \textit{pchid} is in
       $\Sigma_{\alice}$, is spent, $x$ of its coins are spendable or
       will be spendable exclusively by \alice{} and $y$ of its coins are
       spendable exclusively by \bob
+      \State $\mathtt{pendingClose} \gets \bot$
       \State add receipt of \texttt{channel} to \texttt{closedChannels}(\bob)
       \State remove \texttt{channel} from \texttt{channels}
       \State $\mathtt{onChainBalance}\left(\alice\right) \gets
