@@ -1,16 +1,34 @@
-\ \\ \noindent {$\Pi_{\mathrm{LN}}$}
+\ \\ \noindent {$\Pi_{\mathrm{LN}}$} (self is \textit{Alice})
   \label{alg:lightningprot}
   \begin{algorithmic}[1]
     \State Initialisation:
     \Indent
-      \State $\mathtt{pending} \gets \emptyset$
-      \State $\mathtt{channels} \gets \emptyset$
+      \State $\mathtt{channels}, \mathtt{pendingPay}, \mathtt{pendingOpen},
+      \mathtt{pendingClose}, \gets \emptyset$
+    \EndIndent
+    \State
+
+    \State Upon receiving (\textsc{register}, delay) from \environment:
+    \Indent
+      \State $\mathtt{delay} \gets \mathrm{delay}$
+      \State send (\textsc{read}) to $\clock$ and assign reply to
+      \texttt{lastPoll}
+      \State generate and store keys, send them to \adversary and read ledger
+      for balance \orfeas{TODO}
+      \State send (\texttt{register}, \textit{Alice}, \texttt{delay}) to
+      \adversary
+    \EndIndent
+    \State
+
+    \State Upon receiving any message except for
+    $\left(\textsc{register}\right)$ from \environment:
+    \Indent
+      \State ignore message if haven't received (\textsc{register}) yet
     \EndIndent
     \State
 
     \State Upon receiving $\left(\textsc{openChannel}, \mathrm{pid}_{\alice},
-    \mathrm{pid}_{\bob}, x, y, \mathrm{AliceDelay}, \mathrm{forFundTX}\right)$
-    from $\mathcal{E}$ (self is \textit{Alice}):
+    \mathrm{pid}_{\bob}, x\right)$ from \environment: \orfeas{TODO}
     \Indent
       \State ensure that forFundTX has inputs spendable by \textit{Alice} of total
       value at least $x$ and by \textit{Bob} of total value at least $y$
@@ -41,70 +59,8 @@
     \EndIndent
     \State
 
-    \State Upon receiving (\textsc{openChannel}, $x, y$, AliceDelay, bcast,
-    $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
-    pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$, tempid) from \textit{Alice} (self is
-    \textit{Bob}):
-    \Indent
-      \State ensure that there is no $\left(\dots, \mathrm{tempid}\right)$ in
-      \texttt{pending}
-      \State add $\left(\alice, \bob, x, y, \mathrm{AliceDelay}, \mathrm{bcast},
-      pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
-      pa_{\mathrm{com}1}, pa_{\mathrm{rev}}, \mathrm{tempid}\right)$ to
-      \texttt{pending}
-      \State Send (\textsc{endorseChannel}, $\mathrm{pid}_{\alice},
-      \mathrm{pid}_{\bob}, x, y$, AliceDelay, bcast, tempid) to $\mathcal{E}$
-    \EndIndent
-    \State
-
-    \State Upon receiving $\left(\textsc{endorseChannel}, \mathrm{pid}_{\alice},
-    \mathrm{pid}_{\bob}, x, y, \mathrm{BobDelay}, \mathrm{tempid}\right)$ from
-    $\mathcal{E}$ (self is \textit{Bob})
-    \Indent
-      \State ensure that there is a unique $\left(\dots, \mathrm{tempid}\right)$
-      entry in \texttt{pending} with elements as should be after handling an
-      \textsc{openChannel} message from \textit{Alice}
-      \State $\left(\left(pb_F, sb_F\right), \left(pb_\mathrm{pay},
-      sb_\mathrm{pay}\right), \left(pb_\mathrm{dpay}, sb_\mathrm{dpay}\right),
-      \left(pb_\mathrm{htlc}, sb_\mathrm{htlc}\right),\right.$
-      \State $\left.\left(pb_\mathrm{com}1, sb_\mathrm{com}1\right),
-      \left(pb_\mathrm{rev}, sb_\mathrm{rev}\right)\right) \gets
-      \textsc{GetKeys}\left(\right)$
-      \State add generated keys to \texttt{pending} entry
-      \State Send (\texttt{acceptChannel}, BobDelay, $pb_F,
-      pb_{\mathrm{pay}}, pb_{\mathrm{dpay}}, pb_{\mathrm{htlc}},
-      pb_{\mathrm{com}1}, pb_{\mathrm{rev}}$, tempid) to \textit{Alice}
-    \EndIndent
-    \State
-
-    \State Upon receiving (\textsc{acceptChannel}, BobDelay, $pb_F,
-    pb_{\mathrm{pay}}, pb_{\mathrm{dpay}}, pb_{\mathrm{htlc}},
-    pb_{\mathrm{com}1}, pb_{\mathrm{rev}}$, tempid) from \textit{Bob} (self is
-    \textit{Alice}):
-    \Indent
-      \State ensure that there is a unique $\left(\dots, \mathrm{tempid}\right)$
-      entry in \texttt{pending} with elements as should be after handling an
-      \textsc{openChannel} message from $\mathcal{E}$
-      \State retrieve elements of entry
-      \State add output $\left(pa_F \wedge pb_F\right)$ to forFundTX and assign
-      result to $F$
-      \State let idx be the position of the output in the transaction
-      \State $\mathrm{chid} \gets \mathcal{H}\left(F\right) \oplus \mathrm{idx}$
-      \Comment{This is how chid is derived in LND}
-      \State com1b $\gets \textsc{getCommitment}\left(F, \mathrm{idx},
-      1, \mathrm{BobDelay}, pa_{\mathrm{rev}}, pb_{\mathrm{dpay}},
-      pa_{\mathrm{pay}}\right)$ TODO: find if
-      offered\footnote{\url{https://github.com/lightningnetwork/lightning-rfc/blob/master/03-transactions.md\#offered-htlc-outputs}}/received\footnote{\url{https://github.com/lightningnetwork/lightning-rfc/blob/master/03-transactions.md\#received-htlc-outputs}}
-      HTLC outputs needed
-      \State $\mathrm{AliceSig} \gets \mathrm{sign}\left(\mathrm{com1},
-      sa_F\right)$
-      \State Send (\texttt{fundingCreated}, tempid, $\mathcal{H}\left(F\right)$,
-      idx, AliceSig) to \textit{Bob}
-    \EndIndent
-    \State
-
-    \State Upon receiving (\textsc{fundingCreated}, txid, idx, AliceSig) from
-    \textit{Alice} (self is \textit{Bob}):
+    \State \orfeas{TODO} Upon receiving (\textsc{fundingCreated}, txid, idx,
+    AliceSig) from \textit{Alice} (self is \textit{Bob}):
       \State ensure that there is a unique $\left(\dots, \mathrm{tempid}\right)$
       entry in \texttt{pending} with elements as should be after handling an
       \textsc{endorseChannel} message
@@ -136,84 +92,6 @@
       \State \Return (txid, chid, True)
     \State
 
-% openChannel from E to Alice OK
-% openChannel from Alice to Bob OK
-% endorseChannel from Bob to E OK
-% endorseChannel from E to Bob OK
-% acceptChannel from Bob to Alice OK
-% fundingCreated from Alice to Bob
-% fundingSigned from Bob to Alice
-% fundingLocked from Alice to Bob
-% fundingLocked from Bob to Alice
-
-% for fundingLocked from A to B or the other way
-%      \State add $\left(\mathrm{pid}_{\alice}, \mathrm{pid}_{\bob}, x, y,
-%      \mathrm{chid}, \mathrm{txid}\right)$ to \texttt{channels} \Comment{TODO:
-%      add delay, bcast}
-%      \State Send $\left(\textsc{Receipt}, \mathrm{pid}_{\alice},
-%      \mathrm{pid}_{\bob}, \mathrm{coins}, \mathrm{delay}, \mathrm{bcast},
-%      \mathrm{txid}, \mathrm{chid}\right)$ to $\mathcal{E}$ \Comment{TODO:
-%      build receipt. DISCUSS: difference in Receipt message timing with
-%      functionality?}
-
-% for fundingLocked
-%      \State $\left(\mathrm{txid}, \mathrm{chid}, \mathrm{success}\right) \gets
-%      \textsc{AcceptChannel}$(funder, coins, selfDelay,
-%      \Indent
-%        \Indent
-%          \State remoteDelay, bcast, minDepth,
-%          \State $pa_F, pa_{\mathrm{pay}}, pa_{\mathrm{dpay}},
-%          pa_{\mathrm{htlc}}, pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$)
-%        \EndIndent
-%      \EndIndent
-%      \If{success = True}
-%        \State add $\left(\mathrm{pid}_{\alice}, \mathrm{pid_{\bob}}, 0,
-%        \mathrm{coins}, \mathrm{chid}, \mathrm{txid}\right)$ to
-%        \texttt{channels}
-%        \Comment{TODO: add delay, bcast}
-%        \State Send $\left(\mathtt{accepted}, \mathrm{pid}_{\alice},
-%        \mathrm{pid}_{\bob}, \mathrm{coins}, \mathrm{delay}, \mathrm{bcast},
-%        \mathrm{txid}, \mathrm{chid}\right)$
-%        \Indent
-%          \Indent
-%            \State to $\mathcal{E}$
-%          \EndIndent
-%        \EndIndent
-%      \Else
-%        \State Send $\left(\mathtt{notAccepted}, \mathrm{pid}_{\alice},
-%        \mathrm{pid}_{\bob}, \mathrm{coins}, \mathrm{delay},
-%        \mathrm{bcast}\right)$ to $\mathcal{E}$
-%      \EndIf
-%    \EndIndent
-
-% for fundingSigned from Bob to Alice
-%    \Function{OpenChannel}{fundee, forFundTX, coins, delay, bcast}
-%      \State assert(response = (\texttt{fundingSigned}, chid, sig)
-%      \Indent
-%        \State $\And \textsc{isValid2-of-2Sig}\left(\mathrm{sig},
-%        \textsc{GetCommitment}\left(\right.\right.$
-%        \State $\left.\left.\mathcal{H}\left(F\right),\mathrm{idx}, pa_{pay},
-%        pb_{pay}\right), 0\right)$) TODO: may change
-%      \EndIndent
-%      \State $\mathcal{F}_{\mathrm{Ledger}}.\mathrm{Broadcast}\left(F\right)$
-%      \State Wait for minDepth confirmations on $F$
-%      \State $\left(pa_{\mathrm{com}2}, sa_{\mathrm{com}2}\right) \gets
-%      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$
-%      \State In parallel:
-%      \Indent
-%        \State Send (\texttt{fundingLocked}, chid, $pa_{\mathrm{com}2}$) to
-%        fundee
-%        \State assert(response = (\texttt{fundingLocked}, chid,
-%        $pb_{\mathrm{com}2}$) $\And$
-%        \Indent
-%          \State $\mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}
-%          \left(pb_{\mathrm{com}2}\right)$)
-%        \EndIndent
-%      \EndIndent
-%      \State \Return ($\mathcal{H}\left(F\right)$, chid, True)
-%    \EndFunction
-
-    \State
     \Function{GetKeys}{}
       \State $\left(pa_F, sa_F\right) \gets \mathrm{genKey}\left(\right)$
       \Comment{For $F$ output}
@@ -275,7 +153,8 @@
     \State
 
     \State Upon receiving (\texttt{pay}, \textit{Bob}, $x$,
-    $\overrightarrow{\mathtt{path}}$, \texttt{receipt}) from $\mathcal{E}$:
+    $\overrightarrow{\mathtt{path}}$, \texttt{receipt}) from \environment:
+    \orfeas{TODO}
       \State Send (\texttt{SendInvoice}, $x$) to \textit{Bob}
       \State Wait for response (\texttt{invoice}, $x$, hash) from \textit{Bob}:
       \Indent
@@ -346,7 +225,10 @@
       \EndIf
       \State Send (\texttt{paymentReceived}, \textit{Bob}, $x$) to $\mathcal{E}$
     \State
-    \State Upon receiving (\texttt{close}, chid) from \textit{Alice}:
+
+    \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from
+    \environment: \orfeas{TODO}
+    \Indent
       \If{$\mathcal{G}_{Ledger}$ has a valid funding tx with
       $\mathcal{H}\left(\mathrm{tx}\right) = \mathrm{chid}$}
         \State Try to close cooperatively \Comment{TODO}
@@ -354,5 +236,12 @@
           \State Close unilaterally \Comment{TODO}
         \EndIf
       \EndIf
+    \EndIndent
+    \State
+
+    \State Upon receiving (\textsc{poll}) from \environment:
+    \Indent
+      \State \orfeas{TODO}
+    \EndIndent
   \end{algorithmic}
 \hrulefill
