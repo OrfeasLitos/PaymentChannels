@@ -43,84 +43,125 @@
     \State Upon receiving $\left(\textsc{openChannel}, \mathrm{pid}_{\alice},
     \mathrm{pid}_{\bob}, x\right)$ from \environment:
     \Indent
-      \State send (\textsc{read}) to \ledger{} and assign reply to
-      $\Sigma_{\mathit{Alice}}$
-      \State assign to \texttt{prevout} a transaction output found in
-      $\Sigma_{\mathit{Alice}}$ that is currently exclusively spendable by
-      \alice{} and has value at least $x$ \orfeas{this and previous in acceptCh}
-      \State $\left(\left(pa_F, sa_F\right), \left(pa_{\mathrm{pay}},
-      sa_{\mathrm{pay}}\right), \left(pa_{\mathrm{dpay}},
-      sa_{\mathrm{dpay}}\right), \left(pa_{\mathrm{htlc}},
-      sa_{\mathrm{htlc}}\right), \left(pa_{\mathrm{com}1},
-      sa_{\mathrm{com}1}\right),\right.$ $\left.\left(pa_{\mathrm{rev}},
-      sa_{\mathrm{rev}}\right)\right) \gets \textsc{GetKeys}\left(\right)$
-      \State choose unique temporary ID \textit{tid} \orfeas{unique for
-      counterparty as well}
+      \State $\left(\left(pa_F, sa_F\right),
+      \left(pa\_\mathrm{base}_{\mathrm{pay}},
+      sa\_\mathrm{base}_{\mathrm{pay}}\right),
+      \left(pa\_\mathrm{base}_{\mathrm{dpay}},
+      sa\_\mathrm{base}_{\mathrm{dpay}}\right),\right.$
+      $\left.\left(pa\_\mathrm{base}_{\mathrm{htlc}},
+      sa\_\mathrm{base}_{\mathrm{htlc}}\right), \left(pa_{\mathrm{com}1},
+      sa_{\mathrm{com}1}\right), \left(pa\_\mathrm{base}_{\mathrm{rev}},
+      sa\_\mathrm{base}_{\mathrm{rev}}\right)\right) \gets
+      \textsc{GetKeys}\left(\right)$ \orfeas{TODO: change font}
+      \State choose unique temporary ID \textit{tid} \Comment{unique for the two
+      parties}
       \State associate keys with \textit{tid}
-      \State add $\left(\alice, \bob, x, \mathtt{delay},
-      \left(pa_F, sa_F\right), \left(pa_{\mathrm{pay}},
-      sa_{\mathrm{pay}}\right), \right.$ $\left.\left(pa_{\mathrm{dpay}},
-      sa_{\mathrm{dpay}}\right),\right.$ $\left.\left(pa_{\mathrm{htlc}},
-      sa_{\mathrm{htlc}}\right), \left(pa_{\mathrm{com}1},
-      sa_{\mathrm{com}1}\right), \left(pa_{\mathrm{rev}},
-      sa_{\mathrm{rev}}\right), \mathit{tid}\right)$ to \texttt{pendingOpen}
+      \State add $\left(\alice, \bob, x, \mathtt{delay}, \left(pa_F,
+      sa_F\right), \left(pa\_\mathrm{base}_{\mathrm{pay}},
+      sa\_\mathrm{base}_{\mathrm{pay}}\right),
+      \left(pa\_\mathrm{base}_{\mathrm{dpay}},\right.\right.$
+      $\left.\left.sa\_\mathrm{base}_{\mathrm{dpay}}\right),
+      \left(pa\_\mathrm{base}_{\mathrm{htlc}},
+      sa\_\mathrm{base}_{\mathrm{htlc}}\right),
+      \left(pa\_\mathrm{base}_{\mathrm{com}1},
+      sa\_\mathrm{base}_{\mathrm{com}1}\right),\right.$
+      $\left.\left(pa\_\mathrm{base}_{\mathrm{rev}},
+      sa\_\mathrm{base}_{\mathrm{rev}}\right), \mathit{tid}\right)$ to
+      \texttt{pendingOpen}
       \State send (\textsc{openChannel}, $x$, \texttt{delay}, $pa_F,
-      pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
-      pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$, \textit{tid}) to \bob
+      pa\_\mathrm{base}_{\mathrm{pay}}, pa\_\mathrm{base}_{\mathrm{dpay}},
+      pa\_\mathrm{base}_{\mathrm{htlc}},$ $pa_{\mathrm{com}1},
+      pa\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) to \bob
     \EndIndent
     \State
 
     \State Upon receiving (\textsc{openChannel}, $x$, BobDelay, $pa_F,
-    pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
-    pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$, \textit{tid}) from \bob:
+    pa\_\mathrm{base}_{\mathrm{pay}}, pa\_\mathrm{base}_{\mathrm{dpay}},$
+    $pa\_\mathrm{base}_{\mathrm{htlc}}, pa_{\mathrm{com}1},
+    pa\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) from \bob:
     \Indent
-      \State $\left(\left(pb_F, sb_F\right), \left(pb_{\mathrm{pay}},
-      sb_{\mathrm{pay}}\right), \left(pb_{\mathrm{dpay}},
-      sb_{\mathrm{dpay}}\right), \left(pb_{\mathrm{htlc}},
-      sb_{\mathrm{htlc}}\right), \left(pb_{\mathrm{com}1},
-      sb_{\mathrm{com}1}\right),\right.$ $\left.\left(pb_{\mathrm{rev}},
-      sb_{\mathrm{rev}}\right)\right) \gets \textsc{GetKeys}\left(\right)$
+      \State ensure \textit{tid} has not been used yet with \bob
+      \State $\left(\left(pb_F, sb_F\right),
+      \left(pb\_\mathrm{base}_{\mathrm{pay}},
+      sb\_\mathrm{base}_{\mathrm{pay}}\right),
+      \left(pb\_\mathrm{base}_{\mathrm{dpay}},
+      sb\_\mathrm{base}_{\mathrm{dpay}}\right),\right.$
+      $\left.\left(pb\_\mathrm{base}_{\mathrm{htlc}},
+      sb\_\mathrm{base}_{\mathrm{htlc}}\right),
+      \left(pb_{\mathrm{com}1}, sb_{\mathrm{com}1}\right),
+      \left(pb\_\mathrm{base}_{\mathrm{rev}},
+      sb\_\mathrm{base}_{\mathrm{rev}}\right)\right) \gets
+      \textsc{GetKeys}\left(\right)$ \orfeas{TODO: change font}
       \State associate keys with \textit{tid} and store in \texttt{pendingOpen}
       \State send (\textsc{acceptChannel}, \texttt{delay}, $pb_F,
-      pb_{\mathrm{pay}}, pb_{\mathrm{dpay}}, pb_{\mathrm{htlc}},
-      pb_{\mathrm{com}1}, pb_{\mathrm{rev}}$, \textit{tid}) to \bob
+      pb\_\mathrm{base}_{\mathrm{pay}}, pb\_\mathrm{base}_{\mathrm{dpay}},
+      pb\_\mathrm{base}_{\mathrm{htlc}},$ $pb_{\mathrm{com}1},
+      pb\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) to \bob
     \EndIndent
     \State
 
-    \State \orfeas{TODO} Upon receiving (\textsc{fundingCreated}, txid, idx,
-    AliceSig) from \textit{Alice} (self is \textit{Bob}):
-      \State ensure that there is a unique $\left(\dots, \mathrm{tempid}\right)$
-      entry in \texttt{pending} with elements as should be after handling an
-      \textsc{endorseChannel} message
-      \State retrieve elements of entry
-      \State com1b $\gets \textsc{getCommitment}\left(F, \mathrm{idx}, 1,
-      \mathrm{BobDelay}, pa_{\mathrm{rev}}, pb_{\mathrm{dpay}},
-      pa_{\mathrm{pay}}\right)$ TODO: find if offered/received HTLC outputs
-      needed
-      \State ensure that AliceSig signs com1b with the private key of $pa_F$
-      \State CONTINUE
-      \State $\mathrm{chid} \gets \mathrm{txid} \oplus \mathrm{idx}$
-      \State $\mathrm{BobSig} \gets \mathrm{sign}\left(\mathrm{txid},
-      \mathrm{idx}, sb_F\right)$
-      \State Send (\texttt{fundingSigned}, chid, sig) to funder
-      \State Wait for minDepth confirmations on tx with id txid
-      \State $\left(pb_{\mathrm{com}2}, sb_{\mathrm{com}2}\right) \gets
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{genKey}\left(\right)$
-      \State In parallel:
-      \Indent
-        \State Send (\texttt{fundingLocked}, chid, $pb_{\mathrm{com}2}$) to
-        funder
-        \State assert(response = (\texttt{fundingLocked}, chid,
-        $pa_{\mathrm{com}2}$) $\And$
-        \Indent
-          \State $\mathcal{F}_{\mathrm{Wallet}}.\mathrm{isValidPubKey}
-          \left(pa_{\mathrm{com}2}\right)$)
-        \EndIndent
-      \EndIndent
-      \State \Return (txid, chid, True)
+    \State Upon receiving (\textsc{acceptChannel}, \texttt{delay}, $pb_F,
+    pb\_\mathrm{base}_{\mathrm{pay}}, pb\_\mathrm{base}_{\mathrm{dpay}},$
+    $pb\_\mathrm{base}_{\mathrm{htlc}},$ $pb_{\mathrm{com}1},
+    pb\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) from \bob:
+    \Indent
+      \State ensure there is a temporary ID \textit{tid} with \bob{} in
+      \texttt{pendingOpen} on which \textsc{acceptChannel} hasn't been received
+      \State associate received keys with \textit{tid}
+      \State send (\textsc{read}) to \ledger{} and assign reply to
+      $\Sigma_{\alice}$
+      \State assign to \texttt{prevout} a transaction output found in
+      $\Sigma_{\alice}$ that is currently exclusively spendable by \alice{} and
+      has value $y \geq x$
+      \State $F \gets$ TX \{input spends prevout with a \texttt{signature}(TX,
+      $sk_{\alice}$), output 0 pays $y - x$ to $pk_{\alice}$ now, output 1 pays
+      $x$ to $\textit{tid}.pa_F \wedge pb_F$ now\}
+      \State $\mathit{pchid} \gets \mathcal{H}\left(F\right)$
+      \State replace \textit{tid} with \textit{pchid} in storage
+      \State $pb_{\mathrm{rev}} \gets pb\_\mathrm{base}_{\mathrm{rev}} \cdot
+      \mathcal{H}\left(pb\_\mathrm{base}_{\mathrm{rev}} ||
+      pb_{\mathrm{com}1}\right) + pb_{\mathrm{com}1} \cdot \mathcal{H}\left(
+      pb_{\mathrm{com}1} || pb\_\mathrm{base}_{\mathrm{rev}}\right)$
+      \State $pa_{\mathrm{dpay}} \gets pa\_\mathrm{base}_{\mathrm{dpay}} +
+      \mathcal{H}\left(pa_{\mathrm{com}1} ||
+      pa\_\mathrm{base}_{\mathrm{dpay}}\right)$
+      \State $\mathrm{Com} \gets$ TX \{payload: 1, input: output 1 of $F$,
+      output: value = $x$, methods = $pb_{\mathrm{rev}},
+      \left(pa_{\mathrm{dpay}}, \mathtt{delay} \text{ relative}\right)$\}
+      \State $\mathrm{AliceSig} \gets \mathtt{signature}\left(\mathrm{Com},
+      sa_F\right)$
+      \State send (\textsc{fundingCreated}, \textit{tid},
+      \textit{pchid}, AliceSig) to \bob
+    \EndIndent
     \State
 
-    \Function{GetKeys}{}
+    \State Upon receiving (\textsc{fundingCreated}, \textit{tid},
+    \textit{pchid}, BobSig) from \bob:
+    \Indent
+      \State ensure there is a temporary ID \textit{tid} with \bob{} in
+      \texttt{pendingOpen} on which we have sent up to \textsc{acceptChannel}
+      \State $\mathrm{Com} \gets$ TX \{payload: 1, input: output 1 of TX with ID
+      \textit{pchid}, output: value = $x$, methods = $pb_{\mathrm{rev}},
+      \left(pa_{\mathrm{dpay}}, \mathtt{delay} \text{ relative}\right)$\}
+      \State ensure \texttt{Verify}(Com, BobSig, $pa_F$) = \texttt{True}
+      \State $\mathrm{AliceSig} \gets \mathtt{signature}\left(\mathrm{Com},
+      sb_F\right)$
+      \State send (\textsc{fundingSigned}, \textit{pchid}, AliceSig) to \bob
+    \EndIndent
+    \State
+
+    \State Upon receiving (\textsc{fundingSigned}, \textit{pchid}, BobSig) from
+    \bob:
+    \Indent
+      \State ensure there is a channel ID \textit{pchid} with \bob{} in
+      \texttt{pendingOpen} on which we have sent up to \textsc{fundingCreated}
+      \State ensure \texttt{Verify}(Com, BobSig, $pb_F$) = \texttt{True}
+      \State mark \textit{pchid} in \texttt{pendingOpen} as broadcast
+      \State send (\textsc{submit}, $F$) to \ledger
+    \EndIndent
+    \State
+
+    \Function{GetKeys}{} \orfeas{TODO: change font}
       \State $\left(pa_F, sa_F\right) \gets \mathrm{genKey}\left(\right)$
       \Comment{For $F$ output}
       \State $\left(pa_{\mathrm{pay}}, sa_{\mathrm{pay}}\right) \gets
@@ -144,40 +185,15 @@
     \EndFunction
     \State
 
-    \Function{GetFunding}{$x, sa_F, pa_F, pb_F, \alice$} \Comment{w/o
-    forFundTX, w/ Alice}
-      \State $\mathtt{tx} \gets
-      \mathcal{F}_{\mathrm{Wallet}}.\mathrm{getTX}\left(\alice, x\right)$
-      \Comment{\textit{Alice} can add a $x$-valued output and broadcast result}
-      \State $\mathtt{witnessScript} \gets \text{"2 "} \Vert pa_F \Vert \text{"
-      "} \Vert pb_F \Vert \text{" 2 \texttt{OP\_CHECKMULTISIG}"}$
-      \State \texttt{sPK} $\gets \text{"0 "} \Vert
-      \textsc{SHA256}\left(\mathtt{witnessScript}\right)$
-      \State $\left(F, \mathrm{idx}\right) \gets
-      \mathtt{tx}$.\textsc{addOutput}(\{scriptPubKey: \texttt{sPK}, value:
-      $x$\})
-      \State $\mathtt{commitment} \gets \textsc{Commitment}\left(TODO\right)$
-      \State $\mathrm{sig} \gets
-      \mathcal{F}_{\mathrm{Wallet}}.\textsc{Sign}\left(\mathtt{commitment},
-      sa_F\right)$ \Comment{TODO: continue (add inputs here)}
-      \State \Return $\left(F, \mathrm{idx}, \mathrm{sig}\right)$
-    \EndFunction
-    \State
-
-    \Function{GetFunding}{coins, tx, $sa_F, pa_F, pb_F$}
-      \State $\left(F, \mathrm{idx}\right) \gets
-      \mathcal{F}_{\mathrm{Wallet}}$.addOutputToTX(tx, 2-of-2-msig$\left(pa_F,
-      pb_F, \mathrm{coins}\right)$)
-      \State $\mathrm{sig} \gets
-      \mathcal{F}_{\mathrm{Wallet}}.\textsc{Sign}\left(\mathcal{H}\left(F\right),
-      \mathrm{idx}, sa_F\right)$
-      \State \Return $\left(F, \mathrm{idx}, \mathrm{sig}\right)$
-    \EndFunction
-    \State
-
-    \State TODO: 2-of-2-msig(), GetCommitment()
-    \State TODO: use basepoints instead of pubkeys (x2)
-    \State TODO: Change GetFunding
+    \State Upon receiving (\textsc{poll}) from \environment: \orfeas{TODO:
+    Continue with: (a) check if funding txs are in state and if so send
+    fundingLocked to \bob{} and wait for his fundingLocked to send opened to
+    \environment. (b) leave placeholder for other polls (updates and
+    honest/dishonest closes). These will be filled in when writing respective
+    parts.}
+    \Indent
+      \State
+    \EndIndent
     \State
 
     \State Upon receiving (\texttt{pay}, \textit{Bob}, $x$,
