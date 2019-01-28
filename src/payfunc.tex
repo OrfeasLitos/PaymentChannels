@@ -161,7 +161,8 @@
             \Else
               \State send (\textsc{reportNotPaid}, \textit{payid}) to
               \simulator \orfeas{TODO: split in two messages}
-              \If{reply from \simulator is (\textsc{doReport}, \textit{payid})}
+              \If{reply from \simulator{} is (\textsc{doReport},
+              \textit{payid})}
                 \State send $\left(\textsc{notPaid}, \bob, x,
                 \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to
                 \alice
