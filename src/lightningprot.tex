@@ -23,7 +23,9 @@
     \State Upon receiving any message except for
     $\left(\textsc{register}\right)$ from \environment:
     \Indent
-      \State ignore message if haven't received (\textsc{register}) yet
+      \If{if haven't received (\textsc{register}) from \environment{}}
+        \State ignore message
+      \EndIf
     \EndIndent
     \State
 
