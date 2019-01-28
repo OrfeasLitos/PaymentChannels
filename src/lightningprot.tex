@@ -1,4 +1,4 @@
-\ \\ \noindent {$\Pi_{\mathrm{LN}}$} (self is \textit{Alice})
+\ \\ \noindent {$\Pi_{\mathrm{LN}}$} (self is \alice)
   \label{alg:lightningprot}
   \begin{algorithmic}[1]
     \State Initialisation:
@@ -13,10 +13,10 @@
       \State $\mathtt{delay} \gets \mathrm{delay}$
       \State send (\textsc{read}) to $\clock$ and assign reply to
       \texttt{lastPoll}
-      \State $\left(pk_{\mathit{Alice}}, sk_{\mathit{Alice}}\right) \gets
+      \State $\left(pk_{\alice}, sk_{\alice}\right) \gets
       \mathrm{genKey}\left(\right)$
-      \State send (\textsc{register}, \textit{Alice}, \texttt{delay},
-      $pk_{\mathit{Alice}}$) to \adversary \orfeas{delay to \adversary{}
+      \State send (\textsc{register}, \alice, \texttt{delay},
+      $pk_{\alice}$) to \adversary \orfeas{delay to \adversary{}
       needed?}
     \EndIndent
     \State
@@ -24,9 +24,9 @@
     \State Upon receiving (\textsc{registered}) from \adversary:
     \Indent
       \State send (\textsc{read}) to \ledger{} and assign reply to
-      $\Sigma_{\mathit{Alice}}$
+      $\Sigma_{\alice}$
       \State assign the sum of all output values that are exclusively spendable
-      by \textit{Alice} to \texttt{onChainBalance}
+      by \alice{} to \texttt{onChainBalance}
       \State send (\textsc{registered}) to \environment
     \EndIndent
     \State
