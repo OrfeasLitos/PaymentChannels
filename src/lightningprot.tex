@@ -70,6 +70,20 @@
     \EndIndent
     \State
 
+    \State Upon receiving (\textsc{openChannel}, $x$, BobDelay, $pa_F,
+    pa_{\mathrm{pay}}, pa_{\mathrm{dpay}}, pa_{\mathrm{htlc}},
+    pa_{\mathrm{com}1}, pa_{\mathrm{rev}}$, \textit{tid}) from \bob:
+    \Indent
+      \State $\left(\left(pb_F, sb_F\right), \left(pb_{\mathrm{pay}},
+      sb_{\mathrm{pay}}\right), \left(pb_{\mathrm{dpay}},
+      sb_{\mathrm{dpay}}\right), \left(pb_{\mathrm{htlc}},
+      sb_{\mathrm{htlc}}\right), \left(pb_{\mathrm{com}1},
+      sb_{\mathrm{com}1}\right),\right.$ $\left.\left(pb_{\mathrm{rev}},
+      sb_{\mathrm{rev}}\right)\right) \gets \textsc{GetKeys}\left(\right)$
+      \State associate keys with \textit{tid} and store in \texttt{pendingOpen}
+      \State send (\textsc{acceptChannel}, \texttt{delay}, $pb_F,
+      pb_{\mathrm{pay}}, pb_{\mathrm{dpay}}, pb_{\mathrm{htlc}},
+      pb_{\mathrm{com}1}, pb_{\mathrm{rev}}$, \textit{tid}) to \bob
     \EndIndent
     \State
 
