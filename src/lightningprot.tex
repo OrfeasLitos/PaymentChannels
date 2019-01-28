@@ -13,10 +13,21 @@
       \State $\mathtt{delay} \gets \mathrm{delay}$
       \State send (\textsc{read}) to $\clock$ and assign reply to
       \texttt{lastPoll}
-      \State generate and store keys, send them to \adversary and read ledger
-      for balance \orfeas{TODO}
-      \State send (\texttt{register}, \textit{Alice}, \texttt{delay}) to
-      \adversary
+      \State $\left(pk_{\mathit{Alice}}, sk_{\mathit{Alice}}\right) \gets
+      \mathrm{genKey}\left(\right)$
+      \State send (\textsc{register}, \textit{Alice}, \texttt{delay},
+      $pk_{\mathit{Alice}}$) to \adversary \orfeas{delay to \adversary{}
+      needed?}
+    \EndIndent
+    \State
+
+    \State Upon receiving (\textsc{registered}) from \adversary:
+    \Indent
+      \State send (\textsc{read}) to \ledger{} and assign reply to
+      $\Sigma_{\mathit{Alice}}$
+      \State assign the sum of all output values that are exclusively spendable
+      by \textit{Alice} to \texttt{onChainBalance}
+      \State send (\textsc{registered}) to \environment
     \EndIndent
     \State
 
