@@ -225,7 +225,7 @@
 
     \State Upon receiving $\left(\textsc{poll}\right)$ from \alice:
     \Indent
-      \State send (\textsc{read}) to \clock{} as \alice and assign reply to
+      \State send (\textsc{read}) to \clock{} as \alice{} and assign reply to
       $\tau$
       \If{$\mathtt{lastPoll}\left(\alice\right) +
       \mathtt{delay}\left(\alice\right) < \tau$}
@@ -243,16 +243,16 @@
       \State scan $\Sigma_{\alice}$ for malicioulsy closed channels that contain
       \alice{} and exist in \texttt{channels} (txs that spend funding txs that
       have an older channel version than stored)
-      \ForAll{every maliciously closed channel of which the spending txs can
-      still be spent by \alice} \Comment{If \alice{} is negligent, she may be
-      unable to punish}
-        \If{\alice cannot spend those spending txs}
-          \State ensure that \alice has been negligent in the last interval
+      \ForAll{maliciously closed channel of which the spending txs can still be
+      spent by \alice} \Comment{If \alice{} is negligent, she may be unable to
+      punish}
+        \If{\alice{} cannot spend those spending txs}
+          \State ensure that \alice{} has been negligent in the last interval
         \EndIf
         \State send (\textsc{closeChannel}, \texttt{channel}) to \simulator
         \orfeas{TODO: split in two messages}
         \State ensure reply is (\textsc{channelClosed}, \texttt{channel})
-        \State ensure that corresponding txs exist on-chain and pay \alice the
+        \State ensure that corresponding txs exist on-chain and pay \alice{} the
         entire \texttt{channel} value
         \State add the receipt of \texttt{channel} to
         \texttt{closedChannels}(\alice)
