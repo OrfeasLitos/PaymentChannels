@@ -4,7 +4,8 @@
     \State Initialisation:
     \Indent
       \State $\mathtt{channels}, \mathtt{pendingOpen}, \mathtt{pendingPay},
-      \mathtt{pendingClose}, \mathtt{newChannels} \gets \emptyset$
+      \mathtt{pendingClose}, \mathtt{newChannels},$ $\mathtt{closedChannels},
+      \mathtt{unclaimedRemoteHTLCs} \gets \emptyset$
     \EndIndent
     \State
 
@@ -214,11 +215,53 @@
 
     \State Upon receiving (\textsc{poll}) from \environment:
     \Indent
-      \State $\mathtt{closedChannels} \gets \emptyset$
       \State send (\textsc{read}) to \ledger{} and assign reply to
       $\Sigma_{\alice}$
-      \State check for closes, act on revoked ones and update
-      \texttt{closedChannels} \orfeas{TODO}
+      \ForAll{$\tau \in \mathtt{unclaimedRemoteHTLCs}$}
+        \If{input of $\tau$ has been spent} \Comment{by
+        \texttt{remoteHTLC-success}}
+          \State remove $\tau$ from \texttt{unclaimedRemoteHTLCs}
+        \ElsIf{input of $\tau$ has not been spent and timelock is over}
+          \State send (\textsc{submit}, $\tau$) to \ledger \orfeas{proper way?}
+        \EndIf
+      \EndFor
+      \ForAll{$\mathrm{TX} \in \Sigma_{\alice}$ that spend the funding tx of a
+      $\mathtt{channel} \in \mathtt{channels}$ with $\mathtt{remoteCom}_n$}
+        \If{$n =$ latest \texttt{channel} seq number} \Comment{Honest closure}
+          \ForAll{received HTLC outputs $i$ of $\mathtt{remoteCom}_n$}
+            \State send (\textsc{submit},
+            $\left(\mathtt{localSig}_{\mathrm{htlc}, n, i},
+            \mathtt{remoteSig}_{\mathrm{htlc}, n, i}, \mathtt{HTLC-success}_{n,
+            i}\right)$) to \ledger \orfeas{proper way?}
+          \EndFor
+          \ForAll{unspent offered HTLC outputs $i$ of $\mathtt{remoteCom}_n$}
+            \If{timelock has not expired}
+              \State add $\left(\mathtt{localSig}_{\mathrm{htlc}, n, i},
+              \mathtt{remoteSig}_{\mathrm{htlc}, n, i},
+              \mathtt{HTLC-timeout}_{n, i}\right)$ to
+              \texttt{unclaimedRemoteHTLCs}
+            \ElsIf{timelock has expired}
+              \State send (\textsc{submit},
+              $\left(\mathtt{localSig}_{\mathrm{htlc}, n, i},
+              \mathtt{remoteSig}_{\mathrm{htlc}, n, i},
+              \mathtt{HTLC-timeout}_{n, i}\right)$) to \ledger \orfeas{proper
+              way?}
+            \EndIf
+          \EndFor
+          \State move \texttt{channel} from \texttt{channels} to
+          \texttt{closedChannels}
+        \Else \Comment{$n <$ latest \texttt{channel} seq number, malicious
+        closure}
+          \State $\mathrm{rev} \gets$ TX \{inputs: all $\mathtt{remoteCom}_n$
+          outputs, choosing $ph_{\mathrm{rev}, n}$ method, output:
+          $pk_{\mathit{Alice}}$\} \orfeas{TODO:
+          generate all new keys in \textsc{pay}}
+          \State $\mathrm{sig} \gets \mathtt{signature}\left(\mathrm{rev},
+          sh_{\mathrm{rev}, n}\right)$
+          \State send (\textsc{submit}, $\left(\mathrm{sig},
+          \mathrm{rev}\right)$) to \ledger \orfeas{proper way?}
+        \EndIf
+      \EndFor
       \ForAll{$\mathrm{TX} \in \mathtt{pendingOpen}$ marked as ``broadcast''
       that are in $\Sigma_{\alice}$, are unspent, have ID \textit{pchid} and a
       $\left(x, ph_F \wedge pt_F\right)$ output}
