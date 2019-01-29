@@ -338,16 +338,16 @@
     \State
 
     \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from
-    \environment: \orfeas{TODO}
+    \environment:
     \Indent
-      \If{$\mathcal{G}_{Ledger}$ has a valid funding tx with
-      $\mathcal{H}\left(\mathrm{tx}\right) = \mathrm{chid}$}
-        \State Try to close cooperatively \Comment{TODO}
-        \If{cooperative closing fails} \Comment{TODO}
-          \State Close unilaterally \Comment{TODO}
-        \EndIf
-      \EndIf
+      \State ensure \texttt{receipt} corresponds to an open $\mathtt{channel}
+      \in \mathtt{channels}$
+      \State assign latest \texttt{channel} sequence number to $n$
+      \State $\mathrm{sig} \gets \mathtt{signature}\left(\mathtt{localCom}_n,
+      sh_F\right)$
+      \State remove \texttt{channel} from \texttt{channels}
+      \State send (\textsc{submit}, $\left(\mathrm{sig}, \mathtt{remoteSig}_n,
+      \mathtt{localCom}_n\right)$) to \ledger
     \EndIndent
-    \State
   \end{algorithmic}
 \hrulefill
