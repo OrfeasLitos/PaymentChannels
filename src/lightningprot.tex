@@ -125,11 +125,18 @@
       \State $ph_{\mathrm{dpay}} \gets ph\_\mathrm{base}_{\mathrm{dpay}} +
       \mathcal{H}\left(ph_{\mathrm{com}1} ||
       ph\_\mathrm{base}_{\mathrm{dpay}}\right)$
-      \State $\mathrm{Com} \gets$ TX \{payload: 1, input: output 1 of $F$,
-      output: value = $x$, methods = $pt_{\mathrm{rev}},
-      \left(ph_{\mathrm{dpay}}, \mathtt{delay} \text{ relative}\right)$\}
-      \State $\mathrm{AliceSig} \gets \mathtt{signature}\left(\mathrm{Com},
-      sh_F\right)$
+      \State $ph_{\mathrm{pay}} \gets ph\_\mathrm{base}_{\mathrm{pay}} +
+      \mathcal{H}\left(ph_{\mathrm{com}1} ||
+      ph\_\mathrm{base}_{\mathrm{pay}}\right)$
+      \State $\mathtt{remoteCom}_1 \gets$ TX \{input: output 1 of $F$, output:
+      $\left(x, ph_{\mathrm{pay}}\right)$\}
+      \State $\mathtt{localCom}_1 \gets$ TX \{input: output 1 of $F$, output:
+      $\left(x, pt_{\mathrm{rev}} \vee \left(ph_{\mathrm{dpay}}, \mathtt{delay}
+      \text{ relative}\right)\right)$ \orfeas{check delays}
+      \State add $\mathtt{remoteCom}_1$ and $\mathtt{localCom}_1$ to channel
+      entry in \texttt{pendingOpen}
+      \State $\mathrm{AliceSig} \gets
+      \mathtt{signature}\left(\mathtt{remoteCom}_1, sh_F\right)$
       \State send (\textsc{fundingCreated}, \textit{tid},
       \textit{pchid}, AliceSig) to \bob
     \EndIndent
@@ -140,13 +147,28 @@
     \Indent
       \State ensure there is a temporary ID \textit{tid} with \bob{} in
       \texttt{pendingOpen} on which we have sent up to \textsc{acceptChannel}
-      \State $\mathrm{Com} \gets$ TX \{payload: 1, input: output 1 of TX with ID
-      \textit{pchid}, output: value = $x$, methods = $ph_{\mathrm{rev}},
-      \left(pt_{\mathrm{dpay}}, \mathtt{delay} \text{ relative}\right)$\}
-      \State ensure \texttt{Verify}(Com, BobSig, $pt_F$) = \texttt{True}
+      \State $ph_{\mathrm{rev}} \gets ph\_\mathrm{base}_{\mathrm{rev}} \cdot
+      \mathcal{H}\left(ph\_\mathrm{base}_{\mathrm{rev}} ||
+      ph_{\mathrm{com}1}\right) + ph_{\mathrm{com}1} \cdot \mathcal{H}\left(
+      ph_{\mathrm{com}1} || ph\_\mathrm{base}_{\mathrm{rev}}\right)$
+      \State $pt_{\mathrm{dpay}} \gets pt\_\mathrm{base}_{\mathrm{dpay}} +
+      \mathcal{H}\left(pt_{\mathrm{com}1} ||
+      pt\_\mathrm{base}_{\mathrm{dpay}}\right)$
+      \State $pt_{\mathrm{pay}} \gets pt\_\mathrm{base}_{\mathrm{pay}} +
+      \mathcal{H}\left(pt_{\mathrm{com}1} ||
+      pt\_\mathrm{base}_{\mathrm{pay}}\right)$
+      \State $\mathtt{localCom}_1 \gets$ TX \{input: output 1 of $F$, output:
+      $\left(x, pt_{\mathrm{pay}}\right)$\}
+      \State ensure \texttt{Verify}(\texttt{localCom}, BobSig, $pt_F$) =
+      \texttt{True}
+      \State $\mathtt{remoteCom}_1 \gets$ TX \{input: output 1 of $F$, output:
+      $\left(x, ph_{\mathrm{rev}} \vee \left(pt_{\mathrm{dpay}}, \mathtt{delay}
+      \text{ relative}\right)\right)$ \orfeas{check delays}
+      \State add $\mathtt{remoteCom}_1$ and $\mathtt{localCom}_1$ to channel
+      entry in \texttt{pendingOpen}
+      \State $\mathrm{AliceSig} \gets
+      \mathtt{signature}\left(\mathrm{remoteCom}_1, sh_F\right)$
       \State mark channel as ``broadcast''
-      \State $\mathrm{AliceSig} \gets \mathtt{signature}\left(\mathrm{Com},
-      sb_F\right)$
       \State send (\textsc{fundingSigned}, \textit{pchid}, AliceSig) to \bob
     \EndIndent
     \State
@@ -323,10 +345,5 @@
       \EndIf
     \EndIndent
     \State
-
-    \State Upon receiving (\textsc{poll}) from \environment:
-    \Indent
-      \State \orfeas{TODO}
-    \EndIndent
   \end{algorithmic}
 \hrulefill
