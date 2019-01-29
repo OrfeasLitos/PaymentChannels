@@ -216,8 +216,8 @@
       \State check for closes, act on revoked ones and update
       \texttt{closedChannels} \orfeas{TODO}
       \ForAll{$\mathrm{TX} \in \mathtt{pendingOpen}$ marked as ``broadcast''
-      that are in $\Sigma_{\alice}$, have ID \textit{pchid} and a $\left(x, ph_F
-      \wedge pt_F\right)$ output}
+      that are in $\Sigma_{\alice}$, are unspent, have ID \textit{pchid} and a
+      $\left(x, ph_F \wedge pt_F\right)$ output}
         \State $\left(ph\_\mathrm{base}_{\mathrm{com}2},
         sh\_\mathrm{base}_{\mathrm{com}2}\right) \gets
         \mathrm{genKey}\left(\right)$
@@ -246,8 +246,8 @@
       \State ensure $pt\_\mathrm{base}_{\mathrm{com}2}$ is a valid public key
       \State send (\textsc{read}) to \ledger{} and assign reply to
       $\Sigma_{\alice}$
-      \State ensure $\exists \mathrm{TX} \in \Sigma_{\alice}$ with ID
-      \textit{pchid} and a $\left(x, ph_F \wedge pt_F\right)$ output
+      \State ensure $\exists \text{ unspent } \mathrm{TX} \in \Sigma_{\alice}$
+      with ID \textit{pchid} and a $\left(x, ph_F \wedge pt_F\right)$ output
       \State $\left(ph\_\mathrm{base}_{\mathrm{com}2},
       sh\_\mathrm{base}_{\mathrm{com}2}\right) \gets
       \mathrm{genKey}\left(\right)$
