@@ -143,7 +143,7 @@
     \State
 
     \State Upon receiving (\textsc{fundingCreated}, \textit{tid},
-    \textit{pchid}, BobSig) from \bob:
+    \textit{pchid}, $\mathtt{BobSig}_1$) from \bob:
     \Indent
       \State ensure there is a temporary ID \textit{tid} with \bob{} in
       \texttt{pendingOpen} on which we have sent up to \textsc{acceptChannel}
@@ -159,13 +159,13 @@
       pt\_\mathrm{base}_{\mathrm{pay}}\right)$
       \State $\mathtt{localCom}_1 \gets$ TX \{input: output 1 of $F$, output:
       $\left(x, pt_{\mathrm{pay}}\right)$\}
-      \State ensure \texttt{Verify}(\texttt{localCom}, BobSig, $pt_F$) =
-      \texttt{True}
+      \State ensure $\mathtt{Verify}\left(\mathtt{localCom}_1,
+      \mathtt{BobSig}_1, pt_F\right) = \mathtt{True}$
       \State $\mathtt{remoteCom}_1 \gets$ TX \{input: output 1 of $F$, output:
       $\left(x, ph_{\mathrm{rev}} \vee \left(pt_{\mathrm{dpay}}, \mathtt{delay}
       \text{ relative}\right)\right)$ \orfeas{check delays}
-      \State add $\mathtt{remoteCom}_1$ and $\mathtt{localCom}_1$ to channel
-      entry in \texttt{pendingOpen}
+      \State add $\mathtt{BobSig}_1, \mathtt{remoteCom}_1$ and
+      $\mathtt{localCom}_1$ to channel entry in \texttt{pendingOpen}
       \State $\mathrm{AliceSig} \gets
       \mathtt{signature}\left(\mathrm{remoteCom}_1, sh_F\right)$
       \State mark channel as ``broadcast''
@@ -173,12 +173,14 @@
     \EndIndent
     \State
 
-    \State Upon receiving (\textsc{fundingSigned}, \textit{pchid}, BobSig) from
-    \bob:
+    \State Upon receiving (\textsc{fundingSigned}, \textit{pchid},
+    $\mathtt{BobSig}_1$) from \bob:
     \Indent
       \State ensure there is a channel ID \textit{pchid} with \bob{} in
       \texttt{pendingOpen} on which we have sent up to \textsc{fundingCreated}
-      \State ensure \texttt{Verify}(Com, BobSig, $pb_F$) = \texttt{True}
+      \State ensure $\mathtt{Verify}\left(\mathtt{localCom}_1,
+      \mathtt{BobSig}_1, pb_F\right) = \mathtt{True}$
+      \State add $\mathtt{BobSig}_1$ to channel entry in \texttt{pendingOpen}
       \State mark \textit{pchid} in \texttt{pendingOpen} as ``broadcast''
       \State send (\textsc{submit}, $F$) to \ledger
     \EndIndent
