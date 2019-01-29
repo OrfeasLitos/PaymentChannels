@@ -181,8 +181,10 @@
       \State ensure $\mathtt{Verify}\left(\mathtt{localCom}_1,
       \mathtt{BobSig}_1, pb_F\right) = \mathtt{True}$
       \State add $\mathtt{BobSig}_1$ to channel entry in \texttt{pendingOpen}
+      \State $\mathrm{sig} \gets \mathtt{signature}\left(F,
+      sk_{\mathit{Alice}}\right)$
       \State mark \textit{pchid} in \texttt{pendingOpen} as ``broadcast''
-      \State send (\textsc{submit}, $F$) to \ledger
+      \State send (\textsc{submit}, $\left(\mathrm{sig}, F\right)$) to \ledger
     \EndIndent
     \State
 
