@@ -4,7 +4,7 @@
     \State Initialisation:
     \Indent
       \State $\mathtt{channels}, \mathtt{pendingOpen}, \mathtt{pendingPay},
-      \mathtt{pendingClose}, \gets \emptyset$
+      \mathtt{pendingClose}, \mathtt{newChannels} \gets \emptyset$
     \EndIndent
     \State
 
@@ -144,6 +144,7 @@
       \textit{pchid}, output: value = $x$, methods = $ph_{\mathrm{rev}},
       \left(pt_{\mathrm{dpay}}, \mathtt{delay} \text{ relative}\right)$\}
       \State ensure \texttt{Verify}(Com, BobSig, $pt_F$) = \texttt{True}
+      \State mark channel as ``broadcast''
       \State $\mathrm{AliceSig} \gets \mathtt{signature}\left(\mathrm{Com},
       sb_F\right)$
       \State send (\textsc{fundingSigned}, \textit{pchid}, AliceSig) to \bob
@@ -185,14 +186,54 @@
     \EndFunction
     \State
 
-    \State Upon receiving (\textsc{poll}) from \environment: \orfeas{TODO:
-    Continue with: (a) check if funding txs are in state and if so send
-    fundingLocked to \bob{} and wait for his fundingLocked to send opened to
-    \environment. (b) leave placeholder for other polls (updates and
-    honest/dishonest closes). These will be filled in when writing respective
-    parts.}
+    \State Upon receiving (\textsc{poll}) from \environment:
     \Indent
-      \State
+      \State $\mathtt{closedChannels} \gets \emptyset$
+      \State send (\textsc{read}) to \ledger{} and assign reply to
+      $\Sigma_{\alice}$
+      \State check for closes, act on revoked ones and update
+      \texttt{closedChannels} \orfeas{TODO}
+      \ForAll{$\mathrm{TX} \in \mathtt{pendingOpen}$ marked as ``broadcast''
+      that are in $\Sigma_{\alice}$, have ID \textit{pchid} and a $\left(x, ph_F
+      \wedge pt_F\right)$ output}
+        \State $\left(ph\_\mathrm{base}_{\mathrm{com}2},
+        sh\_\mathrm{base}_{\mathrm{com}2}\right) \gets
+        \mathrm{genKey}\left(\right)$
+        % may be needed after splitting
+        %\State mark TX in \texttt{pendingOpen} as ``waiting for
+        %\textsc{fundingAck}''
+        \State send (\textsc{fundingLocked}, \textit{pchid},
+        $ph\_\mathrm{base}_{\mathrm{com}2}$) to \bob{} \orfeas{proper way?} and
+        ensure reply from \bob{} is (\textsc{fundingAck}, \textit{pchid},
+        $pt\_\mathrm{base}_{\mathrm{com}2}$)
+        \State ensure $pt\_\mathrm{base}_{\mathrm{com}2}$ is a valid public key
+        \State move TX and channel data from \texttt{pendingOpen} to
+        \texttt{channels}
+        \State add receipt of channel to \texttt{newChannels}
+      \EndFor
+      \State clear and send \texttt{newChannels}, \texttt{closedChannels},
+      \texttt{updated} to \environment
+    \EndIndent
+    \State
+
+    \State Upon receiving (\textsc{fundingLocked}, \textit{pchid},
+    $pt\_\mathrm{base}_{\mathrm{com}2}$) from \bob:
+    \Indent
+      \State ensure there is a channel ID \textit{pchid} with \bob{} in
+      \texttt{pendingOpen}, marked as ``broadcast''
+      \State ensure $pt\_\mathrm{base}_{\mathrm{com}2}$ is a valid public key
+      \State send (\textsc{read}) to \ledger{} and assign reply to
+      $\Sigma_{\alice}$
+      \State ensure $\exists \mathrm{TX} \in \Sigma_{\alice}$ with ID
+      \textit{pchid} and a $\left(x, ph_F \wedge pt_F\right)$ output
+      \State $\left(ph\_\mathrm{base}_{\mathrm{com}2},
+      sh\_\mathrm{base}_{\mathrm{com}2}\right) \gets
+      \mathrm{genKey}\left(\right)$
+      \State move TX and channel data from \texttt{pendingOpen} to
+      \texttt{channels}
+      \State add receipt of channel to \texttt{newChannels}
+      \State send (\textsc{fundingAck}, \textit{pchid},
+      $ph\_\mathrm{base}_{\mathrm{com}2}$) to \bob
     \EndIndent
     \State
 
