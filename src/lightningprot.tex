@@ -32,11 +32,11 @@
     \EndIndent
     \State
 
-    \State Upon receiving any message except for
+    \State Upon receiving any message ($M$) except for
     $\left(\textsc{register}\right)$:
     \Indent
       \If{if haven't received (\textsc{register}) from \environment{}}
-        \State ignore message
+        \State send (\textsc{invalid}, $M$) to \adversary{} and ignore message
       \EndIf
     \EndIndent
     \State
@@ -72,7 +72,7 @@
       \State send (\textsc{openChannel}, $x$, \texttt{delay}, $ph_F,
       ph\_\mathrm{base}_{\mathrm{pay}}, ph\_\mathrm{base}_{\mathrm{dpay}},
       ph\_\mathrm{base}_{\mathrm{htlc}},$ $ph_{\mathrm{com}1},
-      ph\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) to \bob
+      ph\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) to \bob{} and \adversary
     \EndIndent
     \State
 
@@ -97,7 +97,7 @@
       \State send (\textsc{acceptChannel}, \texttt{delay}, $ph_F,
       ph\_\mathrm{base}_{\mathrm{pay}}, ph\_\mathrm{base}_{\mathrm{dpay}},
       ph\_\mathrm{base}_{\mathrm{htlc}},$ $ph_{\mathrm{com}1},
-      ph\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) to \bob
+      ph\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) to \bob{} and \adversary
     \EndIndent
     \State
 
@@ -139,7 +139,7 @@
       \State $\mathrm{AliceSig} \gets
       \mathtt{signature}\left(\mathtt{remoteCom}_1, sh_F\right)$
       \State send (\textsc{fundingCreated}, \textit{tid},
-      \textit{pchid}, AliceSig) to \bob
+      \textit{pchid}, AliceSig) to \bob{} and \adversary
     \EndIndent
     \State
 
@@ -170,7 +170,8 @@
       \State $\mathrm{AliceSig} \gets
       \mathtt{signature}\left(\mathrm{remoteCom}_1, sh_F\right)$
       \State mark channel as ``broadcast''
-      \State send (\textsc{fundingSigned}, \textit{pchid}, AliceSig) to \bob
+      \State send (\textsc{fundingSigned}, \textit{pchid}, AliceSig) to \bob{}
+      and \adversary
     \EndIndent
     \State
 
@@ -304,10 +305,12 @@
       \texttt{channels}
       \State add receipt of channel to \texttt{newChannels}
       \State send (\textsc{fundingAck}, \textit{pchid},
-      $ph\_\mathrm{base}_{\mathrm{com}2}$) to \bob
+      $ph\_\mathrm{base}_{\mathrm{com}2}$) to \bob{} and \adversary
     \EndIndent
     \State
 
+    \State \orfeas{@Aggelos: maybe leak queries to global functionalities to
+    \adversary?}
     \State Upon receiving (\texttt{pay}, \textit{Bob}, $x$,
     $\overrightarrow{\mathtt{path}}$, \texttt{receipt}) from \environment:
     \orfeas{TODO}
