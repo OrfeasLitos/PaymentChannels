@@ -215,6 +215,8 @@
 
     \State Upon receiving (\textsc{poll}) from \environment:
     \Indent
+      \State send (\textsc{read}) to \clock{} and assign reply to
+      \texttt{lastPoll}
       \State send (\textsc{read}) to \ledger{} and assign reply to
       $\Sigma_{\alice}$
       \ForAll{$\tau \in \mathtt{unclaimedRemoteHTLCs}$}
