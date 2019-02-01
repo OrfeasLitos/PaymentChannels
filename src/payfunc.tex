@@ -207,7 +207,7 @@
       $\Sigma_{\alice}$, is spent, $x$ of its coins are spendable or
       will be spendable exclusively by \alice{} and $y$ of its coins are
       spendable exclusively by \bob
-      \State $\mathtt{pendingClose} \gets \bot$
+      \State $\mathtt{pendingClose}\left(\mathit{fchid}\right) \gets \bot$
       \State add receipt of \texttt{channel} to \texttt{closedChannels}(\bob)
       \State remove \texttt{channel} from \texttt{channels}
       \State $\mathtt{onChainBalance}\left(\alice\right) \gets
@@ -225,21 +225,23 @@
 
     \State Upon receiving $\left(\textsc{poll}\right)$ from \alice:
     \Indent
+      \State $\mathtt{toReport}\left(\alice\right) \gets \emptyset$
       \State send (\textsc{read}) to \clock{} as \alice{} and assign reply to
-      $\tau$
+      $t$
       \If{$\mathtt{lastPoll}\left(\alice\right) +
-      \mathtt{delay}\left(\alice\right) < \tau$}
-        \State add $\left[\mathtt{lastpoll}\left(\alice\right), \tau -
+      \mathtt{delay}\left(\alice\right) < t$}
+        \State add $\left[\mathtt{lastpoll}\left(\alice\right), t -
         \texttt{delay}\left(\alice\right) - 1\right]$ to
         \texttt{blindTime}(\alice)
       \EndIf
+      \State $\mathtt{lastPoll}\left(\alice\right) \gets t$
       \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
       $\Sigma_{\alice}$
       \State scan $\Sigma_{\alice}$ for honestly closed channels that contain
       \alice{} and exist in \texttt{channels} (txs that spend funding txs that
       have the same channel version as stored), remove them from
-      \texttt{channels} and add their receipts to
-      \texttt{closedChannels}(\alice)
+      \texttt{channels} and add them to \texttt{toReport}(\alice) (marked as
+      ``honest'')
       \State scan $\Sigma_{\alice}$ for malicioulsy closed channels that contain
       \alice{} and exist in \texttt{channels} (txs that spend funding txs that
       have an older channel version than stored)
@@ -249,15 +251,40 @@
         \If{\alice{} cannot spend those spending txs}
           \State ensure that \alice{} has been negligent in the last interval
         \EndIf
-        \State send (\textsc{closeChannel}, \texttt{channel}) to \simulator
-        \orfeas{TODO: split in two messages}
-        \State ensure reply is (\textsc{channelClosed}, \texttt{channel})
-        \State ensure that corresponding txs exist on-chain and pay \alice{} the
-        entire \texttt{channel} value
+        \State add \texttt{channel} to \texttt{toReport}(\alice) (marked as
+        ``malicious'')
+      \EndFor
+      \State send \texttt{toReport}(\alice) to \simulator
+    \EndIndent
+    \State
+
+    \State Upon receiving (\textsc{channelsClosed}, \texttt{details}) from
+    \simulator:
+    \Indent
+      \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
+      $\Sigma_{\alice}$
+      \ForAll{$\mathtt{channel} \in \mathtt{details}$}
+        \State ensure $\mathtt{channel} \in
+        \mathtt{toReport}\left(\alice\right)$
+        \If{\texttt{channel} is marked as ``malicious''}
+          \State ensure that transactions that spend the funding tx of
+          \texttt{channel} and pay \alice{} the entire \texttt{channel} value
+          exist in $\Sigma_{\alice}$
+        \Else \Comment{\texttt{channel} is marked as ``honest''}
+          \State ensure that transactions that spend the funding tx of
+          \texttt{channel} and pay \alice{} the her part in \texttt{channel}
+          exist in $\Sigma_{\alice}$
+        \EndIf
         \State add the receipt of \texttt{channel} to
         \texttt{closedChannels}(\alice)
-        \State remove \texttt{channel} from \texttt{channels}
+        \State remove \texttt{channel} from \texttt{channels} and
+        \texttt{toReport}(\alice)
       \EndFor
+    \EndIndent
+    \State
+
+    \State Upon receiving (\textsc{checkNew}) from \alice:
+    \Indent
       \State clear \texttt{newChannels}(\alice),
       \texttt{closedChannels}(\alice), \texttt{pendingUpdates}(\alice) and send
       them to \alice
