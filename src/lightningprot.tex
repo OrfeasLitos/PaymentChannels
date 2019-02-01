@@ -5,7 +5,7 @@
     \Indent
       \State $\mathtt{channels}, \mathtt{pendingOpen}, \mathtt{pendingPay},
       \mathtt{pendingClose}, \mathtt{newChannels},$ $\mathtt{closedChannels},
-      \mathtt{unclaimedRemoteHTLCs} \gets \emptyset$
+      \mathtt{unclaimedRemoteHTLCs}, \mathtt{pendingGetPaid} \gets \emptyset$
     \EndIndent
     \State
 
@@ -320,25 +320,136 @@
 
     \State \orfeas{@Aggelos: maybe leak queries to global functionalities to
     \adversary?}
-    \State Upon receiving (\texttt{pay}, \textit{Bob}, $x$,
+    \State Upon receiving (\textsc{pay}, \textit{Bob}, $x$,
     $\overrightarrow{\mathtt{path}}$, \texttt{receipt}) from \environment:
-    \orfeas{TODO}
-      \State Send (\texttt{SendInvoice}, $x$) to \textit{Bob}
-      \State Wait for response (\texttt{invoice}, $x$, hash) from \textit{Bob}:
-      \Indent
-        \State CONDITIONS FROM PAYNET START
-        \State condition 1: $\overrightarrow{\mathtt{path}}$ consists of players
-        where for every adjacent $\left(Carol, Dave\right)$ pair there is a
-        $\mathtt{receipt}'$ in \texttt{channels} with $Carol$ and $Dave$ and
-        where $Carol$ has at least $x$. Also, $\mathtt{receipt}'$ corresponds to
-        (has the same chid with) an unclosed \textsc{open-channel} transaction
-        that exists both in $\mathtt{state}_{Carol}$ and $\mathtt{state}_{Dave}$
-        (i.e. there is no \textsc{close-channel} transaction with a receipt with
-        the same chid in either state)
-        \State condition 2: \texttt{receipt} is in \texttt{channels} and
-        contains \textit{Alice} with at least $x$ coins.
-        \State CONDITIONS FROM PAYNET END
-      \EndIndent
+    \Indent
+      \State ensure that $\overrightarrow{\mathtt{path}}$ consists of valid
+      \textit{pchid}s
+      \State ensure that the first $\mathit{pchid} \in
+      \overrightarrow{\mathtt{path}}$ has the same \textit{pchid} as in
+      \texttt{receipt}
+      \State ensure that \texttt{receipt} corresponds to the latest version of
+      an open $\mathtt{channel} \in \mathtt{channels}$ in which we have at least
+      $x$.
+      \State choose unique payment ID \textit{payid} \Comment{unique for
+      \alice{} and \bob}
+      \State add (\textit{Bob}, $x$, $\overrightarrow{\mathtt{path}}$,
+      \texttt{receipt}, \textit{payid}, ``waiting for invoice'') to
+      \texttt{pendingPay}
+      \State send (\textsc{sendInvoice}, \textit{payid}) to \bob{} and
+      \adversary
+    \EndIndent
+    \State
+
+    \State Upon receiving (\textsc{sendInvoice}, \textit{payid}) from \bob:
+    \Indent
+      \State ensure there is no (\bob, \textit{payid}) entry in
+      \texttt{pendingGetPaid}
+      \State choose random, unique preimage $R$
+      \State add (\bob, $R$, \textit{payid}) to \texttt{pendingGetPaid}
+      \State send (\textsc{invoice}, $\mathcal{H}\left(R\right)$,
+      \textit{payid}) to \bob{} and \adversary
+    \EndIndent
+    \State
+
+    \State Upon receiving (\textsc{invoice}, $h$, \textit{payid}) from \bob:
+    \Indent
+      \State ensure there is a (\bob, $x$, $\overrightarrow{\mathtt{path}}$,
+      \texttt{receipt}, \textit{payid}, ``waiting for invoice'') entry in
+      \texttt{pendingPay}
+      \State ensure $h$ is valid (in the range of $\mathcal{H}$)
+      \State send (\textsc{read}) to \clock{} and assign reply to $t$
+      \State $m \gets$ the concatenation of \texttt{length}
+      $\overrightarrow{\mathtt{path}}$ $\left(x, \mathtt{absDelay}_i\right)$
+      pairs, where the last \texttt{absDelay} is $t$ + \orfeas{TODECIDE} and
+      every previous \texttt{absDelay} is incremented by \orfeas{TODECIDE}
+      \State $\left(\mu_0, \delta_0\right) \gets \mathtt{SphinxCreate}\left(m,
+      \text{ public keys of } \overrightarrow{\mathtt{path}} \text{
+      parties}\right)$
+      \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one
+      \State send (\textsc{updateAddHtlc}, first \textit{pchid} of
+      $\overrightarrow{\mathtt{path}}, \mathtt{HTLCNo}_{\textit{pchid}}, x, h,$
+      largest \texttt{absDelay}, $\left(\mu_0, \delta_0\right)$) to
+      \textit{pchid} channel counterparty and \adversary
+    \EndIndent
+    \State
+
+    \State Upon receiving (\textsc{updateAddHtlc}, \textit{pchid},
+    $\mathtt{HTLCNo}, x, h, \mathtt{absDelay}, M$) from \bob:
+    \Indent
+      \State ensure \textit{pchid} corresponds to an open \texttt{channel} in
+      \texttt{channels} where \bob{} has at least $x$
+      \State ensure $\mathtt{HTLCNo} = \mathtt{HTLCNo}_{\mathit{pchid}} + 1$
+      \State ensure \texttt{absDelay} \orfeas{TODECIDE}
+      \State $\left(\mathit{pchid}', x', \mathtt{absDelay}', \delta\right) \gets
+      \mathtt{SphinxPeel}\left(sk_{\textit{Alice}}, M\right)$
+      \If{$\delta = \mathtt{receiver}$}
+        \State ensure $\mathit{pchid}' = \bot, x = x', \mathtt{absDelay} =
+        \mathtt{absDelay}'$
+        \State \orfeas{TODO: fulfill HTLC}
+      \Else \Comment{We are an intermediary}
+        \State ensure $x = x', \mathtt{absDelay} = \mathtt{absDelay}' +$
+        \orfeas{TODECIDE}
+        \State ensure $\mathtt{pchid}'$ corresponds to an open channel in
+        \texttt{channels} where we have at least $x$
+        \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one
+        \State \orfeas{TODO: build remoteCom (find underscript), HTLC-(what?)
+        (find both underscripts)}
+        \State $\mathtt{remoteCom}_n \gets$ latest \texttt{remoteCom} in
+        \texttt{channel}
+        \State get the $\left(c_{\bob}, ph_{\mathrm{rev}, n} \vee
+        \left(pt_{\mathrm{dpay}, n}, \mathtt{delay} \text{
+        relative}\right)\right), \left(c_{\alice}, ph_{\mathrm{pay}, n}\right),$
+        $\left(c_{n, i}, \text{htlc methods}_{n, i}\right)_{\left[1, \dots,
+        m\right]}$ outputs of $\mathtt{remoteCom}_n$
+        \State TODO: generate new keys \orfeas{may have to move out of If}
+        \State $\mathtt{remoteCom}_{n+1} \gets$ TX \{input: output 1 of $F$,
+        outputs:
+        \State $\left(c_{\bob} - x, ph_{\mathrm{rev}, n+1} \vee
+        \left(pt_{\mathrm{dpay}, n+1}, \mathtt{delay} \text{
+        relative}\right)\right), \left(c_{\alice}, ph_{\mathrm{pay},
+        n+1}\right),$ $\left(c_{n, i}, \text{htlc methods}_{n+1,
+        i}\right)_{\left[1, \dots, m\right]}, \left(x, ph_{\mathrm{rev}, n+1}
+        \vee \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc},
+        n+1},\right.\right.$
+        $\left.\left.\mathtt{cltv\_expiry} \text{ absolute}\right) \vee
+        pt_{\mathrm{htlc}, n+1}, \text{on preimage of } h\right)$\}
+        \For{i from 1 to $m+1$}
+          \State $\mathtt{HTLCTimeout}_{n+1, i} \gets$ TX \{input: output
+          $\mathrm{htlc}_{n+1, i}$ of $\mathtt{remoteCom}_n$, output:
+          $\left(x, \left(pt_{\mathrm{rev}, n+1} \vee ph_{\mathrm{dpay}, n+1},
+          \mathtt{delay} \text{ relative}\right)\right)$\} \orfeas{may have to
+          sign HTLCsuccess...}
+        \EndFor
+        \State $\mathrm{ComSig} \gets
+        \mathtt{signature}\left(\mathtt{remoteCom}_n, sh_F\right)$
+        \State $\mathrm{HTLCSigs} \gets \emptyset$
+        \For{i from 1 to $m+1$}
+          \State add $\mathtt{signature}\left(\mathtt{HTLCTimeout}_{n+1, i},
+          sh_{\mathrm{htlc}, n+1}\right)$ to HTLCSigs
+        \EndFor
+        \State send (\textsc{commitmentSigned}, ComSig, HTLCSigs) to \bob
+      \EndIf
+    \EndIndent
+    \State
+
+    \State Upon receiving (\textsc{commitmentSigned}, \orfeas{TODO}) from \bob:
+    \Indent
+      \State send (\textsc{revokeAndAck}, \orfeas{TODO}) to \bob
+    \EndIndent
+    \State
+
+    \State Upon receiving (\textsc{revokeAndAck}, \orfeas{TODO}) from \bob:
+    \Indent
+      \If{terminal node}
+        \State send back fulfill htlc
+      \Else
+        \State send forward update add htlc
+      \EndIf
+    \EndIndent
+    \State
+
+    \State Upon writing useless crap:
       \If{no hops}
       \Comment{TODO: code htlc hops, here is old: $\exists e :=
       \left(\mathrm{txid}, \left(\mathrm{pid}_{\alice}, y\right),
