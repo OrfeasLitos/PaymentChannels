@@ -386,50 +386,51 @@
       \If{$\delta = \mathtt{receiver}$}
         \State ensure $\mathit{pchid}' = \bot, x = x', \mathtt{absDelay} =
         \mathtt{absDelay}'$
-        \State \orfeas{TODO: fulfill HTLC}
+        \State mark \texttt{HTLCNo}+1 as ``receiver''
       \Else \Comment{We are an intermediary}
         \State ensure $x = x', \mathtt{absDelay} = \mathtt{absDelay}' +$
         \orfeas{TODECIDE}
         \State ensure $\mathtt{pchid}'$ corresponds to an open channel in
-        \texttt{channels} where we have at least $x$
-        \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one
-        \State \orfeas{TODO: build remoteCom (find underscript), HTLC-(what?)
-        (find both underscripts)}
-        \State $\mathtt{remoteCom}_n \gets$ latest \texttt{remoteCom} in
-        \texttt{channel}
-        \State get the $\left(c_{\bob}, ph_{\mathrm{rev}, n} \vee
-        \left(pt_{\mathrm{dpay}, n}, \mathtt{delay} \text{
-        relative}\right)\right), \left(c_{\alice}, ph_{\mathrm{pay}, n}\right),$
-        $\left(c_{n, i}, \text{htlc methods}_{n, i}\right)_{\left[1, \dots,
-        m\right]}$ outputs of $\mathtt{remoteCom}_n$
-        \State TODO: generate new keys \orfeas{may have to move out of If}
-        \State $\mathtt{remoteCom}_{n+1} \gets$ TX \{input: output 1 of $F$,
-        outputs:
-        \State $\left(c_{\bob} - x, ph_{\mathrm{rev}, n+1} \vee
-        \left(pt_{\mathrm{dpay}, n+1}, \mathtt{delay} \text{
-        relative}\right)\right), \left(c_{\alice}, ph_{\mathrm{pay},
-        n+1}\right),$ $\left(c_{n, i}, \text{htlc methods}_{n+1,
-        i}\right)_{\left[1, \dots, m\right]}, \left(x, ph_{\mathrm{rev}, n+1}
-        \vee \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc},
-        n+1},\right.\right.$
-        $\left.\left.\mathtt{cltv\_expiry} \text{ absolute}\right) \vee
-        pt_{\mathrm{htlc}, n+1}, \text{on preimage of } h\right)$\}
-        \For{i from 1 to $m+1$}
-          \State $\mathtt{HTLCTimeout}_{n+1, i} \gets$ TX \{input: output
-          $\mathrm{htlc}_{n+1, i}$ of $\mathtt{remoteCom}_n$, output:
-          $\left(x, \left(pt_{\mathrm{rev}, n+1} \vee ph_{\mathrm{dpay}, n+1},
-          \mathtt{delay} \text{ relative}\right)\right)$\} \orfeas{may have to
-          sign HTLCsuccess...}
-        \EndFor
-        \State $\mathrm{ComSig} \gets
-        \mathtt{signature}\left(\mathtt{remoteCom}_n, sh_F\right)$
-        \State $\mathrm{HTLCSigs} \gets \emptyset$
-        \For{i from 1 to $m+1$}
-          \State add $\mathtt{signature}\left(\mathtt{HTLCTimeout}_{n+1, i},
-          sh_{\mathrm{htlc}, n+1}\right)$ to HTLCSigs
-        \EndFor
-        \State send (\textsc{commitmentSigned}, ComSig, HTLCSigs) to \bob
+        \State mark \texttt{HTLCNo}+1 as ``intermediary''
       \EndIf
+      \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one
+      \texttt{channels} where we have at least $x$
+      \State $\mathtt{remoteCom}_n \gets$ latest \texttt{remoteCom} in
+      \texttt{channel}
+      \State get the $\left(c_{\bob}, ph_{\mathrm{rev}, n} \vee
+      \left(pt_{\mathrm{dpay}, n}, \mathtt{delay} \text{
+      relative}\right)\right), \left(c_{\alice}, ph_{\mathrm{pay}, n}\right),$
+      $\left(c_{n, i}, \text{htlc methods}_{n, i}\right)_{\left[1, \dots,
+      m\right]}$ outputs of $\mathtt{remoteCom}_n$
+      \State \orfeas{TODO: generate new keys}
+      \State $\mathtt{remoteCom}_{n+1} \gets$ TX \{input: output 1 of $F$,
+      outputs:
+      \State $\left(c_{\bob} - x, ph_{\mathrm{rev}, n+1} \vee
+      \left(pt_{\mathrm{dpay}, n+1}, \mathtt{delay} \text{
+      relative}\right)\right), \left(c_{\alice}, ph_{\mathrm{pay},
+      n+1}\right),$ $\left(c_{n, i}, \text{htlc methods}_{n+1,
+      i}\right)_{\left[1, \dots, m\right]}, \left(x, ph_{\mathrm{rev}, n+1}
+      \vee \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc},
+      n+1},\right.\right.$ $\left.\left.\text{on preimage of } h\right) \vee
+      ph_{\mathrm{htlc}, n+1}, \mathtt{cltv\_expiry} \text{
+      absolute}\right)$\}
+      \State $\mathrm{ComSig} \gets
+      \mathtt{signature}\left(\mathtt{remoteCom}_n, sh_F\right)$
+      \State $\mathrm{HTLCSigs} \gets \emptyset$
+      \For{i from 1 to $m$}
+        \State $\mathtt{remoteHTLC}_{n+1, i} \gets$ TX \{input:
+        output $\mathrm{htlc}_{n+1, i}$ of $\mathtt{remoteCom}_n$, output:
+        $\text{htlc methods}_{n, i}$\}
+        \State add $\mathtt{signature}\left(\mathtt{remoteHTLC}_{n+1, i},
+        sh_{\mathrm{htlc}, n+1}\right)$ to HTLCSigs
+      \EndFor
+      \State $\mathtt{remoteHTLC}_{n+1, m+1} \gets$ TX \{input: output
+      $\mathrm{htlc}_{n+1, m+1}$ of $\mathtt{remoteCom}_n$, output: $\left(x,
+      ph_{\mathrm{rev}, n+1} \vee pt_{\mathrm{dpay}, n+1}, \mathtt{delay}
+      \text{ relative}\right)$\} \Comment{HTLC success}
+      \State add $\mathtt{signature}\left(\mathtt{remoteHTLC}_{n+1, m+1},
+      sh_{\mathrm{htlc}, n+1}\right)$ to HTLCSigs
+      \State send (\textsc{commitmentSigned}, ComSig, HTLCSigs) to \bob
     \EndIndent
     \State
 
