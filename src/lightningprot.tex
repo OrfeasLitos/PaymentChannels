@@ -247,7 +247,7 @@
             \ElsIf{timelock has expired}
               \State add $\left(\mathtt{localSig}_{\mathrm{htlc}, n, i},
               \mathtt{remoteSig}_{\mathrm{htlc}, n, i},
-              \mathtt{HTLC-timeout}_{n, i}\right)$ to \texttt{toSubmit}
+              \mathtt{HTLCTimeout}_{n, i}\right)$ to \texttt{toSubmit}
             \EndIf
           \EndFor
         \Else \Comment{$n <$ latest \texttt{channel} seq number, malicious
