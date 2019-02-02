@@ -119,14 +119,14 @@
       $x$ to $\textit{tid}.ph_F \wedge pt_F$ now\}
       \State $\mathit{pchid} \gets \mathcal{H}\left(F\right)$
       \State replace \textit{tid} with \textit{pchid} in storage
-      \State $pt_{\mathrm{rev}} \gets pt\_\mathrm{base}_{\mathrm{rev}} \cdot
+      \State $pt_{\mathrm{rev}, 1} \gets pt\_\mathrm{base}_{\mathrm{rev}} \cdot
       \mathcal{H}\left(pt\_\mathrm{base}_{\mathrm{rev}} ||
       pt_{\mathrm{com}, 1}\right) + pt_{\mathrm{com}, 1} \cdot \mathcal{H}\left(
       pt_{\mathrm{com}, 1} || pt\_\mathrm{base}_{\mathrm{rev}}\right)$
-      \State $ph_{\mathrm{dpay}} \gets ph\_\mathrm{base}_{\mathrm{dpay}} +
+      \State $ph_{\mathrm{dpay}, 1} \gets ph\_\mathrm{base}_{\mathrm{dpay}} +
       \mathcal{H}\left(ph_{\mathrm{com}, 1} ||
       ph\_\mathrm{base}_{\mathrm{dpay}}\right)$
-      \State $ph_{\mathrm{pay}} \gets ph\_\mathrm{base}_{\mathrm{pay}} +
+      \State $ph_{\mathrm{pay}, 1} \gets ph\_\mathrm{base}_{\mathrm{pay}} +
       \mathcal{H}\left(ph_{\mathrm{com}, 1} ||
       ph\_\mathrm{base}_{\mathrm{pay}}\right)$
       \State $\mathtt{remoteCom}_1 \gets$ TX \{input: output 1 of $F$, output:
@@ -148,14 +148,14 @@
     \Indent
       \State ensure there is a temporary ID \textit{tid} with \bob{} in
       \texttt{pendingOpen} on which we have sent up to \textsc{acceptChannel}
-      \State $ph_{\mathrm{rev}} \gets ph\_\mathrm{base}_{\mathrm{rev}} \cdot
+      \State $ph_{\mathrm{rev}, 1} \gets ph\_\mathrm{base}_{\mathrm{rev}} \cdot
       \mathcal{H}\left(ph\_\mathrm{base}_{\mathrm{rev}} ||
       ph_{\mathrm{com}, 1}\right) + ph_{\mathrm{com}, 1} \cdot \mathcal{H}\left(
       ph_{\mathrm{com}, 1} || ph\_\mathrm{base}_{\mathrm{rev}}\right)$
-      \State $pt_{\mathrm{dpay}} \gets pt\_\mathrm{base}_{\mathrm{dpay}} +
+      \State $pt_{\mathrm{dpay}, 1} \gets pt\_\mathrm{base}_{\mathrm{dpay}} +
       \mathcal{H}\left(pt_{\mathrm{com}, 1} ||
       pt\_\mathrm{base}_{\mathrm{dpay}}\right)$
-      \State $pt_{\mathrm{pay}} \gets pt\_\mathrm{base}_{\mathrm{pay}} +
+      \State $pt_{\mathrm{pay}, 1} \gets pt\_\mathrm{base}_{\mathrm{pay}} +
       \mathcal{H}\left(pt_{\mathrm{com}, 1} ||
       pt\_\mathrm{base}_{\mathrm{pay}}\right)$
       \State $\mathtt{localCom}_1 \gets$ TX \{input: output 1 of $F$, output:
