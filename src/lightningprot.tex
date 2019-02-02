@@ -285,7 +285,6 @@
         \State send (\textsc{fundingLocked}, \textit{pchid},
         $ph\_\mathrm{base}_{\mathrm{com}, 2}$) to \bob{} \orfeas{proper way?} and
         ensure reply from \bob{} is (\textsc{fundingAck}, \textit{pchid},
-        \State ensure $pt\_\mathrm{base}_{\mathrm{com}, 2}$ is a valid public key
         $pt\_\mathrm{base}_{\mathrm{com}, 2}$)
         \State move TX and channel data from \texttt{pendingOpen} to
         \texttt{channels}
@@ -302,7 +301,6 @@
     \Indent
       \State ensure there is a channel ID \textit{pchid} with \bob{} in
       \texttt{pendingOpen}, marked as ``waiting for \textsc{fundingLocked}''
-      \State ensure $pt\_\mathrm{base}_{\mathrm{com}, 2}$ is a valid public key
       \State send (\textsc{read}) to \ledger{} and assign reply to
       $\Sigma_{\alice}$
       \State ensure $\exists \text{ unspent } \mathrm{TX} \in \Sigma_{\alice}$
