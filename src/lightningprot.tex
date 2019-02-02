@@ -50,8 +50,8 @@
       \left(ph\_\mathrm{base}_{\mathrm{dpay}},
       sh\_\mathrm{base}_{\mathrm{dpay}}\right),\right.$
       $\left.\left(ph\_\mathrm{base}_{\mathrm{htlc}},
-      sh\_\mathrm{base}_{\mathrm{htlc}}\right), \left(ph_{\mathrm{com}1},
-      sh_{\mathrm{com}1}\right), \left(ph\_\mathrm{base}_{\mathrm{rev}},
+      sh\_\mathrm{base}_{\mathrm{htlc}}\right), \left(ph_{\mathrm{com}, 1},
+      sh_{\mathrm{com}, 1}\right), \left(ph\_\mathrm{base}_{\mathrm{rev}},
       sh\_\mathrm{base}_{\mathrm{rev}}\right)\right) \gets
       \textsc{GetKeys}\left(\right)$ \orfeas{TODO: change font}
       \State choose unique temporary ID \textit{tid} \Comment{unique for the two
@@ -64,21 +64,21 @@
       $\left.\left.sh\_\mathrm{base}_{\mathrm{dpay}}\right),
       \left(ph\_\mathrm{base}_{\mathrm{htlc}},
       sh\_\mathrm{base}_{\mathrm{htlc}}\right),
-      \left(ph\_\mathrm{base}_{\mathrm{com}1},
-      sh\_\mathrm{base}_{\mathrm{com}1}\right),\right.$
+      \left(ph\_\mathrm{base}_{\mathrm{com}, 1},
+      sh\_\mathrm{base}_{\mathrm{com}, 1}\right),\right.$
       $\left.\left(ph\_\mathrm{base}_{\mathrm{rev}},
       sh\_\mathrm{base}_{\mathrm{rev}}\right), \mathit{tid}\right)$ to
       \texttt{pendingOpen}
       \State send (\textsc{openChannel}, $x$, \texttt{delay}, $ph_F,
       ph\_\mathrm{base}_{\mathrm{pay}}, ph\_\mathrm{base}_{\mathrm{dpay}},
-      ph\_\mathrm{base}_{\mathrm{htlc}},$ $ph_{\mathrm{com}1},
+      ph\_\mathrm{base}_{\mathrm{htlc}},$ $ph_{\mathrm{com}, 1},
       ph\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) to \bob{} and \adversary
     \EndIndent
     \State
 
     \State Upon receiving (\textsc{openChannel}, $x$, BobDelay, $pt_F,
     pt\_\mathrm{base}_{\mathrm{pay}}, pt\_\mathrm{base}_{\mathrm{dpay}},$
-    $pt\_\mathrm{base}_{\mathrm{htlc}}, pt_{\mathrm{com}1},
+    $pt\_\mathrm{base}_{\mathrm{htlc}}, pt_{\mathrm{com}, 1},
     pt\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) from \bob:
     \Indent
       \State ensure \textit{tid} has not been used yet with \bob
@@ -89,21 +89,21 @@
       sh\_\mathrm{base}_{\mathrm{dpay}}\right),\right.$
       $\left.\left(ph\_\mathrm{base}_{\mathrm{htlc}},
       sh\_\mathrm{base}_{\mathrm{htlc}}\right),
-      \left(ph_{\mathrm{com}1}, sh_{\mathrm{com}1}\right),
+      \left(ph_{\mathrm{com}, 1}, sh_{\mathrm{com}, 1}\right),
       \left(ph\_\mathrm{base}_{\mathrm{rev}},
       sh\_\mathrm{base}_{\mathrm{rev}}\right)\right) \gets
       \textsc{GetKeys}\left(\right)$ \orfeas{TODO: change font}
       \State associate keys with \textit{tid} and store in \texttt{pendingOpen}
       \State send (\textsc{acceptChannel}, \texttt{delay}, $ph_F,
       ph\_\mathrm{base}_{\mathrm{pay}}, ph\_\mathrm{base}_{\mathrm{dpay}},
-      ph\_\mathrm{base}_{\mathrm{htlc}},$ $ph_{\mathrm{com}1},
+      ph\_\mathrm{base}_{\mathrm{htlc}},$ $ph_{\mathrm{com}, 1},
       ph\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) to \bob{} and \adversary
     \EndIndent
     \State
 
     \State Upon receiving (\textsc{acceptChannel}, \texttt{delay}, $pt_F,
     pt\_\mathrm{base}_{\mathrm{pay}}, pt\_\mathrm{base}_{\mathrm{dpay}},$
-    $pt\_\mathrm{base}_{\mathrm{htlc}},$ $pt_{\mathrm{com}1},
+    $pt\_\mathrm{base}_{\mathrm{htlc}},$ $pt_{\mathrm{com}, 1},
     pt\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) from \bob:
     \Indent
       \State ensure there is a temporary ID \textit{tid} with \bob{} in
@@ -121,13 +121,13 @@
       \State replace \textit{tid} with \textit{pchid} in storage
       \State $pt_{\mathrm{rev}} \gets pt\_\mathrm{base}_{\mathrm{rev}} \cdot
       \mathcal{H}\left(pt\_\mathrm{base}_{\mathrm{rev}} ||
-      pt_{\mathrm{com}1}\right) + pt_{\mathrm{com}1} \cdot \mathcal{H}\left(
-      pt_{\mathrm{com}1} || pt\_\mathrm{base}_{\mathrm{rev}}\right)$
+      pt_{\mathrm{com}, 1}\right) + pt_{\mathrm{com}, 1} \cdot \mathcal{H}\left(
+      pt_{\mathrm{com}, 1} || pt\_\mathrm{base}_{\mathrm{rev}}\right)$
       \State $ph_{\mathrm{dpay}} \gets ph\_\mathrm{base}_{\mathrm{dpay}} +
-      \mathcal{H}\left(ph_{\mathrm{com}1} ||
+      \mathcal{H}\left(ph_{\mathrm{com}, 1} ||
       ph\_\mathrm{base}_{\mathrm{dpay}}\right)$
       \State $ph_{\mathrm{pay}} \gets ph\_\mathrm{base}_{\mathrm{pay}} +
-      \mathcal{H}\left(ph_{\mathrm{com}1} ||
+      \mathcal{H}\left(ph_{\mathrm{com}, 1} ||
       ph\_\mathrm{base}_{\mathrm{pay}}\right)$
       \State $\mathtt{remoteCom}_1 \gets$ TX \{input: output 1 of $F$, output:
       $\left(x, ph_{\mathrm{pay}}\right)$\}
@@ -150,13 +150,13 @@
       \texttt{pendingOpen} on which we have sent up to \textsc{acceptChannel}
       \State $ph_{\mathrm{rev}} \gets ph\_\mathrm{base}_{\mathrm{rev}} \cdot
       \mathcal{H}\left(ph\_\mathrm{base}_{\mathrm{rev}} ||
-      ph_{\mathrm{com}1}\right) + ph_{\mathrm{com}1} \cdot \mathcal{H}\left(
-      ph_{\mathrm{com}1} || ph\_\mathrm{base}_{\mathrm{rev}}\right)$
+      ph_{\mathrm{com}, 1}\right) + ph_{\mathrm{com}, 1} \cdot \mathcal{H}\left(
+      ph_{\mathrm{com}, 1} || ph\_\mathrm{base}_{\mathrm{rev}}\right)$
       \State $pt_{\mathrm{dpay}} \gets pt\_\mathrm{base}_{\mathrm{dpay}} +
-      \mathcal{H}\left(pt_{\mathrm{com}1} ||
+      \mathcal{H}\left(pt_{\mathrm{com}, 1} ||
       pt\_\mathrm{base}_{\mathrm{dpay}}\right)$
       \State $pt_{\mathrm{pay}} \gets pt\_\mathrm{base}_{\mathrm{pay}} +
-      \mathcal{H}\left(pt_{\mathrm{com}1} ||
+      \mathcal{H}\left(pt_{\mathrm{com}, 1} ||
       pt\_\mathrm{base}_{\mathrm{pay}}\right)$
       \State $\mathtt{localCom}_1 \gets$ TX \{input: output 1 of $F$, output:
       $\left(x, pt_{\mathrm{pay}}\right)$\}
@@ -199,7 +199,7 @@
       \mathrm{genKey}\left(\right)$ \Comment{For com output to self}
       \State $\left(p_{\mathrm{htlc}}, s_{\mathrm{htlc}}\right) \gets
       \mathrm{genKey}\left(\right)$ \Comment{For htlc output to self}
-      \State $\left(p_{\mathrm{com}1}, s_{\mathrm{com}1}\right) \gets
+      \State $\left(p_{\mathrm{com}, 1}, s_{\mathrm{com}, 1}\right) \gets
       \mathrm{genKey}\left(\right)$ \Comment{For deriving all keys}
       \State $\left(p_{\mathrm{rev}}, s_{\mathrm{rev}}\right) \gets
       \mathrm{genKey}\left(\right)$ \Comment{For revocation in com}
@@ -208,7 +208,7 @@
       s_{\mathrm{dpay}}\right),\right.$
       \Indent
         \State $\left.\left(p_{\mathrm{htlc}}, s_{\mathrm{htlc}}\right),
-        \left(p_{\mathrm{com}1}, s_{\mathrm{com}1}\right),
+        \left(p_{\mathrm{com}, 1}, s_{\mathrm{com}, 1}\right),
         \left(p_{\mathrm{rev}}, s_{\mathrm{rev}}\right)\right)$
       \EndIndent
     \EndFunction
@@ -276,17 +276,17 @@
       \ForAll{$\mathrm{TX} \in \mathtt{pendingOpen}$ marked as ``broadcast''
       that are in $\Sigma_{\alice}$, are unspent, have ID \textit{pchid} and a
       $\left(x, ph_F \wedge pt_F\right)$ output}
-        \State $\left(ph\_\mathrm{base}_{\mathrm{com}2},
-        sh\_\mathrm{base}_{\mathrm{com}2}\right) \gets
+        \State $\left(ph\_\mathrm{base}_{\mathrm{com}, 2},
+        sh\_\mathrm{base}_{\mathrm{com}, 2}\right) \gets
         \mathrm{genKey}\left(\right)$
         % may be needed after splitting
         %\State mark TX in \texttt{pendingOpen} as ``waiting for
         %\textsc{fundingAck}''
         \State send (\textsc{fundingLocked}, \textit{pchid},
-        $ph\_\mathrm{base}_{\mathrm{com}2}$) to \bob{} \orfeas{proper way?} and
+        $ph\_\mathrm{base}_{\mathrm{com}, 2}$) to \bob{} \orfeas{proper way?} and
         ensure reply from \bob{} is (\textsc{fundingAck}, \textit{pchid},
-        $pt\_\mathrm{base}_{\mathrm{com}2}$)
-        \State ensure $pt\_\mathrm{base}_{\mathrm{com}2}$ is a valid public key
+        \State ensure $pt\_\mathrm{base}_{\mathrm{com}, 2}$ is a valid public key
+        $pt\_\mathrm{base}_{\mathrm{com}, 2}$)
         \State move TX and channel data from \texttt{pendingOpen} to
         \texttt{channels}
         \State add \texttt{HTLCNo} = 0 entry to channel in \texttt{channels}
@@ -298,23 +298,23 @@
     \State
 
     \State Upon receiving (\textsc{fundingLocked}, \textit{pchid},
-    $pt\_\mathrm{base}_{\mathrm{com}2}$) from \bob:
+    $pt\_\mathrm{base}_{\mathrm{com}, 2}$) from \bob:
     \Indent
       \State ensure there is a channel ID \textit{pchid} with \bob{} in
       \texttt{pendingOpen}, marked as ``waiting for \textsc{fundingLocked}''
-      \State ensure $pt\_\mathrm{base}_{\mathrm{com}2}$ is a valid public key
+      \State ensure $pt\_\mathrm{base}_{\mathrm{com}, 2}$ is a valid public key
       \State send (\textsc{read}) to \ledger{} and assign reply to
       $\Sigma_{\alice}$
       \State ensure $\exists \text{ unspent } \mathrm{TX} \in \Sigma_{\alice}$
       with ID \textit{pchid} and a $\left(x, ph_F \wedge pt_F\right)$ output
-      \State $\left(ph\_\mathrm{base}_{\mathrm{com}2},
-      sh\_\mathrm{base}_{\mathrm{com}2}\right) \gets
+      \State $\left(ph\_\mathrm{base}_{\mathrm{com}, 2},
+      sh\_\mathrm{base}_{\mathrm{com}, 2}\right) \gets
       \mathrm{genKey}\left(\right)$
       \State move TX and channel data from \texttt{pendingOpen} to
       \texttt{channels}
       \State add receipt of channel to \texttt{newChannels}
       \State send (\textsc{fundingAck}, \textit{pchid},
-      $ph\_\mathrm{base}_{\mathrm{com}2}$) to \bob{} and \adversary
+      $ph\_\mathrm{base}_{\mathrm{com}, 2}$) to \bob{} and \adversary
     \EndIndent
     \State
 
