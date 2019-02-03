@@ -254,8 +254,7 @@
         closure}
           \State $\mathrm{rev} \gets$ TX \{inputs: all $\mathtt{remoteCom}_n$
           outputs, choosing $ph_{\mathrm{rev}, n}$ method, output:
-          $pk_{\mathit{Alice}}$\} \orfeas{TODO:
-          generate all new keys in \textsc{pay}}
+          $pk_{\mathit{Alice}}$\}
           \State $\mathrm{sig} \gets \mathtt{signature}\left(\mathrm{rev},
           sh_{\mathrm{rev}, n}\right)$
           \State add $\left(\mathrm{sig}, \mathrm{rev}\right)$ to
@@ -364,7 +363,9 @@
       \State $\left(\mu_0, \delta_0\right) \gets \mathtt{SphinxCreate}\left(m,
       \text{ public keys of } \overrightarrow{\mathtt{path}} \text{
       parties}\right)$
-      \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one
+      \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one and associate
+      $x, h, \mathit{pchid}$ with it
+      \State mark \texttt{channel} as ``waiting for \textsc{commitmentSigned}''
       \State send (\textsc{updateAddHtlc}, first \textit{pchid} of
       $\overrightarrow{\mathtt{path}}, \mathtt{HTLCNo}_{\textit{pchid}}, x, h,$
       largest \texttt{absDelay}, $\left(\mu_0, \delta_0\right)$) to
@@ -453,18 +454,56 @@
       \text{ relative}\right)$\} \Comment{HTLC success}
       \State add $\mathtt{signature}\left(\mathtt{remoteHTLC}_{n+1, m+1},
       sh_{\mathrm{htlc}, n+1}\right)$ to HTLCSigs
-      \State send (\textsc{commitmentSigned}, ComSig, HTLCSigs) to \bob
+      \State send (\textsc{commitmentSigned}, \textit{pchid}, ComSig, HTLCSigs)
+      to \bob
     \EndIndent
     \State
 
-    \State Upon receiving (\textsc{commitmentSigned}, \orfeas{TODO}) from \bob:
+    \State Upon receiving (\textsc{commitmentSigned}, \textit{pchid},
+    $\mathtt{comSig}_{n+1}$, $\mathtt{HTLCSigs}_{n+1}$) from \bob:
     \Indent
-      \State send (\textsc{revokeAndAck}, \orfeas{TODO}) to \bob
+      \State ensure \texttt{channel} with ID \textit{pchid} is marked ``waiting
+      for \textsc{commitmentSigned}''
+      \State \orfeas{TODO start}
+      \State generate local and remote keys
+      \State generate local commitment tx
+      \State ensure $\mathtt{Verify}\left(\mathtt{localCom}_{n+1},
+      \mathtt{comSig}_{n+1}, pt_F\right) = \mathtt{true}$
+      \For{$i$ from $\mathtt{lastComHTLC}_{\mathit{pchid}}$ to
+      $\mathtt{HTLCNo}_{\mathit{pchid}}$}
+        \State generate local HTLCTimeout/HTLCSuccess
+        \State ensure $\mathtt{Verify}\left(\mathtt{HTLCTimeout/Success}_{n+1,
+        i\orfeas{TODO: fix i}}, \mathtt{HTLCSigs}_{n+1} \left[i\right],
+        pt_{\mathrm{htlc}, n+1}\right) =
+        \mathtt{true}$
+      \EndFor
+      \State generate remote commitment tx
+      \State generate commitment signature
+      \State $\mathrm{HTLCSigs} \gets \emptyset$
+      \For{$i$ from $\mathtt{lastComHTLC}_{\mathit{pchid}}$ to
+      $\mathtt{HTLCNo}_{\mathit{pchid}}$}
+        \State generate remote HTLCTimeout/HTLCSuccess
+        \State generate
+        $\mathtt{signature}\left(\mathtt{HTLCTimeout/Success}_{n+1,
+        i\orfeas{TODO: fix i}}, sh_{\mathrm{htlc}, n+1}\right)$
+        \State add to HTLCSigs
+      \EndFor
+      \State $\mathtt{lastComHTLC}_{\mathit{pchid}} \gets
+      \mathtt{HTLCNo}_{\mathit{pchid}}$
+      \State \orfeas{TODO end}
+      \State unmark \texttt{channel}
+      \State \orfeas{TODO: understand when this party sends sigs for new
+      commitment and htlc txs}
+      \State send (\textsc{revokeAndAck}, \textit{pchid}, $sh_{\mathrm{com}, n},
+      ph_{\mathrm{com}, n+1}$) to \bob
     \EndIndent
     \State
 
-    \State Upon receiving (\textsc{revokeAndAck}, \orfeas{TODO}) from \bob:
+    \State Upon receiving (\textsc{revokeAndAck}, \textit{pchid},
+    $sh_{\mathrm{com}, n}, ph_{\mathrm{com}, n+1}$) from \bob:
     \Indent
+      \State \orfeas{TODO: find out when this party sends old com\_secret and
+      next com\_point}
       \If{terminal node}
         \State send back fulfill htlc
       \Else
