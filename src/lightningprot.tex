@@ -559,62 +559,6 @@
     \EndIndent
     \State
 
-    \State Upon writing useless crap:
-      \If{no hops}
-      \Comment{TODO: code htlc hops, here is old: $\exists e :=
-      \left(\mathrm{txid}, \left(\mathrm{pid}_{\alice}, y\right),
-      \left(\mathrm{pid}_{\bob}, z\right)\right) \in \mathtt{channels}: y \geq
-      x$}
-        \State Update $e$ to $e' := \left(\mathrm{txid},
-        \left(\mathrm{pid}_{\alice}, y - x\right),
-        \left(\mathrm{pid}_{\bob}, z + x\right)\right)$ \Comment{Primitive
-        for Update, make same with conditions}
-      \ElsIf{hops}
-        \State Send a Sphinx~\cite{sphinx} message with the correct HTLCs
-        (containing hash) for \textit{Bob}
-        \State \Comment{Sane fees and timeouts as requested by each hop}
-        \State Wait for (preimage) from $Charlie$
-        \If{$\mathcal{H}\left(\mathrm{preimage}\right) = \mathrm{hash}$}
-          \State Let $e := \left(\mathrm{txid}, \left(\mathrm{pid}_{\alice},
-          y\right), \left(\mathrm{pid}_{Charlie}, z\right)\right)$ \textit{Alice}'s
-          channel with $Charlie$
-          \State Update $e$ to pay $Charlie$ $x$ \Comment{use HTLC primitive}
-          \State $\mathtt{channels} \gets \mathtt{channels} \setminus
-          \left\{e\right\}$
-          \State $\mathtt{channels} \gets \mathtt{channels} \cup
-          \left\{\left(\mathrm{txid},
-          \left(\mathrm{pid}_{\alice}, y - x\right),
-          \left(\mathrm{pid}_{Charlie}, z + x\right)\right)\right\}$
-          \State Send (\texttt{paymentSent}, \textit{Bob}, $x$) to $\mathcal{E}$
-        \Else
-          \State Send (\texttt{paymentFailed}, \textit{Bob}, $x$) to $\mathcal{E}$
-        \EndIf
-      \Else \Comment{Invalid payment}
-        \State Send (\texttt{noPath}, \textit{Bob}, $x$) to $\mathcal{E}$
-      \EndIf
-    \State
-    \State Upon receiving (\texttt{SendInvoice}, $x$) from \textit{Bob}:
-      \State $\mathrm{preimage} \overset{r}{\gets}
-      \left\{0,1\right\}^{\mathrm{gazillion}}$
-      \State $\mathrm{hash} \gets \mathcal{H}\left(\mathrm{preimage}\right)$
-      \State Send (\texttt{invoice}, $x$, hash) to \textit{Bob}
-      \State Wait for update of any channel $e := \left(\mathrm{txid},
-      \left(\mathrm{pid}_{\alice}, y\right), \left(\mathrm{pid}_{Charlie},
-      z\right)\right)$ to $e' := \left(\mathrm{txid},
-      \left(\mathrm{pid}_{\alice}, y + x\right), \left(\mathrm{pid}_{Charlie}, z
-      - x\right)\right)$ conditional on \textit{Alice}'s knowledge of the preimage of
-      the hash
-      \State Send (\texttt{preimage}) to $Charlie$
-      \State Wait for update of $e'$ to $e'' := \left(\mathrm{txid},
-      \left(\mathrm{pid}_{\alice}, y + x\right), \left(\mathrm{pid}_{Charlie}, z
-      - x\right)\right)$ unconditional
-      \If{$Charlie$ does not update the channel to $e''$}
-        \State Settle $e'$ on-chain with the preimage and take $x$ from the HTLC
-        provided by $Charlie$
-      \EndIf
-      \State Send (\texttt{paymentReceived}, \textit{Bob}, $x$) to $\mathcal{E}$
-    \State
-
     \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from
     \environment:
     \Indent
