@@ -3,21 +3,21 @@
     \fbox{\pseudocode{%
         \mathcal{F}_{\mathrm{Ledger}} \< \textbf{Alice} \< \textbf{Bob} \<
         \mathcal{E} \\ [][\hline]
+        \< \< \sendmessageleft{top=ignore\_me} \< \\
         \< \sendmessageleftx[229pt]{8}{\texttt{open}} \< \\
         \< \sendmessageright{top=\texttt{openChannel}} \< \< \\
-        \< \< \sendmessageright{top=\texttt{recvOpen}} \< \\
-        \< \< \sendmessageleft{top=\texttt{acceptChannel}} \< \\
         \< \sendmessageleft{top=\texttt{acceptChannel}} \< \< \\
         \< \sendmessageright{top=\texttt{fundingCreated}} \< \< \\
         \< \sendmessageleft{top=\texttt{fundingSigned}} \< \< \\
-        \sendmessageleft{top=\texttt{broadcast}} \< \< \< \\
-        \sendmessageright{top=\texttt{fundingLocked}} \< \< \< \\
-        \< \sendmessagerightx{8}{\texttt{fundingLocked}\text{ TODO: PUT LEFT}} \< \< \\
-        %try something with \hspace*{-5cm}
+        \sendmessageleft{top=\texttt{submit}} \< \< \< \\
+        \< \sendmessageleftx[229pt]{8}{\texttt{checkNew}} \< \\
+        \sendmessageleft{top=\texttt{read}} \< \< \< \\
+        \sendmessageright{top=\texttt{state}} \< \< \< \\
         \< \sendmessageright{top=\texttt{fundingLocked}} \< \< \\
-        \< \sendmessageleft{top=\texttt{fundingLocked}} \< \< \\
+        \< \sendmessageleftx[229pt]{3}{\texttt{read} \text{ TODO: put left}} \< \\
+        \< \sendmessagerightx[229pt]{3}{\texttt{state} \text{ TODO: put left}} \< \\
+        \< \sendmessageleft{top=\texttt{fundingAck}} \< \< \\
         \< \sendmessagerightx[229pt]{8}{\texttt{opened}} \< \\
-        \< \< \sendmessageright{top=\texttt{accepted}} \<
     }}
   \end{center}
   \label{lightning:fig:open}
