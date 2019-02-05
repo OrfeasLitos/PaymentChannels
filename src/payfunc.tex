@@ -253,12 +253,13 @@
         \State add \texttt{channel} to \texttt{toReport}(\alice) (marked as
         ``malicious'')
       \EndFor
-      \State send \texttt{toReport}(\alice) to \simulator
+      \State send (\textsc{getClosedFunds}, \texttt{toReport}(\alice), \alice)
+      to \simulator
     \EndIndent
     \State
 
-    \State Upon receiving (\textsc{channelsClosed}, \texttt{details}) from
-    \simulator:
+    \State Upon receiving (\textsc{channelsClosed}, \texttt{details}, \alice)
+    from \simulator:
     \Indent
       \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
       $\Sigma_{\alice}$
