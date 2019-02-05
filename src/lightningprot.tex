@@ -12,8 +12,8 @@
     \State Upon receiving (\textsc{register}, delay) from \environment:
     \Indent
       \State $\mathtt{delay} \gets \mathrm{delay}$
-      \State send (\textsc{read}) to $\clock$ and assign reply to
-      \texttt{lastPoll}
+      \State send (\textsc{read}) to \ledger{} and assign largest block number
+      to \texttt{lastPoll}
       \State $\left(pk_{\alice}, sk_{\alice}\right) \gets
       \mathrm{genKey}\left(\right)$
       \State send (\textsc{register}, \alice, \texttt{delay},
@@ -269,10 +269,10 @@
 
     \State Upon receiving (\textsc{poll}) from \environment:
     \Indent
-      \State send (\textsc{read}) to \clock{} and assign reply to
-      \texttt{lastPoll}
       \State send (\textsc{read}) to \ledger{} and assign reply to
       $\Sigma_{\alice}$
+      \State assign largest block number in $\Sigma_{\alice}$ to
+      \texttt{lastPoll}
       \State $\mathtt{toSubmit} \gets \emptyset$
       \ForAll{$\tau \in \mathtt{unclaimedRemoteHTLCs}$}
         \If{input of $\tau$ has been spent} \Comment{by
@@ -360,7 +360,8 @@
       \texttt{receipt}, \textit{payid}, ``waiting for invoice'') entry in
       \texttt{pendingPay}
       \State ensure $h$ is valid (in the range of $\mathcal{H}$)
-      \State send (\textsc{read}) to \clock{} and assign reply to $t$
+      \State send (\textsc{read}) to \ledger{} and assign largest block number
+      to $t$
       \State $m \gets$ the concatenation of \texttt{length}
       $\overrightarrow{\mathtt{path}}$ $\left(x, \mathtt{absDelay}_i\right)$
       pairs, where the last \texttt{absDelay} is $t$ + \orfeas{TODECIDE} and

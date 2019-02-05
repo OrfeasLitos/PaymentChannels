@@ -33,8 +33,8 @@
       \State $\mathtt{delay}\left(\alice\right) \gets \mathrm{delay}$
       \State $\mathtt{pendingUpdates}\left(\alice\right) \gets \emptyset$
       \State $\mathtt{blindTime}\left(\alice\right) \gets \emptyset$
-      \State send (\textsc{read}) to \clock{} as \alice{} and assign reply to
-      \texttt{lastPoll}(\alice)
+      \State send (\textsc{read}) to \ledger{} as \alice{} and largest block
+      number to \texttt{lastPoll}(\alice)
       \State send $\left(\textsc{register}, \alice, \mathrm{delay}\right)$ to
       \simulator
     \EndIndent
@@ -226,8 +226,9 @@
     \State Upon receiving $\left(\textsc{poll}\right)$ from \alice:
     \Indent
       \State $\mathtt{toReport}\left(\alice\right) \gets \emptyset$
-      \State send (\textsc{read}) to \clock{} as \alice{} and assign reply to
-      $t$
+      \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
+      $\Sigma_{\alice}$
+      \State assign largest block number in $\Sigma_{\alice}$ to $t$
       \If{$\mathtt{lastPoll}\left(\alice\right) +
       \mathtt{delay}\left(\alice\right) < t$}
         \State add $\left[\mathtt{lastpoll}\left(\alice\right), t -
@@ -235,8 +236,6 @@
         \texttt{blindTime}(\alice)
       \EndIf
       \State $\mathtt{lastPoll}\left(\alice\right) \gets t$
-      \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
-      $\Sigma_{\alice}$
       \State scan $\Sigma_{\alice}$ for honestly closed channels that contain
       \alice{} and exist in \texttt{channels} (txs that spend funding txs that
       have the same channel version as stored), remove them from
