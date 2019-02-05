@@ -440,9 +440,9 @@
       n+1}\right),$ $\left(c_{n, i}, \text{htlc methods}_{n+1,
       i}\right)_{\left[1, \dots, m\right]}, \left(x, ph_{\mathrm{rev}, n+1}
       \vee \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc},
-      n+1},\right.\right.$ $\left.\left.\text{on preimage of } h\right) \vee
-      ph_{\mathrm{htlc}, n+1}, \mathtt{cltv\_expiry} \text{
-      absolute}\right)$\}
+      n+1},\right.\right.$ $\left.\left.\mathtt{cltv\_expiry} \text{
+      absolute}\right) \vee ph_{\mathrm{htlc}, n+1}, \text{on preimage of }
+      h\right)$\}
       \State $\mathrm{ComSig} \gets
       \mathtt{signature}\left(\mathtt{remoteCom}_n, sh_F\right)$
       \State $\mathrm{HTLCSigs} \gets \emptyset$
@@ -499,13 +499,12 @@
       outputs:
       \State $\left(c_{n, \alice} - x, pt_{\mathrm{rev}, n+1} \vee
       \left(ph_{\mathrm{dpay}, n+1}, \mathtt{delay} \text{
-      relative}\right)\right), \left(c_{\bob}, pt_{\mathrm{pay},
-      n+1}\right),$ $\left(c_{n, i}, \text{htlc methods}_{n+1,
-      i}\right)_{\left[1, \dots, m\right]}, \left(x, pt_{\mathrm{rev}, n+1}
-      \vee \left(pt_{\mathrm{htlc}, n+1} \wedge ph_{\mathrm{htlc},
-      n+1},\text{on}\right.\right.$ $\left.\left.\text{preimage of } h\right)
-      \vee pt_{\mathrm{htlc}, n+1}, \mathtt{cltv\_expiry} \text{
-      absolute}\right)$\}
+      relative}\right)\right), \left(c_{n, \bob}, pt_{\mathrm{pay},
+      n+1}\right),$ $\left(c_{n, i}, \text{htlc methods}_{n, i}\right)_{\left[1,
+      \dots, m\right]}, \left(x, pt_{\mathrm{rev}, n+1} \vee
+      \left(pt_{\mathrm{htlc}, n+1} \wedge ph_{\mathrm{htlc}, n+1},
+      \mathtt{cltv\_expiry}\right.\right.$ $\left.\left.\text{ absolute}\right)
+      \vee pt_{\mathrm{htlc}, n+1}, \text{on preimage of } h\right)$\}
       \State ensure $\mathtt{verify}\left(\mathtt{localCom}_{n+1},
       \mathtt{comSig}_{n+1}, pt_F\right) = \mathtt{true}$
       \For{$j$ from $\mathtt{lastComHTLC}_{\mathit{pchid}}$ to
