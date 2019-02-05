@@ -214,6 +214,59 @@
     \EndFunction
     \State
 
+    \State Upon receiving (\textsc{checkNew}, \alice, \bob, $x$) from
+    \environment: \Comment{new msg: represents lnd polling daemon}
+    \Indent
+      \State ensure there is a matching \texttt{channel} in
+      \texttt{pendingOpen}, marked as ``broadcast''
+      \State send (\textsc{read}) to \ledger{} and assign reply to
+      $\Sigma_{\alice}$
+      \State esure there is an unspent TX in $\Sigma_{\alice}$ with ID
+      \textit{pchid} and a $\left(x, ph_F \wedge pt_F\right)$ output
+      \State $\left(ph\_\mathrm{base}_{\mathrm{com}, 2},
+      sh\_\mathrm{base}_{\mathrm{com}, 2}\right) \gets
+      \mathrm{genKey}\left(\right)$
+      \State add TX to \texttt{channel} data
+      \State mark \texttt{channel} in \texttt{pendingOpen} as ``waiting for
+      \textsc{fundingAck}''
+      \State send (\textsc{fundingLocked}, \textit{pchid},
+      $ph\_\mathrm{base}_{\mathrm{com}, 2}$) to \bob{}
+    \EndIndent
+    \State
+
+    \State Upon receiving (\textsc{fundingLocked}, \textit{pchid},
+    $pt\_\mathrm{base}_{\mathrm{com}, 2}$) from \bob:
+    \Indent
+      \State ensure there is a channel ID \textit{pchid} with \bob{} in
+      \texttt{pendingOpen}, marked as ``waiting for \textsc{fundingLocked}''
+      \State send (\textsc{read}) to \ledger{} and assign reply to
+      $\Sigma_{\alice}$
+      \State ensure $\exists \text{ unspent } \mathrm{TX} \in \Sigma_{\alice}$
+      with ID \textit{pchid} and a $\left(x, ph_F \wedge pt_F\right)$ output
+      \State $\left(ph\_\mathrm{base}_{\mathrm{com}, 2},
+      sh\_\mathrm{base}_{\mathrm{com}, 2}\right) \gets
+      \mathrm{genKey}\left(\right)$
+      \State add TX to \texttt{channel} data
+      \State move channel data from \texttt{pendingOpen} to \texttt{channels}
+      \State add receipt of channel to \texttt{newChannels}
+      \State send (\textsc{fundingAck}, \textit{pchid},
+      $ph\_\mathrm{base}_{\mathrm{com}, 2}$) to \bob{} and \adversary
+    \EndIndent
+    \State
+
+    \State Upon receiving (\textsc{fundingAck}, \textit{pchid},
+    $pt\_\mathrm{base}_{\mathrm{com}, 2}$) from \bob:
+    \Indent
+      \State ensure there is a \texttt{channel} in \texttt{pendingOpen} marked
+      as ``waiting for \textsc{fundingAck}''
+      \State move channel data from \texttt{pendingOpen} to \texttt{channels}
+      \State add \texttt{HTLCNo} = 0 entry to channel in \texttt{channels}
+      \State add receipt of channel to \texttt{newChannels}
+      \State clear and send \texttt{newChannels}, \texttt{closedChannels},
+      \texttt{updated} to \environment
+    \EndIndent
+    \State
+
     \State Upon receiving (\textsc{poll}) from \environment:
     \Indent
       \State send (\textsc{read}) to \clock{} and assign reply to
@@ -264,54 +317,6 @@
         \texttt{closedChannels}
       \EndFor
       \State send (\textsc{submit}, \texttt{toSubmit}) to \ledger
-    \EndIndent
-    \State
-
-    \State \orfeas{PROBLEM: 1 input many outputs}
-    \State Upon receiving (\textsc{checkNew}) from \environment:
-    \Indent
-      \State send (\textsc{read}) to \ledger{} and assign reply to
-      $\Sigma_{\alice}$
-      \ForAll{$\mathrm{TX} \in \mathtt{pendingOpen}$ marked as ``broadcast''
-      that are in $\Sigma_{\alice}$, are unspent, have ID \textit{pchid} and a
-      $\left(x, ph_F \wedge pt_F\right)$ output}
-        \State $\left(ph\_\mathrm{base}_{\mathrm{com}, 2},
-        sh\_\mathrm{base}_{\mathrm{com}, 2}\right) \gets
-        \mathrm{genKey}\left(\right)$
-        % may be needed after splitting
-        %\State mark TX in \texttt{pendingOpen} as ``waiting for
-        %\textsc{fundingAck}''
-        \State send (\textsc{fundingLocked}, \textit{pchid},
-        $ph\_\mathrm{base}_{\mathrm{com}, 2}$) to \bob{} \orfeas{proper way?} and
-        ensure reply from \bob{} is (\textsc{fundingAck}, \textit{pchid},
-        $pt\_\mathrm{base}_{\mathrm{com}, 2}$)
-        \State move TX and channel data from \texttt{pendingOpen} to
-        \texttt{channels}
-        \State add \texttt{HTLCNo} = 0 entry to channel in \texttt{channels}
-        \State add receipt of channel to \texttt{newChannels}
-      \EndFor
-      \State clear and send \texttt{newChannels}, \texttt{closedChannels},
-      \texttt{updated} to \environment
-    \EndIndent
-    \State
-
-    \State Upon receiving (\textsc{fundingLocked}, \textit{pchid},
-    $pt\_\mathrm{base}_{\mathrm{com}, 2}$) from \bob:
-    \Indent
-      \State ensure there is a channel ID \textit{pchid} with \bob{} in
-      \texttt{pendingOpen}, marked as ``waiting for \textsc{fundingLocked}''
-      \State send (\textsc{read}) to \ledger{} and assign reply to
-      $\Sigma_{\alice}$
-      \State ensure $\exists \text{ unspent } \mathrm{TX} \in \Sigma_{\alice}$
-      with ID \textit{pchid} and a $\left(x, ph_F \wedge pt_F\right)$ output
-      \State $\left(ph\_\mathrm{base}_{\mathrm{com}, 2},
-      sh\_\mathrm{base}_{\mathrm{com}, 2}\right) \gets
-      \mathrm{genKey}\left(\right)$
-      \State move TX and channel data from \texttt{pendingOpen} to
-      \texttt{channels}
-      \State add receipt of channel to \texttt{newChannels}
-      \State send (\textsc{fundingAck}, \textit{pchid},
-      $ph\_\mathrm{base}_{\mathrm{com}, 2}$) to \bob{} and \adversary
     \EndIndent
     \State
 
