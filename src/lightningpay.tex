@@ -1,0 +1,42 @@
+\begin{figure}[H]
+  \begin{center}
+    \fbox{\pseudocode{%
+        \mathcal{E} \< \alice \< \bob \< \charlie \\ [][\hline]
+        \sendmessageright{top=\texttt{pay}(\bob\&\charlie)} \< \< \\
+        \< \sendmessageright{top=\texttt{updateAddHTLC}} \< \\
+        \< \sendmessageleft{top=\texttt{commitmentSigned}} \< \\
+        \< \sendmessageright{top=\texttt{revokeAndAck}} \< \\
+        \< \< \< \\
+        \sendmessageright{top=\texttt{commit}} \< \< \\
+        \< \sendmessageright{top=\texttt{commitmentSigned}} \< \\
+        \< \sendmessageleft{top=\texttt{revokeAndAck}} \< \\
+        \< \< \< \\
+        \< \sendmessagerightx[229pt]{8}{push} \< \\
+        \< \< \sendmessageright{top=\texttt{updateAddHTLC}} \\
+        \< \< \sendmessageleft{top=\texttt{commitmentSigned}} \\
+        \< \< \sendmessageright{top=\texttt{revokeAndAck}} \\
+        \< \< \< \\
+        \< \sendmessagerightx[229pt]{8}{commit} \< \\
+        \< \< \sendmessageright{top=\texttt{commitmentSigned}} \\
+        \< \< \sendmessageleft{top=\texttt{revokeAndAck}} \\
+        \< \< \< \\
+        \< \sendmessagerightx[329pt]{8}{push} \< \\
+        \< \< \sendmessageleft{top=\texttt{updateFulfillHTLC}} \\
+        \< \< \sendmessageright{top=\texttt{commitmentSigned}} \\
+        \< \< \sendmessageleft{top=\texttt{revokeAndAck}} \\
+        \< \< \< \\
+        \< \sendmessagerightx[329pt]{8}{commit} \< \\
+        \< \< \sendmessageleft{top=\texttt{commitmentSigned}} \\
+        \< \< \sendmessageright{top=\texttt{revokeAndAck}} \\
+        \< \< \< \\
+        \< \sendmessagerightx[229pt]{8}{push} \< \\
+        \< \sendmessageleft{top=\texttt{updateFulfillHTLC}} \< \\
+        \< \sendmessageright{top=\texttt{commitmentSigned}} \< \\
+        \< \sendmessageleft{top=\texttt{revokeAndAck}} \< \\
+        \< \< \< \\
+        \< \sendmessagerightx[229pt]{8}{commit} \< \\
+    }}
+  \end{center}
+  \label{lightning:fig:open}
+  \caption{Protocol for paying in a Lightning channel}
+\end{figure}
