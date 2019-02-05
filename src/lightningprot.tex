@@ -401,11 +401,11 @@
       \texttt{channels} where we have at least $x$
       \State $\mathtt{remoteCom}_n \gets$ latest \texttt{remoteCom} in
       \texttt{channel}
-      \State get the $\left(c_{\bob}, ph_{\mathrm{rev}, n} \vee
+      \State get the $\left(c_{n, \bob}, ph_{\mathrm{rev}, n} \vee
       \left(pt_{\mathrm{dpay}, n}, \mathtt{delay} \text{
-      relative}\right)\right), \left(c_{\alice}, ph_{\mathrm{pay}, n}\right),$
-      $\left(c_{n, i}, \text{htlc methods}_{n, i}\right)_{\left[1, \dots,
-      m\right]}$ outputs of $\mathtt{remoteCom}_n$
+      relative}\right)\right), \left(c_{n, \alice}, ph_{\mathrm{pay},
+      n}\right),$ $\left(c_{n, i}, \text{htlc methods}_{n, i}\right)_{\left[1,
+      \dots, m\right]}$ outputs of $\mathtt{remoteCom}_n$
       \State $ph_{\mathrm{rev}, n+1} \gets ph\_\mathrm{base}_{\mathrm{rev}} \cdot
       \mathcal{H}\left(ph\_\mathrm{base}_{\mathrm{rev}} ||
       ph_{\mathrm{com}, n+1}\right) + ph_{\mathrm{com}, n+1} \cdot \mathcal{H}\left(
@@ -434,9 +434,9 @@
       pt\_\mathrm{base}_{\mathrm{htlc}}\right)$
       \State $\mathtt{remoteCom}_{n+1} \gets$ TX \{input: output 1 of $F$,
       outputs:
-      \State $\left(c_{\bob} - x, ph_{\mathrm{rev}, n+1} \vee
+      \State $\left(c_{n, \bob} - x, ph_{\mathrm{rev}, n+1} \vee
       \left(pt_{\mathrm{dpay}, n+1}, \mathtt{delay} \text{
-      relative}\right)\right), \left(c_{\alice}, ph_{\mathrm{pay},
+      relative}\right)\right), \left(c_{n, \alice}, ph_{\mathrm{pay},
       n+1}\right),$ $\left(c_{n, i}, \text{htlc methods}_{n+1,
       i}\right)_{\left[1, \dots, m\right]}, \left(x, ph_{\mathrm{rev}, n+1}
       \vee \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc},
@@ -497,7 +497,7 @@
       pt\_\mathrm{base}_{\mathrm{htlc}}\right)$
       \State $\mathtt{localCom}_{n+1} \gets$ TX \{input: output 1 of $F$,
       outputs:
-      \State $\left(c_{\alice} - x, pt_{\mathrm{rev}, n+1} \vee
+      \State $\left(c_{n, \alice} - x, pt_{\mathrm{rev}, n+1} \vee
       \left(ph_{\mathrm{dpay}, n+1}, \mathtt{delay} \text{
       relative}\right)\right), \left(c_{\bob}, pt_{\mathrm{pay},
       n+1}\right),$ $\left(c_{n, i}, \text{htlc methods}_{n+1,
