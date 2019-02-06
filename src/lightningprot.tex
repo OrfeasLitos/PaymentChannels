@@ -320,8 +320,19 @@
     \EndIndent
     \State
 
-    \State \orfeas{@Aggelos: maybe leak queries to global functionalities to
-    \adversary?}
+    \State UpRecv uAH add (both) local-\&remote-uncommited HTLC(s) and push uAH
+    if intermediary
+    \State upRecv uFH add (both) local-\&remote-uncommited remove-HTLC(s) and if
+    intermediary and prev htlc is remote-irr-commited send uFH back
+    \State UpRecv comSig update local com, mark diff HTLCs as local-irr-commited
+    \& send rAA
+    \State upRecv rAA mark old remote com as revoked, remote-commited HTLCs as
+    remote-irr-commited
+    \State upRecv commit send comSig for all remote-uncomitted htlcs and mark
+    them as remote-commited
+    \State upRecv push(ch) send uFH for all remote-irr-commited received htlcs
+    that we are final receiver
+    \State \orfeas{maybe leak queries to global functionalities to \adversary?}
     \State Upon receiving (\textsc{pay}, \textit{Bob}, $x$,
     $\overrightarrow{\mathtt{path}}$, \texttt{receipt}) from \environment:
     \Indent
