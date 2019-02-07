@@ -131,15 +131,15 @@
       \mathcal{H}\left(ph_{\mathrm{com}, 1} ||
       ph\_\mathrm{base}_{\mathrm{pay}}\right)$
       \State $\mathtt{remoteCom} \gets$ TX \{input: output 1 of $F$, output:
-      $\left(x, ph_{\mathrm{pay}}\right)$\}
+      $\left(x, ph_{\mathrm{pay}, 1}\right)$\}
       \State $\mathtt{localCom} \gets$ TX \{input: output 1 of $F$, output:
-      $\left(x, pt_{\mathrm{rev}} \vee \left(ph_{\mathrm{dpay}}, \mathtt{delay}
-      \text{ relative}\right)\right)$ \TODO{check delays}
-      \State add $\mathtt{remoteCom}$ and $\mathtt{localCom}$ to channel
+      $\left(x, pt_{\mathrm{rev}, 1} \vee \left(ph_{\mathrm{dpay}_1},
+      \mathtt{delay} \text{ relative}\right)\right)$ \TODO{check delays}
+      \State add $\mathtt{remoteCom}_1$ and $\mathtt{localCom}_1$ to channel
       entry in \texttt{pendingOpen}
       \State $\mathrm{AliceSig} \gets
-      \mathtt{signature}\left(\mathtt{remoteCom}, sh_F\right)$
-      \State mark \texttt{remoteCom} as ``signed''
+      \mathtt{signature}\left(\mathtt{remoteCom}_1, sh_F\right)$
+      \State mark $\mathtt{remoteCom}_1$ as ``signed''
       \State send (\textsc{fundingCreated}, \textit{tid},
       \textit{pchid}, AliceSig) to \bob{} and \adversary
     \EndIndent
@@ -160,19 +160,19 @@
       \State $pt_{\mathrm{pay}, 1} \gets pt\_\mathrm{base}_{\mathrm{pay}} +
       \mathcal{H}\left(pt_{\mathrm{com}, 1} ||
       pt\_\mathrm{base}_{\mathrm{pay}}\right)$
-      \State $\mathtt{localCom} \gets$ TX \{input: output 1 of $F$, output:
-      $\left(x, pt_{\mathrm{pay}}\right)$\}
-      \State ensure $\mathtt{verify}\left(\mathtt{localCom}, \mathtt{BobSig},
-      pt_F\right) = \mathtt{True}$
-      \State $\mathtt{remoteCom} \gets$ TX \{input: output 1 of $F$, output:
+      \State $\mathtt{localCom}_1 \gets$ TX \{input: output 1 of $F$, output:
+      $\left(x, pt_{\mathrm{pay}, 1}\right)$\}
+      \State ensure $\mathtt{verify}\left(\mathtt{localCom}_1,
+      \mathtt{BobSig}_1, pt_F\right) = \mathtt{True}$
+      \State $\mathtt{remoteCom}_1 \gets$ TX \{input: output 1 of $F$, output:
       $\left(x, ph_{\mathrm{rev}} \vee \left(pt_{\mathrm{dpay}}, \mathtt{delay}
       \text{ relative}\right)\right)$ \orfeas{check delays}
-      \State add $\mathtt{BobSig}, \mathtt{remoteCom}$ and $\mathtt{localCom}$
-      to channel entry in \texttt{pendingOpen}
+      \State add $\mathtt{BobSig}, \mathtt{remoteCom}_1$ and
+      $\mathtt{localCom}_1$ to channel entry in \texttt{pendingOpen}
       \State $\mathrm{AliceSig} \gets
-      \mathtt{signature}\left(\mathrm{remoteCom}, sh_F\right)$
+      \mathtt{signature}\left(\mathrm{remoteCom}_1, sh_F\right)$
       \State mark channel as ``broadcast, no \textsc{fundingLocked}''
-      \State mark \texttt{localCom} and \texttt{remoteCom} as ``signed''
+      \State mark $\mathtt{localCom}_1$ and $\mathtt{remoteCom}_1$ as ``signed''
       \State send (\textsc{fundingSigned}, \textit{pchid}, AliceSig) to \bob{}
       and \adversary
     \EndIndent
