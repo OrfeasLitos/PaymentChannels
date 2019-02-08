@@ -1,0 +1,13 @@
+\section{State of a channel}
+  Consider a channel between \alice{} and \bob. Both parties hold some data
+  locally that correspond to ownership of some funds in the channel. Here we
+  define a concise way of representing this data.
+
+  What \alice{} really holds, specific for this channel:
+  \begin{itemize}
+    \item local \{payment, htlc, delayed\_payment\}\_basepoint\_secret
+    \item remote \{payment, htlc, delayed\_payment\}\_basepoint
+    \item local per\_commitment\_secret[1,...,n+2]
+    \item remote per\_commitment\_point[1,...,n]
+    \item more stuff
+  \end{itemize}
