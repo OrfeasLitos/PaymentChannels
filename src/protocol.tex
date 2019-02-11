@@ -380,9 +380,6 @@
     \EndIndent
     \State
 
-    \State upRecv push(ch) send uFH for all remote-irr-commited received htlcs
-    that we are final receiver or are in the list for sending uFH back and are
-    remote-irr-commited
     \State Upon receiving (\textsc{updateAddHtlc}, \textit{pchid},
     $\mathtt{HTLCNo}, x, h, \mathtt{absDelay}, M$) from \bob:
     \Indent
@@ -580,6 +577,19 @@
       pt\_\mathrm{base}_{\mathrm{htlc}}\right)$
     \EndIndent
     \State
+
+    \State Upon receiving (\textsc{push}, \textit{pchid}) from \environment:
+    \Indent
+      \State ensure that there is a $\mathtt{channel} \in \mathtt{channels}$
+      with ID \textit{pchid}
+      \State choose a member (HTLC\_no, $R$) of
+      $\mathtt{pendingFulfills}_{\mathit{pchid}}$ that is both in an
+      ``irrevocably committed'' $\mathtt{remoteCom}_n$ and $\mathtt{localCom}_n$
+      \State remove (HTLC\_no, $R$) from
+      $\mathtt{pendingFulfills}_{\mathit{pchid}}$
+      \State send (\textsc{updateFulfillHtlc}, \textit{pchid}, HTLC\_no, $R$) to
+      \textit{pchid} counterparty
+    \EndIndent
 
     \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from
     \environment:
