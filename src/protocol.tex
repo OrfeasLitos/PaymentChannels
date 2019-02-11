@@ -421,9 +421,14 @@
       \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc}, n+1},
       \mathtt{cltv\_expiry} \text{ absolute}\right) \vee\right.$
       $\left.ph_{\mathrm{htlc}, n+1}, \text{ on preimage of } h\right)$ htlc
-      \If{$\delta \neq \mathtt{receiver}$} \Comment{Send HTLC to next hop}
       output (all with $n+1$ keys) to \texttt{remoteCom}, marked with
       \texttt{HTLCNo}
+      \If{$\delta = \mathtt{receiver}$}
+        \State retrieve $R : \mathcal{H}\left(R\right) = h$ from
+        \texttt{pendingGetPaid}
+        \State add $\left(\mathtt{HTLCNo}, R\right)$ to
+        $\mathtt{pendingFulfills}_{\textit{pchid}}$
+      \ElsIf{$\delta \neq \mathtt{receiver}$} \Comment{Send HTLC to next hop}
         \State retrieve $\mathit{pchid}'$ data
         \State let $\mathtt{remoteCom}_n$ the latest signed remote commitment tx
         \State reduce simple payment output in \texttt{remoteCom} by $x$
