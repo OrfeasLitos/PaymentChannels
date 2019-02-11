@@ -375,8 +375,6 @@
     \EndIndent
     \State
 
-    \State UpRecv uAH add remote-uncommited HTLC left, push uAH and add
-    remote-uncommited HTLC right if intermediary
     \State upRecv uFH remove remote-uncommited HTLC right, if intermediary and
     prev htlc is remote-commited send uFH back and remove remote-uncommited HTLC
     left (or get offered HTLC if back has gone on-chain), if intermediary and
@@ -402,15 +400,46 @@
       \If{$\delta = \mathtt{receiver}$}
         \State ensure $\mathit{pchid}' = \bot, x = x', \mathtt{absDelay} =
         \mathtt{absDelay}'$
-        \State mark \texttt{HTLCNo}+1 as ``receiver''
+        \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one
+        \State mark \texttt{HTLCNo} as ``receiver''
       \Else \Comment{We are an intermediary}
         \State ensure $x = x', \mathtt{absDelay} = \mathtt{absDelay}' +$
         \orfeas{TODECIDE}
         \State ensure $\mathtt{pchid}'$ corresponds to an open channel in
-        \State mark \texttt{HTLCNo}+1 as ``intermediary''
+        \texttt{channels} where we have at least $x$
+        \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one
+        \State mark \texttt{HTLCNo} as ``intermediary''
       \EndIf
-      \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one
-      \texttt{channels} where we have at least $x$
+      \State let $\mathtt{remoteCom}_n$ the latest signed remote commitment tx
+      \State reduce delayed payment output in \texttt{remoteCom} by $x$
+      \State add an $\left(x, ph_{\mathrm{rev}, n+1} \vee
+      \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc}, n+1},
+      \mathtt{cltv\_expiry} \text{ absolute}\right) \vee\right.$
+      $\left.ph_{\mathrm{htlc}, n+1}, \text{ on preimage of } h\right)$ htlc
+      output (all with $n+1$ keys) to \texttt{remoteCom}
+      \If{$\delta \neq \mathtt{receiver}$} \Comment{Send HTLC to next hop}
+        \State retrieve $\mathit{pchid}'$ data
+        \State let $\mathtt{remoteCom}_n$ the latest signed remote commitment tx
+        \State reduce simple payment output in \texttt{remoteCom} by $x$
+        \State add an additional $\left(x, ph_{\mathrm{rev}, n+1} \vee
+        \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc}, n+1}, \text{ on
+        preimage}\right.\right.$ $\left.\left.\text{of } h\right) \vee
+        ph_{\mathrm{htlc}, n+1}\mathtt{cltv\_expiry} \text{ absolute}\right)$
+        output (all with $n+1$ keys) to \texttt{remoteCom}
+        \State calculate absDelay \TODO{}
+        \State increment \texttt{HTLCNo} by 1
+        \State $M' \gets \mathtt{SphinxPrepare}\left(M, \delta,
+        sk_{\mathit{Alice}}\right)$
+        \State send (\textsc{updateAddHtlc}, $\mathit{pchid}'$, \texttt{HTLCNo},
+        $x$, $h$, absDelay, $M$) to $\mathit{pchid}'$ counterparty
+      \EndIf
+    \EndIndent
+    \State
+
+    \State Upon receiving(\textsc{commit}, \textit{pchid}) from \environment:
+    \Indent
+      \State ensure that there is a $\mathtt{channel} \in \mathtt{channels}$
+      with ID \textit{pchid} marked as ``waiting for \textsc{commit}''
       \State $\mathtt{remoteCom}_n \gets$ latest \texttt{remoteCom} in
       \texttt{channel}
       \State get the $\left(c_{n, \bob}, ph_{\mathrm{rev}, n} \vee
