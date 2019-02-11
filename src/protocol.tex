@@ -625,7 +625,7 @@
       \in \mathtt{channels}$
       \State assign latest \texttt{channel} sequence number to $n$
       \State $\mathrm{HTLCs} \gets \emptyset$
-      \ForAll{$\text{HTLC outputs } \in \mathtt{localCom}_n$ with number $i$}
+      \For{every $\text{HTLC output } \in \mathtt{localCom}_n$ with number $i$}
         \State $\mathrm{sig} \gets
         \mathtt{signature}\left(\mathtt{localHTLC}_{n, i}, sh_{\mathrm{htlc},
         n}\right)$
