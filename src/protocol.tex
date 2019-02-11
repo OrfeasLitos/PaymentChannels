@@ -380,8 +380,6 @@
     \EndIndent
     \State
 
-    \State UpRecv comSig add/remove remote-commited diff HTLC(s), mark diff
-    HTLCs as local-irr-commited \& send rAA
     \State upRecv rAA add/remove local-commited diff HTLC(s), mark old remote
     com as revoked
     \State upRecv push(ch) send uFH for all remote-irr-commited received htlcs
@@ -513,8 +511,33 @@
     \State Upon receiving (\textsc{commitmentSigned}, \textit{pchid},
     $\mathtt{comSig}_{n+1}$, $\mathtt{HTLCSigs}_{n+1}$) from \bob:
     \Indent
-      \State ensure \texttt{channel} with ID \textit{pchid} is marked ``waiting
-      for \textsc{commitmentSigned}''
+      \State ensure that there is a $\mathtt{channel} \in \mathtt{channels}$
+      with ID \textit{pchid} with \bob
+      \State retrieve latest local commitment tx $\mathtt{localCom}_n$ in
+      \texttt{channel}
+      \State ensure $\mathtt{localCom} \neq \mathtt{localCom}_n$ and
+      $\mathtt{localCom} \neq \mathtt{pendingLocalCom}$
+      \Comment{there are uncommitted updates}
+      \State ensure $\mathtt{verify}\left(\mathtt{localCom},
+      \mathtt{comSig}_{n+1}, pt_F\right) = \mathtt{true}$
+      \For{$i$ from \texttt{lastLocalSigned} to \texttt{HTLCNo}}
+        \State $\mathtt{localHTLC}_{n+1, i} \gets$ TX \{input: HTLC output $i$
+        of $\mathtt{localCom}$, output: $\left(c_{\mathrm{htlc, i}},
+        ph_{\mathrm{rev}, n+1} \vee \left(pt_{\mathrm{dpay}, n+1},
+        \mathtt{delay} \text{ relative}\right)\right)$\}
+        \State ensure $\mathtt{verify}\left(\mathtt{localHTLC}_{n+1, i},
+        \mathtt{HTLCSigs}_{n+1, i}, pt_{\mathrm{htlc}, n+1}\right) =
+        \mathtt{true}$
+      \EndFor
+      \State $\mathtt{pendingLocalCom} \gets \mathtt{localCom}$
+      \State mark $\mathtt{pendingLocalCom}$ as ``irrevocably committed''
+      \State $\left(ph_{\mathrm{com}, n+2}, sh_{\mathrm{com}, n+2}\right) \gets
+      \mathrm{genKey}\left(\right)$
+      \State send (\textsc{revokeAndAck}, \textit{pchid}, $sh_{\mathrm{com}, n},
+      ph_{\mathrm{com}, n+2}$) to \bob
+    \EndIndent
+    \State
+
       \State $ph_{\mathrm{rev}, n+1} \gets ph\_\mathrm{base}_{\mathrm{rev}} \cdot
       \mathcal{H}\left(ph\_\mathrm{base}_{\mathrm{rev}} ||
       ph_{\mathrm{com}, n+1}\right) + ph_{\mathrm{com}, n+1} \cdot \mathcal{H}\left(
@@ -592,20 +615,6 @@
       commitment and htlc txs}
       \State send (\textsc{revokeAndAck}, \textit{pchid}, $sh_{\mathrm{com}, n},
       ph_{\mathrm{com}, n+2}$) to \bob
-    \EndIndent
-    \State
-
-    \State Upon receiving (\textsc{revokeAndAck}, \textit{pchid},
-    $st_{\mathrm{com}, n}, pt_{\mathrm{com}, n+1}$) from \bob:
-    \Indent
-      \State ensure $pk\left(st_{\mathrm{com}, n}\right) = pt_{\mathrm{com}, n}$
-      \State \orfeas{TODO: find out when this party sends old com\_secret and
-      next com\_point}
-      \If{terminal node}
-        \State send back fulfill htlc
-      \Else
-        \State send forward update add htlc
-      \EndIf
     \EndIndent
     \State
 
