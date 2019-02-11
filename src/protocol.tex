@@ -421,8 +421,9 @@
       \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc}, n+1},
       \mathtt{cltv\_expiry} \text{ absolute}\right) \vee\right.$
       $\left.ph_{\mathrm{htlc}, n+1}, \text{ on preimage of } h\right)$ htlc
-      output (all with $n+1$ keys) to \texttt{remoteCom}
       \If{$\delta \neq \mathtt{receiver}$} \Comment{Send HTLC to next hop}
+      output (all with $n+1$ keys) to \texttt{remoteCom}, marked with
+      \texttt{HTLCNo}
         \State retrieve $\mathit{pchid}'$ data
         \State let $\mathtt{remoteCom}_n$ the latest signed remote commitment tx
         \State reduce simple payment output in \texttt{remoteCom} by $x$
@@ -430,7 +431,8 @@
         \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc}, n+1}, \text{ on
         preimage}\right.\right.$ $\left.\left.\text{of } h\right) \vee
         ph_{\mathrm{htlc}, n+1}\mathtt{cltv\_expiry} \text{ absolute}\right)$
-        output (all with $n+1$ keys) to \texttt{remoteCom}
+        output (all with $n+1$ keys) to \texttt{remoteCom}, marked with
+        \texttt{HTLCNo}
         \State calculate absDelay \TODO{}
         \State increment \texttt{HTLCNo} by 1
         \State $M' \gets \mathtt{SphinxPrepare}\left(M, \delta,
