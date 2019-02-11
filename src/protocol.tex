@@ -615,11 +615,19 @@
       \State ensure \texttt{receipt} corresponds to an open $\mathtt{channel}
       \in \mathtt{channels}$
       \State assign latest \texttt{channel} sequence number to $n$
+      \State $\mathrm{HTLCs} \gets \emptyset$
+      \ForAll{$\text{HTLC outputs } \in \mathtt{localCom}_n$ with number $i$}
+        \State $\mathrm{sig} \gets
+        \mathtt{signature}\left(\mathtt{localHTLC}_{n, i}, sh_{\mathrm{htlc},
+        n}\right)$
+        \State add $\left(\mathrm{sig}, \mathtt{HTLCSigs}_{n, i},
+        \mathtt{localHTLC}_{n, i}\right)$ to HTLCs
+      \EndFor
       \State $\mathrm{sig} \gets \mathtt{signature}\left(\mathtt{localCom}_n,
       sh_F\right)$
       \State remove \texttt{channel} from \texttt{channels}
       \State send (\textsc{submit}, $\left(\mathrm{sig}, \mathtt{remoteSig}_n,
-      \mathtt{localCom}_n\right)$) to \ledger
+      \mathtt{localCom}_n\right), \mathrm{HTLCs}$) to \ledger
     \EndIndent
   \end{algorithmic}
 \hrulefill
