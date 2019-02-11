@@ -380,11 +380,6 @@
     \EndIndent
     \State
 
-    \State upRecv uFH remove remote-uncommited HTLC right, if intermediary and
-    prev htlc is remote-commited send uFH back and remove remote-uncommited HTLC
-    left (or get offered HTLC if back has gone on-chain), if intermediary and
-    prev htlc is remote-uncommited an counterpart has not gone on-chain, add to
-    list for sending uFH back
     \State UpRecv comSig add/remove remote-commited diff HTLC(s), mark diff
     HTLCs as local-irr-commited \& send rAA
     \State upRecv rAA add/remove local-commited diff HTLC(s), mark old remote
@@ -448,7 +443,44 @@
     \EndIndent
     \State
 
-    \State Upon receiving(\textsc{commit}, \textit{pchid}) from \environment:
+    \State Upon receiving (\textsc{updateFulfillHtlc}, \textit{pchid}, HTLC\_no,
+    $R$) from \bob:
+    \Indent
+      \State ensure $\mathrm{HTLC\_no} \leq \mathtt{lastRemoteSigned},
+      \mathrm{HTLC\_no} \leq \mathtt{lastLocalSigned}$
+      \State ensure HTLC\_no is an offered HTLC (\texttt{localCom} has $h$ tied
+      to a public key that we own)
+      \State ensure $\mathcal{H}\left(R\right) = h$, where $h$ is the hash in
+      the HTLC with number HTLC\_no
+      \State add value of HTLC to delayed payment of \texttt{remoteCom}
+      \State remove HTLC output with number HTLC\_no from \texttt{remoteCom}
+      \If{we have a channel $\mathtt{phcid}'$ that has a received HTLC with hash
+      $h$ with number $\mathtt{HTLCNo}'$} \Comment{We are intermediary}
+        \If{$\mathtt{HTLCNo}' \leq \mathtt{lastRemoteSigned}'$} \Comment{HTLC
+        committed}
+          \State send (\textsc{read}) to \ledger{} and assign reply to
+          $\Sigma_{\alice}$
+          \If{latest $\mathtt{remoteCom}'_n \in \Sigma_{\alice}$}
+          \Comment{counterparty has gone on-chain}
+            \State $\mathrm{TX} \gets$ \{input: $\mathtt{remoteCom}'$ HTLC
+            output with number $\mathtt{HTLCNo}'$, output: $pk_{\alice}$\}
+            \State $\mathrm{sig} \gets \mathtt{signature}\left(\mathrm{TX},
+            sh_{\mathrm{htlc}, n}\right)$
+            \State send (\textsc{submit}, (sig, $R$, TX)) to \ledger{}
+            \Comment{shouldn't be already spent by remote \texttt{HTLCTimeout}}
+          \Else \Comment{counterparty still off-chain}
+            \State send $\left(\textsc{updateFulfillHtlc}, \mathit{pchid}',
+            \mathtt{HTLCNo}, R\right)$ to counterparty
+          \EndIf
+        \Else \Comment{we haven't received \textsc{revokeAndAck}}
+          \State add $\left(\mathtt{HTLCNo}', R\right)$ to
+          $\mathtt{pendingFulfills}_{\textit{pchid}'}$ \TODO{send all after rAA}
+        \EndIf
+      \EndIf
+    \EndIndent
+    \State
+
+    \State Upon receiving (\textsc{commit}, \textit{pchid}) from \environment:
     \Indent
       \State ensure that there is a $\mathtt{channel} \in \mathtt{channels}$
       with ID \textit{pchid} marked as ``waiting for \textsc{commit}''
