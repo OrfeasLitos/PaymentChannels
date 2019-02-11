@@ -384,7 +384,6 @@
     HTLCs as local-irr-commited \& send rAA
     \State upRecv rAA add/remove local-commited diff HTLC(s), mark old remote
     com as revoked
-    \State upRecv commit(ch) send comSig for all local-uncomitted htlcs
     \State upRecv push(ch) send uFH for all remote-irr-commited received htlcs
     that we are final receiver or are in the list for sending uFH back and are
     remote-irr-commited
@@ -483,69 +482,31 @@
     \State Upon receiving (\textsc{commit}, \textit{pchid}) from \environment:
     \Indent
       \State ensure that there is a $\mathtt{channel} \in \mathtt{channels}$
-      with ID \textit{pchid} marked as ``waiting for \textsc{commit}''
-      \State $\mathtt{remoteCom}_n \gets$ latest \texttt{remoteCom} in
+      with ID \textit{pchid}
+      \State retrieve latest remote commitment tx $\mathtt{remoteCom}_n$ in
       \texttt{channel}
-      \State get the $\left(c_{n, \bob}, ph_{\mathrm{rev}, n} \vee
-      \left(pt_{\mathrm{dpay}, n}, \mathtt{delay} \text{
-      relative}\right)\right), \left(c_{n, \alice}, ph_{\mathrm{pay},
-      n}\right),$ $\left(c_{n, i}, \text{htlc methods}_{n, i}\right)_{\left[1,
-      \dots, m\right]}$ outputs of $\mathtt{remoteCom}_n$
-      \State $ph_{\mathrm{rev}, n+1} \gets ph\_\mathrm{base}_{\mathrm{rev}} \cdot
-      \mathcal{H}\left(ph\_\mathrm{base}_{\mathrm{rev}} ||
-      ph_{\mathrm{com}, n+1}\right) + ph_{\mathrm{com}, n+1} \cdot \mathcal{H}\left(
-      ph_{\mathrm{com}, n+1} || ph\_\mathrm{base}_{\mathrm{rev}}\right)$
-      \State $pt_{\mathrm{rev}, n+1} \gets pt\_\mathrm{base}_{\mathrm{rev}} \cdot
-      \mathcal{H}\left(pt\_\mathrm{base}_{\mathrm{rev}} ||
-      pt_{\mathrm{com}, n+1}\right) + pt_{\mathrm{com}, n+1} \cdot \mathcal{H}\left(
-      pt_{\mathrm{com}, n+1} || pt\_\mathrm{base}_{\mathrm{rev}}\right)$
-      \State $ph_{\mathrm{dpay}, n+1} \gets ph\_\mathrm{base}_{\mathrm{dpay}} +
-      \mathcal{H}\left(ph_{\mathrm{com}, n+1} ||
-      ph\_\mathrm{base}_{\mathrm{dpay}}\right)$
-      \State $pt_{\mathrm{dpay}, n+1} \gets pt\_\mathrm{base}_{\mathrm{dpay}} +
-      \mathcal{H}\left(pt_{\mathrm{com}, n+1} ||
-      pt\_\mathrm{base}_{\mathrm{dpay}}\right)$
-      \State $ph_{\mathrm{pay}, n+1} \gets ph\_\mathrm{base}_{\mathrm{pay}} +
-      \mathcal{H}\left(ph_{\mathrm{com}, n+1} ||
-      ph\_\mathrm{base}_{\mathrm{pay}}\right)$
-      \State $pt_{\mathrm{pay}, n+1} \gets pt\_\mathrm{base}_{\mathrm{pay}} +
-      \mathcal{H}\left(pt_{\mathrm{com}, n+1} ||
-      pt\_\mathrm{base}_{\mathrm{pay}}\right)$
-      \State $ph_{\mathrm{htlc}, n+1} \gets ph\_\mathrm{base}_{\mathrm{htlc}} +
-      \mathcal{H}\left(ph_{\mathrm{com}, n+1} ||
-      ph\_\mathrm{base}_{\mathrm{htlc}}\right)$
-      \State $pt_{\mathrm{htlc}, n+1} \gets pt\_\mathrm{base}_{\mathrm{htlc}} +
-      \mathcal{H}\left(pt_{\mathrm{com}, n+1} ||
-      pt\_\mathrm{base}_{\mathrm{htlc}}\right)$
-      \State $\mathtt{remoteCom}_{n+1} \gets$ TX \{input: output 1 of $F$,
-      outputs:
-      \State $\left(c_{n, \bob} - x, ph_{\mathrm{rev}, n+1} \vee
-      \left(pt_{\mathrm{dpay}, n+1}, \mathtt{delay} \text{
-      relative}\right)\right), \left(c_{n, \alice}, ph_{\mathrm{pay},
-      n+1}\right),$ $\left(c_{n, i}, \text{htlc methods}_{n+1,
-      i}\right)_{\left[1, \dots, m\right]}, \left(x, ph_{\mathrm{rev}, n+1}
-      \vee \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc},
-      n+1},\right.\right.$ $\left.\left.\mathtt{cltv\_expiry} \text{
-      absolute}\right) \vee ph_{\mathrm{htlc}, n+1}, \text{on preimage of }
-      h\right)$\}
+      \State ensure $\mathtt{remoteCom} \neq \mathtt{remoteCom}_n$
+      \Comment{there are uncommitted updates}
+      \State ensure \texttt{channel} is not marked as ``waiting for
+      \textsc{revokeAndAck}''
+      \State $\mathtt{remoteCom}_{n+1} \gets \mathtt{remoteCom}$
       \State $\mathrm{ComSig} \gets
-      \mathtt{signature}\left(\mathtt{remoteCom}_n, sh_F\right)$
+      \mathtt{signature}\left(\mathtt{remoteCom}_{n+1}, sh_F\right)$
       \State $\mathrm{HTLCSigs} \gets \emptyset$
-      \For{i from 1 to $m$}
-        \State $\mathtt{remoteHTLC}_{n+1, i} \gets$ TX \{input:
-        output $\mathrm{htlc}_{n+1, i}$ of $\mathtt{remoteCom}_n$, output:
-        $\text{htlc methods}_{n, i}$\}
+      \For{$i$ from \texttt{lastRemoteSigned} to \texttt{HTLCNo}}
+        \State $\mathtt{remoteHTLC}_{n+1, i} \gets$ TX \{input: HTLC output $i$
+        of $\mathtt{remoteCom}_{n+1}$, output: $\left(c_{\mathrm{htlc, i}},
+        ph_{\mathrm{rev}, n+1} \vee \left(pt_{\mathrm{dpay}, n+1},
+        \mathtt{delay} \text{ relative}\right)\right)$\}
         \State add $\mathtt{signature}\left(\mathtt{remoteHTLC}_{n+1, i},
         sh_{\mathrm{htlc}, n+1}\right)$ to HTLCSigs
       \EndFor
-      \State $\mathtt{remoteHTLC}_{n+1, m+1} \gets$ TX \{input: output
-      $\mathrm{htlc}_{n+1, m+1}$ of $\mathtt{remoteCom}_n$, output: $\left(x,
-      ph_{\mathrm{rev}, n+1} \vee pt_{\mathrm{dpay}, n+1}, \mathtt{delay}
-      \text{ relative}\right)$\} \Comment{HTLC timeout}
       \State add $\mathtt{signature}\left(\mathtt{remoteHTLC}_{n+1, m+1},
       sh_{\mathrm{htlc}, n+1}\right)$ to HTLCSigs
+      \State $\mathtt{lastRemoteSigned} \gets \mathtt{HTLCNo}$
+      \State mark \texttt{channel} as ``waiting for \textsc{revokeAndAck}''
       \State send (\textsc{commitmentSigned}, \textit{pchid}, ComSig, HTLCSigs)
-      to \bob
+      to \textit{pchid} counterparty
     \EndIndent
     \State
 
