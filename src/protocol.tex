@@ -380,8 +380,6 @@
     \EndIndent
     \State
 
-    \State upRecv rAA add/remove local-commited diff HTLC(s), mark old remote
-    com as revoked
     \State upRecv push(ch) send uFH for all remote-irr-commited received htlcs
     that we are final receiver or are in the list for sending uFH back and are
     remote-irr-commited
@@ -538,83 +536,48 @@
     \EndIndent
     \State
 
-      \State $ph_{\mathrm{rev}, n+1} \gets ph\_\mathrm{base}_{\mathrm{rev}} \cdot
-      \mathcal{H}\left(ph\_\mathrm{base}_{\mathrm{rev}} ||
-      ph_{\mathrm{com}, n+1}\right) + ph_{\mathrm{com}, n+1} \cdot \mathcal{H}\left(
-      ph_{\mathrm{com}, n+1} || ph\_\mathrm{base}_{\mathrm{rev}}\right)$
-      \State $pt_{\mathrm{rev}, n+1} \gets pt\_\mathrm{base}_{\mathrm{rev}} \cdot
-      \mathcal{H}\left(pt\_\mathrm{base}_{\mathrm{rev}} ||
-      pt_{\mathrm{com}, n+1}\right) + pt_{\mathrm{com}, n+1} \cdot \mathcal{H}\left(
-      pt_{\mathrm{com}, n+1} || pt\_\mathrm{base}_{\mathrm{rev}}\right)$
-      \State $ph_{\mathrm{dpay}, n+1} \gets ph\_\mathrm{base}_{\mathrm{dpay}} +
-      \mathcal{H}\left(ph_{\mathrm{com}, n+1} ||
-      ph\_\mathrm{base}_{\mathrm{dpay}}\right)$
-      \State $pt_{\mathrm{dpay}, n+1} \gets pt\_\mathrm{base}_{\mathrm{dpay}} +
-      \mathcal{H}\left(pt_{\mathrm{com}, n+1} ||
-      pt\_\mathrm{base}_{\mathrm{dpay}}\right)$
-      \State $ph_{\mathrm{pay}, n+1} \gets ph\_\mathrm{base}_{\mathrm{pay}} +
-      \mathcal{H}\left(ph_{\mathrm{com}, n+1} ||
-      ph\_\mathrm{base}_{\mathrm{pay}}\right)$
-      \State $pt_{\mathrm{pay}, n+1} \gets pt\_\mathrm{base}_{\mathrm{pay}} +
-      \mathcal{H}\left(pt_{\mathrm{com}, n+1} ||
-      pt\_\mathrm{base}_{\mathrm{pay}}\right)$
-      \State $ph_{\mathrm{htlc}, n+1} \gets ph\_\mathrm{base}_{\mathrm{htlc}} +
-      \mathcal{H}\left(ph_{\mathrm{com}, n+1} ||
-      ph\_\mathrm{base}_{\mathrm{htlc}}\right)$
-      \State $pt_{\mathrm{htlc}, n+1} \gets pt\_\mathrm{base}_{\mathrm{htlc}} +
-      \mathcal{H}\left(pt_{\mathrm{com}, n+1} ||
-      pt\_\mathrm{base}_{\mathrm{htlc}}\right)$
-      \State $\mathtt{localCom}_{n+1} \gets$ TX \{input: output 1 of $F$,
-      outputs:
-      \State $\left(c_{n, \alice} - x, pt_{\mathrm{rev}, n+1} \vee
-      \left(ph_{\mathrm{dpay}, n+1}, \mathtt{delay} \text{
-      relative}\right)\right), \left(c_{n, \bob}, pt_{\mathrm{pay},
-      n+1}\right),$ $\left(c_{n, i}, \text{htlc methods}_{n, i}\right)_{\left[1,
-      \dots, m\right]}, \left(x, pt_{\mathrm{rev}, n+1} \vee
-      \left(pt_{\mathrm{htlc}, n+1} \wedge ph_{\mathrm{htlc}, n+1},
-      \mathtt{cltv\_expiry}\right.\right.$ $\left.\left.\text{ absolute}\right)
-      \vee pt_{\mathrm{htlc}, n+1}, \text{on preimage of } h\right)$\}
-      \State ensure $\mathtt{verify}\left(\mathtt{localCom}_{n+1},
-      \mathtt{comSig}_{n+1}, pt_F\right) = \mathtt{true}$
-      \For{$j$ from $\mathtt{lastComHTLC}_{\mathit{pchid}}$ to
-      $\mathtt{HTLCNo}_{\mathit{pchid}}$}
-        \State $i \gets j - \mathtt{lastComHTLC}_{\mathit{pchid}} + 1$
-        \State $\mathtt{localHTLC}_{n+1, i} \gets$ TX \{input:
-        output $\mathrm{htlc}_{n+1, i}$ of $\mathtt{remoteCom}_n$, output:
-        $\text{htlc methods}_{n, i}$\}
-        \State ensure $\mathtt{verify}\left(\mathtt{localHTLC}_{n+1, i},
-        \mathtt{HTLCSigs}_{n+1}\left[i\right], pt_{\mathrm{htlc}, n+1}\right) =
-        \mathtt{true}$
-      \EndFor
-      \State $\mathtt{localHTLC}_{n+1, m+1} \gets$ TX \{input: output
-      $\mathrm{htlc}_{n+1, m+1}$ of $\mathtt{localCom}_n$, output: $\left(x,
-      pt_{\mathrm{rev}, n+1} \vee ph_{\mathrm{dpay}, n+1}, \mathtt{delay}
-      \text{ relative}\right)$\} \Comment{HTLC timeout}
-      \State ensure $\mathtt{verify}\left(\mathtt{localHTLC}_{n+1, m+1},
-      \mathtt{HTLCSigs}_{n+1}\left[m+1\right], pt_{\mathrm{htlc}, n+1}\right) =
-      \mathtt{true}$
-      \State $\left(ph_{\mathrm{com}, n+2}, sh_{\mathrm{com}, n+2}\right) \gets
-      \mathrm{genKey}\left(\right)$
-      \State \orfeas{TODO start}
-      \State generate remote commitment tx
-      \State generate commitment signature
-      \State $\mathrm{HTLCSigs} \gets \emptyset$
-      \For{$j$ from $\mathtt{lastComHTLC}_{\mathit{pchid}}$ to
-      $\mathtt{HTLCNo}_{\mathit{pchid}}$}
-        \State $i \gets j - \mathtt{lastComHTLC}_{\mathit{pchid}} + 1$
-        \State generate remote HTLCTimeout/HTLCSuccess
-        \State generate
-        $\mathtt{signature}\left(\mathtt{HTLCTimeout/Success}_{n+1, i},
-        sh_{\mathrm{htlc}, n+1}\right)$ and add to HTLCSigs
-      \EndFor
-      \State $\mathtt{lastComHTLC}_{\mathit{pchid}} \gets
-      \mathtt{HTLCNo}_{\mathit{pchid}}$
-      \State \orfeas{TODO end}
+    \State Upon receiving (\textsc{revokeAndAck}, \textit{pchid},
+    $st_{\mathrm{com}, n}, pt_{\mathrm{com}, n+2}$) from \bob:
+    \Indent
+      \State ensure there is a $\mathtt{channel} \in \mathtt{channels}$ with
+      \bob{} with ID \textit{pchid} marked as ``waiting for
+      \textsc{revokeAndAck}''
+      \State ensure $pk\left(st_{\mathrm{com}, n}\right) = pt_{\mathrm{com}, n}$
+      \State mark $\mathtt{remoteCom}_{n+1}$ as ``irrevocably committed''
+      \State $\mathtt{localCom}_{n+1} \gets \mathtt{pendingLocalCom}$
       \State unmark \texttt{channel}
-      \State \orfeas{TODO: understand when this party sends sigs for new
-      commitment and htlc txs}
-      \State send (\textsc{revokeAndAck}, \textit{pchid}, $sh_{\mathrm{com}, n},
-      ph_{\mathrm{com}, n+2}$) to \bob
+      \State $sh_{\mathrm{rev}, n} \gets sh\_\mathrm{base}_{\mathrm{rev}} \cdot
+      \mathcal{H}\left(ph\_\mathrm{base}_{\mathrm{rev}} || ph_{\mathrm{com},
+      n}\right) + st_{\mathrm{com}, n} \cdot \mathcal{H}\left(ph_{\mathrm{com},
+      n} || ph\_\mathrm{base}_{\mathrm{rev}}\right)$
+      \State $ph_{\mathrm{rev}, n+2} \gets ph\_\mathrm{base}_{\mathrm{rev}}
+      \cdot \mathcal{H}\left(ph\_\mathrm{base}_{\mathrm{rev}} ||
+      ph_{\mathrm{com}, n+2}\right) + pt_{\mathrm{com}, n+2} \cdot
+      \mathcal{H}\left(ph_{\mathrm{com}, n+2} ||
+      ph\_\mathrm{base}_{\mathrm{rev}}\right)$
+      \State $pt_{\mathrm{rev}, n+2} \gets pt\_\mathrm{base}_{\mathrm{rev}}
+      \cdot \mathcal{H}\left(pt\_\mathrm{base}_{\mathrm{rev}} ||
+      pt_{\mathrm{com}, n+2}\right) + pt_{\mathrm{com}, n+2} \cdot
+      \mathcal{H}\left( pt_{\mathrm{com}, n+2} ||
+      pt\_\mathrm{base}_{\mathrm{rev}}\right)$
+      \State $ph_{\mathrm{dpay}, n+2} \gets ph\_\mathrm{base}_{\mathrm{dpay}} +
+      \mathcal{H}\left(ph_{\mathrm{com}, n+2} ||
+      ph\_\mathrm{base}_{\mathrm{dpay}}\right)$
+      \State $pt_{\mathrm{dpay}, n+2} \gets pt\_\mathrm{base}_{\mathrm{dpay}} +
+      \mathcal{H}\left(pt_{\mathrm{com}, n+2} ||
+      pt\_\mathrm{base}_{\mathrm{dpay}}\right)$
+      \State $ph_{\mathrm{pay}, n+2} \gets ph\_\mathrm{base}_{\mathrm{pay}} +
+      \mathcal{H}\left(ph_{\mathrm{com}, n+2} ||
+      ph\_\mathrm{base}_{\mathrm{pay}}\right)$
+      \State $pt_{\mathrm{pay}, n+2} \gets pt\_\mathrm{base}_{\mathrm{pay}} +
+      \mathcal{H}\left(pt_{\mathrm{com}, n+2} ||
+      pt\_\mathrm{base}_{\mathrm{pay}}\right)$
+      \State $ph_{\mathrm{htlc}, n+2} \gets ph\_\mathrm{base}_{\mathrm{htlc}} +
+      \mathcal{H}\left(ph_{\mathrm{com}, n+2} ||
+      ph\_\mathrm{base}_{\mathrm{htlc}}\right)$
+      \State $pt_{\mathrm{htlc}, n+2} \gets pt\_\mathrm{base}_{\mathrm{htlc}} +
+      \mathcal{H}\left(pt_{\mathrm{com}, n+2} ||
+      pt\_\mathrm{base}_{\mathrm{htlc}}\right)$
     \EndIndent
     \State
 
