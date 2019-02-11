@@ -250,9 +250,11 @@
     \Indent
       \State ensure there is a \texttt{channel} with ID \textit{pchid} with
       \bob{} in \texttt{pendingOpen} with a ``no \textsc{fundingLocked}'' mark
+      \State ensure $pk\left(st_{\mathrm{com}, n}\right) = pt_{\mathrm{com}, n}$
       \State replace ``no \textsc{fundingLocked}'' mark in \texttt{channel} with
       ``\textsc{fundingLocked}''
       \State ensure \texttt{channel} has an ``in state'' mark
+      \State generate 2nd remote delayed payment, htlc, payment keys
       \State add TX to \texttt{channel} data
       \State move channel data from \texttt{pendingOpen} to \texttt{channels}
       \State add receipt of channel to \texttt{newChannels}
