@@ -371,6 +371,7 @@
       parties}\right)$
       \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one and associate
       $x, h, \mathit{pchid}$ with it
+      \State mark \texttt{HTLCNo} as ``sender''
       \State mark \texttt{channel} as ``waiting for \textsc{commitmentSigned}''
       \State send (\textsc{updateAddHtlc}, first \textit{pchid} of
       $\overrightarrow{\mathtt{path}}, \mathtt{HTLCNo}_{\textit{pchid}}, x, h,$
