@@ -5,9 +5,37 @@
 
   What \alice{} really holds, specific for this channel:
   \begin{itemize}
-    \item local \{payment, htlc, delayed\_payment\}\_basepoint\_secret
-    \item remote \{payment, htlc, delayed\_payment\}\_basepoint
-    \item local per\_commitment\_secret[1,...,n+2]
-    \item remote per\_commitment\_point[1,...,n]
-    \item more stuff
+    \item keys:
+    \begin{itemize}
+      \item local funding secret key
+      \item remote funding public key
+      \item local \{payment, htlc, delayed\_payment,
+      revocation\}\_basepoint\_secret
+      \item remote \{payment, htlc, delayed\_payment, revocation\}\_basepoint
+      \item $\text{local per\_commitment\_secret}_{1, \dots, n+1}$
+      \item $\text{remote per\_commitment\_secret}_{1, \dots, n-1}$
+      \item $\text{remote per\_commitment\_point}_{n, n+1}$
+    \end{itemize}
+    \item HTLC history: for every HTLC number $\in \{1, \dots, m\}$
+      \begin{itemize}
+        \item direction ($\alice{} \rightarrow \bob$ or $\bob{} \rightarrow
+        \alice$)
+        \item hash
+        \item preimage (or $\bot$ if still unresolved)
+        \item coins
+        \item range of signed commitments that include it (or $\bot$ if none)
+        \item number
+      \end{itemize}
+    \item signatures:
+    \begin{itemize}
+      \item signature of local $\mathrm{commitment}_{1, \dots, n}$ with secret
+      key corresponding to remote funding pubkey
+      \item for every HTLC number $\in \{1, \dots, m\}$, one signature of
+      HTLC-Timeout if outgoing, HTLC-Success if incoming with for every $i$ in
+      range with input $\mathrm{commitment}_i$, output (HTLC\_no coins, local
+      delayed public key $i$ with delay or remote revocation key $i$) with
+      secret key corresponding to remote htlc\_basepoint +
+      $\mathcal{H}(\text{remote per\_commitment\_point}_i$ $|| \text{remote
+      htlc\_basepoint}) \cdot G$
+    \end{itemize}
   \end{itemize}
