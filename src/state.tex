@@ -3,7 +3,7 @@
   locally that correspond to ownership of some funds in the channel. Here we
   define a concise way of representing this data.
 
-  What \alice{} really holds, specific for this channel:
+  What \alice{} has to hold, specific for this channel:
   \begin{itemize}
     \item keys:
     \begin{itemize}
@@ -12,30 +12,31 @@
       \item local \{payment, htlc, delayed\_payment,
       revocation\}\_basepoint\_secret
       \item remote \{payment, htlc, delayed\_payment, revocation\}\_basepoint
-      \item $\text{local per\_commitment\_secret}_{1, \dots, n+1}$
-      \item $\text{remote per\_commitment\_secret}_{1, \dots, n-1}$
-      \item $\text{remote per\_commitment\_point}_{n, n+1}$
+      \item seed (for local per\_commitment\_secrets)
+      \item $\text{remote per\_commitment\_secret}_{1, \dots, m-1}$
+      \item $\text{remote per\_commitment\_point}_{m, m+1}$
     \end{itemize}
-    \item HTLC history: for every HTLC number $\in \{1, \dots, m\}$
+    \item \alice's coins
+    \item \bob's coins
+    \item every HTLC that is included in the latest irrevocably committed (local
+    or remote) commitment:
       \begin{itemize}
-        \item direction ($\alice{} \rightarrow \bob$ or $\bob{} \rightarrow
-        \alice$)
+        \item direction ($\alice \rightarrow \bob$ or $\bob \rightarrow \alice$)
         \item hash
         \item preimage (or $\bot$ if still unresolved)
         \item coins
-        \item range of signed commitments that include it (or $\bot$ if none)
-        \item number
+        \item Is it included in local $\mathrm{commitment}_n$?
+        \item HTLC number
       \end{itemize}
     \item signatures:
     \begin{itemize}
-      \item signature of local $\mathrm{commitment}_{1, \dots, n}$ with secret
-      key corresponding to remote funding pubkey
-      \item for every HTLC number $\in \{1, \dots, m\}$, one signature of
-      HTLC-Timeout if outgoing, HTLC-Success if incoming with for every $i$ in
-      range with input $\mathrm{commitment}_i$, output (HTLC\_no coins, local
-      delayed public key $i$ with delay or remote revocation key $i$) with
-      secret key corresponding to remote htlc\_basepoint +
-      $\mathcal{H}(\text{remote per\_commitment\_point}_i$ $|| \text{remote
-      htlc\_basepoint}) \cdot G$
+      \item signature of local $\mathrm{commitment}_n$ with secret key
+      corresponding to remote funding public key
+      \item for every HTLC included in local $\mathrm{commitment}_n$, one
+      signature of HTLC-Timeout if outgoing, HTLC-Success if incoming with
+      secret key corresponding to remote $\mathrm{htlc\_pubkey}_n$ (=
+      htlc\_basepoint + $\mathcal{H}(\text{remote per\_commitment\_point}_n$ $||
+      \text{remote htlc\_basepoint}) \cdot G$)
     \end{itemize}
   \end{itemize}
+  The rest of the things used in the protocol can be derived by the above.
