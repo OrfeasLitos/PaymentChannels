@@ -51,10 +51,14 @@
       \left(ph\_\mathrm{base}_{\mathrm{dpay}},
       sh\_\mathrm{base}_{\mathrm{dpay}}\right),\right.$
       $\left.\left(ph\_\mathrm{base}_{\mathrm{htlc}},
-      sh\_\mathrm{base}_{\mathrm{htlc}}\right), \left(ph_{\mathrm{com}, 1},
-      sh_{\mathrm{com}, 1}\right), \left(ph\_\mathrm{base}_{\mathrm{rev}},
+      sh\_\mathrm{base}_{\mathrm{htlc}}\right), \mathtt{seed},
+      \left(ph\_\mathrm{base}_{\mathrm{rev}},
       sh\_\mathrm{base}_{\mathrm{rev}}\right)\right) \gets
-      \textsc{GetKeys}\left(\right)$ \TODO{change font}
+      \texttt{GetKeys}\left(\right)$
+      \State $sh_{\mathrm{com}, 1} \gets
+      \texttt{genFromSeed}\left(\mathtt{seed}, 1\right)$
+      \State $ph_{\mathrm{com}, 1} \gets
+      \mathtt{pkFromSk}\left(sh_{\mathrm{com}, 1}\right)$
       \State choose unique temporary ID \textit{tid} \Comment{unique for the two
       parties}
       \State associate keys with \textit{tid}
@@ -77,6 +81,18 @@
     \EndIndent
     \State
 
+    \Function{genFromSeed}{seed, index} \TODO{change font}
+      \State $P \gets seed$
+      \For{B in $\log(k)$ down to 0}
+        \If{bit B in index is 1}
+          \State flip bit B in $P$
+          \State $P \gets \mathcal{H}(P)$
+        \EndIf
+      \EndFor
+      \State \Return $P$
+    \EndFunction
+    \State
+
     \State Upon receiving (\textsc{openChannel}, $x$, BobDelay, $pt_F,
     pt\_\mathrm{base}_{\mathrm{pay}}, pt\_\mathrm{base}_{\mathrm{dpay}},$
     $pt\_\mathrm{base}_{\mathrm{htlc}}, pt_{\mathrm{com}, 1},
@@ -89,11 +105,14 @@
       \left(ph\_\mathrm{base}_{\mathrm{dpay}},
       sh\_\mathrm{base}_{\mathrm{dpay}}\right),\right.$
       $\left.\left(ph\_\mathrm{base}_{\mathrm{htlc}},
-      sh\_\mathrm{base}_{\mathrm{htlc}}\right),
-      \left(ph_{\mathrm{com}, 1}, sh_{\mathrm{com}, 1}\right),
+      sh\_\mathrm{base}_{\mathrm{htlc}}\right), \mathtt{seed},
       \left(ph\_\mathrm{base}_{\mathrm{rev}},
       sh\_\mathrm{base}_{\mathrm{rev}}\right)\right) \gets
-      \textsc{GetKeys}\left(\right)$ \TODO{change font}
+      \texttt{GetKeys}\left(\right)$
+      \State $sh_{\mathrm{com}, 1} \gets
+      \texttt{genFromSeed}\left(\mathtt{seed}, 1\right)$
+      \State $ph_{\mathrm{com}, 1} \gets
+      \mathtt{pkFromSk}\left(sh_{\mathrm{com}, 1}\right)$
       \State associate keys with \textit{tid} and store in \texttt{pendingOpen}
       \State send (\textsc{acceptChannel}, \texttt{delay}, $ph_F,
       ph\_\mathrm{base}_{\mathrm{pay}}, ph\_\mathrm{base}_{\mathrm{dpay}},
@@ -206,8 +225,8 @@
       \mathrm{genKey}\left(\right)$ \Comment{For com output to self}
       \State $\left(p_{\mathrm{htlc}}, s_{\mathrm{htlc}}\right) \gets
       \mathrm{genKey}\left(\right)$ \Comment{For htlc output to self}
-      \State $\left(p_{\mathrm{com}, 1}, s_{\mathrm{com}, 1}\right) \gets
-      \mathrm{genKey}\left(\right)$ \Comment{For deriving all keys}
+      \State $\texttt{seed} \overset{\$}{\gets} U(k)$ \Comment{For per com
+      point}
       \State $\left(p_{\mathrm{rev}}, s_{\mathrm{rev}}\right) \gets
       \mathrm{genKey}\left(\right)$ \Comment{For revocation in com}
       \State \Return $\left(\left(p_F, s_F\right), \left(p_{\mathrm{pay}},
@@ -215,8 +234,7 @@
       s_{\mathrm{dpay}}\right),\right.$
       \Indent
         \State $\left.\left(p_{\mathrm{htlc}}, s_{\mathrm{htlc}}\right),
-        \left(p_{\mathrm{com}, 1}, s_{\mathrm{com}, 1}\right),
-        \left(p_{\mathrm{rev}}, s_{\mathrm{rev}}\right)\right)$
+        \mathtt{seed}, \left(p_{\mathrm{rev}}, s_{\mathrm{rev}}\right)\right)$
       \EndIndent
     \EndFunction
     \State
@@ -231,9 +249,10 @@
       $\Sigma_{\alice}$
       \State ensure $\exists$ unspent TX in $\Sigma_{\alice}$ with ID
       \textit{pchid} and a $\left(x, ph_F \wedge pt_F\right)$ output
-      \State $\left(ph\_\mathrm{base}_{\mathrm{com}, 2},
-      sh\_\mathrm{base}_{\mathrm{com}, 2}\right) \gets
-      \mathrm{genKey}\left(\right)$
+      \State $sh_{\mathrm{com}, 2} \gets
+      \texttt{genFromSeed}\left(\mathtt{seed}, 2\right)$
+      \State $ph_{\mathrm{com}, 2} \gets
+      \mathtt{pkFromSk}\left(sh_{\mathrm{com}, 2}\right)$
       \State add TX to \texttt{channel} data \State replace ``broadcast'' mark
       in \texttt{channel} with ``in state''
       \If{\texttt{channel} is marked as ``in state, \textsc{fundingLocked}''}
@@ -534,8 +553,10 @@
       \EndFor
       \State $\mathtt{pendingLocalCom} \gets \mathtt{localCom}$
       \State mark $\mathtt{pendingLocalCom}$ as ``irrevocably committed''
-      \State $\left(ph_{\mathrm{com}, n+2}, sh_{\mathrm{com}, n+2}\right) \gets
-      \mathrm{genKey}\left(\right)$
+      \State $sh_{\mathrm{com}, n+2} \gets
+      \texttt{genFromSeed}\left(\mathtt{seed}, n+2\right)$
+      \State $ph_{\mathrm{com}, n+2} \gets
+      \mathtt{pkFromSk}\left(sh_{\mathrm{com}, n+2}\right)$
       \State send (\textsc{revokeAndAck}, \textit{pchid}, $sh_{\mathrm{com}, n},
       ph_{\mathrm{com}, n+2}$) to \bob
     \EndIndent
