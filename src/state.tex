@@ -40,3 +40,27 @@
     \end{itemize}
   \end{itemize}
   The rest of the things used in the protocol can be derived by the above.
+
+  \ \\
+
+  Representation of a channel's state (from the point of view of \alice):
+  \begin{itemize}
+    \item \alice's coins $c_{\alice}$
+    \item \bob's coins $c_{\bob}$
+    \item list of (coins, $\mathrm{state} \in \{\mathrm{proposed},
+    \mathrm{committed}\}$) preimage, whether we have a signature),
+    \texttt{HTLCs}
+    \begin{itemize}
+      \item negative coins are outgoing, positive are incoming
+      \item HTLCs can either be simply proposed (not in an irrevocably committed
+      remote transaction) or committed (the opposite). After the preimage is
+      supplied (no matter the direction), the HTLC is considered settled and is
+      discarded.
+    \end{itemize}
+  \end{itemize}
+  I.e. $\mathrm{State}_{\alice, \textit{pchid}} = \left(c_{\alice}, c_{\bob},
+  \left((c_1, \mathrm{state}_1\right), \dots, \left(c_2,
+  \mathrm{state}_2\right)\right)$
+
+  We do not include in the state elements whose contents are irrelevant (e.g.
+  sigs, keys, hashes).
