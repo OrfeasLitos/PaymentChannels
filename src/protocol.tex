@@ -383,9 +383,11 @@
       \State send (\textsc{read}) to \ledger{} and assign largest block number
       to $t$
       \State $m \gets$ the concatenation of \texttt{length}
-      $\overrightarrow{\mathtt{path}}$ $\left(x, \mathtt{delay}_i\right)$ pairs,
-      where the last \texttt{delay} is $t + 2k + 1$ and every previous
-      \texttt{delay} is incremented by $3k$
+      $\overrightarrow{\mathtt{path}}$ $\left(x, \mathtt{remoteDelay}_i\right)$
+      pairs, where the last \texttt{remoteDelay} is $t + 2k + 1 +
+      \mathtt{BobDelay}$ and every previous \texttt{remoteDelay} is incremented
+      by $3k + \mathtt{RHSDelay}$ \TODO{\alice{} doesn't know these Bob, RHS
+      delays}
       \State $\left(\mu_0, \delta_0\right) \gets \mathtt{SphinxCreate}\left(m,
       \text{ public keys of } \overrightarrow{\mathtt{path}} \text{
       parties}\right)$
@@ -394,7 +396,7 @@
       \State add an additional $\left(x, ph_{\mathrm{rev}, n+1} \vee
       \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc}, n+1}, \text{ on
       preimage}\right.\right.$ $\left.\left.\text{of } h\right) \vee
-      ph_{\mathrm{htlc}, n+1}, \text{largest } \mathtt{delay} \text{
+      ph_{\mathrm{htlc}, n+1}, \text{largest } \mathtt{remoteDelay} \text{
       absolute}\right)$ output (all with $n+1$ keys) to \texttt{remoteCom},
       marked with \texttt{HTLCNo}
       \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one and associate
@@ -402,26 +404,28 @@
       \State mark \texttt{HTLCNo} as ``sender''
       \State send (\textsc{updateAddHtlc}, first \textit{pchid} of
       $\overrightarrow{\mathtt{path}}, \mathtt{HTLCNo}_{\textit{pchid}}, x, h,$
-      largest \texttt{delay}, $\left(\mu_0, \delta_0\right)$) to \textit{pchid}
-      channel counterparty and \adversary
+      largest \texttt{remoteDelay}, $\left(\mu_0, \delta_0\right)$) to
+      \textit{pchid} channel counterparty and \adversary
     \EndIndent
     \State
 
     \State Upon receiving (\textsc{updateAddHtlc}, \textit{pchid},
-    $\mathtt{HTLCNo}, x, h, \mathtt{delay}, M$) from \bob:
+    $\mathtt{HTLCNo}, x, h, \mathtt{remoteDelay}, M$) from \bob:
     \Indent
       \State ensure \textit{pchid} corresponds to an open \texttt{channel} in
       \texttt{channels} where \bob{} has at least $x$
       \State ensure $\mathtt{HTLCNo} = \mathtt{HTLCNo}_{\mathit{pchid}} + 1$
-      \State $\left(\mathit{pchid}', x', \mathtt{delay}', \delta\right) \gets
+      \State $\left(\mathit{pchid}', x', \mathtt{remoteDelay}', \delta\right)
+      \gets
       \mathtt{SphinxPeel}\left(sk_{\textit{Alice}}, M\right)$
       \If{$\delta = \mathtt{receiver}$}
-        \State ensure $\mathit{pchid}' = \bot, x = x', \mathtt{delay} =
-        \mathtt{delay}' = 2k + 1$
+        \State ensure $\mathit{pchid}' = \bot, x = x', \mathtt{remoteDelay} =
+        \mathtt{remoteDelay}' = 2k + 1 + \mathtt{delay}$
         \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one
         \State mark \texttt{HTLCNo} as ``receiver''
       \Else \Comment{We are an intermediary}
-        \State ensure $x = x', \mathtt{delay} = \mathtt{delay}' + 3k$
+        \State ensure $x = x', \mathtt{remoteDelay} = \mathtt{remoteDelay}' + 3k
+        + \mathtt{delay}$
         \State ensure $\mathtt{pchid}'$ corresponds to an open channel in
         \texttt{channels} where we have at least $x$
         \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one
@@ -431,7 +435,7 @@
       \State reduce delayed payment output in \texttt{remoteCom} by $x$
       \State add an $\left(x, ph_{\mathrm{rev}, n+1} \vee
       \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc}, n+1},
-      \mathtt{delay} \text{ absolute}\right) \vee\right.$
+      \mathtt{remoteDelay} \text{ absolute}\right) \vee\right.$
       $\left.ph_{\mathrm{htlc}, n+1}, \text{ on preimage of } h\right)$ htlc
       output (all with $n+1$ keys) to \texttt{remoteCom}, marked with
       \texttt{HTLCNo}
@@ -447,13 +451,14 @@
         \State add an additional $\left(x, ph_{\mathrm{rev}, n+1} \vee
         \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc}, n+1}, \text{ on
         preimage}\right.\right.$ $\left.\left.\text{of } h\right) \vee
-        ph_{\mathrm{htlc}, n+1}\mathtt{delay}' \text{ absolute}\right)$ output
-        (all with $n+1$ keys) to \texttt{remoteCom}, marked with \texttt{HTLCNo}
+        ph_{\mathrm{htlc}, n+1}\mathtt{remoteDelay}' \text{ absolute}\right)$
+        output (all with $n+1$ keys) to \texttt{remoteCom}, marked with
+        \texttt{HTLCNo}
         \State increment \texttt{HTLCNo} by 1
         \State $M' \gets \mathtt{SphinxPrepare}\left(M, \delta,
         sk_{\mathit{Alice}}\right)$
         \State send (\textsc{updateAddHtlc}, $\mathit{pchid}'$, \texttt{HTLCNo},
-        $x, h, \mathtt{delay}', M$) to $\mathit{pchid}'$ counterparty
+        $x, h, \mathtt{remoteDelay}', M$) to $\mathit{pchid}'$ counterparty
       \EndIf
     \EndIndent
     \State
