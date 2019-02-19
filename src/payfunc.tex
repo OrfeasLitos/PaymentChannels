@@ -19,8 +19,8 @@
   \begin{algorithmic}[1]
     \State Initialisation:
     \Indent
-      \State $\mathtt{channels}, \mathtt{pendingPay}, \mathtt{corrupted} \gets
-      \emptyset$
+      \State $\mathtt{channels}, \mathtt{pendingPay}, \mathtt{pendingOpen},
+      \mathtt{corrupted} \gets \emptyset$
     \EndIndent
     \State
   \end{algorithmic}
@@ -31,8 +31,9 @@
     \alice:
     \Indent
       \State $\mathtt{delay}\left(\alice\right) \gets \mathrm{delay}$
-      \State $\mathtt{pendingUpdates}\left(\alice\right) \gets \emptyset$
-      \State $\mathtt{blindTime}\left(\alice\right) \gets \emptyset$
+      \State $\mathtt{pendingUpdates}\left(\alice\right),
+      \mathtt{newChannels}\left(\alice\right),
+      \mathtt{blindTime}\left(\alice\right) \gets \emptyset$
       \State send (\textsc{read}) to \ledger{} as \alice{} and largest block
       number to \texttt{lastPoll}(\alice)
       \State send $\left(\textsc{register}, \alice, \mathrm{delay}\right)$ to
@@ -75,44 +76,41 @@
     \EndIndent
     \State
 
-    \State Upon receiving is $\left(\textsc{channelOpened}, \alice, \bob, x,
+    \State Upon receiving $\left(\textsc{channelOpened}, \alice, \bob, x,
     \mathit{fchid}, \mathit{pchid}\right)$ from \simulator
     \Indent
       \State ensure that there is no $\mathtt{channel} \in \mathtt{channels}$
-      with id \textit{pchid} or \textit{fchid}
+      with ids \textit{pchid}, \textit{fchid}
+      \State $F \gets \mathtt{fundingTX}\left(\alice, \bob\right)$
       \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
       $\Sigma_{\alice}$
-      \State for some $\mathrm{payer} \in \left\{\alice, \bob\right\}$, ensure
-      that there exists a transaction $\mathtt{tx} \in \Sigma_{\alice}$ with a
-      $\left(x, \mathtt{pubKey}\left(\mathrm{payer}\right)\right)$ input, a
-      $\left(x, \mathtt{pubKey}\left(\alice\right) \wedge
-      \mathtt{pubkey}\left(\bob\right)\right)$ output and a transaction ID
-      \textit{pchid}.
-      \If{payer is honest} \Comment{otherwise $\mathcal{A}$ decided to open
-      channel}
-        \State ensure that $\mathtt{pendingOpen}\left(\mathit{fchid}\right)
-        = \left(\alice, \bob, x\right)$
-        \State $\mathtt{pendingOpen}\left(\mathit{fchid}\right) \gets \bot$
-      \EndIf
-      \State $\mathrm{offChainBalance}\left(\mathrm{payer}\right) \gets
-      \mathrm{offChainBalance}\left(\mathrm{payer}\right) + x$ \orfeas{remove
+      \State ensure that $F \in \Sigma_{\alice}$
+      \State ensure that $\mathcal{H}\left(F\right) = \mathit{pchid}$
+      \State ensure that $\mathtt{pendingOpen}\left(\mathit{fchid}\right) =
+      \left(\alice, \bob, x\right)$
+      \State $\mathtt{pendingOpen}\left(\mathit{fchid}\right) \gets \bot$
+      \State $\mathrm{offChainBalance}\left(\alice\right) \gets
+      \mathrm{offChainBalance}\left(\alice\right) + x$ \orfeas{remove
       on/offChainBalance?}
-      \State $\mathrm{onChainBalance}\left(\mathrm{payer}\right) \gets
-      \mathrm{offChainBalance}\left(\mathrm{payer}\right) - x$
-      \State $\mathtt{channel} \gets \left(\alice, \bob, x, 0,
-      \mathtt{delay}\left(\alice\right), \mathtt{delay}\left(\bob\right), 0,
+      \State $\mathrm{onChainBalance}\left(\alice\right) \gets
+      \mathrm{offChainBalance}\left(\alice\right) - x$
+      \State $\mathtt{channel} \gets \left(\alice, \bob, x, 0, 0,
       \mathit{fchid}, \mathit{pchid}\right)$
-      \State add \texttt{channel} to \texttt{channels} and receipt to
-      \texttt{newChannels}(\{\alice, \bob\})
+      \State add \texttt{channel} to \texttt{channels}
+      \State add \texttt{receipt}(\texttt{channel}) to
+      \texttt{newChannels}(\alice) and \texttt{newChannels}(\bob)
     \EndIndent
     \State
 
     \State Upon receiving $\left(\textsc{pay}, \bob, x,
     \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from \alice:
     \Indent
-      \State ensure that \texttt{receipt} corresponds to a \texttt{channel}
-      where \alice{} has at least $x$
-      \State ensure that $\overrightarrow{\mathtt{path}}$ consists of channels
+      \State ensure that $\left(\alice, c\right) \in \mathtt{receipt}$ and $c
+      \geq x$
+      \State ensure that there is a $\mathtt{channel} \in \mathtt{channels} :
+      \mathtt{receipt}\left(\mathtt{channel}\right) = \mathtt{receipt}$
+      \State ensure that $\overrightarrow{\mathtt{path}}$ consists of
+      $\mathrm{channels} \in \mathtt{channels}$
       \State ensure that each consecutive pair of channels in
       $\overrightarrow{\mathtt{path}}$ has a common member
       \State choose unique payment ID \textit{payid}
@@ -128,8 +126,8 @@
     \charlie\right)$ from \simulator
     \Indent
       \State retrieve $\left(\alice, \bob, x,
-      \overrightarrow{\mathtt{path}}\right)$ pending payment with ID
-      \textit{payid} and remove it from \texttt{pendingPay}
+      \overrightarrow{\mathtt{path}}\right)$ with ID \textit{payid} and remove
+      it from \texttt{pendingPay}
       \If{($\charlie \neq \alice$ and $\charlie \notin \mathtt{corrupted}$) or
       $\charlie \notin \overrightarrow{\mathtt{path}}$}
         \State halt \aggelos{or ignore?}
@@ -137,48 +135,47 @@
         here because the next hop is done by the protocol (without permission
         from the environment). So I removed \texttt{negligent} from the check
         above.}
-      \Else
-        \ForAll{$\mathtt{channel}\text{s} \in \overrightarrow{\mathtt{path}}$
-        starting from the one where \charlie{} pays}
-          \State in the first iteration, \charlie is \texttt{payer}. In
-          subsequent iterations, \texttt{payer} is the unique player that has
-          been paid but has not paid. The other \texttt{channel} party is
-          \texttt{payee}
-          \If{\texttt{payer} has $x$ or more in \texttt{channel}}
-            \State update \texttt{channel} to the next version and transfer $x$
-            from \texttt{payer} to \texttt{payee}
-            \State add \texttt{channel} receipt to both parties'
-            \texttt{pendingUpdates}
+      \EndIf
+      \ForAll{$\mathtt{channel}\text{s} \in \overrightarrow{\mathtt{path}}$
+      starting from the one where \charlie{} pays}
+        \State in the first iteration, \charlie{} is \texttt{payer}. In
+        subsequent iterations, \texttt{payer} is the unique player that has
+        been paid but has not paid. The other \texttt{channel} party is
+        \texttt{payee}
+        \If{\texttt{payer} has $x$ or more in \texttt{channel}}
+          \State update \texttt{channel} to the next version and transfer $x$
+          from \texttt{payer} to \texttt{payee}
+          \State add \texttt{receipt}(\texttt{channel}) to both parties'
+          \texttt{pendingUpdates}
+        \Else
+          \State revert all updates and remove them from
+          \texttt{pendingUpdates}
+          \State \orfeas{entire if may be avoided by simply not sending a
+          message to \alice}
+          \If{all players on path from \alice{} up to and including failed
+          \texttt{payer} are honest}
+            \State send $\left(\textsc{notPaid}, \bob, x,
+            \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to \alice
           \Else
-            \State revert all updates and remove them from
-            \texttt{pendingUpdates}
-            \State \orfeas{entire if may be avoided by simply not sending a
-            message to \alice}
-            \If{all players on path from \alice{} up to and including failed
-            \texttt{payer} are honest}
+            \State send (\textsc{reportNotPaid}, \textit{payid}) to
+            \simulator \orfeas{TODO: split in two messages}
+            \If{reply from \simulator{} is (\textsc{doReport},
+            \textit{payid})}
               \State send $\left(\textsc{notPaid}, \bob, x,
-              \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to \alice
-            \Else
-              \State send (\textsc{reportNotPaid}, \textit{payid}) to
-              \simulator \orfeas{TODO: split in two messages}
-              \If{reply from \simulator{} is (\textsc{doReport},
-              \textit{payid})}
-                \State send $\left(\textsc{notPaid}, \bob, x,
-                \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to
-                \alice
-              \EndIf
+              \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to
+              \alice
             \EndIf
-            \State \orfeas{end of possibly avoidable if}
           \EndIf
-        \EndFor
-        \State $\mathtt{offChainBalance}\left(\charlie\right) \gets
-        \mathtt{offChainBalance}\left(\charlie\right) - x$
-        \State $\mathtt{offChainBalance}\left(\bob\right) \gets
-        \mathtt{offChainBalance}\left(\bob\right) + x$
-        \If{\charlie{} = \alice}
-          \State send $\left(\textsc{paid}, \bob, x,
-          \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to \alice
+          \State \orfeas{end of possibly avoidable if}
         \EndIf
+      \EndFor
+      \State $\mathtt{offChainBalance}\left(\charlie\right) \gets
+      \mathtt{offChainBalance}\left(\charlie\right) - x$
+      \State $\mathtt{offChainBalance}\left(\bob\right) \gets
+      \mathtt{offChainBalance}\left(\bob\right) + x$
+      \If{\charlie{} = \alice}
+        \State send $\left(\textsc{paid}, \bob, x,
+        \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to \alice
       \EndIf
     \EndIndent
     \State
@@ -186,8 +183,8 @@
     \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from \alice
     \aggelos{(or \simulator) ?? } \orfeas{@Aggelos: why \simulator?}
     \Indent
-      \State ensure that \texttt{receipt} corresponds to an open
-      \texttt{channel} that contains \alice
+      \State ensure that there is a $\mathtt{channel} \in \mathtt{channels} :
+      \mathtt{receipt}\left(\mathtt{channel}\right) = \mathtt{receipt}$
       \State retrieve \textit{fchid} from \texttt{channel}
       \State $\mathtt{pendingClose}\left(\mathit{fchid}\right) \gets \alice$
       \State send (\textsc{closeChannel}, \textit{fchid}, \alice) to \simulator
