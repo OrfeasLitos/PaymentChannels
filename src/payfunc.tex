@@ -34,8 +34,8 @@
       \State $\mathtt{pendingUpdates}\left(\alice\right),
       \mathtt{newChannels}\left(\alice\right),
       \mathtt{blindTime}\left(\alice\right) \gets \emptyset$
-      \State send (\textsc{read}) to \ledger{} as \alice{} and largest block
-      number to \texttt{lastPoll}(\alice)
+      \State send (\textsc{read}) to \ledger{} as \alice{} and assign largest
+      block number to \texttt{lastPoll}(\alice)
       \State send $\left(\textsc{register}, \alice, \mathrm{delay}\right)$ to
       \simulator
     \EndIndent
@@ -123,7 +123,7 @@
     \State
 
     \State Upon receiving $\left(\textsc{resolvePay}, \mathit{payid},
-    \charlie\right)$ from \simulator
+    \charlie\right)$ from \simulator:
     \Indent
       \State retrieve $\left(\alice, \bob, x,
       \overrightarrow{\mathtt{path}}\right)$ with ID \textit{payid} and remove
