@@ -44,6 +44,10 @@
     \State Upon receiving $\left(\textsc{registerDone}, \alice, x,
     \mathrm{pubKey}\right)$ from \simulator:
     \Indent
+      \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
+      $\Sigma_{\alice}$
+      \State ensure that there are exactly $x$ coins in $\Sigma_{\alice}$ that
+      can be exclusively spent by pubKey
       \State $\mathtt{onChainBalance}\left(\alice\right) \gets x$
       \State $\mathtt{offChainBalance}\left(\alice\right) \gets 0$
       \State $\mathtt{pubKey}\left(\alice\right) \gets \mathrm{pubKey}$
