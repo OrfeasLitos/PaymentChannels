@@ -80,18 +80,18 @@
     \EndIndent
     \State
 
-    \State Upon receiving $\left(\textsc{channelOpened}, \alice, \bob, x,
-    \mathit{fchid}, \mathit{pchid}\right)$ from \simulator
+    \State Upon receiving $\left(\textsc{channelOpened}, p_{\alice, F}, p_{\bob,
+    F}, \mathit{fchid}, \mathit{pchid}\right)$ from \simulator:
     \Indent
       \State ensure that there is no $\mathtt{channel} \in \mathtt{channels}$
       with ids \textit{pchid}, \textit{fchid}
-      \State $F \gets \mathtt{fundingTX}\left(\alice, \bob\right)$
+      \State $\left(\alice, \bob, x\right) \gets
+      \mathtt{pendingOpen}\left(\mathit{fchid}\right)$
       \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
       $\Sigma_{\alice}$
-      \State ensure that $F \in \Sigma_{\alice}$
-      \State ensure that $\mathcal{H}\left(F\right) = \mathit{pchid}$
-      \State ensure that $\mathtt{pendingOpen}\left(\mathit{fchid}\right) =
-      \left(\alice, \bob, x\right)$
+      \State ensure that there is a TX $F \in \Sigma_{\alice}$ with a $\left(x,
+      \left(p_{\alice, F} \wedge p_{\bob, F}\right)\right)$ output such that
+      $\mathcal{H}\left(F\right) = \mathit{pchid}$
       \State $\mathtt{pendingOpen}\left(\mathit{fchid}\right) \gets \bot$
       \State $\mathrm{offChainBalance}\left(\alice\right) \gets
       \mathrm{offChainBalance}\left(\alice\right) + x$ \orfeas{remove
