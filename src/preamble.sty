@@ -1,8 +1,69 @@
 \ProvidesPackage{preamble}
 
-\usepackage[pdftex]{graphicx}
-\usepackage{algorithm}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+
+%---- Fonts
+\usepackage{lmodern}
+\usepackage{bbold}
+
+%---- Math
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{bbm}
+\usepackage[b]{esvect}
+\usepackage{mathrsfs}
+\usepackage{mathtools}
+\usepackage{centernot}
+\usepackage{xspace}
+
+%---- Comments 
+\usepackage{totcount}
+\usepackage{color}
+\usepackage[colorinlistoftodos]{todonotes}
+%Literally multi-line comments in the source
+\usepackage{verbatim}
+% PG: Margin comments were placed oddly for me, and this saved the day (taken from
+% http://mirror.hmc.edu/ctan/macros/latex/contrib/todonotes/todonotes.pdf)
+\setlength{\marginparwidth}{2cm}
+
+%---- Images 
+%Images
+\usepackage{graphicx}
+%\usepackage[caption=false]{subfig} %use with [caption=false] for lncs
+
+%---- Layout 
+\usepackage{lscape}
+\usepackage{float}
+\usepackage{supertabular}
+\usepackage{longtable}
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage[framemethod=tikz]{mdframed} %and thus tikz
+%\usetikzlibrary{shapes.geometric}
+%\usetikzlibrary{decorations.text}
+%\usetikzlibrary{positioning}
+%\usepackage{parcolumns}
+%\usepackage{comment}
+%Algorithms
 \usepackage{algpseudocode}
+\usepackage{multirow}
+
+%---- Refs & URLs
+\usepackage{hyperref} %Load last if possible
+%\usepackage{nameref}
+%\usepackage{url}
+
+%---- Miscellaneous
+\usepackage{xifthen}
+
+%\usepackage{enumerate} 
+
+
+%\usepackage[pdftex]{graphicx}
+%\usepackage{algorithm}
+%\usepackage{algpseudocode}
 \usepackage[english]{babel}
 \usepackage{amsmath}
 \let\proof\relax
@@ -21,11 +82,13 @@
 \usepackage{color}
 \usepackage{hyperref}
 \usepackage{import}
-\usepackage[n, advantage, operators, sets,
-  adversary, landau, probability, notions, logic,
-  ff, mm, primitives, events, complexity,
-  asymptotics, keys]{cryptocode}
-\usepackage[framemethod=TikZ]{mdframed}
+%\usepackage[n, advantage, operators, sets,
+%  adversary, landau, probability, notions, logic,
+%  ff, mm, primitives, events, complexity,
+%  asymptotics, keys]{cryptocode}
+%\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{macros}
+\usepackage{notation}
 
 % indentation for algorithm
 \algdef{SE}[SUBALG]{Indent}{EndIndent}{}{\algorithmicend\ }%
@@ -43,7 +106,6 @@
 { \newcommand{\authnote}[2]{} }
 \newcommand{\aggelos}[1]{\authnote{\color{magenta}}{Aggelos}{#1}}
 \newcommand{\orfeas}[1]{\authnote{\color{blue}}{Orfeas}{#1}}
-\newcommand{\TODO}[1]{\authnote{\color{red}}{TODO}{#1}}
 
 % code options with \lstlisting
 \lstset{frame=tb,
@@ -129,6 +191,6 @@
 \newcommand{\ledger}{\ensuremath{\mathcal{G}_{\mathrm{Ledger}}}}
 \newcommand{\clock}{\ensuremath{\mathcal{G}_{\mathrm{Clock}}}}
 \newcommand{\fpaynet}{\ensuremath{\mathcal{F}_{\mathrm{PayNet}}}}
-\renewcommand{\simulator}{\ensuremath{\mathcal{S}}}
+\newcommand{\simulator}{\ensuremath{\mathcal{S}}}
 \newcommand{\adversary}{\ensuremath{\mathcal{A}}}
 \newcommand{\environment}{\ensuremath{\mathcal{E}}}

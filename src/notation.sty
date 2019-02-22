@@ -1,0 +1,538 @@
+\ProvidesPackage{notation}
+
+%-------------------------------------------------------------------------------
+%  Font and Notation
+%-------------------------------------------------------------------------------
+\newcommand{\xmath}[1]{\ensuremath{#1}\xspace}
+
+\renewcommand{\hat}[1]{\widehat{#1}} %Nice hat symbol
+
+\newcommand{\defeq}{:=}
+\newcommand{\defequiv}{:\Leftrightarrow}
+
+%-------------------------------------------------------------------------------
+%  CHANGE FONT PARTY HERE!
+%-------------------------------------------------------------------------------
+\newcommand{\command}[1]{\xmath{\textsc{#1}}}
+\newcommand{\algorithm}[1]{\xmath{\textsf{#1}}}
+\newcommand{\variable}[1]{\xmath{\texttt{#1}}}
+\newcommand{\parameter}[1]{\xmath{\texttt{#1}}}
+
+
+%Bitcoin symbol
+\def\bitcoinA{%
+  \leavevmode
+  \vtop{\offinterlineskip %\bfseries
+    \setbox0=\hbox{B}%
+    \setbox2=\hbox to\wd0{\hfil\hskip-.03em
+    \vrule height .3ex width .15ex\hskip .08em
+    \vrule height .3ex width .15ex\hfil}
+    \vbox{\copy2\box0}\box2}}
+
+
+%-------------------------------------------------------------------------------
+%  General notation
+%-------------------------------------------------------------------------------
+%Fields, sets, functions
+\newcommand{\aset}[1]{\left\{ { #1 }\right\}}% { #1 }
+\newcommand{\union}{\ensuremath{\cup}}
+\newcommand{\poly}{\ensuremath{\mathsf{poly}}}
+\DeclarePairedDelimiter\abs{\big\lvert}{\big\rvert}%
+
+
+%Player sets, adversary
+\newcommand{\party}{{U_p}\xspace}
+\newcommand{\PS}{\mathcal{P}}
+\newcommand{\DSyncPS}{\PS_{DS}}
+\newcommand{\PSS}{\PS'}
+\newcommand{\HS}{\mathcal{H}}
+\newcommand{\Adv}[1][\relax]{\xmath{\mathcal{A}_{#1}}}
+
+\newcommand{\true}{\mathsf{true}}
+\newcommand{\false}{\mathsf{false}}
+
+\newcommand{\pactive}{\operatorname{active}}
+\newcommand{\palert}{\operatorname{alert}}
+
+\newcommand{\cprefix}{\preceq}
+%-------------------------------------------------------------------------------
+% Global parameters 
+%-------------------------------------------------------------------------------
+%Security param
+\newcommand{\secparam}{\ensuremath{\kappa}}
+\newcommand{\negl}{\text{negl}}
+
+\newcommand{\Delay}{\xmath{\Delta}} %Newtork delay
+\newcommand{\qbound}{\xmath{q}} %Random oracle limit
+
+%-------------------------------------------------------------------------------
+
+%  UC and Functionalites
+%-------------------------------------------------------------------------------
+\newcommand{\ucexe}[3]{\command{EXEC}_{#1,#2,#3}}
+\newcommand{\uchyb}[2]{\command{HYB}_{#1,#2}}
+\newcommand{\ucenv}{\xmath{\mathcal{Z}}}
+\newcommand{\ucsim}[1][\relax]{\xmath{\mathcal{S}_{#1}}}
+
+
+%Functionalities
+\newcommand{\Func}[1][\relax]{\xmath{\mathcal{F}_{\textsc{#1}}}}
+\newcommand{\gFunc}[1][\relax]{\xmath{\bar{\mathcal{G}}_{\textsc{#1}}}}
+\newcommand{\ggFunc}[1][\relax]{\xmath{\mathcal{G}_{\textsc{#1}}}}
+
+%Para Comp
+\DeclarePairedDelimiter\paracomp{\big[}{\big]}%
+
+%M/S-ID
+\newcommand{\sid}{\text{sid}}
+\renewcommand{\mid}{\text{mid}}
+
+%Wrapper
+\newcommand{\ucwrapper}{\mathcal{W}}
+\newcommand{\corrupt}{\command{corrupt}}
+
+%-------------------------------------------------------------------------------
+%  clock functionality
+%-------------------------------------------------------------------------------
+\newcommand{\gFclock}{\gFunc[clock]}
+\newcommand{\Fclock}{\ggFunc[clock]}
+
+%Parameter
+\newcommand{\sidClock}{\sid_C}
+\newcommand{\current}{\xmath{\tau}}
+
+%Commands
+\newcommand{\ClockUp}{\command{clock-update}}
+\newcommand{\ClockRead}{\command{clock-read}}
+\newcommand{\Register}{\command{register}} %used by network, RO, ledger
+\newcommand{\Deregister}{\command{de-register}} %used by network, RO, ledger
+\newcommand{\ARegister}{\command{get-registered}}
+\newcommand{\PRegister}{\command{is-registered}}
+
+\newcommand{\AFRegister}{\command{get-registered-f}}
+
+%-------------------------------------------------------------------------------
+%  network functionality
+%-------------------------------------------------------------------------------
+\newcommand{\edsmt}{\Func[u-ch]}
+\newcommand{\FnetworkEd}{\Func[N-MC]}
+
+%Commands
+\newcommand{\NetworkMulticast}{\command{multicast}}
+\newcommand{\NetworkFetch}{\command{fetch}}
+\newcommand{\NetworkDelays}{\command{delays}}
+\newcommand{\NetworkSwap}{\command{swap}}
+\newcommand{\NetworkDelay}{\command{delay}}
+\newcommand{\NetworkSend}{\command{send}}
+
+%-------------------------------------------------------------------------------
+%  oracle functionality
+%-------------------------------------------------------------------------------
+\newcommand{\gForacle}{\ggFunc[RO]}
+%\newcommand{\Foracle}{\Func[RO]}
+\newcommand{\Foracle}{\gForacle}
+
+%Variables
+\newcommand{\ROtable}{H} %Do not change to T <--> cf. FXtree
+\newcommand{\queryCount}{\variable{count}} %used in a wrapper
+
+\newcommand{\ROeval}{\command{eval}}
+\newcommand{\ROready}{\command{Ready}}
+
+\newcommand{\sidRO}{\sid_{RO}}
+
+%-------------------------------------------------------------------------------
+%  Checkpoint functionality
+%-------------------------------------------------------------------------------
+
+\newcommand{\Fcheckpoint}{\Func[ChP]}
+
+\newcommand{\ChainRange}{\xmath{R}} %Range of recent chains
+
+%Commands
+\newcommand{\ChPinput}{\command{addCheckpoint}}
+\newcommand{\ChPfetch}{\command{getCheckpoint}}
+\newcommand{\ChPAdvRead}{\command{getCheckPoints}}
+\newcommand{\ChPAdvSet}{\command{defineCheckpoint}}
+\newcommand{\ChPDelays}{\command{adjustDelay}}
+
+\newcommand{\ChP}{\textsc{ChP}}
+
+%-------------------------------------------------------------------------------
+%  ledger functionality
+%-------------------------------------------------------------------------------
+\newcommand{\gFledeger}{\gFunc[ledger]}
+\newcommand{\Fledger}{\ggFunc[ledger]}
+\newcommand{\BitcoinLedger}{\Fledger^{\scalebox{0.75}{\bitcoinA}}}
+
+%Parameters
+\newcommand{\difficulty}{\parameter{D}}
+\newcommand{\chopOff}{\xmath{k}}
+\newcommand{\comparison}{\xmath{s}}
+\newcommand{\windowSize}{\parameter{windowSize}}
+\newcommand{\minTime}{\parameter{minTime}_\variable{window}}
+\newcommand{\maxTime}{\parameter{maxTime}_\variable{window}}
+\newcommand{\vdelay}{\parameter{Delay}}
+\newcommand{\advBlocksinWindowSize}{\parameter{advBlcks}_\variable{window}}
+%Algorithms
+\newcommand{\LFvalidate}{\algorithm{Validate}}
+\newcommand{\bitcoinValid}{\xmath{\algorithm{ValidTx}_{\scalebox{0.75}{\bitcoinA}}}}
+\newcommand{\LFblockify}{\algorithm{Blockify}}
+\newcommand{\bitcoinBlockify}{\algorithm{blockify}_{\scalebox{0.75}{\bitcoinA}}}
+\newcommand{\LFextend}{\algorithm{ExtendPolicy}}
+\newcommand{\vsync}{\ensuremath{\algorithm{predict-time}}\xspace}
+\newcommand{\vdec}{\algorithm{Dec}}
+
+%Variables
+\newcommand{\state}{\variable{state}}
+\newcommand{\buffer}{\variable{buffer}}  
+\newcommand{\counter}{\variable{counter}} %used by RO, ledger
+\newcommand{\thebuffer}{\vec{M}} %used by network and stateexchange
+
+\newcommand{\pt}{\variable{pt}}
+
+\newcommand{\tlast}{\xmath{\vec{\tau}_\variable{state}}}
+\newcommand{\LFtau}{\xmath{\tau_L}}
+\newcommand{\TIH}{\ensuremath{\vec{\mathcal{I}}^T_H}\xspace}
+
+\newcommand{\tx}{\variable{tx}}
+\newcommand{\coinbase}[1]{\tx^{\text{base-tx}}_{#1}}
+\newcommand{\txid}{\text{txid}}
+\newcommand{\minerID}{\text{minerID}}
+\newcommand{\BTX}{\variable{BTX}}
+\newcommand{\cbuffer}{\variable{NxtBC}}
+
+\newcommand{\LFusers}{\mathcal{U}}
+\newcommand{\LFminers}{\mathcal{M}}
+
+\newcommand{\honestyFlag}{\mathrm{hFlag}}
+\newcommand{\StakeHolderSet}{\mathcal{S}_\mathrm{initStake}}
+
+%\newcommand{\LFupdaterate}{\parameter{\rho}}
+
+%Commands
+\newcommand{\LFdsstate}{\command{desync-state}}
+\newcommand{\LFregister}{\command{miner-register}}
+\newcommand{\LFderegister}{\command{miner-deregister}}
+\newcommand{\LFmine}{\command{maintain-ledger}}
+\newcommand{\LFsubmit}{\command{submit}}
+\newcommand{\LFread}{\command{read}}
+\newcommand{\LFchangeupdaterate}{\command{udpate-rate}}
+\newcommand{\LFmkcore}{\command{next-block}}
+\newcommand{\LFslack}{\command{set-slack}}
+
+\newcommand{\statetostake}{\ensuremath{\algorithm{State2Stake}}\xspace}
+
+%-------------------------------------------------------------------------------
+%  Simulator
+%-------------------------------------------------------------------------------
+
+\newcommand{\alertSet}{\mathcal{S}_\mathrm{alert}}
+\newcommand{\syncAndStalledSet}{\mathcal{S}_\mathrm{syncStalled}}
+
+
+%-------------------------------------------------------------------------------
+%  State exchange functionality
+%-------------------------------------------------------------------------------
+\newcommand{\FstateX}{\Func[StX-bd]^{\Delay}}
+\newcommand{\FstateXEd}{\Func[StX]}
+
+\newcommand{\FXhonprob}{p_H}
+\newcommand{\FXadvprob}{p_A}
+\newcommand{\FXtree}{\mathcal{T}}
+\newcommand{\FXrbuffer}{\vec{\mathsf{new}}}
+
+\newcommand{\StateXsend}{\command{submit-new}}
+\newcommand{\StateXwin}{\command{success}}
+\newcommand{\StateXcont}{\command{continue}}
+\newcommand{\StateXfetch}{\command{fetch-new}}
+\newcommand{\StateXread}{\command{read-new}}
+\newcommand{\StateXSwap}{\command{swap}}
+\newcommand{\StateXDelay}{\command{delay}}
+
+
+%-------------------------------------------------------------------------------
+%  Bitcoin Protocol
+%-------------------------------------------------------------------------------
+%The Bitcoin Protocol
+\newcommand{\BitcoinProtocol}{\xmath{\prot^{\scalebox{0.75}{\bitcoinA}}}}
+%Other protocols
+\newcommand{\ledgerprotocol}{\algorithm{Ledger-Protocol}}
+\newcommand{\stakinprotocol}{\algorithm{StakingProcedure}}
+\newcommand{\protocolread}{\algorithm{ReadState}}
+\newcommand{\praosprotocolbg}{\algorithm{Ouroboros-Genesis}}
+\newcommand{\praosprotocolmc}{\algorithm{Ouroboros-Praos}}
+\newcommand{\protocolone}{\algorithm{StateExchange-Protocol}}
+\newcommand{\protocoltwo}{\algorithm{Modular-Ledger-Protocol}}
+
+
+
+%Algorithms (see also ledger functionality)
+\newcommand{\FetchInfo}{\algorithm{FetchInformation}}
+\newcommand{\UpdateTime}{\algorithm{UpdateStakeDist}\xspace}
+\newcommand{\validchain}{\algorithm{IsValidChain}}
+\newcommand{\selectchain}{\algorithm{SelectChain}}
+\newcommand{\statealgo}{\algorithm{isvalidstate}}
+\newcommand{\extendchain}{\algorithm{extendchain}}
+\newcommand{\extractNewTxs}{\algortihm{extractTxs}}
+\newcommand{\protocolledmain}{\algorithm{LedgerMaintenance}}
+
+%Variables
+\newcommand{\timeLast}{\tau_\variable{low}}
+\newcommand{\totalMPround}{\variable{T}_{mp}}
+\newcommand{\totalMP}{\variable{T}^{\text{total}}_{mp}}
+\newcommand{\totalHPround}{\variable{T}_{qp}}
+\newcommand{\mpA}{\variable{mp}_A}
+\newcommand{\hpA}{\variable{hp}^{(r)}_A}
+\newcommand{\badhash}{\mathsf{badhash}}
+\newcommand{\badvrf}{\mathsf{badvrf}}
+\newcommand{\badsig}{\mathsf{badsig}}
+\newcommand{\fetchcount}{\mathsf{fetchcount}}
+
+
+%Block
+\newcommand{\block}{\xmath{\mathbf{B}}}
+\newcommand{\st}{\variable{st}}
+\newcommand{\nonce}{\variable{n}}
+\newcommand{\pointer}{\variable{s}}
+%Genesis Block
+\newcommand{\genesis}{\xmath{\mathbf{G}}}
+\newcommand{\genstate}{\variable{gen}}
+%Default Block
+\newcommand{\defaultblock}{\vec{N}_{\variable{df}}}
+%Chain
+\newcommand{\chain}{\xmath{\mathcal{C}}}
+\newcommand{\chainloc}{\xmath{\mathcal{C}_{\loc}}}
+\newcommand{\chaincand}{\xmath{\mathcal{C}_{\cand}}}
+\newcommand{\chainmax}{\xmath{\mathcal{C}_{\mathsf{max}}}}
+\newcommand{\head}{\variable{head}}
+\newcommand{\length}{\variable{length}}
+\newcommand{\len}{\mathsf{len}}
+\newcommand{\thestate}{\vec{\st}}
+
+%Wrapper
+\newcommand{\rowrapper}[1]{\ucwrapper^{\qbound}(#1)}
+\newcommand{\bcwrapper}{\ucwrapper}
+
+%Simulators
+\newcommand{\FXsim}{\ucsim[\text{stx}]}
+\newcommand{\FLsim}{\ucsim[\text{ledg}]}
+
+
+%Commands
+\newcommand{\newminer}{\command{new-miner}}
+\newcommand{\NetworkHello}{\command{hello}}
+
+%------------------------------
+%  Rest
+%-------------------------------
+\newcommand{\IH}{\ensuremath{\vec{\mathcal{I}}_H}\xspace}
+\newcommand{\pid}{\ensuremath{\xmath{\text{pid}}}}
+
+
+\newcommand{\vfetch}{\ensuremath{\command{fetch}}\xspace}
+
+\newcommand{\signatureProtocol}{\mathsf{accountMgmt}}
+\newcommand{\ds}{\Sigma}
+\newcommand{\dssig}{s}
+\newcommand{\dsg}{K}
+\newcommand{\dss}{S}
+\newcommand{\dsv}{V}
+\newcommand{\dsks}{\mathcal{K}}
+\newcommand{\dsms}{\mathcal{M}}
+\newcommand{\dsss}{\mathcal{S}}
+\newcommand{\dssk}{\mathit{sk}}
+\newcommand{\dsvk}{\mathit{vk}}
+\newcommand{\dsgen}[1]{\dsg(#1)}
+\newcommand{\dssgn}[2]{\dss_{#1}(#2)}
+\newcommand{\dsvfy}[3]{\dsv_{#1}(#2,#3)}
+\newcommand{\eucma}{\mathbf{G}^{\mathsf{EU\text{--}CMA}}}
+\newcommand{\LFcreate}{\textsc{CreateAccount}}
+\newcommand{\accountID}{\mathsf{AccountID}}
+
+\newcommand{\validateSig}{\mathsf{Val}_{\mathrm{DSS}}}
+\newcommand{\validateEqOpp}{\mathsf{Val}_{\mathrm{strong}}}
+\newcommand{\FledgerStrong}{\Fledger^{\scalebox{0.75}{\bitcoinA+}}}
+\newcommand{\LFaccountRequest}{\textsc{AccountReq}}
+\newcommand{\submitted}{\mathsf{submitted}}
+
+\newcommand{\rsample}{\stackrel{\mbox{\tiny $\$$}}{\leftarrow}}
+\newcommand{\secp}{\ensuremath{\lambda}}
+
+\newcommand{\red}{\rho}
+
+%Stuff to delete
+\newcommand{\obuffer}{\buffer}
+\newcommand{\LFstate}{\state}
+\newcommand{\LFbuffer}{\buffer}
+\newcommand{\HO}{\HS}
+\newcommand{\LFinput}{\tx}
+\newcommand{\validstate}{\statealgo}
+\newcommand{\stblock}{\st}
+%\newcommand{\ProtocolValidate}{\xmath{\bitcoinValid}}
+\newcommand{\ProtocolValidate}{\xmath{\praosValid}}
+
+%------------------------------
+%  Ouroboros Praos protocol
+%-------------------------------
+
+\newcommand{\ConcludeRound}{\algorithm{FinishRound}}
+\newcommand{\UpdateTimeUseClock}{\algorithm{UpdateTime}}
+\newcommand{\Fvrf}{\ensuremath{\mathcal{F}_{\mathsf{VRF}}}\xspace}
+\newcommand{\Fsig}{\ensuremath{\mathcal{F}_{\mathsf{sig}}}\xspace}
+\newcommand{\Ffwsig}{\mathcal{F}_{\mathsf{KES}}}
+\newcommand{\Finit}{\ensuremath{\mathcal{F}_{\mathsf{INIT}}}\xspace}
+\newcommand{\eqdef}{\triangleq}
+\newcommand{\vrfoutlen}{\ell_{\mathsf{VRF}}}
+\newcommand{\thres}{T}
+\newcommand{\actvsl}{f}
+\newcommand{\relstake}{\alpha}
+\newcommand{\stkh}{U}
+\newcommand{\U}{U}
+
+\newcommand{\msg}[2]{%
+\ifthenelse{\isempty{#1}}{\ensuremath{(#2)}}{%
+\ifthenelse{\isempty{#2}}{\ensuremath{(\mathsf{#1})}}{%
+\ensuremath{(\mathsf{#1}, #2)}}}}
+
+\newcommand{\concat}{\,\|\,}
+\newcommand{\slot}{\variable{sl}\xspace}
+\newcommand{\sloth}{\hat{\slot}}
+\newcommand{\slotb}{\overline{\slot}}
+\newcommand{\nonceseed}{\rho}
+\newcommand{\rnd}{\eta}
+\newcommand{\vrfout}{y}
+\newcommand{\vrfproofs}{\pi}
+\newcommand{\epoch}{\variable{ep}\xspace}
+\newcommand{\leaderbool}{leader}
+\newcommand{\blkproof}{{crt}}
+\newcommand{\kessig}{\sigma}
+\newcommand{\bits}{\{0,1\}}
+\newcommand{\DPOS}{\operatorname{DPoS}}
+\newcommand{\loc}{\mathsf{loc}}
+\newcommand{\cand}{\mathsf{cand}}
+\newcommand{\praosSign}{\mathsf{OG}}
+\newcommand{\praosBlockify}{\algorithm{blockify}_{\praosSign}}
+\newcommand{\praosValid}{\xmath{\algorithm{ValidTx}_{\praosSign}}}
+\newcommand{\shID}{\mathsf{shID}}
+\newcommand{\vvrf}{v^{\mathrm{vrf}}}
+\newcommand{\vkes}{v^{\mathrm{kes}}}
+\newcommand{\vdsig}{v^{\mathrm{dsig}}}
+\newcommand{\stake}{s}
+\newcommand{\RelStake}{\mathcal{S}}
+\newcommand{\maxvalid}{\textsf{maxvalid}}
+\newcommand{\maxvalidbg}{\textsf{maxvalid-bg}}
+\newcommand{\maxvalidmc}{\textsf{maxvalid-mc}}
+\newcommand{\stakedist}{\mathbb{S}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\now}{\mathsf{now}}
+\newcommand{\slotnow}{sl_{\now}}
+\newcommand{\isInitializied}{\variable{isInit}}
+\newcommand{\syncTime}{t_\mathsf{sync}}
+
+%-------------------------------------------------------------------------------
+%  Digital Signature functionality
+%-------------------------------------------------------------------------------
+\newcommand{\signer}{\stkh_{S}}
+
+
+%-------------------------------------------------------------------------------
+%  Key-Evolving Signature functionality
+%-------------------------------------------------------------------------------
+\newcommand{\kesperiods}{T}
+\newcommand{\kctr}{\mathsf{k_{ctr}}}
+\newcommand{\kest}{j}
+
+
+%-------------------------------------------------------------------------------
+%  Analysis
+%-------------------------------------------------------------------------------
+
+\newcommand{\HonPart}{\mathsf{H}}
+\newcommand{\AllPart}{\mathsf{P}}
+\newcommand{\blockcount}[3]{
+  \if\relax\detokenize{#2}\relax
+    \ensuremath{\#_{#1}\left(#3\right)}
+  \else
+    \ensuremath{\#_{#1:#2}\left(#3\right)}
+  \fi
+}
+
+\newcommand{\stkhnew}{\stkh_{\mathsf{new}}}
+\newcommand{\stkhvirt}{\tilde{\stkh}}
+\newcommand{\Uvirt}{\tilde{\stkh}}
+\newcommand{\join}{\mathsf{join}}
+\newcommand{\sync}{\mathsf{sync}}
+\newcommand{\slotjoin}{\slot_{\join}}
+\newcommand{\slotsync}{\slot_{\sync}}
+\newcommand{\chainsync}{\chain_{\mathsf{sync}}}
+\newcommand{\Interval}{I}
+\newcommand{\Empty}{E}
+\DeclareMathOperator{\Exp}{\mathbb{E}}
+%\DeclareMathOperator{\Prob}{\mathsf{P}} % use \Pr
+\newcommand{\Exec}{\mathcal{E}}
+\newcommand{\Execvirt}{\mathcal{E'}}
+\newcommand{\CP}{\sf{CP}}
+\newcommand{\CG}{\sf{CG}}
+\newcommand{\CGtwo}{\sf{CG2}}
+\newcommand{\CQ}{\sf{CQ}}
+\newcommand{\ECQ}{\sf{\exists CQ}}
+\newcommand{\HCG}{\sf{HCG}}
+\newcommand{\HCQ}{\sf{HCQ}}
+\newcommand{\error}{\epsilon}
+\newcommand{\errorCP}{\error_{\CP}}
+\newcommand{\errorCG}{\error_{\CG}}
+\newcommand{\errorCQ}{\error_{\CQ}}
+\newcommand{\errorECQ}{\error_{\ECQ}}
+\newcommand{\errorL}{\error_{\mathsf{lift}}} % lifting to multiple epochs
+\newcommand{\EerrorCP}{\bar{\error}_{\CP}} % error terms for 1 epoch
+\newcommand{\EerrorCG}{\bar{\error}_{\CG}}
+\newcommand{\EerrorHCG}{\bar{\error}_{\HCG}}
+\newcommand{\EerrorHCQ}{\bar{\error}_{\HCQ}}
+\newcommand{\EerrorCQ}{\bar{\error}_{\CQ}}
+\newcommand{\EerrorECQ}{\bar{\error}_{\ECQ}}
+\newcommand{\Parties}{\mathcal{P}}
+
+\newcommand{\SLParties}{\operatorname{P}}
+\newcommand{\hdepth}{\mathbf{d}}
+\newcommand{\divergence}{\operatorname{div}}
+
+\newcommand{\Prop}{\sf{P}}
+\newcommand{\HProp}{\sf{HP}}
+
+%-------------------------------------------------------------------------------
+%  UC Wrapper
+%-------------------------------------------------------------------------------
+\newcommand{\wrapperPredicate}{\algorithm{roundProceed}}
+\newcommand{\TIP}{\ensuremath{\vec{\mathcal{I}}^T}\xspace}
+
+\newcommand{\newhello}{\ensuremath{\command{welcome}}\xspace}
+
+%-------------------------------------------------------------------------------
+%  Party types
+%-------------------------------------------------------------------------------
+
+\newcommand{\stalled}{\textit{stalled}\xspace}
+\newcommand{\operational}{\textit{operational}\xspace}
+\newcommand{\offline}{\textit{offline}\xspace}
+\newcommand{\online}{\textit{online}\xspace}
+\newcommand{\desynchronized}{\textit{desynchronized}\xspace}
+\newcommand{\synchronized}{\textit{synchronized}\xspace}
+\newcommand{\timeunaware}{\textit{time-unaware}\xspace}
+\newcommand{\timeaware}{\textit{time-aware}\xspace}
+\newcommand{\alert}{\textit{alert}\xspace}
+\newcommand{\adversarial}{\textit{adversarial}\xspace}
+\newcommand{\honest}{\textit{honest}\xspace}
+\newcommand{\activ}{\textit{active}\xspace} % \active seems used by LaTeX
+
+
+%-------------------------------------------------------------------------------
+% Notation in Thm2 
+%-------------------------------------------------------------------------------
+
+\newcommand{\growth}{\text{growth}}
+\newcommand{\stabilize}{\text{stabilize}}
+\newcommand{\tcand}{t_{\text{cand}}}
+\newcommand{\tcandh}{\hat{t}_{\text{cand}}}
+\newcommand{\tloc}{t_{\text{loc}}}
+
