@@ -1,5 +1,5 @@
-\begin{functionality}{\fpaynet}
-  \label{alg:payfunc}
+\begin{systembox}{\fpaynet - support}
+  \label{alg:fpaynet:support}
   \funcsection{Parameters}
     \begin{itemize}
       \item one-way, collision-free hash function $\mathcal{H}$ (for generating
@@ -23,10 +23,7 @@
       \mathtt{corrupted} \gets \emptyset$
     \EndIndent
     \State
-  \end{algorithmic}
 
-  \funcsection{Responses to messages}
-  \begin{algorithmic}[1]
     \State Upon receiving $\left(\textsc{register}, \mathrm{delay}\right)$ from
     \alice:
     \Indent
@@ -69,6 +66,16 @@
     \EndIndent
     \State
 
+    \State At the end of each activation: \orfeas{can this part completely go?}
+    \Indent
+      \State verify onChainbalance() for all parties is consistent with ledger (if not roll back the state and ignore command of activation).
+    \EndIndent
+  \end{algorithmic}
+\end{systembox}
+
+\begin{systembox}{\fpaynet - open}
+  \label{alg:fpaynet:open}
+  \begin{algorithmic}[1]
     \State Upon receiving $\left(\textsc{openChannel}, \alice, \bob, x\right)$
     from \alice:
     \Indent
@@ -105,7 +112,12 @@
       \texttt{newChannels}(\alice) and \texttt{newChannels}(\bob)
     \EndIndent
     \State
+  \end{algorithmic}
+\end{systembox}
 
+\begin{systembox}{\fpaynet - pay}
+  \label{alg:fpaynet:pay}
+  \begin{algorithmic}[1]
     \State Upon receiving $\left(\textsc{pay}, \bob, x,
     \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from \alice:
     \Indent
@@ -183,7 +195,12 @@
       \EndIf
     \EndIndent
     \State
+  \end{algorithmic}
+\end{systembox}
 
+\begin{systembox}{\fpaynet - close}
+  \label{alg:fpaynet:close}
+  \begin{algorithmic}[1]
     \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from \alice
     \aggelos{(or \simulator) ?? } \orfeas{@Aggelos: why \simulator?}
     \Indent
@@ -223,7 +240,12 @@
       \alice
     \EndIndent
     \State
+  \end{algorithmic}
+\end{systembox}
 
+\begin{systembox}{\fpaynet - polling}
+  \label{alg:fpaynet:poll}
+  \begin{algorithmic}[1]
     \State Upon receiving $\left(\textsc{poll}\right)$ from \alice:
     \Indent
       \State $\mathtt{toReport}\left(\alice\right) \gets \emptyset$
@@ -291,10 +313,5 @@
       them to \alice
     \EndIndent
     \State
-
-    \State At the end of each activation: \orfeas{can this part completely go?}
-    \Indent
-    \State verify  onChainbalance() for all parties is consistent with ledger (if not roll back the state and ignore command of activation).
-    \EndIndent
   \end{algorithmic}
-\end{functionality}
+\end{systembox}

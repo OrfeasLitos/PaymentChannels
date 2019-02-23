@@ -1,6 +1,8 @@
-\ \\ \noindent {$\Pi_{\mathrm{LN}}$} (self is \alice)
-  \label{alg:lightningprot}
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ (self is \alice) - support}
+  \label{alg:protocol:support}
   \begin{algorithmic}[1]
+    \TODO{Check that both func and prot check for both on-chain HTLCs with
+    interesting preimages and revoked commitments}
     \State Initialisation:
     \Indent
       \State $\mathtt{channels}, \mathtt{pendingOpen}, \mathtt{pendingPay},
@@ -92,7 +94,12 @@
       \State \Return $P$
     \EndFunction
     \State
+  \end{algorithmic}
+\end{protocolbox}
 
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ (self is \alice) - open}
+  \label{alg:protocol:open}
+  \begin{algorithmic}[1]
     \State Upon receiving (\textsc{openChannel}, $x$, BobDelay, $pt_F,
     pt\_\mathrm{base}_{\mathrm{pay}}, pt\_\mathrm{base}_{\mathrm{dpay}},$
     $pt\_\mathrm{base}_{\mathrm{htlc}}, pt_{\mathrm{com}, 1},
@@ -339,7 +346,12 @@
       \State send (\textsc{submit}, \texttt{toSubmit}) to \ledger
     \EndIndent
     \State
+  \end{algorithmic}
+\end{protocolbox}
 
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ (self is \alice) - pay}
+  \label{alg:protocol:pay}
+  \begin{algorithmic}[1]
     \State \orfeas{maybe leak queries to global functionalities to \adversary?}
     \State Upon receiving (\textsc{pay}, \textit{Bob}, $x$,
     $\overrightarrow{\mathtt{path}}$, \texttt{receipt}) from \environment:
@@ -620,7 +632,12 @@
       \State send (\textsc{updateFulfillHtlc}, \textit{pchid}, HTLC\_no, $R$) to
       \textit{pchid} counterparty
     \EndIndent
+  \end{algorithmic}
+\end{protocolbox}
 
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ (self is \alice) - close}
+  \label{alg:protocol:close}
+  \begin{algorithmic}[1]
     \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from
     \environment:
     \Indent
@@ -642,4 +659,4 @@
       \mathtt{localCom}_n\right), \mathrm{HTLCs}$) to \ledger
     \EndIndent
   \end{algorithmic}
-\hrulefill
+\end{protocolbox}
