@@ -274,7 +274,12 @@
       \State add receipt of channel to \texttt{newChannels}
     \EndIndent
     \State
+  \end{algorithmic}
+\end{protocolbox}
 
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ (self is \alice) - poll}
+  \label{alg:protocol:poll}
+  \begin{algorithmic}[1]
     \State Upon receiving (\textsc{poll}) from \environment:
     \Indent
       \State send (\textsc{read}) to \ledger{} and assign reply to
