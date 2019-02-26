@@ -58,7 +58,7 @@
       sh\_\mathrm{base}_{\mathrm{rev}}\right)\right) \gets
       \texttt{GetKeys}\left(\right)$
       \State $sh_{\mathrm{com}, 1} \gets
-      \texttt{genFromSeed}\left(\mathtt{seed}, 1\right)$
+      \texttt{PRF}\left(\mathtt{seed}, 1\right)$
       \State $ph_{\mathrm{com}, 1} \gets
       \mathtt{pkFromSk}\left(sh_{\mathrm{com}, 1}\right)$
       \State choose unique temporary ID \textit{tid} \Comment{unique for the two
@@ -81,18 +81,6 @@
       ph\_\mathrm{base}_{\mathrm{htlc}},$ $ph_{\mathrm{com}, 1},
       ph\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) to \bob{} and \adversary
     \EndIndent
-    \State
-
-    \Function{genFromSeed}{seed, index} \TODO{use VRF}
-      \State $P \gets seed$
-      \For{B in $\log(k)$ down to 0}
-        \If{bit B in index is 1}
-          \State flip bit B in $P$
-          \State $P \gets \mathcal{H}(P)$
-        \EndIf
-      \EndFor
-      \State \Return $P$
-    \EndFunction
     \State
   \end{algorithmic}
 \end{protocolbox}
@@ -117,7 +105,7 @@
       sh\_\mathrm{base}_{\mathrm{rev}}\right)\right) \gets
       \texttt{GetKeys}\left(\right)$
       \State $sh_{\mathrm{com}, 1} \gets
-      \texttt{genFromSeed}\left(\mathtt{seed}, 1\right)$
+      \texttt{PRF}\left(\mathtt{seed}, 1\right)$
       \State $ph_{\mathrm{com}, 1} \gets
       \mathtt{pkFromSk}\left(sh_{\mathrm{com}, 1}\right)$
       \State associate keys with \textit{tid} and store in \texttt{pendingOpen}
@@ -257,7 +245,7 @@
       \State ensure $\exists$ unspent TX in $\Sigma_{\alice}$ with ID
       \textit{pchid} and a $\left(x, ph_F \wedge pt_F\right)$ output
       \State $sh_{\mathrm{com}, 2} \gets
-      \texttt{genFromSeed}\left(\mathtt{seed}, 2\right)$
+      \texttt{PRF}\left(\mathtt{seed}, 2\right)$
       \State $ph_{\mathrm{com}, 2} \gets
       \mathtt{pkFromSk}\left(sh_{\mathrm{com}, 2}\right)$
       \State add TX to \texttt{channel} data \State replace ``broadcast'' mark
@@ -567,7 +555,7 @@
       \State $\mathtt{pendingLocalCom} \gets \mathtt{localCom}$
       \State mark $\mathtt{pendingLocalCom}$ as ``irrevocably committed''
       \State $sh_{\mathrm{com}, n+2} \gets
-      \texttt{genFromSeed}\left(\mathtt{seed}, n+2\right)$
+      \texttt{PRF}\left(\mathtt{seed}, n+2\right)$
       \State $ph_{\mathrm{com}, n+2} \gets
       \mathtt{pkFromSk}\left(sh_{\mathrm{com}, n+2}\right)$
       \State send (\textsc{revokeAndAck}, \textit{pchid}, $sh_{\mathrm{com}, n},
