@@ -1,8 +1,6 @@
 \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ (self is \alice) - support}
   \label{alg:protocol:support}
   \begin{algorithmic}[1]
-    \TODO{Check that both func and prot check for both on-chain HTLCs with
-    interesting preimages and revoked commitments}
     \State Initialisation:
     \Indent
       \State $\mathtt{channels}, \mathtt{pendingOpen}, \mathtt{pendingPay},
@@ -292,6 +290,7 @@
         \If{input of $\tau$ has been spent} \Comment{by
         \texttt{remote HTLC-success}}
           \State remove $\tau$ from \texttt{unclaimedOfferedHTLCs}
+          \State remember preimage - hash combination
         \ElsIf{input of $\tau$ has not been spent and timelock is over}
           \State remove $\tau$ from \texttt{unclaimedOfferedHTLCs}
           \State add $\tau$ to \texttt{toSubmit}

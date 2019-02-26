@@ -295,6 +295,8 @@
           \State ensure that transactions that spend the funding tx of
           \texttt{channel} and pay \alice{} the her part in \texttt{channel}
           exist in $\Sigma_{\alice}$
+          \State ensure that \alice{} has not suffered losses for multi-hop
+          payments where she was not the payer
         \EndIf
         \State add the receipt of \texttt{channel} to
         \texttt{closedChannels}(\alice)
