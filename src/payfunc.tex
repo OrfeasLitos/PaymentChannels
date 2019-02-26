@@ -25,13 +25,15 @@
     \EndIndent
     \State
 
-    \State Upon receiving $\left(\textsc{register}, \mathrm{delay}\right)$ from
-    \alice:
+    \State Upon receiving $\left(\textsc{register}, \mathrm{delay},
+    \mathrm{relayDelay}\right)$ from \alice:
     \Indent
       \State $\mathtt{delay}\left(\alice\right) \gets \mathrm{delay}$
+      \State $\mathtt{relayDelay}\left(\alice\right) \gets \mathrm{relayDelay}$
       \State $\mathtt{pendingUpdates}\left(\alice\right),
-      \mathtt{newChannels}\left(\alice\right),
-      \mathtt{blindTime}\left(\alice\right) \gets \emptyset$
+      \mathtt{newChannels}\left(\alice\right) \gets \emptyset$
+      \State $\mathtt{negligent}\left(\alice\right),
+      \mathtt{relayNegligent}\left(\alice\right) \gets \emptyset$
       \State send (\textsc{read}) to \ledger{} as \alice{} and assign largest
       block number to \texttt{lastPoll}(\alice)
       \State send $\left(\textsc{register}, \alice, \mathrm{delay}\right)$ to
@@ -253,7 +255,13 @@
       \mathtt{delay}\left(\alice\right) < t$}
         \State add $\left[\mathtt{lastpoll}\left(\alice\right), t -
         \texttt{delay}\left(\alice\right) - 1\right]$ to
-        \texttt{blindTime}(\alice)
+        \texttt{negligent}(\alice)
+      \EndIf
+      \If{$\mathtt{lastPoll}\left(\alice\right) +
+      \mathtt{relayDelay}\left(\alice\right) < t$}
+        \State add $\left[\mathtt{lastpoll}\left(\alice\right), t -
+        \texttt{relayDelay}\left(\alice\right) - 1\right]$ to
+        \texttt{relayNegligent}(\alice)
       \EndIf
       \State $\mathtt{lastPoll}\left(\alice\right) \gets t$
       \State scan $\Sigma_{\alice}$ for honestly closed channels that contain

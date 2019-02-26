@@ -11,16 +11,18 @@
     \EndIndent
     \State
 
-    \State Upon receiving (\textsc{register}, delay) from \environment:
+    \State Upon receiving (\textsc{register}, delay, relayDelay) from
+    \environment:
     \Indent
       \State $\mathtt{delay} \gets \mathrm{delay}$
+      \State $\mathtt{relayDelay} \gets \mathrm{relayDelay}$
       \State send (\textsc{read}) to \ledger{} and assign largest block number
       to \texttt{lastPoll}
       \State $\left(pk_{\alice}, sk_{\alice}\right) \gets
       \mathrm{genKey}\left(\right)$
       \State send (\textsc{register}, \alice, \texttt{delay},
-      $pk_{\alice}$) to \adversary \orfeas{delay to \adversary{}
-      needed?}
+      \texttt{relayDelay}, $pk_{\alice}$) to \adversary \orfeas{delay to
+      \adversary{} needed?}
     \EndIndent
     \State
 
@@ -75,10 +77,11 @@
       $\left.\left(ph\_\mathrm{base}_{\mathrm{rev}},
       sh\_\mathrm{base}_{\mathrm{rev}}\right), \mathit{tid}\right)$ to
       \texttt{pendingOpen}
-      \State send (\textsc{openChannel}, $x$, \texttt{delay}, $ph_F,
-      ph\_\mathrm{base}_{\mathrm{pay}}, ph\_\mathrm{base}_{\mathrm{dpay}},
-      ph\_\mathrm{base}_{\mathrm{htlc}},$ $ph_{\mathrm{com}, 1},
-      ph\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) to \bob{} and \adversary
+      \State send (\textsc{openChannel}, $x$, \texttt{delay},
+      \texttt{relayDelay}, $ph_F, ph\_\mathrm{base}_{\mathrm{pay}},
+      ph\_\mathrm{base}_{\mathrm{dpay}}, ph\_\mathrm{base}_{\mathrm{htlc}},$
+      $ph_{\mathrm{com}, 1}, ph\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) to
+      \bob{} and \adversary
     \EndIndent
     \State
   \end{algorithmic}
@@ -108,10 +111,11 @@
       \State $ph_{\mathrm{com}, 1} \gets
       \mathtt{pkFromSk}\left(sh_{\mathrm{com}, 1}\right)$
       \State associate keys with \textit{tid} and store in \texttt{pendingOpen}
-      \State send (\textsc{acceptChannel}, \texttt{delay}, $ph_F,
-      ph\_\mathrm{base}_{\mathrm{pay}}, ph\_\mathrm{base}_{\mathrm{dpay}},
-      ph\_\mathrm{base}_{\mathrm{htlc}},$ $ph_{\mathrm{com}, 1},
-      ph\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) to \bob{} and \adversary
+      \State send (\textsc{acceptChannel}, \texttt{delay}, \texttt{relayDelay},
+      $ph_F, ph\_\mathrm{base}_{\mathrm{pay}},
+      ph\_\mathrm{base}_{\mathrm{dpay}}, ph\_\mathrm{base}_{\mathrm{htlc}},$
+      $ph_{\mathrm{com}, 1}, ph\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) to
+      \bob{} and \adversary
     \EndIndent
     \State
 
@@ -401,7 +405,7 @@
       \State add an additional $\left(x, ph_{\mathrm{rev}, n+1} \vee
       \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc}, n+1}, \text{ on
       preimage}\right.\right.$ $\left.\left.\text{of } h\right) \vee
-      ph_{\mathrm{htlc}, n+1}, \text{largest } \mathtt{remoteDelay} \text{
+      ph_{\mathrm{htlc}, n+1}, \text{largest } \mathtt{remoteRelayDelay} \text{
       absolute}\right)$ output (all with $n+1$ keys) to \texttt{remoteCom},
       marked with \texttt{HTLCNo}
       \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one and associate
@@ -440,7 +444,7 @@
       \State reduce delayed payment output in \texttt{remoteCom} by $x$
       \State add an $\left(x, ph_{\mathrm{rev}, n+1} \vee
       \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc}, n+1},
-      \mathtt{remoteDelay} \text{ absolute}\right) \vee\right.$
+      \mathtt{remoteRelayDelay} \text{ absolute}\right) \vee\right.$
       $\left.ph_{\mathrm{htlc}, n+1}, \text{ on preimage of } h\right)$ htlc
       output (all with $n+1$ keys) to \texttt{remoteCom}, marked with
       \texttt{HTLCNo}
@@ -456,9 +460,9 @@
         \State add an additional $\left(x, ph_{\mathrm{rev}, n+1} \vee
         \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc}, n+1}, \text{ on
         preimage}\right.\right.$ $\left.\left.\text{of } h\right) \vee
-        ph_{\mathrm{htlc}, n+1}\mathtt{remoteDelay}' \text{ absolute}\right)$
-        output (all with $n+1$ keys) to \texttt{remoteCom}, marked with
-        \texttt{HTLCNo}
+        ph_{\mathrm{htlc}, n+1}\mathtt{remoteRelayDelay}' \text{
+        absolute}\right)$ output (all with $n+1$ keys) to \texttt{remoteCom},
+        marked with \texttt{HTLCNo}
         \State increment \texttt{HTLCNo} by 1
         \State $M' \gets \mathtt{SphinxPrepare}\left(M, \delta,
         sk_{\mathit{Alice}}\right)$
