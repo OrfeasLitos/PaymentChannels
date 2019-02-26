@@ -147,17 +147,13 @@
       it from \texttt{pendingPay}
       \If{($\charlie \neq \alice$ and $\charlie \notin \mathtt{corrupted}$) or
       $\charlie \notin \overrightarrow{\mathtt{path}}$}
-        \State halt \aggelos{or ignore?}
-        \State \orfeas{In the protocol, even negligent players cannot lose money
-        here because the next hop is done by the protocol (without permission
-        from the environment). So I removed \texttt{negligent} from the check
-        above.}
+        \State halt
       \EndIf
       \ForAll{$\mathtt{channel}\text{s} \in \overrightarrow{\mathtt{path}}$
       starting from the one where \charlie{} pays}
         \State in the first iteration, \charlie{} is \texttt{payer}. In
         subsequent iterations, \texttt{payer} is the unique player that has
-        been paid but has not paid. The other \texttt{channel} party is
+        received but has not given. The other \texttt{channel} party is
         \texttt{payee}
         \If{\texttt{payer} has $x$ or more in \texttt{channel}}
           \State update \texttt{channel} to the next version and transfer $x$
@@ -244,7 +240,7 @@
   \end{algorithmic}
 \end{systembox}
 
-\begin{systembox}{\fpaynet - polling}
+\begin{systembox}{\fpaynet - poll}
   \label{alg:fpaynet:poll}
   \begin{algorithmic}[1]
     \State Upon receiving $\left(\textsc{poll}\right)$ from \alice:
@@ -268,11 +264,12 @@
       \State scan $\Sigma_{\alice}$ for malicioulsy closed channels that contain
       \alice{} and exist in \texttt{channels} (txs that spend funding txs that
       have an older channel version than stored)
-      \ForAll{maliciously closed channel of which the spending txs can still be
-      spent by \alice} \Comment{If \alice{} is negligent, she may be unable to
-      punish}
-        \If{\alice{} cannot spend those spending txs}
-          \State ensure that \alice{} has been negligent in the last interval
+      \ForAll{maliciously closed \texttt{channel}s of which the spending txs can
+      still be spent by \alice} \Comment{If \alice{} is negligent, she may be
+      unable to punish}
+        \If{\alice{} cannot spend those spending txs and \alice{} has not been
+        negligent in the last interval}
+          \State halt
         \EndIf
         \State add \texttt{channel} to \texttt{toReport}(\alice) (marked as
         ``malicious'')
@@ -294,7 +291,7 @@
           \State ensure that transactions that spend the funding tx of
           \texttt{channel} and pay \alice{} the entire \texttt{channel} value
           exist in $\Sigma_{\alice}$
-        \Else \Comment{\texttt{channel} is marked as ``honest''}
+        \Else \ \Comment{\texttt{channel} is marked as ``honest''}
           \State ensure that transactions that spend the funding tx of
           \texttt{channel} and pay \alice{} the her part in \texttt{channel}
           exist in $\Sigma_{\alice}$

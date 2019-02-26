@@ -6,8 +6,9 @@
     \State Initialisation:
     \Indent
       \State $\mathtt{channels}, \mathtt{pendingOpen}, \mathtt{pendingPay},
-      \mathtt{pendingClose}, \mathtt{newChannels},$ $\mathtt{closedChannels},
-      \mathtt{unclaimedOfferedHTLCs}, \mathtt{unclaimedReceivedHTLCs},
+      \mathtt{pendingClose} \gets \emptyset$
+      \State $\mathtt{newChannels}, \mathtt{closedChannels} \gets \emptyset$
+      \State $\mathtt{unclaimedOfferedHTLCs}, \mathtt{unclaimedReceivedHTLCs},
       \mathtt{pendingGetPaid} \gets \emptyset$
     \EndIndent
     \State
@@ -289,7 +290,7 @@
     \State $\mathtt{toSubmit} \gets \emptyset$
       \ForAll{$\tau \in \mathtt{unclaimedOfferedHTLCs}$}
         \If{input of $\tau$ has been spent} \Comment{by
-        \texttt{remoteHTLC-success}}
+        \texttt{remote HTLC-success}}
           \State remove $\tau$ from \texttt{unclaimedOfferedHTLCs}
         \ElsIf{input of $\tau$ has not been spent and timelock is over}
           \State remove $\tau$ from \texttt{unclaimedOfferedHTLCs}
@@ -324,7 +325,7 @@
               \State add (sig, TX) to \texttt{toSubmit}
             \EndIf
           \EndFor
-        \Else \Comment{malicious closure}
+        \Else \ \Comment{malicious closure}
           \State $\mathrm{rev} \gets$ TX \{inputs: all $\mathtt{remoteCom}_n$
           outputs, choosing $ph_{\mathrm{rev}, n}$ method, output:
           $pk_{\mathit{Alice}}$\}
