@@ -44,7 +44,12 @@
       \EndIf
     \EndIndent
     \State
+  \end{algorithmic}
+\end{protocolbox}
 
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ (self is \alice) - open}
+  \label{alg:protocol:open}
+  \begin{algorithmic}[1]
     \State Upon receiving $\left(\textsc{openChannel}, \mathrm{pid}_{\alice},
     \mathrm{pid}_{\bob}, x\right)$ from \environment:
     \Indent
@@ -84,12 +89,7 @@
       \bob{} and \adversary
     \EndIndent
     \State
-  \end{algorithmic}
-\end{protocolbox}
 
-\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ (self is \alice) - open}
-  \label{alg:protocol:open}
-  \begin{algorithmic}[1]
     \State Upon receiving (\textsc{openChannel}, $x$, BobDelay, $pt_F,
     pt\_\mathrm{base}_{\mathrm{pay}}, pt\_\mathrm{base}_{\mathrm{dpay}},$
     $pt\_\mathrm{base}_{\mathrm{htlc}}, pt_{\mathrm{com}, 1},
