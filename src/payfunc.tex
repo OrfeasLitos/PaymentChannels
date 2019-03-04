@@ -36,21 +36,26 @@
       \mathtt{relayNegligent}\left(\alice\right) \gets \emptyset$
       \State send (\textsc{read}) to \ledger{} as \alice{} and assign largest
       block number to \texttt{lastPoll}(\alice)
-      \State send $\left(\textsc{register}, \alice, \mathrm{delay}\right)$ to
-      \simulator
+      \State send $\left(\textsc{register}, \alice, \mathrm{delay},
+      \mathrm{relayDelay}\right)$ to \simulator
     \EndIndent
     \State
 
-    \State Upon receiving $\left(\textsc{registerDone}, \alice, x,
+    \State Upon receiving $\left(\textsc{registerDone}, \alice,
     \mathrm{pubKey}\right)$ from \simulator:
+    \Indent
+      \State $\mathtt{pubKey}\left(\alice\right) \gets \mathrm{pubKey}$
+      \State send (\textsc{register}, \alice, \texttt{delay},
+      \texttt{relayDelay}, pubKey) to \alice
+    \EndIndent
+    \State
+
+    \State Upon receiving (\textsc{registered}) from \alice:
     \Indent
       \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
       $\Sigma_{\alice}$
-      \State ensure that there are exactly $x$ coins in $\Sigma_{\alice}$ that
-      can be exclusively spent by pubKey
-      \State $\mathtt{onChainBalance}\left(\alice\right) \gets x$
-      \State $\mathtt{offChainBalance}\left(\alice\right) \gets 0$
-      \State $\mathtt{pubKey}\left(\alice\right) \gets \mathrm{pubKey}$
+      \State assign the sum of all output values that are exclusively spendable
+      by \alice{} to \texttt{onChainBalance}
       \State send (\textsc{registered}) to \alice
     \EndIndent
     \State

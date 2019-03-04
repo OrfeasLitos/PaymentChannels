@@ -1,0 +1,12 @@
+\section{UC conventions}
+  \begin{itemize}
+    \item send (\textsc{read}) to \ledger{} and assign reply to $\Sigma$ ... \\
+    = \\
+    \{ \\
+    send (\textsc{read}) to \ledger{} \\ \ \\
+    upon receiving delayed output $\Sigma$ ... \\
+    \}
+    \item every output that is returned by \fpaynet{} or a player to
+    \environment{} is in fact a delayed output: It is handed over to
+    \adversary{}, who in turn decides when to give it to \environment{}.
+  \end{itemize}

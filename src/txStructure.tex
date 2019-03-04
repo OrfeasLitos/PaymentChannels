@@ -25,17 +25,17 @@ A well-formed spending method contains any combination of the following:
   signatures are needed.
   \item Absolute locktime in block height, transaction height or time. The
   output can be spent by an input to a transaction that is added to the state
-  after the specified block height, transaction height or time. If empty, output
-  can be spent immediately after being added to the state.
+  after the specified block height, transaction height or time.
   \item Relative locktime in block height, transaction height or time. The
   output can be spent by an input that is added to the state after the current
   output has been part of the state for the specified number of blocks,
-  transactions or time. If empty, output can be spent immediately after being
-  added to the state.
+  transactions or time.
   \item Hashlock value. The output can be spent by an input that contains a
   preimage that hashes to the hashlock value. If empty, the input does not need
   to specify a preimage.
 \end{itemize}
+If both the absolute and the relative locktime are empty, output can be spent
+immediately after being added to the state.
 
 A well-formed input contains:
 \begin{itemize}

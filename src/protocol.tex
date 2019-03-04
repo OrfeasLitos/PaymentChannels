@@ -21,12 +21,11 @@
       \State $\left(pk_{\alice}, sk_{\alice}\right) \gets
       \mathrm{genKey}\left(\right)$
       \State send (\textsc{register}, \alice, \texttt{delay},
-      \texttt{relayDelay}, $pk_{\alice}$) to \adversary \orfeas{delay to
-      \adversary{} needed?}
+      \texttt{relayDelay}, $pk_{\alice}$) to \environment
     \EndIndent
     \State
 
-    \State Upon receiving (\textsc{registered}) from \adversary:
+    \State Upon receiving (\textsc{registered}) from \environment:
     \Indent
       \State send (\textsc{read}) to \ledger{} and assign reply to
       $\Sigma_{\alice}$
@@ -40,7 +39,7 @@
     $\left(\textsc{register}\right)$:
     \Indent
       \If{if haven't received (\textsc{register}) from \environment{}}
-        \State send (\textsc{invalid}, $M$) to \adversary{} and ignore message
+        \State send (\textsc{invalid}, $M$) to \environment{} and ignore message
       \EndIf
     \EndIndent
     \State
@@ -78,16 +77,12 @@ from \environment}
     \Indent
       \State ensure \textit{tid} hasn't been used for opening another channel
       before
-      \State $\left(\left(ph_F, sh_F\right),
-      \left(ph\_\mathrm{base}_{\mathrm{pay}},
-      sh\_\mathrm{base}_{\mathrm{pay}}\right),
-      \left(ph\_\mathrm{base}_{\mathrm{dpay}},
-      sh\_\mathrm{base}_{\mathrm{dpay}}\right),\right.$
-      $\left.\left(ph\_\mathrm{base}_{\mathrm{htlc}},
-      sh\_\mathrm{base}_{\mathrm{htlc}}\right), \mathtt{seed},
-      \left(ph\_\mathrm{base}_{\mathrm{rev}},
-      sh\_\mathrm{base}_{\mathrm{rev}}\right)\right) \gets
-      \texttt{GetKeys}\left(\right)$
+      \State $\left(\left(ph_F, sh_F\right), \left(phb_{\mathrm{pay}},
+      shb_{\mathrm{pay}}\right), \left(phb_{\mathrm{dpay}},
+      shb_{\mathrm{dpay}}\right),\right.$
+      $\left.\left(phb_{\mathrm{htlc}}, shb_{\mathrm{htlc}}\right),
+      \mathtt{seed}, \left(phb_{\mathrm{rev}}, shb_{\mathrm{rev}}\right)\right)
+      \gets \texttt{GetKeys}\left(\right)$
       \State $sh_{\mathrm{com}, 1} \gets
       \texttt{PRF}\left(\mathtt{seed}, 1\right)$
       \State $ph_{\mathrm{com}, 1} \gets
@@ -96,22 +91,17 @@ from \environment}
       parties}
       \State associate keys with \textit{tid}
       \State add $\left(\alice, \bob, x, \mathtt{tid}, \left(ph_F, sh_F\right),
-      \left(ph\_\mathrm{base}_{\mathrm{pay}},
-      sh\_\mathrm{base}_{\mathrm{pay}}\right),
-      \left(ph\_\mathrm{base}_{\mathrm{dpay}},\right.\right.$
-      $\left.\left.sh\_\mathrm{base}_{\mathrm{dpay}}\right),
-      \left(ph\_\mathrm{base}_{\mathrm{htlc}},
-      sh\_\mathrm{base}_{\mathrm{htlc}}\right),
-      \left(ph\_\mathrm{base}_{\mathrm{com}, 1},
-      sh\_\mathrm{base}_{\mathrm{com}, 1}\right),\right.$
-      $\left.\left(ph\_\mathrm{base}_{\mathrm{rev}},
-      sh\_\mathrm{base}_{\mathrm{rev}}\right), \mathit{tid}\right)$ to
-      \texttt{pendingOpen}
+      \left(phb_{\mathrm{pay}}, shb_{\mathrm{pay}}\right),
+      \left(phb_{\mathrm{dpay}}, shb_{\mathrm{dpay}}\right)\right.$
+      $\left.\left(phb_{\mathrm{htlc}}, shb_{\mathrm{htlc}}\right),
+      \left(phb_{\mathrm{com}, 1}, shb_{\mathrm{com}, 1}\right),\right.$
+      $\left.\left(phb_{\mathrm{rev}}, shb_{\mathrm{rev}}\right),
+      \mathit{tid}\right)$ to \texttt{pendingOpen}
       \State send (\textsc{openChannel}, $x$, \texttt{delay},
-      \texttt{relayDelay}, $ph_F, ph\_\mathrm{base}_{\mathrm{pay}},
-      ph\_\mathrm{base}_{\mathrm{dpay}}, ph\_\mathrm{base}_{\mathrm{htlc}},$
-      $ph_{\mathrm{com}, 1}, ph\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) to
-      \bob{} and \adversary
+      \texttt{relayDelay}, $ph_F, phb_{\mathrm{pay}},
+      phb_{\mathrm{dpay}}, phb_{\mathrm{htlc}},$
+      $ph_{\mathrm{com}, 1}, phb_{\mathrm{rev}}$, \textit{tid}) to
+      \bob{}
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
@@ -121,43 +111,34 @@ from \bob}
   \label{alg:protocol:open:openChannel}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{openChannel}, $x$, BobDelay, $pt_F,
-    pt\_\mathrm{base}_{\mathrm{pay}}, pt\_\mathrm{base}_{\mathrm{dpay}},$
-    $pt\_\mathrm{base}_{\mathrm{htlc}}, pt_{\mathrm{com}, 1},
-    pt\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) from \bob:
+    ptb_{\mathrm{pay}}, ptb_{\mathrm{dpay}}, ptb_{\mathrm{htlc}},
+    pt_{\mathrm{com}, 1}, ptb_{\mathrm{rev}}$, \textit{tid}) from \bob:
     \Indent
       \State ensure \textit{tid} has not been used yet with \bob
-      \State $\left(\left(ph_F, sh_F\right),
-      \left(ph\_\mathrm{base}_{\mathrm{pay}},
-      sh\_\mathrm{base}_{\mathrm{pay}}\right),
-      \left(ph\_\mathrm{base}_{\mathrm{dpay}},
-      sh\_\mathrm{base}_{\mathrm{dpay}}\right),\right.$
-      $\left.\left(ph\_\mathrm{base}_{\mathrm{htlc}},
-      sh\_\mathrm{base}_{\mathrm{htlc}}\right), \mathtt{seed},
-      \left(ph\_\mathrm{base}_{\mathrm{rev}},
-      sh\_\mathrm{base}_{\mathrm{rev}}\right)\right) \gets
+      \State $\left(\left(ph_F, sh_F\right), \left(phb_{\mathrm{pay}},
+      shb_{\mathrm{pay}}\right), \left(phb_{\mathrm{dpay}},
+      shb_{\mathrm{dpay}}\right), \left(phb_{\mathrm{htlc}},
+      shb_{\mathrm{htlc}}\right), \mathtt{seed},\right.$
+      $\left.\left(phb_{\mathrm{rev}}, shb_{\mathrm{rev}}\right)\right) \gets
       \texttt{GetKeys}\left(\right)$
-      \State $sh_{\mathrm{com}, 1} \gets
-      \texttt{PRF}\left(\mathtt{seed}, 1\right)$
+      \State $sh_{\mathrm{com}, 1} \gets \texttt{PRF}\left(\mathtt{seed},
+      1\right)$
       \State $ph_{\mathrm{com}, 1} \gets
       \mathtt{pkFromSk}\left(sh_{\mathrm{com}, 1}\right)$
       \State associate keys with \textit{tid} and store in \texttt{pendingOpen}
       \State send (\textsc{acceptChannel}, \texttt{delay}, \texttt{relayDelay},
-      $ph_F, ph\_\mathrm{base}_{\mathrm{pay}},
-      ph\_\mathrm{base}_{\mathrm{dpay}}, ph\_\mathrm{base}_{\mathrm{htlc}},$
-      $ph_{\mathrm{com}, 1}, ph\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) to
-      \bob{} and \adversary
+      $ph_F, phb_{\mathrm{pay}}, phb_{\mathrm{dpay}}, phb_{\mathrm{htlc}},$
+      $ph_{\mathrm{com}, 1}, phb_{\mathrm{rev}}$, \textit{tid}) to \bob{}
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
 
-\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -
-\textsc{acceptChannel}}
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{acceptChannel}}
   \label{alg:protocol:open:acceptChannel}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{acceptChannel}, \texttt{remoteDelay}, $pt_F,
-    pt\_\mathrm{base}_{\mathrm{pay}}, pt\_\mathrm{base}_{\mathrm{dpay}},$
-    $pt\_\mathrm{base}_{\mathrm{htlc}},$ $pt_{\mathrm{com}, 1},
-    pt\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) from \bob:
+    ptb_{\mathrm{pay}}, ptb_{\mathrm{dpay}},$ $ptb_{\mathrm{htlc}},$
+    $pt_{\mathrm{com}, 1}, ptb_{\mathrm{rev}}$, \textit{tid}) from \bob:
     \Indent
       \State ensure there is a temporary ID \textit{tid} with \bob{} in
       \texttt{pendingOpen} on which \textsc{acceptChannel} hasn't been received
@@ -168,22 +149,20 @@ from \bob}
       $\Sigma_{\alice}$ that is currently exclusively spendable by \alice{} and
       has value $y \geq x$
       \State $F \gets$ TX \{input spends prevout with a \texttt{signature}(TX,
-      $sk_{\alice}$), output 0 pays $y - x$ to $pk_{\alice}$ now, output 1 pays
-      $x$ to $\textit{tid}.ph_F \wedge pt_F$ now\}
+      $sk_{\alice}$), output 0 pays $y - x$ to $pk_{\alice}$, output 1 pays $x$
+      to $\textit{tid}.ph_F \wedge pt_F$\}
       \State $\mathit{pchid} \gets \mathcal{H}\left(F\right)$
       \State replace \textit{tid} with \textit{pchid} in storage
-      \State $pt_{\mathrm{rev}, 1} \gets pt\_\mathrm{base}_{\mathrm{rev}} \cdot
-      \mathcal{H}\left(pt\_\mathrm{base}_{\mathrm{rev}} ||
-      pt_{\mathrm{com}, 1}\right) + pt_{\mathrm{com}, 1} \cdot \mathcal{H}\left(
-      pt_{\mathrm{com}, 1} || pt\_\mathrm{base}_{\mathrm{rev}}\right)$
-      \State $ph_{\mathrm{dpay}, 1} \gets ph\_\mathrm{base}_{\mathrm{dpay}} +
-      \mathcal{H}\left(ph_{\mathrm{com}, 1} ||
-      ph\_\mathrm{base}_{\mathrm{dpay}}\right)$
-      \State $ph_{\mathrm{pay}, 1} \gets ph\_\mathrm{base}_{\mathrm{pay}} +
-      \mathcal{H}\left(ph_{\mathrm{com}, 1} ||
-      ph\_\mathrm{base}_{\mathrm{pay}}\right)$
-      \State $\mathtt{remoteCom}, \mathtt{remoteCom}_1 \gets$ TX \{input: output
-      1 of $F$, output: $\left(x, ph_{\mathrm{pay}, 1}\right)$\}
+      \State $pt_{\mathrm{rev}, 1} \gets ptb_{\mathrm{rev}} \cdot
+      \mathcal{H}\left(ptb_{\mathrm{rev}} || pt_{\mathrm{com}, 1}\right) +
+      ph_{\mathrm{com}, 1} \cdot \mathcal{H}\left( pt_{\mathrm{com}, 1} ||
+      ptb_{\mathrm{rev}}\right)$
+      \State $ph_{\mathrm{dpay}, 1} \gets phb_{\mathrm{dpay}} +
+      \mathcal{H}\left(ph_{\mathrm{com}, 1} || phb_{\mathrm{dpay}}\right)$
+      \State $ph_{\mathrm{pay}, 1} \gets phb_{\mathrm{pay}} +
+      \mathcal{H}\left(ph_{\mathrm{com}, 1} || phb_{\mathrm{pay}}\right)$
+      \State $\mathtt{remoteCom} \gets \mathtt{remoteCom}_1 \gets$ TX \{input:
+      output 1 of $F$, output: $\left(x, ph_{\mathrm{pay}, 1}\right)$\}
       \State $\mathtt{localCom} \gets$ TX \{input: output 1 of $F$, output:
       $\left(x, pt_{\mathrm{rev}, 1} \vee \left(ph_{\mathrm{dpay}_1},
       \mathtt{remoteDelay} + k + 1 \text{ relative}\right)\right)$
@@ -193,13 +172,12 @@ from \bob}
       sh_F\right)$
       \State $\mathtt{lastRemoteSigned} \gets 0$
       \State send (\textsc{fundingCreated}, \textit{tid},
-      \textit{pchid}, sig) to \bob{} and \adversary
+      \textit{pchid}, sig) to \bob{}
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
 
-\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -
-\textsc{fundingCreated}}
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{fundingCreated}}
   \label{alg:protocol:open:fundingCreated}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{fundingCreated}, \textit{tid},
@@ -207,22 +185,20 @@ from \bob}
     \Indent
       \State ensure there is a temporary ID \textit{tid} with \bob{} in
       \texttt{pendingOpen} on which we have sent up to \textsc{acceptChannel}
-      \State $ph_{\mathrm{rev}, 1} \gets ph\_\mathrm{base}_{\mathrm{rev}} \cdot
-      \mathcal{H}\left(ph\_\mathrm{base}_{\mathrm{rev}} ||
-      ph_{\mathrm{com}, 1}\right) + ph_{\mathrm{com}, 1} \cdot \mathcal{H}\left(
-      ph_{\mathrm{com}, 1} || ph\_\mathrm{base}_{\mathrm{rev}}\right)$
-      \State $pt_{\mathrm{dpay}, 1} \gets pt\_\mathrm{base}_{\mathrm{dpay}} +
-      \mathcal{H}\left(pt_{\mathrm{com}, 1} ||
-      pt\_\mathrm{base}_{\mathrm{dpay}}\right)$
-      \State $pt_{\mathrm{pay}, 1} \gets pt\_\mathrm{base}_{\mathrm{pay}} +
-      \mathcal{H}\left(pt_{\mathrm{com}, 1} ||
-      pt\_\mathrm{base}_{\mathrm{pay}}\right)$
-      \State $\mathtt{localCom}, \mathtt{localCom}_1 \gets$ TX \{input: output 1
-      of $F$, output: $\left(x, pt_{\mathrm{pay}, 1}\right)$\}
+      \State $ph_{\mathrm{rev}, 1} \gets phb_{\mathrm{rev}} \cdot
+      \mathcal{H}\left(phb_{\mathrm{rev}} || ph_{\mathrm{com}, 1}\right) +
+      pt_{\mathrm{com}, 1} \cdot \mathcal{H}\left( ph_{\mathrm{com}, 1} ||
+      phb_{\mathrm{rev}}\right)$
+      \State $pt_{\mathrm{dpay}, 1} \gets ptb_{\mathrm{dpay}} +
+      \mathcal{H}\left(pt_{\mathrm{com}, 1} || ptb_{\mathrm{dpay}}\right)$
+      \State $pt_{\mathrm{pay}, 1} \gets ptb_{\mathrm{pay}} +
+      \mathcal{H}\left(pt_{\mathrm{com}, 1} || ptb_{\mathrm{pay}}\right)$
+      \State $\mathtt{localCom} \gets \mathtt{localCom}_1 \gets$ TX \{input:
+      output 1 of $F$, output: $\left(x, pt_{\mathrm{pay}, 1}\right)$\}
       \State ensure $\mathtt{verify}\left(\mathtt{localCom}_1,
       \mathtt{BobSig}_1, pt_F\right) = \mathtt{True}$
-      \State $\mathtt{remoteCom}, \mathtt{remoteCom}_1 \gets$ TX \{input: output
-      1 of $F$, output: $\left(x, ph_{\mathrm{rev}} \vee
+      \State $\mathtt{remoteCom} \gets \mathtt{remoteCom}_1 \gets$ TX \{input:
+      output 1 of $F$, output: $\left(x, ph_{\mathrm{rev}} \vee
       \left(pt_{\mathrm{dpay}}, \mathtt{delay} + k + 1 \text{
       relative}\right)\right)\}$
       \State add $\mathtt{BobSig}_1, \mathtt{remoteCom}_1$ and
@@ -231,14 +207,12 @@ from \bob}
       sh_F\right)$
       \State mark channel as ``broadcast, no \textsc{fundingLocked}''
       \State $\mathtt{lastRemoteSigned}, \mathtt{lastLocalSigned} \gets 0$
-      \State send (\textsc{fundingSigned}, \textit{pchid}, sig) to \bob{} and
-      \adversary
+      \State send (\textsc{fundingSigned}, \textit{pchid}, sig) to \bob{}
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
 
-\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -
-\textsc{fundingSigned}}
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{fundingSigned}}
   \label{alg:protocol:open:fundingSigned}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{fundingSigned}, \textit{pchid},
@@ -283,18 +257,17 @@ from \bob}
         \State move channel data from \texttt{pendingOpen} to \texttt{channels}
         \State add receipt of channel to \texttt{newChannels}
       \EndIf
-      \State send (\textsc{fundingLocked}, \textit{pchid},
-      $ph\_\mathrm{base}_{\mathrm{com}, 2}$) to \bob{}
+      \State send (\textsc{fundingLocked}, \textit{pchid}, $ph_{\mathrm{com},
+      2}$) to \bob{}
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
 
-\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -
-\textsc{fundingLocked}}
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{fundingLocked}}
   \label{alg:protocol:open:fundingLocked}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{fundingLocked}, \textit{pchid},
-    $pt\_\mathrm{base}_{\mathrm{com}, 2}$) from \bob:
+    $pt_{\mathrm{com}, 2}$) from \bob:
     \Indent
       \State ensure there is a \texttt{channel} with ID \textit{pchid} with
       \bob{} in \texttt{pendingOpen} with a ``no \textsc{fundingLocked}'' mark
@@ -386,7 +359,6 @@ from \bob}
 \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - invoice}
   \label{alg:protocol:pay:invoice}
   \begin{algorithmic}[1]
-    \State \orfeas{maybe leak queries to global functionalities to \adversary?}
     \State Upon receiving (\textsc{pay}, \textit{Bob}, $x$,
     $\overrightarrow{\mathtt{path}}$, \texttt{receipt}) from \environment:
     \Indent
@@ -403,8 +375,7 @@ from \bob}
       \State add (\textit{Bob}, $x$, $\overrightarrow{\mathtt{path}}$,
       \texttt{receipt}, \textit{payid}, ``waiting for invoice'') to
       \texttt{pendingPay}
-      \State send (\textsc{sendInvoice}, \textit{payid}) to \bob{} and
-      \adversary
+      \State send (\textsc{sendInvoice}, \textit{payid}) to \bob{}
     \EndIndent
     \State
 
@@ -415,7 +386,7 @@ from \bob}
       \State choose random, unique preimage $R$
       \State add (\bob, $R$, \textit{payid}) to \texttt{pendingGetPaid}
       \State send (\textsc{invoice}, $\mathcal{H}\left(R\right)$,
-      \textit{payid}) to \bob{} and \adversary
+      \textit{payid}) to \bob{}
     \EndIndent
     \State
 
@@ -451,7 +422,7 @@ from \bob}
       \State send (\textsc{updateAddHtlc}, first \textit{pchid} of
       $\overrightarrow{\mathtt{path}}, \mathtt{HTLCNo}_{\textit{pchid}}, x, h,$
       largest \texttt{remoteDelay}, $\left(\mu_0, \delta_0\right)$) to
-      \textit{pchid} channel counterparty and \adversary
+      \textit{pchid} channel counterparty
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
@@ -643,38 +614,38 @@ from \bob}
       \State mark $\mathtt{remoteCom}_{n+1}$ as ``irrevocably committed''
       \State $\mathtt{localCom}_{n+1} \gets \mathtt{pendingLocalCom}$
       \State unmark \texttt{channel}
-      \State $sh_{\mathrm{rev}, n} \gets sh\_\mathrm{base}_{\mathrm{rev}} \cdot
-      \mathcal{H}\left(ph\_\mathrm{base}_{\mathrm{rev}} || ph_{\mathrm{com},
+      \State $sh_{\mathrm{rev}, n} \gets shb_{\mathrm{rev}} \cdot
+      \mathcal{H}\left(phb_{\mathrm{rev}} || ph_{\mathrm{com},
       n}\right) + st_{\mathrm{com}, n} \cdot \mathcal{H}\left(ph_{\mathrm{com},
-      n} || ph\_\mathrm{base}_{\mathrm{rev}}\right)$
-      \State $ph_{\mathrm{rev}, n+2} \gets ph\_\mathrm{base}_{\mathrm{rev}}
-      \cdot \mathcal{H}\left(ph\_\mathrm{base}_{\mathrm{rev}} ||
+      n} || phb_{\mathrm{rev}}\right)$
+      \State $ph_{\mathrm{rev}, n+2} \gets phb_{\mathrm{rev}}
+      \cdot \mathcal{H}\left(phb_{\mathrm{rev}} ||
       ph_{\mathrm{com}, n+2}\right) + pt_{\mathrm{com}, n+2} \cdot
       \mathcal{H}\left(ph_{\mathrm{com}, n+2} ||
-      ph\_\mathrm{base}_{\mathrm{rev}}\right)$
-      \State $pt_{\mathrm{rev}, n+2} \gets pt\_\mathrm{base}_{\mathrm{rev}}
-      \cdot \mathcal{H}\left(pt\_\mathrm{base}_{\mathrm{rev}} ||
+      phb_{\mathrm{rev}}\right)$
+      \State $pt_{\mathrm{rev}, n+2} \gets ptb_{\mathrm{rev}}
+      \cdot \mathcal{H}\left(ptb_{\mathrm{rev}} ||
       pt_{\mathrm{com}, n+2}\right) + pt_{\mathrm{com}, n+2} \cdot
       \mathcal{H}\left( pt_{\mathrm{com}, n+2} ||
-      pt\_\mathrm{base}_{\mathrm{rev}}\right)$
-      \State $ph_{\mathrm{dpay}, n+2} \gets ph\_\mathrm{base}_{\mathrm{dpay}} +
+      ptb_{\mathrm{rev}}\right)$
+      \State $ph_{\mathrm{dpay}, n+2} \gets phb_{\mathrm{dpay}} +
       \mathcal{H}\left(ph_{\mathrm{com}, n+2} ||
-      ph\_\mathrm{base}_{\mathrm{dpay}}\right)$
-      \State $pt_{\mathrm{dpay}, n+2} \gets pt\_\mathrm{base}_{\mathrm{dpay}} +
+      phb_{\mathrm{dpay}}\right)$
+      \State $pt_{\mathrm{dpay}, n+2} \gets ptb_{\mathrm{dpay}} +
       \mathcal{H}\left(pt_{\mathrm{com}, n+2} ||
-      pt\_\mathrm{base}_{\mathrm{dpay}}\right)$
-      \State $ph_{\mathrm{pay}, n+2} \gets ph\_\mathrm{base}_{\mathrm{pay}} +
+      ptb_{\mathrm{dpay}}\right)$
+      \State $ph_{\mathrm{pay}, n+2} \gets phb_{\mathrm{pay}} +
       \mathcal{H}\left(ph_{\mathrm{com}, n+2} ||
-      ph\_\mathrm{base}_{\mathrm{pay}}\right)$
-      \State $pt_{\mathrm{pay}, n+2} \gets pt\_\mathrm{base}_{\mathrm{pay}} +
+      phb_{\mathrm{pay}}\right)$
+      \State $pt_{\mathrm{pay}, n+2} \gets ptb_{\mathrm{pay}} +
       \mathcal{H}\left(pt_{\mathrm{com}, n+2} ||
-      pt\_\mathrm{base}_{\mathrm{pay}}\right)$
-      \State $ph_{\mathrm{htlc}, n+2} \gets ph\_\mathrm{base}_{\mathrm{htlc}} +
+      ptb_{\mathrm{pay}}\right)$
+      \State $ph_{\mathrm{htlc}, n+2} \gets phb_{\mathrm{htlc}} +
       \mathcal{H}\left(ph_{\mathrm{com}, n+2} ||
-      ph\_\mathrm{base}_{\mathrm{htlc}}\right)$
-      \State $pt_{\mathrm{htlc}, n+2} \gets pt\_\mathrm{base}_{\mathrm{htlc}} +
+      phb_{\mathrm{htlc}}\right)$
+      \State $pt_{\mathrm{htlc}, n+2} \gets ptb_{\mathrm{htlc}} +
       \mathcal{H}\left(pt_{\mathrm{com}, n+2} ||
-      pt\_\mathrm{base}_{\mathrm{htlc}}\right)$
+      ptb_{\mathrm{htlc}}\right)$
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
