@@ -79,12 +79,14 @@
 \begin{systembox}{\fpaynet - open}
   \label{alg:fpaynet:open}
   \begin{algorithmic}[1]
-    \State Upon receiving $\left(\textsc{openChannel}, \alice, \bob, x\right)$
-    from \alice:
+    \State Upon receiving $\left(\textsc{openChannel}, \alice, \bob, x,
+    \mathit{tid}\right)$ from \alice:
     \Indent
+      \State ensure \textit{tid} hasn't been used by \alice{} for opening
+      another channel before
       \State choose unique channel ID \textit{fchid}
       \State $\mathtt{pendingOpen}\left(\mathit{fchid}\right) \gets
-      \left(\alice, \bob, x\right)$
+      \left(\alice, \bob, x, \mathit{tid}\right)$
       \State send $\left(\textsc{openChannel}, \alice, \bob, x,
       \mathit{fchid}\right)$ to \simulator
     \EndIndent
@@ -95,14 +97,23 @@
     \Indent
       \State ensure that there is no $\mathtt{channel} \in \mathtt{channels}$
       with ids \textit{pchid}, \textit{fchid}
-      \State $\left(\alice, \bob, x\right) \gets
+      \State add $p_{\alice, F}, p_{\bob, F}$ to
+      \texttt{pendingOpen}(\textit{fchid})
+    \EndIndent
+    \State
+
+    \State Upon receiving (\textsc{checkNew}, \alice, \bob, $x$, \textit{tid})
+    from \alice:
+    \Indent
+      \State ensure there is a matching \texttt{channel} in \texttt{pendingOpen}
+      with id \textit{fchid}
+      \State $\left(\alice, \bob, x, p_{\alice, F}, p_{\bob, F}\right) \gets
       \mathtt{pendingOpen}\left(\mathit{fchid}\right)$
       \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
       $\Sigma_{\alice}$
       \State ensure that there is a TX $F \in \Sigma_{\alice}$ with a $\left(x,
       \left(p_{\alice, F} \wedge p_{\bob, F}\right)\right)$ output such that
       $\mathcal{H}\left(F\right) = \mathit{pchid}$
-      \State $\mathtt{pendingOpen}\left(\mathit{fchid}\right) \gets \bot$
       \State $\mathrm{offChainBalance}\left(\alice\right) \gets
       \mathrm{offChainBalance}\left(\alice\right) + x$ \orfeas{remove
       on/offChainBalance?}
@@ -112,7 +123,7 @@
       \mathit{fchid}, \mathit{pchid}\right)$
       \State add \texttt{channel} to \texttt{channels}
       \State add \texttt{receipt}(\texttt{channel}) to
-      \texttt{newChannels}(\alice) and \texttt{newChannels}(\bob)
+      \texttt{newChannels}(\alice)
     \EndIndent
     \State
   \end{algorithmic}
@@ -314,7 +325,7 @@
     \EndIndent
     \State
 
-    \State Upon receiving (\textsc{checkNew}) from \alice:
+    \State Upon receiving (\textsc{getNew}) from \alice:
     \Indent
       \State clear \texttt{newChannels}(\alice),
       \texttt{closedChannels}(\alice), \texttt{pendingUpdates}(\alice) and send

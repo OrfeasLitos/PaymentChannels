@@ -73,9 +73,11 @@
 from \environment}
   \label{alg:protocol:open:env}
   \begin{algorithmic}[1]
-    \State Upon receiving $\left(\textsc{openChannel}, \mathrm{pid}_{\alice},
-    \mathrm{pid}_{\bob}, x\right)$ from \environment:
+    \State Upon receiving $\left(\textsc{openChannel}, \alice, \bob, x,
+    \mathit{tid}\right)$ from \environment:
     \Indent
+      \State ensure \textit{tid} hasn't been used for opening another channel
+      before
       \State $\left(\left(ph_F, sh_F\right),
       \left(ph\_\mathrm{base}_{\mathrm{pay}},
       sh\_\mathrm{base}_{\mathrm{pay}}\right),
@@ -93,8 +95,8 @@ from \environment}
       \State choose unique temporary ID \textit{tid} \Comment{unique for the two
       parties}
       \State associate keys with \textit{tid}
-      \State add $\left(\alice, \bob, x, \mathtt{delay}, \left(ph_F,
-      sh_F\right), \left(ph\_\mathrm{base}_{\mathrm{pay}},
+      \State add $\left(\alice, \bob, x, \mathtt{tid}, \left(ph_F, sh_F\right),
+      \left(ph\_\mathrm{base}_{\mathrm{pay}},
       sh\_\mathrm{base}_{\mathrm{pay}}\right),
       \left(ph\_\mathrm{base}_{\mathrm{dpay}},\right.\right.$
       $\left.\left.sh\_\mathrm{base}_{\mathrm{dpay}}\right),
@@ -262,8 +264,8 @@ from \bob}
   \label{alg:protocol:open:checkNew}
   \begin{algorithmic}[1]
     \State \TODO{explicitly add keys et al to \texttt{channel}}
-    \State Upon receiving (\textsc{checkNew}, \alice, \bob, $x$) from
-    \environment: \Comment{new message: represents lnd polling daemon}
+    \State Upon receiving (\textsc{checkNew}, \alice, \bob, $x$, \textit{tid})
+    from \environment: \Comment{new message: represents lnd polling daemon}
     \Indent
       \State ensure there is a matching \texttt{channel} in \texttt{pendingOpen}
       with id \textit{pchid} with a ``broadcast'' mark
