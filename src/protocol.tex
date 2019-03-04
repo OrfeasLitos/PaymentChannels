@@ -1,4 +1,4 @@
-\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ (self is \alice) - support}
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ (self is \alice always) - support}
   \label{alg:protocol:support}
   \begin{algorithmic}[1]
     \State Initialisation:
@@ -44,11 +44,34 @@
       \EndIf
     \EndIndent
     \State
+
+    \Function{GetKeys}{} \TODO{change font}
+      \State $\left(p_F, s_F\right) \gets \mathrm{genKey}\left(\right)$
+      \Comment{For $F$ output}
+      \State $\left(p_{\mathrm{pay}}, s_{\mathrm{pay}}\right) \gets
+      \mathrm{genKey}\left(\right)$ \Comment{For com output to remote}
+      \State $\left(p_{\mathrm{dpay}}, s_{\mathrm{dpay}}\right) \gets
+      \mathrm{genKey}\left(\right)$ \Comment{For com output to self}
+      \State $\left(p_{\mathrm{htlc}}, s_{\mathrm{htlc}}\right) \gets
+      \mathrm{genKey}\left(\right)$ \Comment{For htlc output to self}
+      \State $\texttt{seed} \overset{\$}{\gets} U(k)$ \Comment{For per com
+      point}
+      \State $\left(p_{\mathrm{rev}}, s_{\mathrm{rev}}\right) \gets
+      \mathrm{genKey}\left(\right)$ \Comment{For revocation in com}
+      \State \Return $\left(\left(p_F, s_F\right), \left(p_{\mathrm{pay}},
+      s_{\mathrm{pay}}\right), \left(p_{\mathrm{dpay}},
+      s_{\mathrm{dpay}}\right),\right.$
+      \Indent
+        \State $\left.\left(p_{\mathrm{htlc}}, s_{\mathrm{htlc}}\right),
+        \mathtt{seed}, \left(p_{\mathrm{rev}}, s_{\mathrm{rev}}\right)\right)$
+      \EndIndent
+    \EndFunction
   \end{algorithmic}
 \end{protocolbox}
 
-\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ (self is \alice) - open}
-  \label{alg:protocol:open}
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{openChannel}
+from \environment}
+  \label{alg:protocol:open:env}
   \begin{algorithmic}[1]
     \State Upon receiving $\left(\textsc{openChannel}, \mathrm{pid}_{\alice},
     \mathrm{pid}_{\bob}, x\right)$ from \environment:
@@ -88,8 +111,13 @@
       $ph_{\mathrm{com}, 1}, ph\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) to
       \bob{} and \adversary
     \EndIndent
-    \State
+  \end{algorithmic}
+\end{protocolbox}
 
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{openChannel}
+from \bob}
+  \label{alg:protocol:open:openChannel}
+  \begin{algorithmic}[1]
     \State Upon receiving (\textsc{openChannel}, $x$, BobDelay, $pt_F,
     pt\_\mathrm{base}_{\mathrm{pay}}, pt\_\mathrm{base}_{\mathrm{dpay}},$
     $pt\_\mathrm{base}_{\mathrm{htlc}}, pt_{\mathrm{com}, 1},
@@ -117,8 +145,13 @@
       $ph_{\mathrm{com}, 1}, ph\_\mathrm{base}_{\mathrm{rev}}$, \textit{tid}) to
       \bob{} and \adversary
     \EndIndent
-    \State
+  \end{algorithmic}
+\end{protocolbox}
 
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -
+\textsc{acceptChannel}}
+  \label{alg:protocol:open:acceptChannel}
+  \begin{algorithmic}[1]
     \State Upon receiving (\textsc{acceptChannel}, \texttt{remoteDelay}, $pt_F,
     pt\_\mathrm{base}_{\mathrm{pay}}, pt\_\mathrm{base}_{\mathrm{dpay}},$
     $pt\_\mathrm{base}_{\mathrm{htlc}},$ $pt_{\mathrm{com}, 1},
@@ -160,8 +193,13 @@
       \State send (\textsc{fundingCreated}, \textit{tid},
       \textit{pchid}, sig) to \bob{} and \adversary
     \EndIndent
-    \State
+  \end{algorithmic}
+\end{protocolbox}
 
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -
+\textsc{fundingCreated}}
+  \label{alg:protocol:open:fundingCreated}
+  \begin{algorithmic}[1]
     \State Upon receiving (\textsc{fundingCreated}, \textit{tid},
     \textit{pchid}, $\mathtt{BobSig}_1$) from \bob:
     \Indent
@@ -194,8 +232,13 @@
       \State send (\textsc{fundingSigned}, \textit{pchid}, sig) to \bob{} and
       \adversary
     \EndIndent
-    \State
+  \end{algorithmic}
+\end{protocolbox}
 
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -
+\textsc{fundingSigned}}
+  \label{alg:protocol:open:fundingSigned}
+  \begin{algorithmic}[1]
     \State Upon receiving (\textsc{fundingSigned}, \textit{pchid},
     $\mathtt{BobSig}_1$) from \bob:
     \Indent
@@ -212,31 +255,12 @@
       \textsc{fundingLocked}''
       \State send (\textsc{submit}, $\left(\mathrm{sig}, F\right)$) to \ledger
     \EndIndent
-    \State
+  \end{algorithmic}
+\end{protocolbox}
 
-    \Function{GetKeys}{} \TODO{change font}
-      \State $\left(p_F, s_F\right) \gets \mathrm{genKey}\left(\right)$
-      \Comment{For $F$ output}
-      \State $\left(p_{\mathrm{pay}}, s_{\mathrm{pay}}\right) \gets
-      \mathrm{genKey}\left(\right)$ \Comment{For com output to remote}
-      \State $\left(p_{\mathrm{dpay}}, s_{\mathrm{dpay}}\right) \gets
-      \mathrm{genKey}\left(\right)$ \Comment{For com output to self}
-      \State $\left(p_{\mathrm{htlc}}, s_{\mathrm{htlc}}\right) \gets
-      \mathrm{genKey}\left(\right)$ \Comment{For htlc output to self}
-      \State $\texttt{seed} \overset{\$}{\gets} U(k)$ \Comment{For per com
-      point}
-      \State $\left(p_{\mathrm{rev}}, s_{\mathrm{rev}}\right) \gets
-      \mathrm{genKey}\left(\right)$ \Comment{For revocation in com}
-      \State \Return $\left(\left(p_F, s_F\right), \left(p_{\mathrm{pay}},
-      s_{\mathrm{pay}}\right), \left(p_{\mathrm{dpay}},
-      s_{\mathrm{dpay}}\right),\right.$
-      \Indent
-        \State $\left.\left(p_{\mathrm{htlc}}, s_{\mathrm{htlc}}\right),
-        \mathtt{seed}, \left(p_{\mathrm{rev}}, s_{\mathrm{rev}}\right)\right)$
-      \EndIndent
-    \EndFunction
-    \State
-
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{checkNew}}
+  \label{alg:protocol:open:checkNew}
+  \begin{algorithmic}[1]
     \State \TODO{explicitly add keys et al to \texttt{channel}}
     \State Upon receiving (\textsc{checkNew}, \alice, \bob, $x$) from
     \environment: \Comment{new message: represents lnd polling daemon}
@@ -260,8 +284,13 @@
       \State send (\textsc{fundingLocked}, \textit{pchid},
       $ph\_\mathrm{base}_{\mathrm{com}, 2}$) to \bob{}
     \EndIndent
-    \State
+  \end{algorithmic}
+\end{protocolbox}
 
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -
+\textsc{fundingLocked}}
+  \label{alg:protocol:open:fundingLocked}
+  \begin{algorithmic}[1]
     \State Upon receiving (\textsc{fundingLocked}, \textit{pchid},
     $pt\_\mathrm{base}_{\mathrm{com}, 2}$) from \bob:
     \Indent
@@ -276,11 +305,10 @@
       \State move channel data from \texttt{pendingOpen} to \texttt{channels}
       \State add receipt of channel to \texttt{newChannels}
     \EndIndent
-    \State
   \end{algorithmic}
 \end{protocolbox}
 
-\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ (self is \alice) - poll}
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - poll}
   \label{alg:protocol:poll}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{poll}) from \environment:
@@ -343,11 +371,18 @@
       \State send (\textsc{submit}, \texttt{toSubmit}) to \ledger
     \EndIndent
     \State
+
+    \State Upon receiving (\textsc{getNew}) from \alice:
+    \Indent
+      \State clear \texttt{newChannels}(\alice),
+      \texttt{closedChannels}(\alice), \texttt{pendingUpdates}(\alice) and send
+      them to \alice
+    \EndIndent
   \end{algorithmic}
 \end{protocolbox}
 
-\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ (self is \alice) - pay}
-  \label{alg:protocol:pay}
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - invoice}
+  \label{alg:protocol:pay:invoice}
   \begin{algorithmic}[1]
     \State \orfeas{maybe leak queries to global functionalities to \adversary?}
     \State Upon receiving (\textsc{pay}, \textit{Bob}, $x$,
@@ -416,8 +451,13 @@
       largest \texttt{remoteDelay}, $\left(\mu_0, \delta_0\right)$) to
       \textit{pchid} channel counterparty and \adversary
     \EndIndent
-    \State
+  \end{algorithmic}
+\end{protocolbox}
 
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -
+\textsc{updateAddHtlc}}
+  \label{alg:protocol:pay:updateAddHtlc}
+  \begin{algorithmic}[1]
     \State Upon receiving (\textsc{updateAddHtlc}, \textit{pchid},
     $\mathtt{HTLCNo}, x, h, \mathtt{remoteDelay}, M$) from \bob:
     \Indent
@@ -470,8 +510,13 @@
         $x, h, \mathtt{remoteDelay}', M$) to $\mathit{pchid}'$ counterparty
       \EndIf
     \EndIndent
-    \State
+  \end{algorithmic}
+\end{protocolbox}
 
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -
+\textsc{updateFulfillHtlc}}
+  \label{alg:protocol:pay:updateFulfillHtlc}
+  \begin{algorithmic}[1]
     \State Upon receiving (\textsc{updateFulfillHtlc}, \textit{pchid}, HTLC\_no,
     $R$) from \bob:
     \Indent
@@ -507,8 +552,12 @@
         \EndIf
       \EndIf
     \EndIndent
-    \State
+  \end{algorithmic}
+\end{protocolbox}
 
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{commit}}
+  \label{alg:protocol:pay:commit}
+  \begin{algorithmic}[1]
     \State Upon receiving (\textsc{commit}, \textit{pchid}) from \environment:
     \Indent
       \State ensure that there is a $\mathtt{channel} \in \mathtt{channels}$
@@ -538,8 +587,13 @@
       \State send (\textsc{commitmentSigned}, \textit{pchid}, ComSig, HTLCSigs)
       to \textit{pchid} counterparty
     \EndIndent
-    \State
+  \end{algorithmic}
+\end{protocolbox}
 
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -
+\textsc{commitmentSigned}}
+  \label{alg:protocol:pay:commitmentSigned}
+  \begin{algorithmic}[1]
     \State Upon receiving (\textsc{commitmentSigned}, \textit{pchid},
     $\mathtt{comSig}_{n+1}$, $\mathtt{HTLCSigs}_{n+1}$) from \bob:
     \Indent
@@ -570,8 +624,13 @@
       \State send (\textsc{revokeAndAck}, \textit{pchid}, $sh_{\mathrm{com}, n},
       ph_{\mathrm{com}, n+2}$) to \bob
     \EndIndent
-    \State
+  \end{algorithmic}
+\end{protocolbox}
 
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -
+\textsc{revokeAndAck}}
+  \label{alg:protocol:pay:revokeAndAck}
+  \begin{algorithmic}[1]
     \State Upon receiving (\textsc{revokeAndAck}, \textit{pchid},
     $st_{\mathrm{com}, n}, pt_{\mathrm{com}, n+2}$) from \bob:
     \Indent
@@ -615,8 +674,12 @@
       \mathcal{H}\left(pt_{\mathrm{com}, n+2} ||
       pt\_\mathrm{base}_{\mathrm{htlc}}\right)$
     \EndIndent
-    \State
+  \end{algorithmic}
+\end{protocolbox}
 
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{push}}
+\label{alg:protocol:pay:push}
+  \begin{algorithmic}[1]
     \State Upon receiving (\textsc{push}, \textit{pchid}) from \environment:
     \Indent
       \State ensure that there is a $\mathtt{channel} \in \mathtt{channels}$
@@ -632,7 +695,7 @@
   \end{algorithmic}
 \end{protocolbox}
 
-\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ (self is \alice) - close}
+\begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - close}
   \label{alg:protocol:close}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from
