@@ -83,10 +83,9 @@ from \environment}
       $\left.\left(phb_{\mathrm{htlc}}, shb_{\mathrm{htlc}}\right),
       \mathtt{seed}, \left(phb_{\mathrm{rev}}, shb_{\mathrm{rev}}\right)\right)
       \gets \texttt{GetKeys}\left(\right)$
-      \State $sh_{\mathrm{com}, 1} \gets
-      \texttt{PRF}\left(\mathtt{seed}, 1\right)$
-      \State $ph_{\mathrm{com}, 1} \gets
-      \mathtt{pkFromSk}\left(sh_{\mathrm{com}, 1}\right)$
+      \State $\mathrm{prand}_1 \gets \texttt{PRF}\left(\mathtt{seed}, 1\right)$
+      \State $\left(sh_{\mathrm{com}, 1}, ph_{\mathrm{com}, 1}\right) \gets
+      \mathrm{KeyGen}\left(\mathrm{prand}_1\right)$
       \State choose unique temporary ID \textit{tid} \Comment{unique for the two
       parties}
       \State associate keys with \textit{tid}
@@ -121,10 +120,9 @@ from \bob}
       shb_{\mathrm{htlc}}\right), \mathtt{seed},\right.$
       $\left.\left(phb_{\mathrm{rev}}, shb_{\mathrm{rev}}\right)\right) \gets
       \texttt{GetKeys}\left(\right)$
-      \State $sh_{\mathrm{com}, 1} \gets \texttt{PRF}\left(\mathtt{seed},
-      1\right)$
-      \State $ph_{\mathrm{com}, 1} \gets
-      \mathtt{pkFromSk}\left(sh_{\mathrm{com}, 1}\right)$
+      \State $\mathrm{prand}_1 \gets \texttt{PRF}\left(\mathtt{seed}, 1\right)$
+      \State $\left(sh_{\mathrm{com}, 1}, ph_{\mathrm{com}, 1}\right) \gets
+      \mathrm{KeyGen}\left(\mathrm{prand}_1\right)$
       \State associate keys with \textit{tid} and store in \texttt{pendingOpen}
       \State send (\textsc{acceptChannel}, \texttt{delay}, \texttt{relayDelay},
       $ph_F, phb_{\mathrm{pay}}, phb_{\mathrm{dpay}}, phb_{\mathrm{htlc}},$
@@ -247,10 +245,9 @@ from \bob}
       $\Sigma_{\alice}$
       \State ensure $\exists$ unspent TX in $\Sigma_{\alice}$ with ID
       \textit{pchid} and a $\left(x, ph_F \wedge pt_F\right)$ output
-      \State $sh_{\mathrm{com}, 2} \gets
-      \texttt{PRF}\left(\mathtt{seed}, 2\right)$
-      \State $ph_{\mathrm{com}, 2} \gets
-      \mathtt{pkFromSk}\left(sh_{\mathrm{com}, 2}\right)$
+      \State $\mathrm{prand}_2 \gets \texttt{PRF}\left(\mathtt{seed}, 2\right)$
+      \State $\left(sh_{\mathrm{com}, 2}, ph_{\mathrm{com}, 2}\right) \gets
+      \mathrm{KeyGen}\left(\mathrm{prand}_2\right)$
       \State add TX to \texttt{channel} data \State replace ``broadcast'' mark
       in \texttt{channel} with ``in state''
       \If{\texttt{channel} is marked as ``in state, \textsc{fundingLocked}''}
@@ -590,11 +587,11 @@ from \bob}
       \EndFor
       \State $\mathtt{pendingLocalCom} \gets \mathtt{localCom}$
       \State mark $\mathtt{pendingLocalCom}$ as ``irrevocably committed''
-      \State $sh_{\mathrm{com}, n+2} \gets
-      \texttt{PRF}\left(\mathtt{seed}, n+2\right)$
-      \State $ph_{\mathrm{com}, n+2} \gets
-      \mathtt{pkFromSk}\left(sh_{\mathrm{com}, n+2}\right)$
-      \State send (\textsc{revokeAndAck}, \textit{pchid}, $sh_{\mathrm{com}, n},
+      \State $\mathrm{prand}_{n+2} \gets \texttt{PRF}\left(\mathtt{seed},
+      n+2\right)$
+      \State $\left(sh_{\mathrm{com}, n+2}, ph_{\mathrm{com}, n+2}\right) \gets
+      \mathrm{KeyGen}\left(\mathrm{prand}_{n+2}\right)$
+      \State send (\textsc{revokeAndAck}, \textit{pchid}, $\mathrm{prand}_n,
       ph_{\mathrm{com}, n+2}$) to \bob
     \EndIndent
   \end{algorithmic}
