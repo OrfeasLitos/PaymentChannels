@@ -45,18 +45,18 @@
     \State
 
     \Function{GetKeys}{} \TODO{change font}
-      \State $\left(p_F, s_F\right) \gets \mathrm{genKey}\left(\right)$
+      \State $\left(p_F, s_F\right) \gets \mathrm{MKeyGen}\left(\right)$
       \Comment{For $F$ output}
       \State $\left(p_{\mathrm{pay}}, s_{\mathrm{pay}}\right) \gets
-      \mathrm{genKey}\left(\right)$ \Comment{For com output to remote}
+      \mathrm{MKeyGen}\left(\right)$ \Comment{For com output to remote}
       \State $\left(p_{\mathrm{dpay}}, s_{\mathrm{dpay}}\right) \gets
-      \mathrm{genKey}\left(\right)$ \Comment{For com output to self}
+      \mathrm{MKeyGen}\left(\right)$ \Comment{For com output to self}
       \State $\left(p_{\mathrm{htlc}}, s_{\mathrm{htlc}}\right) \gets
-      \mathrm{genKey}\left(\right)$ \Comment{For htlc output to self}
+      \mathrm{MKeyGen}\left(\right)$ \Comment{For htlc output to self}
       \State $\texttt{seed} \overset{\$}{\gets} U(k)$ \Comment{For per com
       point}
       \State $\left(p_{\mathrm{rev}}, s_{\mathrm{rev}}\right) \gets
-      \mathrm{genKey}\left(\right)$ \Comment{For revocation in com}
+      \mathrm{MKeyGen}\left(\right)$ \Comment{For revocation in com}
       \State \Return $\left(\left(p_F, s_F\right), \left(p_{\mathrm{pay}},
       s_{\mathrm{pay}}\right), \left(p_{\mathrm{dpay}},
       s_{\mathrm{dpay}}\right),\right.$
@@ -154,10 +154,10 @@
       \mathcal{H}\left(ptb_{\mathrm{rev}} || pt_{\mathrm{com}, 1}\right) +
       ph_{\mathrm{com}, 1} \cdot \mathcal{H}\left( pt_{\mathrm{com}, 1} ||
       ptb_{\mathrm{rev}}\right)$
-      \State $ph_{\mathrm{dpay}, 1} \gets phb_{\mathrm{dpay}} +
-      \mathcal{H}\left(ph_{\mathrm{com}, 1} || phb_{\mathrm{dpay}}\right)$
-      \State $ph_{\mathrm{pay}, 1} \gets phb_{\mathrm{pay}} +
-      \mathcal{H}\left(ph_{\mathrm{com}, 1} || phb_{\mathrm{pay}}\right)$
+      \State $ph_{\mathrm{dpay}, 1} \gets
+      \texttt{PubKeyGen}\left(phb_{\mathrm{dpay}}, ph_{\mathrm{com}, 1}\right)$
+      \State $ph_{\mathrm{pay}, 1} \gets
+      \texttt{PubKeyGen}\left(phb_{\mathrm{pay}}, ph_{\mathrm{com}, 1}\right)$
       \State $\mathtt{remoteCom} \gets \mathtt{remoteCom}_1 \gets$ TX \{input:
       output 1 of $F$, output: $\left(x, ph_{\mathrm{pay}, 1}\right)$\}
       \State $\mathtt{localCom} \gets$ TX \{input: output 1 of $F$, output:
@@ -186,10 +186,10 @@
       \mathcal{H}\left(phb_{\mathrm{rev}} || ph_{\mathrm{com}, 1}\right) +
       pt_{\mathrm{com}, 1} \cdot \mathcal{H}\left( ph_{\mathrm{com}, 1} ||
       phb_{\mathrm{rev}}\right)$
-      \State $pt_{\mathrm{dpay}, 1} \gets ptb_{\mathrm{dpay}} +
-      \mathcal{H}\left(pt_{\mathrm{com}, 1} || ptb_{\mathrm{dpay}}\right)$
-      \State $pt_{\mathrm{pay}, 1} \gets ptb_{\mathrm{pay}} +
-      \mathcal{H}\left(pt_{\mathrm{com}, 1} || ptb_{\mathrm{pay}}\right)$
+      \State $pt_{\mathrm{dpay}, 1} \gets
+      \texttt{PubKeyGen}\left(ptb_{\mathrm{dpay}}, pt_{\mathrm{com}, 1}\right)$
+      \State $pt_{\mathrm{pay}, 1} \gets
+      \texttt{PubKeyGen}\left(ptb_{\mathrm{pay}}, pt_{\mathrm{com}, 1}\right)$
       \State $\mathtt{localCom} \gets \mathtt{localCom}_1 \gets$ TX \{input:
       output 1 of $F$, output: $\left(x, pt_{\mathrm{pay}, 1}\right)$\}
       \State ensure $\mathtt{verify}\left(\mathtt{localCom}_1,
@@ -620,24 +620,22 @@
       pt_{\mathrm{com}, n+2}\right) + pt_{\mathrm{com}, n+2} \cdot
       \mathcal{H}\left( pt_{\mathrm{com}, n+2} ||
       ptb_{\mathrm{rev}}\right)$
-      \State $ph_{\mathrm{dpay}, n+2} \gets phb_{\mathrm{dpay}} +
-      \mathcal{H}\left(ph_{\mathrm{com}, n+2} ||
-      phb_{\mathrm{dpay}}\right)$
-      \State $pt_{\mathrm{dpay}, n+2} \gets ptb_{\mathrm{dpay}} +
-      \mathcal{H}\left(pt_{\mathrm{com}, n+2} ||
-      ptb_{\mathrm{dpay}}\right)$
-      \State $ph_{\mathrm{pay}, n+2} \gets phb_{\mathrm{pay}} +
-      \mathcal{H}\left(ph_{\mathrm{com}, n+2} ||
-      phb_{\mathrm{pay}}\right)$
-      \State $pt_{\mathrm{pay}, n+2} \gets ptb_{\mathrm{pay}} +
-      \mathcal{H}\left(pt_{\mathrm{com}, n+2} ||
-      ptb_{\mathrm{pay}}\right)$
-      \State $ph_{\mathrm{htlc}, n+2} \gets phb_{\mathrm{htlc}} +
-      \mathcal{H}\left(ph_{\mathrm{com}, n+2} ||
-      phb_{\mathrm{htlc}}\right)$
-      \State $pt_{\mathrm{htlc}, n+2} \gets ptb_{\mathrm{htlc}} +
-      \mathcal{H}\left(pt_{\mathrm{com}, n+2} ||
-      ptb_{\mathrm{htlc}}\right)$
+      \State $ph_{\mathrm{dpay}, n+2} \gets
+      \texttt{PubKeyGen}\left(phb_{\mathrm{dpay}}, ph_{\mathrm{com},
+      n+2}\right)$
+      \State $pt_{\mathrm{dpay}, n+2} \gets
+      \texttt{PubKeyGen}\left(ptb_{\mathrm{dpay}}, pt_{\mathrm{com},
+      n+2}\right)$
+      \State $ph_{\mathrm{pay}, n+2} \gets
+      \texttt{PubKeyGen}\left(phb_{\mathrm{pay}}, ph_{\mathrm{com}, n+2}\right)$
+      \State $pt_{\mathrm{pay}, n+2} \gets
+      \texttt{PubKeyGen}\left(ptb_{\mathrm{pay}}, pt_{\mathrm{com}, n+2}\right)$
+      \State $ph_{\mathrm{htlc}, n+2} \gets
+      \texttt{PubKeyGen}\left(phb_{\mathrm{htlc}}, ph_{\mathrm{com},
+      n+2}\right)$
+      \State $pt_{\mathrm{htlc}, n+2} \gets
+      \texttt{PubKeyGen}\left(ptb_{\mathrm{htlc}}, pt_{\mathrm{com},
+      n+2}\right)$
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
