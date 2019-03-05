@@ -12,6 +12,22 @@ will be routed by \simulator{} to \fpaynet{} instead. To distinguish which
 player it comes from, \simulator{} also appends the player name to the message.
 
 \noindent \hrulefill \\
-\fpaynet{}: \\
+$\fpaynet{}_{\mathrm{, dummy}}$: \\
 Upon receiving any message $M$ by \alice: send ($M, \alice$) to \simulator \\
 Upon receiving any message ($M, \alice$) by \simulator: send $M$ to \alice
+
+\begin{lemma}
+  \label{lemma:dummyfunc}
+  $\textsc{Exec}^{\ledger}_{\Pi_{\mathrm{LN}}, \adversary_{\mathrm{d}},
+  \environment} = \textsc{Exec}^{\fpaynet{}_{\mathrm{, dummy}},
+  \ledger}_{\simulator_{\mathrm{LN}}, \environment}$
+\end{lemma}
+\begin{proof}
+  Consider a message that \environment{} sends. In the real world, the protocol
+  ITIs produce an output. In the ideal world, the message is given to
+  $\simulator{}_{\mathrm{LN}}$ through $\fpaynet{}_{\mathrm{, dummy}}$. The
+  former simulates the protocol ITIs of the real world (along with their coin
+  flips) and so produces an output from the exact same distribution, which is
+  given to \environment{} through $\fpaynet{}_{\mathrm{, dummy}}$. Thus the two
+  outputs are indistinguishable.
+\end{proof}
