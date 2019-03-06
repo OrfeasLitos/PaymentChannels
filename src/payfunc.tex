@@ -36,8 +36,9 @@
       \mathtt{relayNegligent}\left(\alice\right) \gets \emptyset$
       \State send (\textsc{read}) to \ledger{} as \alice{} and assign largest
       block number to \texttt{lastPoll}(\alice)
+      \label{alg:fpaynet:support:lastpoll}
       \State send $\left(\textsc{register}, \alice, \mathrm{delay},
-      \mathrm{relayDelay}\right)$ to \simulator
+      \mathrm{relayDelay}, \mathrm{lastPoll}\right)$ to \simulator
     \EndIndent
     \State
 
@@ -76,7 +77,8 @@
 
     \State At the end of each activation: \orfeas{can this part completely go?}
     \Indent
-      \State verify onChainbalance() for all parties is consistent with ledger (if not roll back the state and ignore command of activation).
+      \State verify onChainbalance() for all parties is consistent with ledger
+      (if not roll back the state and ignore command of activation).
     \EndIndent
   \end{algorithmic}
 \end{systembox}
