@@ -1,5 +1,5 @@
+\begin{figure}[!htbp]
 \begin{systembox}{\fpaynet - support}
-  \label{alg:fpaynet:support}
   \funcsection{Parameters}
     \begin{itemize}
       \item one-way, collision-free hash function $\mathcal{H}$ (for generating
@@ -82,9 +82,12 @@
     \EndIndent
   \end{algorithmic}
 \end{systembox}
+\caption{}
+\label{alg:fpaynet:support}
+\end{figure}
 
+\begin{figure}[!htbp]
 \begin{systembox}{\fpaynet - open}
-  \label{alg:fpaynet:open}
   \begin{algorithmic}[1]
     \State Upon receiving $\left(\textsc{openChannel}, \alice, \bob, x,
     \mathit{tid}\right)$ from \alice:
@@ -134,9 +137,12 @@
     \EndIndent
   \end{algorithmic}
 \end{systembox}
+\caption{}
+\label{alg:fpaynet:open}
+\end{figure}
 
+\begin{figure}[!htbp]
 \begin{systembox}{\fpaynet - pay}
-  \label{alg:fpaynet:pay}
   \begin{algorithmic}[1]
     \State Upon receiving $\left(\textsc{pay}, \bob, x,
     \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from \alice:
@@ -212,9 +218,12 @@
     \EndIndent
   \end{algorithmic}
 \end{systembox}
+\caption{}
+\label{alg:fpaynet:pay}
+\end{figure}
 
+\begin{figure}[!htbp]
 \begin{systembox}{\fpaynet - close}
-  \label{alg:fpaynet:close}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from \alice
     \aggelos{(or \simulator) ?? } \orfeas{@Aggelos: why \simulator?}
@@ -256,9 +265,12 @@
     \EndIndent
   \end{algorithmic}
 \end{systembox}
+\caption{}
+\label{alg:fpaynet:close}
+\end{figure}
 
+\begin{figure}[!htbp]
 \begin{systembox}{\fpaynet - poll}
-  \label{alg:fpaynet:poll}
   \begin{algorithmic}[1]
     \State Upon receiving $\left(\textsc{poll}\right)$ from \alice:
     \Indent
@@ -337,3 +349,6 @@
     \EndIndent
   \end{algorithmic}
 \end{systembox}
+\caption{}
+\label{alg:fpaynet:poll}
+\end{figure}

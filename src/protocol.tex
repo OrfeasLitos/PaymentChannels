@@ -1,5 +1,5 @@
+\begin{figure}[!htbp]
 \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ (self is \alice{} always) - support}
-  \label{alg:protocol:support}
   \begin{algorithmic}[1]
     \State Initialisation:
     \Indent
@@ -70,10 +70,13 @@
     \EndFunction
   \end{algorithmic}
 \end{protocolbox}
+\caption{}
+\label{alg:protocol:support}
+\end{figure}
 
+\begin{figure}[!htbp]
 \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{openChannel} from
 \environment}
-  \label{alg:protocol:open:env}
   \begin{algorithmic}[1]
     \State Upon receiving $\left(\textsc{openChannel}, \alice, \bob, x,
     \mathit{tid}\right)$ from \environment:
@@ -107,9 +110,12 @@
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
+\caption{}
+\label{alg:protocol:open:env}
+\end{figure}
 
+\begin{figure}[!htbp]
 \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{openChannel} from \bob}
-  \label{alg:protocol:open:openChannel}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{openChannel}, $x$, BobDelay, $pt_F,
     ptb_{\mathrm{pay}}, ptb_{\mathrm{dpay}}, ptb_{\mathrm{htlc}},
@@ -132,9 +138,12 @@
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
+\caption{}
+\label{alg:protocol:open:openChannel}
+\end{figure}
 
+\begin{figure}[!htbp]
 \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{acceptChannel}}
-  \label{alg:protocol:open:acceptChannel}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{acceptChannel}, \texttt{remoteDelay}, $pt_F,
     ptb_{\mathrm{pay}}, ptb_{\mathrm{dpay}},$ $ptb_{\mathrm{htlc}},$
@@ -175,9 +184,12 @@
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
+\caption{}
+\label{alg:protocol:open:acceptChannel}
+\end{figure}
 
+\begin{figure}[!htbp]
 \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{fundingCreated}}
-  \label{alg:protocol:open:fundingCreated}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{fundingCreated}, \textit{tid},
     \textit{pchid}, $\mathtt{BobSig}_1$) from \bob:
@@ -209,9 +221,12 @@
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
+\caption{}
+\label{alg:protocol:open:fundingCreated}
+\end{figure}
 
+\begin{figure}[!htbp]
 \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{fundingSigned}}
-  \label{alg:protocol:open:fundingSigned}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{fundingSigned}, \textit{pchid},
     $\mathtt{BobSig}_1$) from \bob:
@@ -231,9 +246,12 @@
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
+\caption{}
+\label{alg:protocol:open:fundingSigned}
+\end{figure}
 
+\begin{figure}[!htbp]
 \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{checkNew}}
-  \label{alg:protocol:open:checkNew}
   \begin{algorithmic}[1]
     \State \TODO{explicitly add keys et al to \texttt{channel}}
     \State Upon receiving (\textsc{checkNew}, \alice, \bob, $x$, \textit{tid})
@@ -259,9 +277,12 @@
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
+\caption{}
+\label{alg:protocol:open:checkNew}
+\end{figure}
 
+\begin{figure}[!htbp]
 \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{fundingLocked}}
-  \label{alg:protocol:open:fundingLocked}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{fundingLocked}, \textit{pchid},
     $pt_{\mathrm{com}, 2}$) from \bob:
@@ -279,9 +300,12 @@
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
+\caption{}
+\label{alg:protocol:open:fundingLocked}
+\end{figure}
 
+\begin{figure}[!htbp]
 \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - poll}
-  \label{alg:protocol:poll}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{poll}) from \environment:
     \Indent
@@ -352,9 +376,12 @@
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
+\caption{}
+\label{alg:protocol:poll}
+\end{figure}
 
+\begin{figure}[!htbp]
 \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - invoice}
-  \label{alg:protocol:pay:invoice}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{pay}, \textit{Bob}, $x$,
     $\overrightarrow{\mathtt{path}}$, \texttt{receipt}) from \environment:
@@ -423,9 +450,12 @@
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
+\caption{}
+\label{alg:protocol:pay:invoice}
+\end{figure}
 
+\begin{figure}[!htbp]
 \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{updateAddHtlc}}
-  \label{alg:protocol:pay:updateAddHtlc}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{updateAddHtlc}, \textit{pchid},
     $\mathtt{HTLCNo}, x, h, \mathtt{remoteDelay}, M$) from \bob:
@@ -481,9 +511,12 @@
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
+\caption{}
+\label{alg:protocol:pay:updateAddHtlc}
+\end{figure}
 
+\begin{figure}[!htbp]
 \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{updateFulfillHtlc}}
-  \label{alg:protocol:pay:updateFulfillHtlc}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{updateFulfillHtlc}, \textit{pchid}, HTLC\_no,
     $R$) from \bob:
@@ -522,9 +555,12 @@
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
+\caption{}
+\label{alg:protocol:pay:updateFulfillHtlc}
+\end{figure}
 
+\begin{figure}[!htbp]
 \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{commit}}
-  \label{alg:protocol:pay:commit}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{commit}, \textit{pchid}) from \environment:
     \Indent
@@ -557,9 +593,12 @@
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
+\caption{}
+\label{alg:protocol:pay:commit}
+\end{figure}
 
+\begin{figure}[!htbp]
 \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{commitmentSigned}}
-  \label{alg:protocol:pay:commitmentSigned}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{commitmentSigned}, \textit{pchid},
     $\mathtt{comSig}_{n+1}$, $\mathtt{HTLCSigs}_{n+1}$) from \bob:
@@ -593,9 +632,12 @@
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
+\caption{}
+\label{alg:protocol:pay:commitmentSigned}
+\end{figure}
 
+\begin{figure}[!htbp]
 \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{revokeAndAck}}
-  \label{alg:protocol:pay:revokeAndAck}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{revokeAndAck}, \textit{pchid},
     $st_{\mathrm{com}, n}, pt_{\mathrm{com}, n+2}$) from \bob:
@@ -635,9 +677,12 @@
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
+\caption{}
+\label{alg:protocol:pay:revokeAndAck}
+\end{figure}
 
+\begin{figure}[!htbp]
 \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{push}}
-\label{alg:protocol:pay:push}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{push}, \textit{pchid}) from \environment:
     \Indent
@@ -653,9 +698,12 @@
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
+\caption{}
+\label{alg:protocol:pay:push}
+\end{figure}
 
+\begin{figure}[!htbp]
 \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - close}
-  \label{alg:protocol:close}
   \begin{algorithmic}[1]
     \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from
     \environment:
@@ -679,3 +727,6 @@
     \EndIndent
   \end{algorithmic}
 \end{protocolbox}
+\caption{}
+\label{alg:protocol:close}
+\end{figure}
