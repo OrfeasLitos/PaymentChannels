@@ -1,34 +1,34 @@
 \begin{figure}[!htbp]
-\begin{systembox}{$\fpaynet{}_{\mathrm{, dummy}}$}
-  \begin{algorithmic}[1]
-    \State Upon receiving any message $M$ from \alice: send ($M, \alice$) to
-    \simulator
-    \State Upon receiving any message ($M, \alice$) from \simulator: send $M$ to
-    \alice
-  \end{algorithmic}
-\end{systembox}
-\caption{}
-\label{alg:fpaynet:dummy}
+  \begin{systembox}{$\fpaynet{}_{\mathrm{, dummy}}$}
+    \begin{algorithmic}[1]
+      \State Upon receiving any message $M$ from \alice: send ($M, \alice$) to
+      \simulator
+      \State Upon receiving any message ($M, \alice$) from \simulator: send $M$
+      to \alice
+    \end{algorithmic}
+  \end{systembox}
+  \caption{}
+  \label{alg:fpaynet:dummy}
 \end{figure}
 
 \begin{figure}[!htbp]
-\begin{simulatorbox}{$\simulator{}_{\mathrm{LN}}$}
-  Expects the same messages as the protocol, but messages that the protocol
-  expects to receive from \environment, the simulator expects to receive from
-  $\fpaynet{}_{\mathrm{, dummy}}$ with the name of the player appended. The
-  simulator internally executes one copy of the protocol per player. Upon
-  receiving any message, the simulator runs the relevant code of the protocol
-  copy tied to the appended player name. Mimicking the real-world case, if a
-  protocol copy sends a message to another player, that message is passed to
-  \adversary{} as if sent by the player and if \adversary{} allows the message
-  to reach the receiver, then the simulator reacts by acting upon the message
-  with the protocol copy corresponding to the recipient player. A message sent
-  by a protocol copy to \environment{} will be routed by \simulator{} to
-  $\fpaynet{}_{\mathrm{, dummy}}$ instead. To distinguish which player it comes
-  from, \simulator{} also appends the player name to the message.
-\end{simulatorbox}
-\caption{}
-\label{alg:sim:ln}
+  \begin{simulatorbox}{$\simulator{}_{\mathrm{LN}}$}
+    Expects the same messages as the protocol, but messages that the protocol
+    expects to receive from \environment, the simulator expects to receive from
+    $\fpaynet{}_{\mathrm{, dummy}}$ with the name of the player appended. The
+    simulator internally executes one copy of the protocol per player. Upon
+    receiving any message, the simulator runs the relevant code of the protocol
+    copy tied to the appended player name. Mimicking the real-world case, if a
+    protocol copy sends a message to another player, that message is passed to
+    \adversary{} as if sent by the player and if \adversary{} allows the message
+    to reach the receiver, then the simulator reacts by acting upon the message
+    with the protocol copy corresponding to the recipient player. A message sent
+    by a protocol copy to \environment{} will be routed by \simulator{} to
+    $\fpaynet{}_{\mathrm{, dummy}}$ instead. To distinguish which player it
+    comes from, \simulator{} also appends the player name to the message.
+  \end{simulatorbox}
+  \caption{}
+  \label{alg:sim:ln}
 \end{figure}
 
 \begin{lemma}
@@ -49,45 +49,45 @@
 \end{proof}
 
 \begin{figure}[!htbp]
-\begin{systembox}{$\fpaynet{}_{\mathrm{, dummy + Reg}}$}
-  \begin{algorithmic}[1]
-    \State For messages \textsc{register}, \textsc{registerDone} and
-    \textsc{registered}, act like \fpaynet{}.
-    \State Upon receiving any other message $M$ from \alice: send ($M, \alice$)
-    to \simulator
-    \State Upon receiving any other message ($M, \alice$) from \simulator: send
-    $M$ to \alice
-  \end{algorithmic}
-\end{systembox}
-\caption{}
-\label{alg:fpaynet:reg}
+  \begin{systembox}{$\fpaynet{}_{\mathrm{, dummy + Reg}}$}
+    \begin{algorithmic}[1]
+      \State For messages \textsc{register}, \textsc{registerDone} and
+      \textsc{registered}, act like \fpaynet{}.
+      \State Upon receiving any other message $M$ from \alice: send ($M,
+      \alice$) to \simulator
+      \State Upon receiving any other message ($M, \alice$) from \simulator:
+      send $M$ to \alice
+    \end{algorithmic}
+  \end{systembox}
+  \caption{}
+  \label{alg:fpaynet:reg}
 \end{figure}
 
 \begin{figure}[!htbp]
-\begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg}}$}
-  Like $\simulator{}_{\mathrm{LN}}$, but it does not accept
-  (\textsc{registered}) from $\fpaynet{}_{\mathrm{, dummy + Reg}}$. Additional
-  differences:
-  \begin{algorithmic}[1]
-    \State Upon receiving (\textsc{register}, \alice, delay, relayDelay,
-    lastPoll) from $\fpaynet{}_{\mathrm{, dummy + Reg}}$:
-    \Indent
-      \State $\mathtt{delay} \text{ of \alice{} ITI } \gets \mathrm{delay}$
-      \label{alg:sim:reg:delay}
-      \State $\mathtt{relayDelay} \text{ of \alice{} ITI } \gets
-      \mathrm{relayDelay}$
-      \State $\mathtt{lastPoll} \text{ of \alice{} ITI } \gets
-      \mathrm{lastPoll}$
-      \State $\left(pk_{\alice}, sk_{\alice}\right) \text{ of \alice{} ITI }
-      \gets \mathtt{KeyGen}()$
-      \label{alg:sim:reg:keygen}
-      \State send (\textsc{registerDone}, \alice, $pk_{\alice}$) to
-      $\fpaynet{}_{\mathrm{, dummy + Reg}}$
-    \EndIndent
-  \end{algorithmic}
-\end{simulatorbox}
-\caption{}
-\label{alg:sim:reg}
+  \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg}}$}
+    Like $\simulator{}_{\mathrm{LN}}$, but it does not accept
+    (\textsc{registered}) from $\fpaynet{}_{\mathrm{, dummy + Reg}}$. Additional
+    differences:
+    \begin{algorithmic}[1]
+      \State Upon receiving (\textsc{register}, \alice, delay, relayDelay,
+      lastPoll) from $\fpaynet{}_{\mathrm{, dummy + Reg}}$:
+      \Indent
+        \State $\mathtt{delay} \text{ of \alice{} ITI } \gets \mathrm{delay}$
+        \label{alg:sim:reg:delay}
+        \State $\mathtt{relayDelay} \text{ of \alice{} ITI } \gets
+        \mathrm{relayDelay}$
+        \State $\mathtt{lastPoll} \text{ of \alice{} ITI } \gets
+        \mathrm{lastPoll}$
+        \State $\left(pk_{\alice}, sk_{\alice}\right) \text{ of \alice{} ITI }
+        \gets \mathtt{KeyGen}()$
+        \label{alg:sim:reg:keygen}
+        \State send (\textsc{registerDone}, \alice, $pk_{\alice}$) to
+        $\fpaynet{}_{\mathrm{, dummy + Reg}}$
+      \EndIndent
+    \end{algorithmic}
+  \end{simulatorbox}
+  \caption{}
+  \label{alg:sim:reg}
 \end{figure}
 
 \begin{lemma}

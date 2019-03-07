@@ -1,354 +1,357 @@
 \begin{figure}[!htbp]
-\begin{systembox}{\fpaynet - support}
-  \funcsection{Parameters}
-    \begin{itemize}
-      \item one-way, collision-free hash function $\mathcal{H}$ (for generating
-      transaction IDs)
-    \end{itemize}
+  \begin{systembox}{\fpaynet - support}
+    \funcsection{Parameters}
+      \begin{itemize}
+        \item one-way, collision-free hash function $\mathcal{H}$ (for
+        generating transaction IDs)
+      \end{itemize}
 
-  \funcsection{Interface (messages from $\mathcal{E}$)}
-  \TODO{check}
-    \begin{itemize}
-      \item (\textsc{register})
-      \item (\textsc{setDelay}, delay)
-      \item (\textsc{openChannel}, self, peer, selfCoins)
-      \item (\textsc{closeChannel}, receipt)
-      \item (\textsc{pay}, peer, coins, path, receipt)
-    \end{itemize}
+    \funcsection{Interface (messages from $\mathcal{E}$)}
+    \TODO{check}
+      \begin{itemize}
+        \item (\textsc{register})
+        \item (\textsc{setDelay}, delay)
+        \item (\textsc{openChannel}, self, peer, selfCoins)
+        \item (\textsc{closeChannel}, receipt)
+        \item (\textsc{pay}, peer, coins, path, receipt)
+      \end{itemize}
 
-  \funcsection{Initialisation}
-  \begin{algorithmic}[1]
-    \State Initialisation:
-    \Indent
-      \State $\mathtt{channels}, \mathtt{pendingPay}, \mathtt{pendingOpen},
-      \mathtt{corrupted} \gets \emptyset$
-    \EndIndent
-    \State
+    \funcsection{Initialisation}
+    \begin{algorithmic}[1]
+      \State Initialisation:
+      \Indent
+        \State $\mathtt{channels}, \mathtt{pendingPay}, \mathtt{pendingOpen},
+        \mathtt{corrupted} \gets \emptyset$
+      \EndIndent
+      \State
 
-    \State Upon receiving $\left(\textsc{register}, \mathrm{delay},
-    \mathrm{relayDelay}\right)$ from \alice:
-    \Indent
-      \State $\mathtt{delay}\left(\alice\right) \gets \mathrm{delay}$
-      \State $\mathtt{relayDelay}\left(\alice\right) \gets \mathrm{relayDelay}$
-      \State $\mathtt{pendingUpdates}\left(\alice\right),
-      \mathtt{newChannels}\left(\alice\right) \gets \emptyset$
-      \State $\mathtt{negligent}\left(\alice\right),
-      \mathtt{relayNegligent}\left(\alice\right) \gets \emptyset$
-      \State send (\textsc{read}) to \ledger{} as \alice{} and assign largest
-      block number to \texttt{lastPoll}(\alice)
-      \label{alg:fpaynet:support:lastpoll}
-      \State send $\left(\textsc{register}, \alice, \mathrm{delay},
-      \mathrm{relayDelay}, \mathrm{lastPoll}\right)$ to \simulator
-    \EndIndent
-    \State
+      \State Upon receiving $\left(\textsc{register}, \mathrm{delay},
+      \mathrm{relayDelay}\right)$ from \alice:
+      \Indent
+        \State $\mathtt{delay}\left(\alice\right) \gets \mathrm{delay}$
+        \State $\mathtt{relayDelay}\left(\alice\right) \gets
+        \mathrm{relayDelay}$
+        \State $\mathtt{pendingUpdates}\left(\alice\right),
+        \mathtt{newChannels}\left(\alice\right) \gets \emptyset$
+        \State $\mathtt{negligent}\left(\alice\right),
+        \mathtt{relayNegligent}\left(\alice\right) \gets \emptyset$
+        \State send (\textsc{read}) to \ledger{} as \alice{} and assign largest
+        block number to \texttt{lastPoll}(\alice)
+        \label{alg:fpaynet:support:lastpoll}
+        \State send $\left(\textsc{register}, \alice, \mathrm{delay},
+        \mathrm{relayDelay}, \mathrm{lastPoll}\right)$ to \simulator
+      \EndIndent
+      \State
 
-    \State Upon receiving $\left(\textsc{registerDone}, \alice,
-    \mathrm{pubKey}\right)$ from \simulator:
-    \Indent
-      \State $\mathtt{pubKey}\left(\alice\right) \gets \mathrm{pubKey}$
-      \State send (\textsc{register}, \alice, \texttt{delay},
-      \texttt{relayDelay}, pubKey) to \alice
-    \EndIndent
-    \State
+      \State Upon receiving $\left(\textsc{registerDone}, \alice,
+      \mathrm{pubKey}\right)$ from \simulator:
+      \Indent
+        \State $\mathtt{pubKey}\left(\alice\right) \gets \mathrm{pubKey}$
+        \State send (\textsc{register}, \alice, \texttt{delay},
+        \texttt{relayDelay}, pubKey) to \alice
+      \EndIndent
+      \State
 
-    \State Upon receiving (\textsc{registered}) from \alice:
-    \Indent
-      \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
-      $\Sigma_{\alice}$
-      \State assign the sum of all output values that are exclusively spendable
-      by \alice{} to \texttt{onChainBalance}
-      \State send (\textsc{registered}) to \alice
-    \EndIndent
-    \State
+      \State Upon receiving (\textsc{registered}) from \alice:
+      \Indent
+        \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
+        $\Sigma_{\alice}$
+        \State assign the sum of all output values that are exclusively
+        spendable by \alice{} to \texttt{onChainBalance}
+        \State send (\textsc{registered}) to \alice
+      \EndIndent
+      \State
 
-    \State Upon receiving any message except for
-    $\left(\textsc{register}\right)$ from \alice:
-    \Indent
-      \State ignore message if \alice{} has not registered
-    \EndIndent
-    \State
+      \State Upon receiving any message except for
+      $\left(\textsc{register}\right)$ from \alice:
+      \Indent
+        \State ignore message if \alice{} has not registered
+      \EndIndent
+      \State
 
-    \State Upon receiving $\left(\textsc{corrupted}, \alice\right)$ from
-    \simulator:
-    \Indent
-      \State add \alice{} to \texttt{corrupted}
-    \EndIndent
-    \State
+      \State Upon receiving $\left(\textsc{corrupted}, \alice\right)$ from
+      \simulator:
+      \Indent
+        \State add \alice{} to \texttt{corrupted}
+      \EndIndent
+      \State
 
-    \State At the end of each activation: \orfeas{can this part completely go?}
-    \Indent
-      \State verify onChainbalance() for all parties is consistent with ledger
-      (if not roll back the state and ignore command of activation).
-    \EndIndent
-  \end{algorithmic}
-\end{systembox}
-\caption{}
-\label{alg:fpaynet:support}
+      \State At the end of each activation: \orfeas{can this part completely
+      go?}
+      \Indent
+        \State verify onChainbalance() for all parties is consistent with ledger
+        (if not roll back the state and ignore command of activation).
+      \EndIndent
+    \end{algorithmic}
+  \end{systembox}
+  \caption{}
+  \label{alg:fpaynet:support}
 \end{figure}
 
 \begin{figure}[!htbp]
-\begin{systembox}{\fpaynet - open}
-  \begin{algorithmic}[1]
-    \State Upon receiving $\left(\textsc{openChannel}, \alice, \bob, x,
-    \mathit{tid}\right)$ from \alice:
-    \Indent
-      \State ensure \textit{tid} hasn't been used by \alice{} for opening
-      another channel before
-      \State choose unique channel ID \textit{fchid}
-      \State $\mathtt{pendingOpen}\left(\mathit{fchid}\right) \gets
-      \left(\alice, \bob, x, \mathit{tid}\right)$
-      \State send $\left(\textsc{openChannel}, \alice, \bob, x,
-      \mathit{fchid}\right)$ to \simulator
-    \EndIndent
-    \State
+  \begin{systembox}{\fpaynet - open}
+    \begin{algorithmic}[1]
+      \State Upon receiving $\left(\textsc{openChannel}, \alice, \bob, x,
+      \mathit{tid}\right)$ from \alice:
+      \Indent
+        \State ensure \textit{tid} hasn't been used by \alice{} for opening
+        another channel before
+        \State choose unique channel ID \textit{fchid}
+        \State $\mathtt{pendingOpen}\left(\mathit{fchid}\right) \gets
+        \left(\alice, \bob, x, \mathit{tid}\right)$
+        \State send $\left(\textsc{openChannel}, \alice, \bob, x,
+        \mathit{fchid}\right)$ to \simulator
+      \EndIndent
+      \State
 
-    \State Upon receiving $\left(\textsc{channelOpened}, p_{\alice, F}, p_{\bob,
-    F}, \mathit{fchid}, \mathit{pchid}\right)$ from \simulator:
-    \Indent
-      \State ensure that there is no $\mathtt{channel} \in \mathtt{channels}$
-      with ids \textit{pchid}, \textit{fchid}
-      \State add $p_{\alice, F}, p_{\bob, F}$ to
-      \texttt{pendingOpen}(\textit{fchid})
-    \EndIndent
-    \State
+      \State Upon receiving $\left(\textsc{channelOpened}, p_{\alice, F},
+      p_{\bob, F}, \mathit{fchid}, \mathit{pchid}\right)$ from \simulator:
+      \Indent
+        \State ensure that there is no $\mathtt{channel} \in \mathtt{channels}$
+        with ids \textit{pchid}, \textit{fchid}
+        \State add $p_{\alice, F}, p_{\bob, F}$ to
+        \texttt{pendingOpen}(\textit{fchid})
+      \EndIndent
+      \State
 
-    \State Upon receiving (\textsc{checkNew}, \alice, \bob, $x$, \textit{tid})
-    from \alice:
-    \Indent
-      \State ensure there is a matching \texttt{channel} in \texttt{pendingOpen}
-      with id \textit{fchid}
-      \State $\left(\alice, \bob, x, p_{\alice, F}, p_{\bob, F}\right) \gets
-      \mathtt{pendingOpen}\left(\mathit{fchid}\right)$
-      \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
-      $\Sigma_{\alice}$
-      \State ensure that there is a TX $F \in \Sigma_{\alice}$ with a $\left(x,
-      \left(p_{\alice, F} \wedge p_{\bob, F}\right)\right)$ output such that
-      $\mathcal{H}\left(F\right) = \mathit{pchid}$
-      \State $\mathrm{offChainBalance}\left(\alice\right) \gets
-      \mathrm{offChainBalance}\left(\alice\right) + x$ \orfeas{remove
-      on/offChainBalance?}
-      \State $\mathrm{onChainBalance}\left(\alice\right) \gets
-      \mathrm{offChainBalance}\left(\alice\right) - x$
-      \State $\mathtt{channel} \gets \left(\alice, \bob, x, 0, 0,
-      \mathit{fchid}, \mathit{pchid}\right)$
-      \State add \texttt{channel} to \texttt{channels}
-      \State add \texttt{receipt}(\texttt{channel}) to
-      \texttt{newChannels}(\alice)
-    \EndIndent
-  \end{algorithmic}
-\end{systembox}
-\caption{}
-\label{alg:fpaynet:open}
+      \State Upon receiving (\textsc{checkNew}, \alice, \bob, $x$, \textit{tid})
+      from \alice:
+      \Indent
+        \State ensure there is a matching \texttt{channel} in
+        \texttt{pendingOpen} with id \textit{fchid}
+        \State $\left(\alice, \bob, x, p_{\alice, F}, p_{\bob, F}\right) \gets
+        \mathtt{pendingOpen}\left(\mathit{fchid}\right)$
+        \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
+        $\Sigma_{\alice}$
+        \State ensure that there is a TX $F \in \Sigma_{\alice}$ with a
+        $\left(x, \left(p_{\alice, F} \wedge p_{\bob, F}\right)\right)$ output
+        such that $\mathcal{H}\left(F\right) = \mathit{pchid}$
+        \State $\mathrm{offChainBalance}\left(\alice\right) \gets
+        \mathrm{offChainBalance}\left(\alice\right) + x$ \orfeas{remove
+        on/offChainBalance?}
+        \State $\mathrm{onChainBalance}\left(\alice\right) \gets
+        \mathrm{offChainBalance}\left(\alice\right) - x$
+        \State $\mathtt{channel} \gets \left(\alice, \bob, x, 0, 0,
+        \mathit{fchid}, \mathit{pchid}\right)$
+        \State add \texttt{channel} to \texttt{channels}
+        \State add \texttt{receipt}(\texttt{channel}) to
+        \texttt{newChannels}(\alice)
+      \EndIndent
+    \end{algorithmic}
+  \end{systembox}
+  \caption{}
+  \label{alg:fpaynet:open}
 \end{figure}
 
 \begin{figure}[!htbp]
-\begin{systembox}{\fpaynet - pay}
-  \begin{algorithmic}[1]
-    \State Upon receiving $\left(\textsc{pay}, \bob, x,
-    \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from \alice:
-    \Indent
-      \State ensure that $\left(\alice, c\right) \in \mathtt{receipt}$ and $c
-      \geq x$
-      \State ensure that there is a $\mathtt{channel} \in \mathtt{channels} :
-      \mathtt{receipt}\left(\mathtt{channel}\right) = \mathtt{receipt}$
-      \State ensure that $\overrightarrow{\mathtt{path}}$ consists of
-      $\mathrm{channels} \in \mathtt{channels}$
-      \State ensure that each consecutive pair of channels in
-      $\overrightarrow{\mathtt{path}}$ has a common member
-      \State choose unique payment ID \textit{payid}
-      \State add $\left(\alice, \bob, x, \overrightarrow{\mathtt{path}},
-      \mathit{payid}\right)$ to \texttt{pendingPay}
-      \State send $\left(\textsc{pay}, \alice, \bob, x,
-      \overrightarrow{\mathtt{path}}, \mathtt{receipt}, \mathit{payid}\right)$
-      to \simulator
-    \EndIndent
-    \State
+  \begin{systembox}{\fpaynet - pay}
+    \begin{algorithmic}[1]
+      \State Upon receiving $\left(\textsc{pay}, \bob, x,
+      \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from \alice:
+      \Indent
+        \State ensure that $\left(\alice, c\right) \in \mathtt{receipt}$ and $c
+        \geq x$
+        \State ensure that there is a $\mathtt{channel} \in \mathtt{channels} :
+        \mathtt{receipt}\left(\mathtt{channel}\right) = \mathtt{receipt}$
+        \State ensure that $\overrightarrow{\mathtt{path}}$ consists of
+        $\mathrm{channels} \in \mathtt{channels}$
+        \State ensure that each consecutive pair of channels in
+        $\overrightarrow{\mathtt{path}}$ has a common member
+        \State choose unique payment ID \textit{payid}
+        \State add $\left(\alice, \bob, x, \overrightarrow{\mathtt{path}},
+        \mathit{payid}\right)$ to \texttt{pendingPay}
+        \State send $\left(\textsc{pay}, \alice, \bob, x,
+        \overrightarrow{\mathtt{path}}, \mathtt{receipt}, \mathit{payid}\right)$
+        to \simulator
+      \EndIndent
+      \State
 
-    \State Upon receiving $\left(\textsc{resolvePay}, \mathit{payid},
-    \charlie\right)$ from \simulator:
-    \Indent
-      \State retrieve $\left(\alice, \bob, x,
-      \overrightarrow{\mathtt{path}}\right)$ with ID \textit{payid} and remove
-      it from \texttt{pendingPay}
-      \If{($\charlie \neq \alice$ and $\charlie \notin \mathtt{corrupted}$) or
-      $\charlie \notin \overrightarrow{\mathtt{path}}$}
-        \State halt
-      \EndIf
-      \ForAll{$\mathtt{channel}\text{s} \in \overrightarrow{\mathtt{path}}$
-      starting from the one where \charlie{} pays}
-        \State in the first iteration, \charlie{} is \texttt{payer}. In
-        subsequent iterations, \texttt{payer} is the unique player that has
-        received but has not given. The other \texttt{channel} party is
-        \texttt{payee}
-        \If{\texttt{payer} has $x$ or more in \texttt{channel}}
-          \State update \texttt{channel} to the next version and transfer $x$
-          from \texttt{payer} to \texttt{payee}
-          \State add \texttt{receipt}(\texttt{channel}) to both parties'
-          \texttt{pendingUpdates}
-        \Else
-          \State revert all updates and remove them from
-          \texttt{pendingUpdates}
-          \State \orfeas{entire if may be avoided by simply not sending a
-          message to \alice}
-          \If{all players on path from \alice{} up to and including failed
-          \texttt{payer} are honest}
-            \State send $\left(\textsc{notPaid}, \bob, x,
-            \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to \alice
-          \Else
-            \State send (\textsc{reportNotPaid}, \textit{payid}) to
-            \simulator \orfeas{TODO: split in two messages}
-            \If{reply from \simulator{} is (\textsc{doReport},
-            \textit{payid})}
-              \State send $\left(\textsc{notPaid}, \bob, x,
-              \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to
-              \alice
-            \EndIf
-          \EndIf
-          \State \orfeas{end of possibly avoidable if}
-        \EndIf
-      \EndFor
-      \State $\mathtt{offChainBalance}\left(\charlie\right) \gets
-      \mathtt{offChainBalance}\left(\charlie\right) - x$
-      \State $\mathtt{offChainBalance}\left(\bob\right) \gets
-      \mathtt{offChainBalance}\left(\bob\right) + x$
-      \If{\charlie{} = \alice}
-        \State send $\left(\textsc{paid}, \bob, x,
-        \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to \alice
-      \EndIf
-    \EndIndent
-  \end{algorithmic}
-\end{systembox}
-\caption{}
-\label{alg:fpaynet:pay}
-\end{figure}
-
-\begin{figure}[!htbp]
-\begin{systembox}{\fpaynet - close}
-  \begin{algorithmic}[1]
-    \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from \alice
-    \aggelos{(or \simulator) ?? } \orfeas{@Aggelos: why \simulator?}
-    \Indent
-      \State ensure that there is a $\mathtt{channel} \in \mathtt{channels} :
-      \mathtt{receipt}\left(\mathtt{channel}\right) = \mathtt{receipt}$
-      \State retrieve \textit{fchid} from \texttt{channel}
-      \State $\mathtt{pendingClose}\left(\mathit{fchid}\right) \gets \alice$
-      \State send (\textsc{closeChannel}, \textit{fchid}, \alice) to \simulator
-    \EndIndent
-    \State
-
-    \State Upon receiving (\textsc{channelClosed}, \textit{fchid}) from
-    \simulator:
-    \Indent
-      \State $\alice \gets \mathtt{pendingClose}\left(\mathit{fchid}\right)$
-      \State retrieve $\charlie, \bob, x, y, \mathit{pchid}$ from
-      \texttt{channel} with ID \textit{fchid}
-      \State ensure that $\charlie{} = \alice$
-      \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
-      $\Sigma_{\alice}$
-      \State ensure that transaction with ID \textit{pchid} is in
-      $\Sigma_{\alice}$, is spent, $x$ of its coins are spendable or
-      will be spendable exclusively by \alice{} and $y$ of its coins are
-      spendable exclusively by \bob
-      \State $\mathtt{pendingClose}\left(\mathit{fchid}\right) \gets \bot$
-      \State add receipt of \texttt{channel} to \texttt{closedChannels}(\bob)
-      \State remove \texttt{channel} from \texttt{channels}
-      \State $\mathtt{onChainBalance}\left(\alice\right) \gets
-      \mathtt{onChainBalance}\left(\alice\right) + x$
-      \State $\mathtt{onChainBalance}\left(\bob\right) \gets
-      \mathtt{onChainBalance}\left(\bob\right) + y$
-      \State $\mathtt{offChainBalance}\left(\alice\right) \gets
-      \mathtt{offChainBalance}\left(\alice\right) - x$
-      \State $\mathtt{offChainBalance}\left(\bob\right) \gets
-      \mathtt{offChainBalance}\left(\bob\right) - y$
-      \State send (\textsc{channelClosed}, receipt from \texttt{channel}) to
-      \alice
-    \EndIndent
-  \end{algorithmic}
-\end{systembox}
-\caption{}
-\label{alg:fpaynet:close}
-\end{figure}
-
-\begin{figure}[!htbp]
-\begin{systembox}{\fpaynet - poll}
-  \begin{algorithmic}[1]
-    \State Upon receiving $\left(\textsc{poll}\right)$ from \alice:
-    \Indent
-      \State $\mathtt{toReport}\left(\alice\right) \gets \emptyset$
-      \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
-      $\Sigma_{\alice}$
-      \State assign largest block number in $\Sigma_{\alice}$ to $t$
-      \If{$\mathtt{lastPoll}\left(\alice\right) +
-      \mathtt{delay}\left(\alice\right) < t$}
-        \State add $\left[\mathtt{lastpoll}\left(\alice\right), t -
-        \texttt{delay}\left(\alice\right) - 1\right]$ to
-        \texttt{negligent}(\alice)
-      \EndIf
-      \If{$\mathtt{lastPoll}\left(\alice\right) +
-      \mathtt{relayDelay}\left(\alice\right) < t$}
-        \State add $\left[\mathtt{lastpoll}\left(\alice\right), t -
-        \texttt{relayDelay}\left(\alice\right) - 1\right]$ to
-        \texttt{relayNegligent}(\alice)
-      \EndIf
-      \State $\mathtt{lastPoll}\left(\alice\right) \gets t$
-      \State scan $\Sigma_{\alice}$ for honestly closed channels that contain
-      \alice{} and exist in \texttt{channels} (txs that spend funding txs that
-      have the same channel version as stored), remove them from
-      \texttt{channels} and add them to \texttt{toReport}(\alice) (marked as
-      ``honest'')
-      \State scan $\Sigma_{\alice}$ for malicioulsy closed channels that contain
-      \alice{} and exist in \texttt{channels} (txs that spend funding txs that
-      have an older channel version than stored)
-      \ForAll{maliciously closed \texttt{channel}s of which the spending txs can
-      still be spent by \alice} \Comment{If \alice{} is negligent, she may be
-      unable to punish}
-        \If{\alice{} cannot spend those spending txs and \alice{} has not been
-        negligent in the last interval}
+      \State Upon receiving $\left(\textsc{resolvePay}, \mathit{payid},
+      \charlie\right)$ from \simulator:
+      \Indent
+        \State retrieve $\left(\alice, \bob, x,
+        \overrightarrow{\mathtt{path}}\right)$ with ID \textit{payid} and remove
+        it from \texttt{pendingPay}
+        \If{($\charlie \neq \alice$ and $\charlie \notin \mathtt{corrupted}$) or
+        $\charlie \notin \overrightarrow{\mathtt{path}}$}
           \State halt
         \EndIf
-        \State add \texttt{channel} to \texttt{toReport}(\alice) (marked as
-        ``malicious'')
-      \EndFor
-      \State send (\textsc{getClosedFunds}, \texttt{toReport}(\alice), \alice)
-      to \simulator
-    \EndIndent
-    \State
-
-    \State Upon receiving (\textsc{channelsClosed}, \texttt{details}, \alice)
-    from \simulator:
-    \Indent
-      \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
-      $\Sigma_{\alice}$
-      \ForAll{$\mathtt{channel} \in \mathtt{details}$}
-        \State ensure $\mathtt{channel} \in
-        \mathtt{toReport}\left(\alice\right)$
-        \If{\texttt{channel} is marked as ``malicious''}
-          \State ensure that transactions that spend the funding tx of
-          \texttt{channel} and pay \alice{} the entire \texttt{channel} value
-          exist in $\Sigma_{\alice}$
-        \Else \ \Comment{\texttt{channel} is marked as ``honest''}
-          \State ensure that transactions that spend the funding tx of
-          \texttt{channel} and pay \alice{} the her part in \texttt{channel}
-          exist in $\Sigma_{\alice}$
-          \State ensure that \alice{} has not suffered losses for multi-hop
-          payments where she was not the payer
+        \ForAll{$\mathtt{channel}\text{s} \in \overrightarrow{\mathtt{path}}$
+        starting from the one where \charlie{} pays}
+          \State in the first iteration, \charlie{} is \texttt{payer}. In
+          subsequent iterations, \texttt{payer} is the unique player that has
+          received but has not given. The other \texttt{channel} party is
+          \texttt{payee}
+          \If{\texttt{payer} has $x$ or more in \texttt{channel}}
+            \State update \texttt{channel} to the next version and transfer $x$
+            from \texttt{payer} to \texttt{payee}
+            \State add \texttt{receipt}(\texttt{channel}) to both parties'
+            \texttt{pendingUpdates}
+          \Else
+            \State revert all updates and remove them from
+            \texttt{pendingUpdates}
+            \State \orfeas{entire if may be avoided by simply not sending a
+            message to \alice}
+            \If{all players on path from \alice{} up to and including failed
+            \texttt{payer} are honest}
+              \State send $\left(\textsc{notPaid}, \bob, x,
+              \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to \alice
+            \Else
+              \State send (\textsc{reportNotPaid}, \textit{payid}) to
+              \simulator \orfeas{TODO: split in two messages}
+              \If{reply from \simulator{} is (\textsc{doReport},
+              \textit{payid})}
+                \State send $\left(\textsc{notPaid}, \bob, x,
+                \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to
+                \alice
+              \EndIf
+            \EndIf
+            \State \orfeas{end of possibly avoidable if}
+          \EndIf
+        \EndFor
+        \State $\mathtt{offChainBalance}\left(\charlie\right) \gets
+        \mathtt{offChainBalance}\left(\charlie\right) - x$
+        \State $\mathtt{offChainBalance}\left(\bob\right) \gets
+        \mathtt{offChainBalance}\left(\bob\right) + x$
+        \If{\charlie{} = \alice}
+          \State send $\left(\textsc{paid}, \bob, x,
+          \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to \alice
         \EndIf
-        \State add the receipt of \texttt{channel} to
-        \texttt{closedChannels}(\alice)
-        \State remove \texttt{channel} from \texttt{channels} and
-        \texttt{toReport}(\alice)
-      \EndFor
-    \EndIndent
-    \State
+      \EndIndent
+    \end{algorithmic}
+  \end{systembox}
+  \caption{}
+  \label{alg:fpaynet:pay}
+\end{figure}
 
-    \State Upon receiving (\textsc{getNew}) from \alice:
-    \Indent
-      \State clear \texttt{newChannels}(\alice),
-      \texttt{closedChannels}(\alice), \texttt{pendingUpdates}(\alice) and send
-      them to \alice
-    \EndIndent
-  \end{algorithmic}
-\end{systembox}
-\caption{}
-\label{alg:fpaynet:poll}
+\begin{figure}[!htbp]
+  \begin{systembox}{\fpaynet - close}
+    \begin{algorithmic}[1]
+      \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from
+      \alice \aggelos{(or \simulator) ?? } \orfeas{@Aggelos: why \simulator?}
+      \Indent
+        \State ensure that there is a $\mathtt{channel} \in \mathtt{channels} :
+        \mathtt{receipt}\left(\mathtt{channel}\right) = \mathtt{receipt}$
+        \State retrieve \textit{fchid} from \texttt{channel}
+        \State $\mathtt{pendingClose}\left(\mathit{fchid}\right) \gets \alice$
+        \State send (\textsc{closeChannel}, \textit{fchid}, \alice) to
+        \simulator
+      \EndIndent
+      \State
+
+      \State Upon receiving (\textsc{channelClosed}, \textit{fchid}) from
+      \simulator:
+      \Indent
+        \State $\alice \gets \mathtt{pendingClose}\left(\mathit{fchid}\right)$
+        \State retrieve $\charlie, \bob, x, y, \mathit{pchid}$ from
+        \texttt{channel} with ID \textit{fchid}
+        \State ensure that $\charlie{} = \alice$
+        \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
+        $\Sigma_{\alice}$
+        \State ensure that transaction with ID \textit{pchid} is in
+        $\Sigma_{\alice}$, is spent, $x$ of its coins are spendable or
+        will be spendable exclusively by \alice{} and $y$ of its coins are
+        spendable exclusively by \bob
+        \State $\mathtt{pendingClose}\left(\mathit{fchid}\right) \gets \bot$
+        \State add receipt of \texttt{channel} to \texttt{closedChannels}(\bob)
+        \State remove \texttt{channel} from \texttt{channels}
+        \State $\mathtt{onChainBalance}\left(\alice\right) \gets
+        \mathtt{onChainBalance}\left(\alice\right) + x$
+        \State $\mathtt{onChainBalance}\left(\bob\right) \gets
+        \mathtt{onChainBalance}\left(\bob\right) + y$
+        \State $\mathtt{offChainBalance}\left(\alice\right) \gets
+        \mathtt{offChainBalance}\left(\alice\right) - x$
+        \State $\mathtt{offChainBalance}\left(\bob\right) \gets
+        \mathtt{offChainBalance}\left(\bob\right) - y$
+        \State send (\textsc{channelClosed}, receipt from \texttt{channel}) to
+        \alice
+      \EndIndent
+    \end{algorithmic}
+  \end{systembox}
+  \caption{}
+  \label{alg:fpaynet:close}
+\end{figure}
+
+\begin{figure}[!htbp]
+  \begin{systembox}{\fpaynet - poll}
+    \begin{algorithmic}[1]
+      \State Upon receiving $\left(\textsc{poll}\right)$ from \alice:
+      \Indent
+        \State $\mathtt{toReport}\left(\alice\right) \gets \emptyset$
+        \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
+        $\Sigma_{\alice}$
+        \State assign largest block number in $\Sigma_{\alice}$ to $t$
+        \If{$\mathtt{lastPoll}\left(\alice\right) +
+        \mathtt{delay}\left(\alice\right) < t$}
+          \State add $\left[\mathtt{lastpoll}\left(\alice\right), t -
+          \texttt{delay}\left(\alice\right) - 1\right]$ to
+          \texttt{negligent}(\alice)
+        \EndIf
+        \If{$\mathtt{lastPoll}\left(\alice\right) +
+        \mathtt{relayDelay}\left(\alice\right) < t$}
+          \State add $\left[\mathtt{lastpoll}\left(\alice\right), t -
+          \texttt{relayDelay}\left(\alice\right) - 1\right]$ to
+          \texttt{relayNegligent}(\alice)
+        \EndIf
+        \State $\mathtt{lastPoll}\left(\alice\right) \gets t$
+        \State scan $\Sigma_{\alice}$ for honestly closed channels that contain
+        \alice{} and exist in \texttt{channels} (txs that spend funding txs that
+        have the same channel version as stored), remove them from
+        \texttt{channels} and add them to \texttt{toReport}(\alice) (marked as
+        ``honest'')
+        \State scan $\Sigma_{\alice}$ for malicioulsy closed channels that
+        contain \alice{} and exist in \texttt{channels} (txs that spend funding
+        txs that have an older channel version than stored)
+        \ForAll{maliciously closed \texttt{channel}s of which the spending txs
+        can still be spent by \alice} \Comment{If \alice{} is negligent, she may
+        be unable to punish}
+          \If{\alice{} cannot spend those spending txs and \alice{} has not been
+          negligent in the last interval}
+            \State halt
+          \EndIf
+          \State add \texttt{channel} to \texttt{toReport}(\alice) (marked as
+          ``malicious'')
+        \EndFor
+        \State send (\textsc{getClosedFunds}, \texttt{toReport}(\alice), \alice)
+        to \simulator
+      \EndIndent
+      \State
+
+      \State Upon receiving (\textsc{channelsClosed}, \texttt{details}, \alice)
+      from \simulator:
+      \Indent
+        \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply to
+        $\Sigma_{\alice}$
+        \ForAll{$\mathtt{channel} \in \mathtt{details}$}
+          \State ensure $\mathtt{channel} \in
+          \mathtt{toReport}\left(\alice\right)$
+          \If{\texttt{channel} is marked as ``malicious''}
+            \State ensure that transactions that spend the funding tx of
+            \texttt{channel} and pay \alice{} the entire \texttt{channel} value
+            exist in $\Sigma_{\alice}$
+          \Else \ \Comment{\texttt{channel} is marked as ``honest''}
+            \State ensure that transactions that spend the funding tx of
+            \texttt{channel} and pay \alice{} the her part in \texttt{channel}
+            exist in $\Sigma_{\alice}$
+            \State ensure that \alice{} has not suffered losses for multi-hop
+            payments where she was not the payer
+          \EndIf
+          \State add the receipt of \texttt{channel} to
+          \texttt{closedChannels}(\alice)
+          \State remove \texttt{channel} from \texttt{channels} and
+          \texttt{toReport}(\alice)
+        \EndFor
+      \EndIndent
+      \State
+
+      \State Upon receiving (\textsc{getNew}) from \alice:
+      \Indent
+        \State clear \texttt{newChannels}(\alice),
+        \texttt{closedChannels}(\alice), \texttt{pendingUpdates}(\alice) and
+        send them to \alice
+      \EndIndent
+    \end{algorithmic}
+  \end{systembox}
+  \caption{}
+  \label{alg:fpaynet:poll}
 \end{figure}
