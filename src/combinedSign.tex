@@ -1,0 +1,137 @@
+\section{Combined sign primitive}
+  \subsection{Algorithms}
+    \begin{itemize}
+      \item $\left(mpk, msk\right) \gets \textsc{MasterKeyGen}\left(1^k\right)$
+      \item $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right)$
+      \item $\left(cpk_l, csk_l\right) \gets \textsc{CombineKeyGen}\left(msk, l,
+      sk\right)$
+      \item $cpk_l \gets \textsc{CombinePubKeyGen}\left(mpk, l, pk\right)$
+      \item $\sigma \gets \textsc{Sign}\left(csk, m\right)$
+      \item $\left\{0, 1\right\} \gets \textsc{Verify}\left(cpk, m,
+      \sigma\right)$
+    \end{itemize}
+
+  \subsection{Correctness}
+    \begin{itemize}
+      \item $\forall k \in \mathcal{N}, l \in \mathcal{L},
+      \Pr[(mpk, msk) \gets \textsc{MasterKeyGen}\left(1^k\right),$
+      $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$
+      $\left(cpk_1, csk_1\right) \gets \textsc{CombineKeyGen}\left(msk, l,
+      sk\right),$ \\
+      $cpk_2 \gets \textsc{CombinePubKeyGen}\left(mpk, l, pk\right),$
+      $cpk_1 = cpk_2] = 1$
+
+      \item $\forall k \in \mathcal{N}, l \in \mathcal{L}, m \in \mathcal{M},
+      \Pr[(mpk, msk) \gets \textsc{MasterKeyGen}\left(1^k\right),$
+      $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$
+      $\left(cpk, csk\right) \gets \textsc{CombineKeyGen}\left(msk, l,
+      sk\right),$
+      $\textsc{Verify}(cpk, m, \textsc{Sign}(csk, m)) = 1] = 1$
+    \end{itemize}
+
+  \subsection{Security}
+  \subsubsection{Games}
+    \begin{gamebox}{$(mpk, msk)$ secure}
+    \end{gamebox}
+
+    \begin{gamebox}{$(pk, sk)$ secure}
+    \end{gamebox}
+  \subsubsection{Functionality}
+    \begin{systembox}{$\mathcal{F}_{\textsc{Csign}}$}
+      \begin{algorithmic}[1]
+        \State Initialisation:
+        \Indent
+          \State $\forall \alice \in \mathcal{P}, \mathtt{masterKeys} \gets
+          \emptyset, \mathtt{KeyShares} \gets \emptyset, \mathtt{combinedKeys}
+          \gets \emptyset$
+        \EndIndent
+        \State
+
+        \State Upon receiving (\textsc{MasterKeyGen}, \textit{sid}) from \alice:
+        \Indent
+          \State send (\textsc{MasterKeyGen}, \textit{sid}) to \adversary
+          \State expect reply $(\textsc{MasterKey}, \mathit{sid}, msk, mpk)$
+          \State add $(msk, mpk)$ to \texttt{masterKeys}
+          \State output $(\textsc{MasterKey}, \mathit{sid}, msk, mpk)$ to \alice
+        \EndIndent
+        \State
+
+        \State Upon receiving (\textsc{KeyShareGen}, \textit{sid}) from \alice:
+        \Indent
+          \State send (\textsc{KeyShareGen}, \textit{sid}) to \adversary
+          \State expect reply $(\textsc{keyShare}, \mathit{sid}, sk, pk)$
+          \State add $(sk, pk)$ to \texttt{keyShares}
+          \State output $(\textsc{keyShare}, \mathit{sid}, sk, pk)$ to \alice
+        \EndIndent
+        \State
+
+        \State Upon receiving $(\textsc{CombineKeyGen}, \textit{sid}, msk, l,
+        sk)$ from \alice:
+        \Indent
+          \State send $(\textsc{CombineKeyGen}, \mathit{sid}, msk, l, sk)$ to
+          \adversary
+          \State expect reply $(\textsc{keyShare}, \mathit{sid}, msk, l, sk, pk,
+          csk, cpk)$
+          \If{\alice{} is not corrupted and $\exists csk' \neq csk, cpk' \neq
+          cpk: (msk, l, sk, pk, csk', cpk') \in \mathtt{combinedKeys}$}
+            \State output an error message to \alice{} and halt
+          \ElsIf{$(msk, l, sk, pk, csk, cpk) \notin \mathtt{combinedKeys}$}
+            \State add $(\textsc{keyShare}, \mathit{sid}, msk, l, sk, pk, csk,
+            cpk)$ to \texttt{combinedKeys}
+          \EndIf
+            \State output $(\textsc{keyShare}, \mathit{sid}, msk, l, sk, pk,
+            csk, cpk)$ to \alice
+        \EndIndent
+        \State
+
+        \State Upon receiving $(\textsc{CombinePubKeyGen}, \textit{sid}, mpk, l,
+        pk)$ from \alice:
+        \Indent
+          \State retrieve $(msk, mpk)$ from \texttt{masterKeys}
+          \State retrieve $(sk, pk)$ from \texttt{keyShares}
+          \State same as \textsc{CombinePubKeyGen} but returns only public parts
+          of keys
+        \EndIndent
+        \State
+
+        \State Upon receiving $(\textsc{Sign}, \mathit{sid}, csk, m)$ from \alice:
+        \Indent
+          \If{$\exists (cpk, csk) \in \textsc{combinedKeys}$}
+            \State send $(\textsc{Sign}, \mathit{sid}, cpk, m)$ to \adversary
+            \State expect reply $(\textsc{Signature}, \mathit{sid}, csk, m,
+            \sigma)$
+            \If{$(m, \sigma, cpk, 0)$ is recorded}
+              \State output an error message to \alice{} and halt
+            \Else
+              \State record $(m, \sigma, cpk, 1)$
+              \State output $(\textsc{Signature}, \mathit{sid}, m, \sigma)$ to
+              \alice
+            \EndIf
+          \Else \Comment{$csk$ not yet created}
+            \State output an error message to \alice{}
+          \EndIf
+        \EndIndent
+        \State
+
+        \State Upon receiving $(\textsc{Verify}, \mathit{sid}, m, \sigma, cpk')$
+        from \alice:
+        \Indent
+          \State send $(\textsc{Verify}, \mathit{sid}, m, \sigma, cpk')$ to
+          \adversary
+          \State expect reply $(\textsc{Verified}, \mathit{sid}, m, \phi)$
+          \If{$(m, \sigma, cpk', 1)$ is recorded}
+            \State $f \gets 1$
+          \ElsIf{\alice{} is not corrupted and $\nexists \sigma' : (m, \sigma',
+          cpk', 1)$ is recorded}
+            \State $f \gets 0$
+            \State record $(m, \sigma, cpk', 0)$
+          \ElsIf{$\exists f' \in \{0, 1\} : (m, \sigma, cpk', f')$ is recorded}
+            \State $f \gets f'$
+          \Else
+            \State $f \gets \phi$
+            \State record $(m, \sigma, cpk', \phi)$
+          \EndIf
+          \State output $(\textsc{Verified}, \mathit{sid}, m, f)$ to \alice
+        \EndIndent
+      \end{algorithmic}
+    \end{systembox}
