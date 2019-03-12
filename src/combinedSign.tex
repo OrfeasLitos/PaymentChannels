@@ -35,3 +35,61 @@
 
     \begin{gamebox}{$(pk, sk)$ secure}
     \end{gamebox}
+
+  \subsection{Construction}
+    \TODO{output standard signing keypairs to avoid duplication?}
+
+    Parameters: $\mathcal{H}, G$
+    \begin{algorithmic}[0]
+      \Function{MasterKeyGen}{$1^k$, rand}
+        \State Return (rand, $G \cdot \mathrm{rand}$)
+      \EndFunction
+    \end{algorithmic}
+
+    \begin{algorithmic}[0]
+      \Function{KeyShareGen}{$1^k$, rand}
+        \State Return (rand, $G \cdot \mathrm{rand}$)
+      \EndFunction
+    \end{algorithmic}
+
+    \begin{algorithmic}[0]
+      \Function{CombineKeyGen}{$msk, mpk, sk, pk$}
+        \State \Return $msk \cdot \mathcal{H}\left(mpk \concat pk\right) + sk
+        \cdot \mathcal{H}\left(pk \concat mpk\right)$
+      \EndFunction
+    \end{algorithmic}
+
+    \begin{algorithmic}[0]
+      \Function{CombinePubKeyGen}{$mpk, pk$}
+        \State \Return $mpk \cdot \mathcal{H}\left(mpk \concat pk\right) + pk
+        \cdot \mathcal{H}\left(pk \concat mpk\right)$
+      \EndFunction
+    \end{algorithmic}
+
+    \begin{algorithmic}[0]
+      \Function{Sign}{$csk, m$}
+        \State like standard sign
+      \EndFunction
+    \end{algorithmic}
+
+    \begin{algorithmic}[0]
+      \Function{Verify}{$cpk, m, \sigma$}
+        \State like standard verify
+      \EndFunction
+    \end{algorithmic}
+
+    \begin{algorithmic}[0]
+      \State just to remember
+      \State $sh_{\mathrm{rev}, n} \gets shb_{\mathrm{rev}} \cdot
+      \mathcal{H}\left(phb_{\mathrm{rev}} || pt_{\mathrm{com}, n}\right) +
+      st_{\mathrm{com}, n} \cdot \mathcal{H}\left(pt_{\mathrm{com}, n} ||
+      phb_{\mathrm{rev}}\right)$
+      \State $pt_{\mathrm{rev}, n+2} \gets ptb_{\mathrm{rev}} \cdot
+      \mathcal{H}\left(ptb_{\mathrm{rev}} || ph_{\mathrm{com}, n+2}\right) +
+      ph_{\mathrm{com}, n+2} \cdot \mathcal{H}\left(ph_{\mathrm{com}, n+2} ||
+      ptb_{\mathrm{rev}}\right)$
+      \State $ph_{\mathrm{rev}, n+2} \gets phb_{\mathrm{rev}} \cdot
+      \mathcal{H}\left(phb_{\mathrm{rev}} || pt_{\mathrm{com}, n+2}\right) +
+      pt_{\mathrm{com}, n+2} \cdot \mathcal{H}\left(pt_{\mathrm{com}, n+2} ||
+      phb_{\mathrm{rev}}\right)$
+    \end{algorithmic}
