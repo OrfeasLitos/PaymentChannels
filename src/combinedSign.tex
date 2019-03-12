@@ -3,9 +3,9 @@
     \begin{itemize}
       \item $\left(mpk, msk\right) \gets \textsc{MasterKeyGen}\left(1^k\right)$
       \item $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right)$
-      \item $\left(cpk_l, csk_l\right) \gets \textsc{CombineKeyGen}\left(msk, l,
-      sk\right)$
-      \item $cpk_l \gets \textsc{CombinePubKeyGen}\left(mpk, l, pk\right)$
+      \item $\left(cpk_l, csk_l\right) \gets \textsc{CombineKeyGen}\left(msk,
+      mpk, sk, pk\right)$
+      \item $cpk_l \gets \textsc{CombinePubKeyGen}\left(mpk, pk\right)$
       \item $\sigma \gets \textsc{Sign}\left(csk, m\right)$
       \item $\left\{0, 1\right\} \gets \textsc{Verify}\left(cpk, m,
       \sigma\right)$
@@ -13,19 +13,19 @@
 
   \subsection{Correctness}
     \begin{itemize}
-      \item $\forall k \in \mathcal{N}, l \in \mathcal{L},
-      \Pr[(mpk, msk) \gets \textsc{MasterKeyGen}\left(1^k\right),$
-      $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$
-      $\left(cpk_1, csk_1\right) \gets \textsc{CombineKeyGen}\left(msk, l,
-      sk\right),$ \\
-      $cpk_2 \gets \textsc{CombinePubKeyGen}\left(mpk, l, pk\right),$
+      \item $\forall k \in \mathcal{N},$ \\
+      $\Pr[(mpk, msk) \gets \textsc{MasterKeyGen}\left(1^k\right),$ \\
+      $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$ \\
+      $\left(cpk_1, csk_1\right) \gets \textsc{CombineKeyGen}\left(msk, mpk, sk,
+      pk\right),$ \\
+      $cpk_2 \gets \textsc{CombinePubKeyGen}\left(mpk, pk\right),$ \\
       $cpk_1 = cpk_2] = 1$
 
-      \item $\forall k \in \mathcal{N}, l \in \mathcal{L}, m \in \mathcal{M},
-      \Pr[(mpk, msk) \gets \textsc{MasterKeyGen}\left(1^k\right),$
-      $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$
-      $\left(cpk, csk\right) \gets \textsc{CombineKeyGen}\left(msk, l,
-      sk\right),$
+      \item $\forall k \in \mathcal{N}, m \in \mathcal{M},$ \\
+      $\Pr[(mpk, msk) \gets \textsc{MasterKeyGen}\left(1^k\right),$ \\
+      $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$ \\
+      $\left(cpk, csk\right) \gets \textsc{CombineKeyGen}\left(msk, mpk, sk,
+      pk\right),$ \\
       $\textsc{Verify}(cpk, m, \textsc{Sign}(csk, m)) = 1] = 1$
     \end{itemize}
 

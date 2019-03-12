@@ -167,8 +167,8 @@
         \State $\mathit{pchid} \gets \mathcal{H}\left(F\right)$
         \State replace \textit{tid} with \textit{pchid} in storage
         \State $pt_{\mathrm{rev}, 1} \gets
-        \mathtt{CombPubKeyGen}\left(ptb_{\mathrm{rev}}, pt_{\mathrm{com}, 1},
-        ph_{\mathrm{com}, 1}\right)$
+        \mathtt{CombinePubKeyGen}\left(ptb_{\mathrm{rev}}, ph_{\mathrm{com},
+        1}\right)$
         \State $ph_{\mathrm{dpay}, 1} \gets
         \texttt{PubKeyGen}\left(phb_{\mathrm{dpay}}, ph_{\mathrm{com},
         1}\right)$
@@ -202,8 +202,8 @@
         \State ensure there is a temporary ID \textit{tid} with \bob{} in
         \texttt{pendingOpen} on which we have sent up to \textsc{acceptChannel}
         \State $ph_{\mathrm{rev}, 1} \gets
-        \mathtt{CombPubKeyGen}\left(phb_{\mathrm{rev}}, ph_{\mathrm{com}, 1},
-        pt_{\mathrm{com}, 1}\right)$
+        \mathtt{CombinePubKeyGen}\left(phb_{\mathrm{rev}} pt_{\mathrm{com},
+        1}\right)$
         \State $pt_{\mathrm{dpay}, 1} \gets
         \texttt{PubKeyGen}\left(ptb_{\mathrm{dpay}}, pt_{\mathrm{com},
         1}\right)$
@@ -663,14 +663,15 @@
         \State $\mathtt{localCom}_{n+1} \gets \mathtt{pendingLocalCom}$
         \State unmark \texttt{channel}
         \State $sh_{\mathrm{rev}, n} \gets
-        \mathtt{CombKeyGen}\left(shb_{\mathrm{rev}}, ph_{\mathrm{com}, n},
-        st_{\mathrm{com}, n}\right)$
+        \mathtt{CombineKeyGen}\left(shb_{\mathrm{rev}}, phb_{\mathrm{rev}},
+        st_{\mathrm{com} n}, pt_{\mathrm{com}, n}\right)$
         \State $ph_{\mathrm{rev}, n+2} \gets
-        \mathtt{CombPubKeyGen}\left(phb_{\mathrm{rev}}, ph_{\mathrm{com}, n+2},
-        pt_{\mathrm{com}, n+2}\right)$
+        \mathtt{CombinePubKeyGen}\left(phb_{\mathrm{rev}}, pt_{\mathrm{com},
+        n+2}\right)$
         \State $pt_{\mathrm{rev}, n+2} \gets
-        \mathtt{CombPubKeyGen}\left(ptb_{\mathrm{rev}}, pt_{\mathrm{com}, n+2},
-        ph_{\mathrm{com}, n+2}\right)$
+        \mathtt{CombinePubKeyGen}\left(ptb_{\mathrm{rev}}, ph_{\mathrm{com},
+        n+2}\right)$
+        \State \TODO{Change simple labels to keypairs}
         \State $ph_{\mathrm{dpay}, n+2} \gets
         \texttt{PubKeyGen}\left(phb_{\mathrm{dpay}}, ph_{\mathrm{com},
         n+2}\right)$
