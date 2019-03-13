@@ -21,7 +21,7 @@
         to \texttt{lastPoll}
         \label{alg:protocol:support:lastpoll}
         \State $\left(pk_{\alice}, sk_{\alice}\right) \gets
-        \mathrm{genKey}\left(\right)$
+        \mathrm{KeyGen}\left(\right)$
         \label{alg:protocol:support:keygen}
         \State send (\textsc{register}, \alice, \texttt{delay},
         \texttt{relayDelay}, $pk_{\alice}$) to \environment
@@ -272,7 +272,7 @@
         \State $\mathrm{prand}_2 \gets \texttt{PRF}\left(\mathtt{seed},
         2\right)$
         \State $\left(sh_{\mathrm{com}, 2}, ph_{\mathrm{com}, 2}\right) \gets
-        \mathrm{KeyGen}\left(\mathrm{prand}_2\right)$
+        \mathrm{KeyShareGen}\left(\mathrm{prand}_2\right)$
         \State add TX to \texttt{channel} data \State replace ``broadcast'' mark
         in \texttt{channel} with ``in state''
         \If{\texttt{channel} is marked as ``in state, \textsc{fundingLocked}''}
