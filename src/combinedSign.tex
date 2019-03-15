@@ -1,4 +1,4 @@
-\section{Combined sign primitive}
+\section{Combined Sign primitive}
   \subsection{Algorithms}
     \begin{itemize}
       \item $\left(mpk, msk\right) \gets \textsc{MasterKeyGen}\left(1^k\right)$
@@ -24,8 +24,8 @@
       \item $\forall k \in \mathcal{N}, m \in \mathcal{M},$ \\
       $\Pr[(mpk, msk) \gets \textsc{MasterKeyGen}\left(1^k\right),$ \\
       $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$ \\
-      $\left(cpk, csk\right) \gets \textsc{CombineKeyGen}\left(msk, mpk, sk,
-      pk\right),$ \\
+      $\left(cpk, csk\right) \gets \textsc{CombineKeyGen}\left(mpk, msk, pk,
+      sk\right),$ \\
       $\textsc{Verify}(cpk, m, \textsc{Sign}(csk, m)) = 1] = 1$
     \end{itemize}
 
