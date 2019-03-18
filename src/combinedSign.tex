@@ -3,9 +3,9 @@
     \begin{itemize}
       \item $\left(mpk, msk\right) \gets \textsc{MasterKeyGen}\left(1^k\right)$
       \item $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right)$
-      \item $\left(cpk_l, csk_l\right) \gets \textsc{CombineKeyGen}\left(msk,
+      \item $\left(cpk_l, csk_l\right) \gets \textsc{CombineKey}\left(msk,
       mpk, sk, pk\right)$
-      \item $cpk_l \gets \textsc{CombinePubKeyGen}\left(mpk, pk\right)$
+      \item $cpk_l \gets \textsc{CombinePubKey}\left(mpk, pk\right)$
       \item $\sigma \gets \textsc{Sign}\left(csk, m\right)$
       \item $\left\{0, 1\right\} \gets \textsc{Verify}\left(cpk, m,
       \sigma\right)$
@@ -16,15 +16,15 @@
       \item $\forall k \in \mathcal{N},$ \\
       $\Pr[(mpk, msk) \gets \textsc{MasterKeyGen}\left(1^k\right),$ \\
       $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$ \\
-      $\left(cpk_1, csk_1\right) \gets \textsc{CombineKeyGen}\left(msk, mpk, sk,
+      $\left(cpk_1, csk_1\right) \gets \textsc{CombineKey}\left(msk, mpk, sk,
       pk\right),$ \\
-      $cpk_2 \gets \textsc{CombinePubKeyGen}\left(mpk, pk\right),$ \\
+      $cpk_2 \gets \textsc{CombinePubKey}\left(mpk, pk\right),$ \\
       $cpk_1 = cpk_2] = 1$
 
       \item $\forall k \in \mathcal{N}, m \in \mathcal{M},$ \\
       $\Pr[(mpk, msk) \gets \textsc{MasterKeyGen}\left(1^k\right),$ \\
       $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$ \\
-      $\left(cpk, csk\right) \gets \textsc{CombineKeyGen}\left(mpk, msk, pk,
+      $\left(cpk, csk\right) \gets \textsc{CombineKey}\left(mpk, msk, pk,
       sk\right),$ \\
       $\textsc{Verify}(cpk, m, \textsc{Sign}(csk, m)) = 1] = 1$
     \end{itemize}
@@ -76,7 +76,7 @@
             \State $i \gets i + 1$
             \State store $pk, sk, m$ as $pk_i, sk_i, m_i$
             \State $\left(cpk_i, csk_i\right) \gets
-            \textsc{CombineKeyGen}\left(mpk, msk, pk_i, sk_i\right)$
+            \textsc{CombineKey}\left(mpk, msk, pk_i, sk_i\right)$
             \State $\sigma_i \gets \textsc{Sign}\left(csk_i, m_i\right)$
             \State $\left(\mathtt{aux}_i, \mathrm{response}\right) \gets
             \adversary\left(\textsc{signature}, \mathtt{aux}_{i-1},
@@ -126,14 +126,14 @@
     \end{algorithmic}
 
     \begin{algorithmic}[0]
-      \Function{CombineKeyGen}{$msk, mpk, sk, pk$}
+      \Function{CombineKey}{$msk, mpk, sk, pk$}
         \State \Return $msk \cdot \mathcal{H}\left(mpk \concat pk\right) + sk
         \cdot \mathcal{H}\left(pk \concat mpk\right)$
       \EndFunction
     \end{algorithmic}
 
     \begin{algorithmic}[0]
-      \Function{CombinePubKeyGen}{$mpk, pk$}
+      \Function{CombinePubKey}{$mpk, pk$}
         \State \Return $mpk \cdot \mathcal{H}\left(mpk \concat pk\right) + pk
         \cdot \mathcal{H}\left(pk \concat mpk\right)$
       \EndFunction
@@ -256,15 +256,15 @@
       one element.
 
       Let $E$ denote the event in which $\mathcal{B}$ does not invoke
-      \textsc{CombinePubKeyGen} to produce $cpk^*$. In that case the values
+      \textsc{CombinePubKey} to produce $cpk^*$. In that case the values
       $\mathcal{H}\left(pk^* \concat mpk\right)$ and $\mathcal{H}\left(mpk
       \concat pk^*\right)$ are decided after $\mathcal{B}$ terminates (in
       line~\ref{proof:comb:share:distinguisher:won}) and thus
       \begin{equation}
         \begin{gathered}
-          \Pr\left[cpk^* = \textsc{CombinePubKeyGen}\left(mpk, pk^*\right) |
+          \Pr\left[cpk^* = \textsc{CombinePubKey}\left(mpk, pk^*\right) |
           E\right] = \frac{1}{|Y|} < \mathit{negl}\left(k\right) \Rightarrow \\
-          \Pr\left[cpk^* = \textsc{CombinePubKeyGen}\left(mpk, pk^*\right)
+          \Pr\left[cpk^* = \textsc{CombinePubKey}\left(mpk, pk^*\right)
           \wedge E\right] < \mathit{negl}\left(k\right) \enspace.
         \end{gathered}
         \label{proof:comb:share:nocomb}
@@ -272,11 +272,11 @@
       It is
       \begin{gather*}
         \left(\mathcal{B} \text{ wins}\right) \rightarrow \left(cpk^* =
-        \textsc{CombinePubKeyGen}\left(mpk, pk^*\right)\right) \Rightarrow \\
+        \textsc{CombinePubKey}\left(mpk, pk^*\right)\right) \Rightarrow \\
         \Pr\left[\mathcal{B} \text{ wins}\right] \leq \Pr\left[cpk^* =
-        \textsc{CombinePubKeyGen}\left(mpk, pk^*\right)\right] \Rightarrow \\
+        \textsc{CombinePubKey}\left(mpk, pk^*\right)\right] \Rightarrow \\
         \Pr\left[\mathcal{B} \text{ wins} \wedge E\right] \leq \Pr\left[cpk^* =
-        \textsc{CombinePubKeyGen}\left(mpk, pk^*\right) \wedge E\right]
+        \textsc{CombinePubKey}\left(mpk, pk^*\right) \wedge E\right]
         \overset{\left(\ref{proof:comb:share:nocomb}\right)}{\Rightarrow} \\
         \Pr\left[\mathcal{B} \text{ wins} \wedge E\right] <
         \mathit{negl}\left(k\right) \enspace.
@@ -293,7 +293,7 @@
       \end{equation}
 
       We now focus at the event $\neg E$. Let $F$ the event in which the call of
-      $\mathcal{B}$ to \textsc{CombinePubKeyGen} to produce $cpk^*$ results in
+      $\mathcal{B}$ to \textsc{CombinePubKey} to produce $cpk^*$ results in
       the $j$th invocation of the Random Oracle. Since $j$ is chosen uniformly
       at random, $\Pr\left[F | \neg E\right] =
       \frac{1}{T\left(\mathcal{B}\right)}$. Observe that $\Pr\left[F | E\right]
@@ -394,7 +394,7 @@
               \State $i \gets i + 1$
               \State store $pk, sk, m$ as $pk_i, sk_i, m_i$
               \State $\left(cpk_i, csk_i\right) \gets
-              \textsc{CombineKeyGen}\left(mpk, msk, pk_i, sk_i\right)$
+              \textsc{CombineKey}\left(mpk, msk, pk_i, sk_i\right)$
               \State $\sigma_i \gets \textsc{Sign}\left(csk_i, m_i\right)$
               \State $\left(\mathtt{aux}_i, \mathrm{response}\right) \gets
               \mathcal{B}\left(\textsc{signature}, \mathtt{aux}_{i-1},
