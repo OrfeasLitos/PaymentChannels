@@ -210,14 +210,18 @@
               \State Random Oracle: Let $q$ be the $j$th first-seen query from
               $\mathcal{B}$:
               \If{$q = \left(x \concat mpk\right)$}
-                \State set $\mathcal{H}\left(x \concat mpk\right)$ to a random
-                value
+                \If{$\mathcal{H}\left(x \concat mpk\right)$ unset}
+                  \State set $\mathcal{H}\left(x \concat mpk\right)$ to a random
+                  value
+                \EndIf
                 \State set $\mathcal{H}\left(mpk \concat x\right)$ to $\left(vk
                 - x \cdot \mathcal{H}\left(x \concat mpk\right)\right) \cdot
                 mpk^{-1}$
               \ElsIf{$q = \left(mpk \concat x\right)$}
-                \State set $\mathcal{H}\left(mpk \concat x\right)$ to a random
-                value
+                \If{$\mathcal{H}\left(mpk \concat x\right)$ unset}
+                  \State set $\mathcal{H}\left(mpk \concat x\right)$ to a random
+                  value
+                \EndIf
                 \State set $\mathcal{H}\left(x \concat mpk\right)$ to $\left(vk
                 - mpk \cdot \mathcal{H}\left(mpk \concat x\right)\right) \cdot
                 x^{-1}$
@@ -325,14 +329,18 @@
               \State Random Oracle: Let $q$ be the $j$th first-seen query from
               $\mathcal{B}$ or \adversary:
               \If{$q = \left(x \concat mpk\right)$}
-                \State set $\mathcal{H}\left(x \concat mpk\right)$ to a random
-                value
+                \If{$\mathcal{H}\left(x \concat mpk\right)$ unset}
+                  \State set $\mathcal{H}\left(x \concat mpk\right)$ to a random
+                  value
+                \EndIf
                 \State set $\mathcal{H}\left(mpk \concat x\right)$ to $\left(vk
                 - x \cdot \mathcal{H}\left(x \concat mpk\right)\right) \cdot
                 mpk^{-1}$
               \ElsIf{$q = \left(mpk \concat x\right)$}
-                \State set $\mathcal{H}\left(mpk \concat x\right)$ to a random
-                value
+                \If{$\mathcal{H}\left(mpk \concat x\right)$ unset}
+                  \State set $\mathcal{H}\left(mpk \concat x\right)$ to a random
+                  value
+                \EndIf
                 \State set $\mathcal{H}\left(x \concat mpk\right)$ to $\left(vk
                 - mpk \cdot \mathcal{H}\left(mpk \concat x\right)\right) \cdot
                 x^{-1}$
