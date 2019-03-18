@@ -67,7 +67,7 @@
       \begin{gamebox}{$\mathsf{master \mhyphen EUF \mhyphen
       CMA}^{\adversary}\left(1^k\right)$}
         \begin{algorithmic}[1]
-          \State $\left(mpk_i, msk_i\right) \gets
+          \State $\left(mpk, msk\right) \gets
           \textsc{MasterKeyGen}\left(1^k\right)$
           \State $i \gets 0$
           \State $\left(\mathtt{aux}_i, \mathrm{response}\right) \gets
@@ -363,7 +363,7 @@
               $\mathcal{B}$ set $\mathcal{H}\left(q\right)$ to a random value
               \State \Return $\mathcal{H}\left(q\right)$ to $\mathcal{B}$
             \EndIndent
-            \State $\left(mpk_i, msk_i\right) \gets
+            \State $\left(mpk, msk\right) \gets
             \textsc{MasterKeyGen}\left(1^k\right)$
             \Indent
               \State Random Oracle: Let $q$ be the $j$th first-seen query from
