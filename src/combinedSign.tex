@@ -316,14 +316,15 @@
       \sigma^*\right) = 1$. We conclude that in the event $\left(F \wedge
       \mathcal{B} \text{ wins} \wedge \neg E\right)$, \adversary{} wins the
       \textsf{EUF-CMA} game. A final observation is that the probability that
-      $\left(\mathcal{B} \text{ wins} \wedge \neg E\right)$ is not influenced by
-      whether $F$ happens or not\orfeas{take a close look}, thus
-      \begin{equation*}
+      the events $\left(\mathcal{B} \text{ wins} \wedge \neg E\right)$ and $F$
+      are almost independent, thus
+      \begin{gather*}
         \Pr\left[F \wedge \mathcal{B} \text{ wins} \wedge \neg E\right] =
         \Pr\left[F\right] \Pr\left[\mathcal{B} \text{ wins} \wedge \neg E\right]
-        = \frac{a - \mathit{negl}\left(k\right)}{T\left(\mathcal{B}\right)} >
-        \mathit{negl}\left(k\right)
-      \end{equation*}
+        \pm \mathit{negl}\left(k\right) = \\
+        \frac{a - \mathit{negl}\left(k\right)}{T\left(\mathcal{B}\right)} \pm
+        \mathit{negl}\left(k\right) > \mathit{negl}\left(k\right)
+      \end{gather*}
     \end{proof}
 
     \begin{lemma}
