@@ -258,7 +258,8 @@
       Let $E$ denote the event in which $\mathcal{B}$ does not invoke
       \textsc{CombinePubKey} to produce $cpk^*$. In that case the values
       $\mathcal{H}\left(pk^* \concat mpk\right)$ and $\mathcal{H}\left(mpk
-      \concat pk^*\right)$ are decided after $\mathcal{B}$ terminates (in
+      \concat pk^*\right)$ are decided after $\mathcal{B}$ terminates
+      (Fig.~\ref{proof:comb:share:distinguisher},
       line~\ref{proof:comb:share:distinguisher:won}) and thus
       \begin{equation}
         \begin{gathered}
@@ -321,7 +322,8 @@
       \begin{gather*}
         \Pr\left[F \wedge \mathcal{B} \text{ wins} \wedge \neg E\right] =
         \Pr\left[F\right] \Pr\left[\mathcal{B} \text{ wins} \wedge \neg E\right]
-        \pm \mathit{negl}\left(k\right) = \\
+        \pm \mathit{negl}\left(k\right)
+        \overset{\left(\ref{proof:comb:share:nohash}\right)}{=} \\
         \frac{a - \mathit{negl}\left(k\right)}{T\left(\mathcal{B}\right)} \pm
         \mathit{negl}\left(k\right) > \mathit{negl}\left(k\right)
       \end{gather*}
