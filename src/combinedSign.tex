@@ -209,7 +209,8 @@
             \Indent
               \State Random Oracle: Let $q$ be the $j$th first-seen query from
               $\mathcal{B}$:
-              \If{$q = \left(x \concat mpk\right)$}
+              \If{$q = \left(mpk \concat x\right)$}
+              \label{proof:comb:share:ro:start}
                 \If{$\mathcal{H}\left(x \concat mpk\right)$ unset}
                   \State set $\mathcal{H}\left(x \concat mpk\right)$ to a random
                   value
@@ -217,7 +218,7 @@
                 \State set $\mathcal{H}\left(mpk \concat x\right)$ to $\left(vk
                 - x \cdot \mathcal{H}\left(x \concat mpk\right)\right) \cdot
                 mpk^{-1}$
-              \ElsIf{$q = \left(mpk \concat x\right)$}
+              \ElsIf{$q = \left(x \concat mpk\right)$}
                 \If{$\mathcal{H}\left(mpk \concat x\right)$ unset}
                   \State set $\mathcal{H}\left(mpk \concat x\right)$ to a random
                   value
@@ -225,6 +226,7 @@
                 \State set $\mathcal{H}\left(x \concat mpk\right)$ to $\left(vk
                 - mpk \cdot \mathcal{H}\left(mpk \concat x\right)\right) \cdot
                 x^{-1}$
+                \label{proof:comb:share:ro:end}
               \Else
                 \State set $\mathcal{H}\left(q\right)$ to a random value
               \EndIf
@@ -256,10 +258,18 @@
       Let $E$ denote the event in which $\mathcal{B}$ does not invoke
       \textsc{CombinePubKeyGen} to produce $cpk^*$. In that case the values
       $\mathcal{H}\left(pk^* \concat mpk\right)$ and $\mathcal{H}\left(mpk
-      \concat pk^*\right)$ are decided in
-      line~\ref{proof:comb:share:distinguisher:won} and thus $\Pr\left[cpk^* =
-      \textsc{CombinePubKeyGen}\left(mpk, pk^*\right) | E\right] = \frac{1}{|Y|}
-      < \mathit{negl}\left(k\right)$. It is
+      \concat pk^*\right)$ are decided after $\mathcal{B}$ terminates (in
+      line~\ref{proof:comb:share:distinguisher:won}) and thus
+      \begin{equation}
+        \begin{gathered}
+          \Pr\left[cpk^* = \textsc{CombinePubKeyGen}\left(mpk, pk^*\right) |
+          E\right] = \frac{1}{|Y|} < \mathit{negl}\left(k\right) \Rightarrow \\
+          \Pr\left[cpk^* = \textsc{CombinePubKeyGen}\left(mpk, pk^*\right)
+          \wedge E\right] < \mathit{negl}\left(k\right) \enspace.
+        \end{gathered}
+        \label{proof:comb:share:nocomb}
+      \end{equation}
+      It is
       \begin{gather*}
         \left(\mathcal{B} \text{ wins}\right) \rightarrow \left(cpk^* =
         \textsc{CombinePubKeyGen}\left(mpk, pk^*\right)\right) \Rightarrow \\
@@ -267,7 +277,7 @@
         \textsc{CombinePubKeyGen}\left(mpk, pk^*\right)\right] \Rightarrow \\
         \Pr\left[\mathcal{B} \text{ wins} \wedge E\right] \leq \Pr\left[cpk^* =
         \textsc{CombinePubKeyGen}\left(mpk, pk^*\right) \wedge E\right]
-        \Rightarrow \\
+        \overset{\left(\ref{proof:comb:share:nocomb}\right)}{\Rightarrow} \\
         \Pr\left[\mathcal{B} \text{ wins} \wedge E\right] <
         \mathit{negl}\left(k\right) \enspace.
       \end{gather*}
@@ -286,7 +296,34 @@
       $\mathcal{B}$ to \textsc{CombinePubKeyGen} to produce $cpk^*$ results in
       the $j$th invocation of the Random Oracle. Since $j$ is chosen uniformly
       at random, $\Pr\left[F | \neg E\right] =
-      \frac{1}{T\left(\mathcal{B}\right)}$. In that case we win!! % TODO
+      \frac{1}{T\left(\mathcal{B}\right)}$. Observe that $\Pr\left[F | E\right]
+      = 0 \Rightarrow \Pr\left[F\right] = \Pr\left[F | \neg E\right] =
+      \frac{1}{T\left(\mathcal{B}\right)}$.
+
+      In the case where the event $\left(F \wedge \mathcal{B} \text{ wins}
+      \wedge \neg E\right)$ holds, it is
+      \begin{gather*}
+        cpk^* = \textsc{CombinePubKey}\left(mpk, pk^*\right) = \\
+        mpk \cdot \mathcal{H}\left(mpk \concat pk^*\right) + pk^* \cdot
+        \mathcal{H}\left(pk^* \concat mpk\right)
+      \end{gather*}
+      Since $F$ holds, the $j$th invocation of the Random Oracle queried either
+      $\mathcal{H}\left(mpk \concat pk^*\right)$ or $\mathcal{H}\left(pk^*
+      \concat mpk\right)$. In either case
+      (Fig.~\ref{proof:comb:share:distinguisher},
+      lines~\ref{proof:comb:share:ro:start}-\ref{proof:comb:share:ro:end}),
+      it is $cpk^* = vk$. This means that $\textsc{Verify}\left(vk, m^*,
+      \sigma^*\right) = 1$. We conclude that in the event $\left(F \wedge
+      \mathcal{B} \text{ wins} \wedge \neg E\right)$, \adversary{} wins the
+      \textsf{EUF-CMA} game. A final observation is that the probability that
+      $\left(\mathcal{B} \text{ wins} \wedge \neg E\right)$ is not influenced by
+      whether $F$ happens or not\orfeas{take a close look}, thus
+      \begin{equation*}
+        \Pr\left[F \wedge \mathcal{B} \text{ wins} \wedge \neg E\right] =
+        \Pr\left[F\right] \Pr\left[\mathcal{B} \text{ wins} \wedge \neg E\right]
+        = \frac{a - \mathit{negl}\left(k\right)}{T\left(\mathcal{B}\right)} >
+        \mathit{negl}\left(k\right)
+      \end{equation*}
     \end{proof}
 
     \begin{lemma}
@@ -328,7 +365,7 @@
             \Indent
               \State Random Oracle: Let $q$ be the $j$th first-seen query from
               $\mathcal{B}$ or \adversary:
-              \If{$q = \left(x \concat mpk\right)$}
+              \If{$q = \left(mpk \concat x\right)$}
                 \If{$\mathcal{H}\left(x \concat mpk\right)$ unset}
                   \State set $\mathcal{H}\left(x \concat mpk\right)$ to a random
                   value
@@ -336,7 +373,7 @@
                 \State set $\mathcal{H}\left(mpk \concat x\right)$ to $\left(vk
                 - x \cdot \mathcal{H}\left(x \concat mpk\right)\right) \cdot
                 mpk^{-1}$
-              \ElsIf{$q = \left(mpk \concat x\right)$}
+              \ElsIf{$q = \left(x \concat mpk\right)$}
                 \If{$\mathcal{H}\left(mpk \concat x\right)$ unset}
                   \State set $\mathcal{H}\left(mpk \concat x\right)$ to a random
                   value
