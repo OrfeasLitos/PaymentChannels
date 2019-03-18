@@ -31,7 +31,8 @@
 
   \subsection{Security}
     \begin{figure}[!htbp]
-      \begin{gamebox}{$\mathsf{share-EUF}^{\adversary}\left(1^k\right)$}
+      \begin{gamebox}{$\mathsf{share \mhyphen
+      EUF}^{\adversary}\left(1^k\right)$}
         \begin{algorithmic}[1]
           \State $\left(\mathtt{aux}, mpk, n\right) \gets
           \adversary\left(\textsc{init}\right)$
@@ -57,13 +58,14 @@
       A Combined Sign scheme is \emph{\textsf{share-EUF}-secure} if
       \begin{equation*}
         \forall k \in \mathbb{N}, \forall \adversary \in \mathtt{PPT},
-        \Pr\left[\mathsf{share-EUF}^{\adversary}\left(1^k\right) = 1\right] <
-        \mathit{negl}\left(k\right)
+        \Pr\left[\mathsf{share \mhyphen EUF}^{\adversary}\left(1^k\right) =
+        1\right] < \mathit{negl}\left(k\right)
       \end{equation*}
     \end{definition}
 
     \begin{figure}[!htbp]
-      \begin{gamebox}{$\mathsf{master-EUF-CMA}^{\adversary}\left(1^k\right)$}
+      \begin{gamebox}{$\mathsf{master \mhyphen EUF \mhyphen
+      CMA}^{\adversary}\left(1^k\right)$}
         \begin{algorithmic}[1]
           \State $\left(mpk_i, msk_i\right) \gets
           \textsc{MasterKeyGen}\left(1^k\right)$
@@ -97,8 +99,9 @@
       A Combined Sign scheme is \emph{\textsf{master-EUF-CMA}-secure} if
       \begin{equation*}
         \forall k \in \mathbb{N}, \forall \adversary \in \mathtt{PPT},
-        \Pr\left[\mathsf{master-EUF-CMA}^{\adversary}\left(1^k\right) = 1\right]
-        < \mathit{negl}\left(k\right)
+        \Pr\left[\mathsf{master \mhyphen EUF \mhyphen
+        CMA}^{\adversary}\left(1^k\right) = 1\right] <
+        \mathit{negl}\left(k\right)
       \end{equation*}
     \end{definition}
     \begin{definition}
@@ -175,14 +178,14 @@
     \begin{proof}
       Let $k \in \mathbb{N}, \mathcal{B}$ PPT algorithm such that
       \begin{equation*}
-        \Pr\left[\mathsf{share-EUF}^{\mathcal{B}}\left(1^k\right) = 1\right] = a
-        > \mathrm{negl}\left(k\right) \enspace.
+        \Pr\left[\mathsf{share \mhyphen EUF}^{\mathcal{B}}\left(1^k\right) =
+        1\right] = a > \mathrm{negl}\left(k\right) \enspace.
       \end{equation*}
       We construct a PPT distinguisher \adversary{}
       (Fig.~\ref{proof:comb:share:distinguisher}) such that
       \begin{equation*}
-        \Pr\left[\mathsf{EUF-CMA}^{\adversary}\left(1^k\right) = 1\right] >
-        \mathrm{negl}\left(k\right)
+        \Pr\left[\mathsf{EUF \mhyphen CMA}^{\adversary}\left(1^k\right) =
+        1\right] > \mathrm{negl}\left(k\right)
       \end{equation*}
       that breaks the assumption, thus proving Lemma~\ref{lemma:comb:share}.
 
@@ -293,14 +296,15 @@
     \begin{proof}
       Let $k \in \mathbb{N}, \mathcal{B}$ PPT algorithm such that
       \begin{equation*}
-        \Pr\left[\mathsf{master-EUF-CMA}^{\mathcal{B}}\left(1^k\right) =
-        1\right] = a > \mathrm{negl}\left(k\right) \enspace.
+        \Pr\left[\mathsf{master \mhyphen EUF \mhyphen
+        CMA}^{\mathcal{B}}\left(1^k\right) = 1\right] = a >
+        \mathrm{negl}\left(k\right) \enspace.
       \end{equation*}
       We construct a PPT distinguisher \adversary{}
       (Fig.~\ref{proof:comb:master:distinguisher}) such that
       \begin{equation*}
-        \Pr\left[\mathsf{EUF-CMA}^{\adversary}\left(1^k\right) = 1\right] >
-        \mathrm{negl}\left(k\right)
+        \Pr\left[\mathsf{EUF \mhyphen CMA}^{\adversary}\left(1^k\right) =
+        1\right] > \mathrm{negl}\left(k\right)
       \end{equation*}
       that breaks the assumption, thus proving Lemma~\ref{lemma:comb:master}.
 
