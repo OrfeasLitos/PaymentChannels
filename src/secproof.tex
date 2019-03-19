@@ -2,10 +2,18 @@
   \begin{figure}[H]
     \begin{systembox}{$\fpaynet{}_{\mathrm{, dummy}}$}
       \begin{algorithmic}[1]
-        \State Upon receiving any message $M$ from \alice: send ($M, \alice$) to
-        \simulator
-        \State Upon receiving any message ($M, \alice$) from \simulator: send
-        $M$ to \alice
+        \State Upon receiving any message $M$ from \alice:
+        \Indent
+          \If{$M$ is a valid \fpaynet{} message from a player}
+            \State send ($M, \alice$) to \simulator
+          \EndIf
+        \EndIndent
+        \State Upon receiving any message ($M, \alice$) from \simulator:
+        \Indent
+          \If{$M$ is a valid \fpaynet{} message from \simulator}
+            \State send $M$ to \alice
+          \EndIf
+        \EndIndent
       \end{algorithmic}
     \end{systembox}
     \caption{}
@@ -55,10 +63,18 @@
       \begin{algorithmic}[1]
         \State For messages \textsc{register}, \textsc{registerDone} and
         \textsc{registered}, act like \fpaynet{}.
-        \State Upon receiving any other message $M$ from \alice: send ($M,
-        \alice$) to \simulator
+        \State Upon receiving any other message $M$ from \alice:
+        \Indent
+          \If{$M$ is a valid \fpaynet{} message from a player}
+            \State send ($M, \alice$) to \simulator
+          \EndIf
+        \EndIndent
         \State Upon receiving any other message ($M, \alice$) from \simulator:
-        send $M$ to \alice
+        \Indent
+          \If{$M$ is a valid \fpaynet{} message from \simulator}
+            \State send $M$ to \alice
+          \EndIf
+        \EndIndent
       \end{algorithmic}
     \end{systembox}
     \caption{}
