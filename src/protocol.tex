@@ -11,7 +11,7 @@
           \mathtt{unclaimedReceivedHTLCs}, \mathtt{pendingGetPaid} \gets
           \emptyset$
         \EndIndent
-        \State
+        \Statex
 
         \State Upon receiving (\textsc{register}, delay, relayDelay) from
         \environment:
@@ -28,7 +28,7 @@
           \State send (\textsc{register}, \alice, \texttt{delay},
           \texttt{relayDelay}, $pk_{\alice}$) to \environment
         \EndIndent
-        \State
+        \Statex
 
         \State Upon receiving (\textsc{registered}) from \environment:
         \Indent
@@ -38,7 +38,7 @@
           spendable by \alice{} to \texttt{onChainBalance}
           \State send (\textsc{registered}) to \environment
         \EndIndent
-        \State
+        \Statex
 
         \State Upon receiving any message ($M$) except for
         $\left(\textsc{register}\right)$:
@@ -48,7 +48,7 @@
             message
           \EndIf
         \EndIndent
-        \State
+        \Statex
 
         \Function{GetKeys}{} \TODO{change font}
           \State $\left(p_F, s_F\right) \gets \mathrm{KeyGen}\left(\right)$
@@ -391,7 +391,7 @@
           \EndFor
           \State send (\textsc{submit}, \texttt{toSubmit}) to \ledger
         \EndIndent
-        \State
+        \Statex
 
         \State Upon receiving (\textsc{getNew}) from \alice:
         \Indent
@@ -426,7 +426,7 @@
           \texttt{pendingPay}
           \State send (\textsc{sendInvoice}, \textit{payid}) to \bob{}
         \EndIndent
-        \State
+        \Statex
 
         \State Upon receiving (\textsc{sendInvoice}, \textit{payid}) from \bob:
         \Indent
@@ -437,7 +437,7 @@
           \State send (\textsc{invoice}, $\mathcal{H}\left(R\right)$,
           \textit{payid}) to \bob{}
         \EndIndent
-        \State
+        \Statex
 
         \State Upon receiving (\textsc{invoice}, $h$, \textit{payid}) from \bob:
         \Indent

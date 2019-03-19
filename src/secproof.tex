@@ -8,6 +8,8 @@
             \State send ($M, \alice$) to \simulator
           \EndIf
         \EndIndent
+        \Statex
+
         \State Upon receiving any message ($M, \alice$) from \simulator:
         \Indent
           \If{$M$ is a valid \fpaynet{} message from \simulator}
@@ -63,12 +65,16 @@
       \begin{algorithmic}[1]
         \State For messages \textsc{register}, \textsc{registerDone} and
         \textsc{registered}, act like \fpaynet{}.
+        \Statex
+
         \State Upon receiving any other message $M$ from \alice:
         \Indent
           \If{$M$ is a valid \fpaynet{} message from a player}
             \State send ($M, \alice$) to \simulator
           \EndIf
         \EndIndent
+        \Statex
+
         \State Upon receiving any other message ($M, \alice$) from \simulator:
         \Indent
           \If{$M$ is a valid \fpaynet{} message from \simulator}

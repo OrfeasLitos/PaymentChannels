@@ -24,7 +24,7 @@
           \State $\mathtt{channels}, \mathtt{pendingPay}, \mathtt{pendingOpen},
           \mathtt{corrupted} \gets \emptyset$
         \EndIndent
-        \State
+        \Statex
 
         \State Upon receiving $\left(\textsc{register}, \mathrm{delay},
         \mathrm{relayDelay}\right)$ from \alice:
@@ -42,7 +42,7 @@
           \State send $\left(\textsc{register}, \alice, \mathrm{delay},
           \mathrm{relayDelay}, \mathrm{lastPoll}\right)$ to \simulator
         \EndIndent
-        \State
+        \Statex
 
         \State Upon receiving $\left(\textsc{registerDone}, \alice,
         \mathrm{pubKey}\right)$ from \simulator:
@@ -51,7 +51,7 @@
           \State send (\textsc{register}, \alice, \texttt{delay},
           \texttt{relayDelay}, pubKey) to \alice
         \EndIndent
-        \State
+        \Statex
 
         \State Upon receiving (\textsc{registered}) from \alice:
         \Indent
@@ -61,21 +61,21 @@
           spendable by \alice{} to \texttt{onChainBalance}
           \State send (\textsc{registered}) to \alice
         \EndIndent
-        \State
+        \Statex
 
         \State Upon receiving any message except for
         $\left(\textsc{register}\right)$ from \alice:
         \Indent
           \State ignore message if \alice{} has not registered
         \EndIndent
-        \State
+        \Statex
 
         \State Upon receiving $\left(\textsc{corrupted}, \alice\right)$ from
         \simulator:
         \Indent
           \State add \alice{} to \texttt{corrupted}
         \EndIndent
-        \State
+        \Statex
 
         \State At the end of each activation: \orfeas{can this part completely
         go?}
@@ -103,7 +103,7 @@
           \State send $\left(\textsc{openChannel}, \alice, \bob, x,
           \mathit{fchid}\right)$ to \simulator
         \EndIndent
-        \State
+        \Statex
 
         \State Upon receiving $\left(\textsc{channelAnnounced}, p_{\alice, F},
         p_{\bob, F}, \mathit{fchid}, \mathit{pchid}\right)$ from \simulator:
@@ -113,7 +113,7 @@
           \State add $p_{\alice, F}, p_{\bob, F}$ to
           \texttt{pendingOpen}(\textit{fchid})
         \EndIndent
-        \State
+        \Statex
 
         \State Upon receiving (\textsc{checkNew}, \alice, \bob, $x$,
         \textit{tid}) from \alice:
@@ -165,7 +165,7 @@
           \overrightarrow{\mathtt{path}}, \mathtt{receipt},
           \mathit{payid}\right)$ to \simulator
         \EndIndent
-        \State
+        \Statex
 
         \State Upon receiving $\left(\textsc{resolvePay}, \mathit{payid},
         \charlie\right)$ from \simulator:
@@ -239,7 +239,7 @@
           \State send (\textsc{closeChannel}, \textit{fchid}, \alice) to
           \simulator
         \EndIndent
-        \State
+        \Statex
 
         \State Upon receiving (\textsc{channelClosed}, \textit{fchid}) from
         \simulator:
@@ -318,7 +318,7 @@
           \State send (\textsc{getClosedFunds}, \texttt{toReport}(\alice),
           \alice) to \simulator
         \EndIndent
-        \State
+        \Statex
 
         \State Upon receiving (\textsc{channelsClosed}, \texttt{details},
         \alice) from \simulator:
@@ -345,7 +345,7 @@
             \texttt{toReport}(\alice)
           \EndFor
         \EndIndent
-        \State
+        \Statex
 
         \State Upon receiving (\textsc{getNew}) from \alice:
         \Indent
