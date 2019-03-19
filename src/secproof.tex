@@ -1,5 +1,5 @@
 \section{Security Proof}
-  \begin{figure}[!htbp]
+  \begin{figure}[H]
     \begin{systembox}{$\fpaynet{}_{\mathrm{, dummy}}$}
       \begin{algorithmic}[1]
         \State Upon receiving any message $M$ from \alice: send ($M, \alice$) to
@@ -12,7 +12,7 @@
     \label{alg:fpaynet:dummy}
   \end{figure}
 
-  \begin{figure}[!htbp]
+  \begin{figure}[H]
     \begin{simulatorbox}{$\simulator{}_{\mathrm{LN}}$}
       Expects the same messages as the protocol, but messages that the protocol
       expects to receive from \environment, the simulator expects to receive
@@ -50,7 +50,7 @@
     two outputs are indistinguishable.
   \end{proof}
 
-  \begin{figure}[!htbp]
+  \begin{figure}[H]
     \begin{systembox}{$\fpaynet{}_{\mathrm{, dummy + Reg}}$}
       \begin{algorithmic}[1]
         \State For messages \textsc{register}, \textsc{registerDone} and
@@ -65,7 +65,7 @@
     \label{alg:fpaynet:reg}
   \end{figure}
 
-  \begin{figure}[!htbp]
+  \begin{figure}[H]
     \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg}}$}
       Like $\simulator{}_{\mathrm{LN}}$, but it does not accept
       (\textsc{registered}) from $\fpaynet{}_{\mathrm{, dummy + Reg}}$.
