@@ -1,125 +1,128 @@
-\begin{figure}[!htbp]
-  \begin{systembox}{$\fpaynet{}_{\mathrm{, dummy}}$}
-    \begin{algorithmic}[1]
-      \State Upon receiving any message $M$ from \alice: send ($M, \alice$) to
-      \simulator
-      \State Upon receiving any message ($M, \alice$) from \simulator: send $M$
-      to \alice
-    \end{algorithmic}
-  \end{systembox}
-  \caption{}
-  \label{alg:fpaynet:dummy}
-\end{figure}
+\section{Security Proof}
+  \begin{figure}[!htbp]
+    \begin{systembox}{$\fpaynet{}_{\mathrm{, dummy}}$}
+      \begin{algorithmic}[1]
+        \State Upon receiving any message $M$ from \alice: send ($M, \alice$) to
+        \simulator
+        \State Upon receiving any message ($M, \alice$) from \simulator: send
+        $M$ to \alice
+      \end{algorithmic}
+    \end{systembox}
+    \caption{}
+    \label{alg:fpaynet:dummy}
+  \end{figure}
 
-\begin{figure}[!htbp]
-  \begin{simulatorbox}{$\simulator{}_{\mathrm{LN}}$}
-    Expects the same messages as the protocol, but messages that the protocol
-    expects to receive from \environment, the simulator expects to receive from
-    $\fpaynet{}_{\mathrm{, dummy}}$ with the name of the player appended. The
-    simulator internally executes one copy of the protocol per player. Upon
-    receiving any message, the simulator runs the relevant code of the protocol
-    copy tied to the appended player name. Mimicking the real-world case, if a
-    protocol copy sends a message to another player, that message is passed to
-    \adversary{} as if sent by the player and if \adversary{} allows the message
-    to reach the receiver, then the simulator reacts by acting upon the message
-    with the protocol copy corresponding to the recipient player. A message sent
-    by a protocol copy to \environment{} will be routed by \simulator{} to
-    $\fpaynet{}_{\mathrm{, dummy}}$ instead. To distinguish which player it
-    comes from, \simulator{} also appends the player name to the message.
-  \end{simulatorbox}
-  \caption{}
-  \label{alg:sim:ln}
-\end{figure}
+  \begin{figure}[!htbp]
+    \begin{simulatorbox}{$\simulator{}_{\mathrm{LN}}$}
+      Expects the same messages as the protocol, but messages that the protocol
+      expects to receive from \environment, the simulator expects to receive
+      from $\fpaynet{}_{\mathrm{, dummy}}$ with the name of the player appended.
+      The simulator internally executes one copy of the protocol per player.
+      Upon receiving any message, the simulator runs the relevant code of the
+      protocol copy tied to the appended player name. Mimicking the real-world
+      case, if a protocol copy sends a message to another player, that message
+      is passed to \adversary{} as if sent by the player and if \adversary{}
+      allows the message to reach the receiver, then the simulator reacts by
+      acting upon the message with the protocol copy corresponding to the
+      recipient player. A message sent by a protocol copy to \environment{} will
+      be routed by \simulator{} to $\fpaynet{}_{\mathrm{, dummy}}$ instead. To
+      distinguish which player it comes from, \simulator{} also appends the
+      player name to the message.
+    \end{simulatorbox}
+    \caption{}
+    \label{alg:sim:ln}
+  \end{figure}
 
-\begin{lemma}
-  \label{lemma:dummy}
-  $\textsc{Exec}^{\ledger}_{\Pi_{\mathrm{LN}}, \adversary_{\mathrm{d}},
-  \environment} = \textsc{Exec}^{\fpaynet{}_{\mathrm{, dummy}},
-  \ledger}_{\simulator_{\mathrm{LN}}, \environment}$
-\end{lemma}
+  \begin{lemma}
+    \label{lemma:dummy}
+    $\textsc{Exec}^{\ledger}_{\Pi_{\mathrm{LN}}, \adversary_{\mathrm{d}},
+    \environment} = \textsc{Exec}^{\fpaynet{}_{\mathrm{, dummy}},
+    \ledger}_{\simulator_{\mathrm{LN}}, \environment}$
+  \end{lemma}
 
-\begin{proof}
-  Consider a message that \environment{} sends. In the real world, the protocol
-  ITIs produce an output. In the ideal world, the message is given to
-  $\simulator{}_{\mathrm{LN}}$ through $\fpaynet{}_{\mathrm{, dummy}}$. The
-  former simulates the protocol ITIs of the real world (along with their coin
-  flips) and so produces an output from the exact same distribution, which is
-  given to \environment{} through $\fpaynet{}_{\mathrm{, dummy}}$. Thus the two
-  outputs are indistinguishable.
-\end{proof}
+  \begin{proof}
+    Consider a message that \environment{} sends. In the real world, the
+    protocol ITIs produce an output. In the ideal world, the message is given to
+    $\simulator{}_{\mathrm{LN}}$ through $\fpaynet{}_{\mathrm{, dummy}}$. The
+    former simulates the protocol ITIs of the real world (along with their coin
+    flips) and so produces an output from the exact same distribution, which is
+    given to \environment{} through $\fpaynet{}_{\mathrm{, dummy}}$. Thus the
+    two outputs are indistinguishable.
+  \end{proof}
 
-\begin{figure}[!htbp]
-  \begin{systembox}{$\fpaynet{}_{\mathrm{, dummy + Reg}}$}
-    \begin{algorithmic}[1]
-      \State For messages \textsc{register}, \textsc{registerDone} and
-      \textsc{registered}, act like \fpaynet{}.
-      \State Upon receiving any other message $M$ from \alice: send ($M,
-      \alice$) to \simulator
-      \State Upon receiving any other message ($M, \alice$) from \simulator:
-      send $M$ to \alice
-    \end{algorithmic}
-  \end{systembox}
-  \caption{}
-  \label{alg:fpaynet:reg}
-\end{figure}
+  \begin{figure}[!htbp]
+    \begin{systembox}{$\fpaynet{}_{\mathrm{, dummy + Reg}}$}
+      \begin{algorithmic}[1]
+        \State For messages \textsc{register}, \textsc{registerDone} and
+        \textsc{registered}, act like \fpaynet{}.
+        \State Upon receiving any other message $M$ from \alice: send ($M,
+        \alice$) to \simulator
+        \State Upon receiving any other message ($M, \alice$) from \simulator:
+        send $M$ to \alice
+      \end{algorithmic}
+    \end{systembox}
+    \caption{}
+    \label{alg:fpaynet:reg}
+  \end{figure}
 
-\begin{figure}[!htbp]
-  \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg}}$}
-    Like $\simulator{}_{\mathrm{LN}}$, but it does not accept
-    (\textsc{registered}) from $\fpaynet{}_{\mathrm{, dummy + Reg}}$. Additional
-    differences:
-    \begin{algorithmic}[1]
-      \State Upon receiving (\textsc{register}, \alice, delay, relayDelay,
-      lastPoll) from $\fpaynet{}_{\mathrm{, dummy + Reg}}$:
-      \Indent
-        \State $\mathtt{delay} \text{ of \alice{} ITI } \gets \mathrm{delay}$
-        \label{alg:sim:reg:delay}
-        \State $\mathtt{relayDelay} \text{ of \alice{} ITI } \gets
-        \mathrm{relayDelay}$
-        \State $\mathtt{lastPoll} \text{ of \alice{} ITI } \gets
-        \mathrm{lastPoll}$
-        \State $\left(pk_{\alice}, sk_{\alice}\right) \text{ of \alice{} ITI }
-        \gets \mathtt{KeyGen}()$
-        \label{alg:sim:reg:keygen}
-        \State send (\textsc{registerDone}, \alice, $pk_{\alice}$) to
-        $\fpaynet{}_{\mathrm{, dummy + Reg}}$
-      \EndIndent
-    \end{algorithmic}
-  \end{simulatorbox}
-  \caption{}
-  \label{alg:sim:reg}
-\end{figure}
+  \begin{figure}[!htbp]
+    \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg}}$}
+      Like $\simulator{}_{\mathrm{LN}}$, but it does not accept
+      (\textsc{registered}) from $\fpaynet{}_{\mathrm{, dummy + Reg}}$.
+      Additional differences:
+      \begin{algorithmic}[1]
+        \State Upon receiving (\textsc{register}, \alice, delay, relayDelay,
+        lastPoll) from $\fpaynet{}_{\mathrm{, dummy + Reg}}$:
+        \Indent
+          \State $\mathtt{delay} \text{ of \alice{} ITI } \gets \mathrm{delay}$
+          \label{alg:sim:reg:delay}
+          \State $\mathtt{relayDelay} \text{ of \alice{} ITI } \gets
+          \mathrm{relayDelay}$
+          \State $\mathtt{lastPoll} \text{ of \alice{} ITI } \gets
+          \mathrm{lastPoll}$
+          \State $\left(pk_{\alice}, sk_{\alice}\right) \text{ of \alice{} ITI }
+          \gets \mathtt{KeyGen}()$
+          \label{alg:sim:reg:keygen}
+          \State send (\textsc{registerDone}, \alice, $pk_{\alice}$) to
+          $\fpaynet{}_{\mathrm{, dummy + Reg}}$
+        \EndIndent
+      \end{algorithmic}
+    \end{simulatorbox}
+    \caption{}
+    \label{alg:sim:reg}
+  \end{figure}
 
-\begin{lemma}
-  \label{lemma:reg}
-  $\textsc{Exec}^{\fpaynet{}_{\mathrm{, dummy}},
-  \ledger}_{\simulator_{\mathrm{LN}}, \environment} =
-  \textsc{Exec}^{\fpaynet{}_{\mathrm{, dummy + Reg}},
-  \ledger}_{\simulator_{\mathrm{LN - Reg}}, \environment}$
-\end{lemma}
+  \begin{lemma}
+    \label{lemma:reg}
+    $\textsc{Exec}^{\fpaynet{}_{\mathrm{, dummy}},
+    \ledger}_{\simulator_{\mathrm{LN}}, \environment} =
+    \textsc{Exec}^{\fpaynet{}_{\mathrm{, dummy + Reg}},
+    \ledger}_{\simulator_{\mathrm{LN - Reg}}, \environment}$
+  \end{lemma}
 
-\begin{proof}
-  When \environment{} sends (\textsc{register}, delay, relayDelay) to \alice{},
-  it receives as a response (\textsc{register}, \alice, delay, relayDelay,
-  $pk_{\alice}$) where $pk_{\alice}$ is a public key generated by
-  \texttt{KeyGen}() both in the real (c.f. Fig.~\ref{alg:protocol:support},
-  line~\ref{alg:protocol:support:keygen}) and in the ideal world (c.f.
-  Fig.~\ref{alg:sim:reg}, line~\ref{alg:sim:reg:keygen}).
+  \begin{proof}
+    When \environment{} sends (\textsc{register}, delay, relayDelay) to
+    \alice{}, it receives as a response (\textsc{register}, \alice, delay,
+    relayDelay, $pk_{\alice}$) where $pk_{\alice}$ is a public key generated by
+    \texttt{KeyGen}() both in the real (c.f. Fig.~\ref{alg:protocol:support},
+    line~\ref{alg:protocol:support:keygen}) and in the ideal world (c.f.
+    Fig.~\ref{alg:sim:reg}, line~\ref{alg:sim:reg:keygen}).
 
-  Furthermore, one (\textsc{read}) is sent to \ledger{} from \alice{} in both
-  cases (Fig.~\ref{alg:protocol:support}, line~\ref{alg:protocol:support:lastpoll}
-  and Fig.~\ref{alg:fpaynet:support}, line~\ref{alg:fpaynet:support:lastpoll}).
+    Furthermore, one (\textsc{read}) is sent to \ledger{} from \alice{} in both
+    cases (Fig.~\ref{alg:protocol:support},
+    line~\ref{alg:protocol:support:lastpoll} and Fig.~\ref{alg:fpaynet:support},
+    line~\ref{alg:fpaynet:support:lastpoll}).
 
-  Additionally, $\simulator{}_{\mathrm{LN - Reg}}$ ensures that the state of
-  \alice{} ITI is exactly the same as what would have been in the case of
-  $\simulator{}_{\mathrm{LN}}$, as
-  lines~\ref{alg:protocol:support:delay}-\ref{alg:protocol:support:keygen} of
-  Fig.~\ref{alg:protocol:support} change the state of \alice{} ITI in the same
-  way as lines~\ref{alg:sim:reg:delay}-\ref{alg:sim:reg:keygen} of
-  Fig.~\ref{alg:sim:reg}.
+    Additionally, $\simulator{}_{\mathrm{LN - Reg}}$ ensures that the state of
+    \alice{} ITI is exactly the same as what would have been in the case of
+    $\simulator{}_{\mathrm{LN}}$, as
+    lines~\ref{alg:protocol:support:delay}-\ref{alg:protocol:support:keygen} of
+    Fig.~\ref{alg:protocol:support} change the state of \alice{} ITI in the same
+    way as lines~\ref{alg:sim:reg:delay}-\ref{alg:sim:reg:keygen} of
+    Fig.~\ref{alg:sim:reg}.
 
-  Lastly, the fact that the state of the \alice{} ITIs are changed in the same
-  way in both worlds, along with the same argument as in the proof of
-  Lemma~\ref{lemma:dummy} ensures that the rest of the messages are responded in
-  an indistinguishable way in both worlds.
-\end{proof}
+    Lastly, the fact that the state of the \alice{} ITIs are changed in the same
+    way in both worlds, along with the same argument as in the proof of
+    Lemma~\ref{lemma:dummy} ensures that the rest of the messages are responded
+    in an indistinguishable way in both worlds.
+  \end{proof}
