@@ -59,7 +59,7 @@
   \end{proof}
 
   \begin{figure}[H]
-    \begin{systembox}{$\fpaynet{}_{\mathrm{, dummy + Reg}}$}
+    \begin{systembox}{$\fpaynet{}_{\mathrm{, Reg}}$}
       \begin{algorithmic}[1]
         \State For messages \textsc{register}, \textsc{registerDone} and
         \textsc{registered}, act like \fpaynet{}.
@@ -84,11 +84,11 @@
   \begin{figure}[H]
     \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg}}$}
       Like $\simulator{}_{\mathrm{LN}}$, but it does not accept
-      (\textsc{registered}) from $\fpaynet{}_{\mathrm{, dummy + Reg}}$.
+      (\textsc{registered}) from $\fpaynet{}_{\mathrm{, Reg}}$.
       Additional differences:
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{register}, \alice, delay, relayDelay,
-        lastPoll) from $\fpaynet{}_{\mathrm{, dummy + Reg}}$:
+        lastPoll) from $\fpaynet{}_{\mathrm{, Reg}}$:
         \Indent
           \State $\mathtt{delay} \text{ of \alice{} ITI } \gets \mathrm{delay}$
           \label{alg:sim:reg:delay}
@@ -100,7 +100,7 @@
           \gets \mathtt{KeyGen}()$
           \label{alg:sim:reg:keygen}
           \State send (\textsc{registerDone}, \alice, $pk_{\alice}$) to
-          $\fpaynet{}_{\mathrm{, dummy + Reg}}$
+          $\fpaynet{}_{\mathrm{, Reg}}$
         \EndIndent
       \end{algorithmic}
     \end{simulatorbox}
@@ -112,7 +112,7 @@
     \label{lemma:reg}
     $\textsc{Exec}^{\fpaynet{}_{\mathrm{, dummy}},
     \ledger}_{\simulator_{\mathrm{LN}}, \environment} =
-    \textsc{Exec}^{\fpaynet{}_{\mathrm{, dummy + Reg}},
+    \textsc{Exec}^{\fpaynet{}_{\mathrm{, Reg}},
     \ledger}_{\simulator_{\mathrm{LN - Reg}}, \environment}$
   \end{lemma}
 
