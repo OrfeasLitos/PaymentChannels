@@ -166,7 +166,8 @@
           \texttt{signature}(TX, $sk_{\alice}$), output 0 pays $y - x$ to
           $pk_{\alice}$, output 1 pays $x$ to $\textit{tid}.ph_F \wedge pt_F$\}
           \State $\mathit{pchid} \gets \mathcal{H}\left(F\right)$
-          \State replace \textit{tid} with \textit{pchid} in storage
+          \State add \textit{pchid} to \texttt{pendingOpen} entry with id
+          \textit{tid}
           \State $pt_{\mathrm{rev}, 1} \gets
           \mathtt{CombinePubKey}\left(ptb_{\mathrm{rev}}, ph_{\mathrm{com},
           1}\right)$
@@ -268,18 +269,19 @@
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{checkNew}}
       \begin{algorithmic}[1]
         \State \TODO{explicitly add keys et al to \texttt{channel}}
-        \State Upon receiving (\textsc{checkNew}, \alice, \bob, $x$,
-        \textit{tid}) from \environment: \Comment{new message: represents lnd
-        polling daemon}
+        \State Upon receiving (\textsc{checkNew}, \alice, \bob, \textit{tid})
+        from \environment: \Comment{new message: represents lnd polling daemon}
         \Indent
           \State ensure there is a matching \texttt{channel} in
-          \texttt{pendingOpen} with id \textit{pchid} with a ``broadcast'' mark
+          \texttt{pendingOpen} with id \textit{pchid}, with a ``broadcast''
+          mark, funded with $x$ coins
           \State send (\textsc{read}) to \ledger{} and assign reply to
           $\Sigma_{\alice}$
           \State ensure $\exists$ unspent TX in $\Sigma_{\alice}$ with ID
           \textit{pchid} and a $\left(x, ph_F \wedge pt_F\right)$ output
           \State $\mathrm{prand}_2 \gets \texttt{PRF}\left(\mathtt{seed},
           2\right)$
+          \label{alg:protocol:open:checkNew:prand}
           \State $\left(sh_{\mathrm{com}, 2}, ph_{\mathrm{com}, 2}\right) \gets
           \mathrm{KeyShareGen}\left(1^k; \mathrm{prand}_2\right)$
           \State add TX to \texttt{channel} data \State replace ``broadcast''
@@ -292,6 +294,7 @@
           \EndIf
           \State send (\textsc{fundingLocked}, \textit{pchid},
           $ph_{\mathrm{com}, 2}$) to \bob{}
+          \label{alg:protocol:open:checkNew:send}
         \EndIndent
       \end{algorithmic}
     \end{protocolbox}
