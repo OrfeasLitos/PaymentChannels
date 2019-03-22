@@ -119,53 +119,48 @@
         \State Upon receiving (\textsc{checkNew}, \alice, \bob, \textit{tid})
         from \alice:
         \Indent
-          \If{\alice{} is honest}
-            \State ensure there is a matching \texttt{channel} in
-            \texttt{pendingOpen}(\textit{fchid}), marked with ``\alice{}
-            announced''
-            \State $\left(\mathrm{funder}, \mathrm{fundee}, x, p_{\alice, F},
-            p_{\bob, F}\right) \gets
-            \mathtt{pendingOpen}\left(\mathit{fchid}\right)$
-            \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply
-            to $\Sigma_{\alice}$
-            \State ensure that there is a TX $F \in \Sigma_{\alice}$ with a
-            $\left(x, \left(p_{\mathrm{funder}, F} \wedge p_{\mathrm{fundee},
-            F}\right)\right)$ output such that $\mathcal{H}\left(F\right) =
-            \mathit{pchid}$
-            \State mark \texttt{pendingOpen}(\textit{fchid}) with ``\alice{}
-            checked''
-            \If{\texttt{pendingOpen}(\textit{fchid}) is not marked with ``noted''}
-              \State mark \texttt{pendingOpen}(\textit{fchid}) with ``noted''
-              \If{$\mathrm{funder} = \alice$}
-                \State $\mathrm{offChainBalance}\left(\alice\right) \gets
-                \mathrm{offChainBalance}\left(\alice\right) + x$ \orfeas{remove
-                on/offChainBalance?}
-                \State $\mathrm{onChainBalance}\left(\alice\right) \gets
-                \mathrm{offChainBalance}\left(\alice\right) - x$
-                \State $\mathtt{channel} \gets \left(\alice, \bob, x, 0, 0,
-                \mathit{fchid}, \mathit{pchid}\right)$
-              \Else \Comment{\bob{} is the funder}
-                \State $\mathrm{offChainBalance}\left(\bob\right) \gets
-                \mathrm{offChainBalance}\left(\bob\right) + x$ \orfeas{remove
-                on/offChainBalance?}
-                \State $\mathrm{onChainBalance}\left(\bob\right) \gets
-                \mathrm{offChainBalance}\left(\bob\right) - x$
-                \State $\mathtt{channel} \gets \left(\bob, \alice, x, 0, 0,
-                \mathit{fchid}, \mathit{pchid}\right)$
-              \EndIf
-              \State add \texttt{channel} to \texttt{channels}
+          \State ensure there is a matching \texttt{channel} in
+          \texttt{pendingOpen}(\textit{fchid}), marked with ``\alice{}
+          announced''
+          \State $\left(\mathrm{funder}, \mathrm{fundee}, x, p_{\alice, F},
+          p_{\bob, F}\right) \gets
+          \mathtt{pendingOpen}\left(\mathit{fchid}\right)$
+          \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply
+          to $\Sigma_{\alice}$
+          \State ensure that there is a TX $F \in \Sigma_{\alice}$ with a
+          $\left(x, \left(p_{\mathrm{funder}, F} \wedge p_{\mathrm{fundee},
+          F}\right)\right)$ output such that $\mathcal{H}\left(F\right) =
+          \mathit{pchid}$
+          \State mark \texttt{pendingOpen}(\textit{fchid}) with ``\alice{}
+          checked''
+          \If{\texttt{pendingOpen}(\textit{fchid}) is not marked with ``noted''}
+            \State mark \texttt{pendingOpen}(\textit{fchid}) with ``noted''
+            \If{$\mathrm{funder} = \alice$}
+              \State $\mathrm{offChainBalance}\left(\alice\right) \gets
+              \mathrm{offChainBalance}\left(\alice\right) + x$ \orfeas{remove
+              on/offChainBalance?}
+              \State $\mathrm{onChainBalance}\left(\alice\right) \gets
+              \mathrm{offChainBalance}\left(\alice\right) - x$
+              \State $\mathtt{channel} \gets \left(\alice, \bob, x, 0, 0,
+              \mathit{fchid}, \mathit{pchid}\right)$
+            \Else \Comment{\bob{} is the funder}
+              \State $\mathrm{offChainBalance}\left(\bob\right) \gets
+              \mathrm{offChainBalance}\left(\bob\right) + x$ \orfeas{remove
+              on/offChainBalance?}
+              \State $\mathrm{onChainBalance}\left(\bob\right) \gets
+              \mathrm{offChainBalance}\left(\bob\right) - x$
+              \State $\mathtt{channel} \gets \left(\bob, \alice, x, 0, 0,
+              \mathit{fchid}, \mathit{pchid}\right)$
             \EndIf
-            \State send (\textsc{channelOpened}, \alice, \textit{fchid}) to
-            \simulator
-            \State add \texttt{receipt}(\texttt{channel}) to
-            \texttt{newChannels}(\alice)
-            \If{\texttt{pendingOpen}(\textit{fchid}) is marked with ``\alice{}
-            checked'' and ``\bob{} checked''}
-              \State clear \texttt{pendingOpen}(\textit{fchid}) entry
-            \EndIf
-          \Else \Comment{\alice{} is corrupted}
-            \State send (\textsc{checkNew}, \alice, \bob, \textit{tid}) to
-            \simulator
+            \State add \texttt{channel} to \texttt{channels}
+          \EndIf
+          \State send (\textsc{channelOpened}, \alice, \textit{fchid}) to
+          \simulator
+          \State add \texttt{receipt}(\texttt{channel}) to
+          \texttt{newChannels}(\alice)
+          \If{\texttt{pendingOpen}(\textit{fchid}) is marked with ``\alice{}
+          checked'' and ``\bob{} checked''}
+            \State clear \texttt{pendingOpen}(\textit{fchid}) entry
           \EndIf
         \EndIndent
       \end{algorithmic}
