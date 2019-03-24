@@ -305,5 +305,57 @@
     either in Fig.~\ref{alg:protocol:open:env},
     line~\ref{alg:protocol:open:env:pendingOpen} or in
     Fig.~\ref{alg:protocol:open:openChannel},
-    line~\ref{alg:protocol:open:openChannel:pendingOpen}. % TODO: continue
+    line~\ref{alg:protocol:open:openChannel:pendingOpen}. The former event can
+    happen only in case \alice{} received a valid \textsc{openChannel} message
+    from \bob{} with temporary id \textit{tid}, which in turn can be triggered
+    only by a valid \textsc{openChannel} message with the same temporary id from
+    \environment{} to \bob{}, whereas the latter only in case \alice{} received
+    a valid \textsc{openChannel} message from \environment{} with the same
+    temporary id. Furthermore, in the first case the ``broadcast'' mark can be
+    added only before \alice{} sends (\textsc{fundingSigned}, \textit{pchid},
+    sig) to \bob{} (Fig.~\ref{alg:protocol:open:fundingCreated},
+    line~\ref{alg:protocol:open:fundingCreated:mark}) (which needs a valid
+    \alice-\bob{} interaction up to that point \TODO{more in-depth?}), and in
+    the second case the ``broadcast'' mark can be added only before \alice{}
+    sends (\textsc{submit}, (sig, $F$)) to \ledger{}
+    (Fig.~\ref{alg:protocol:open:fundingSigned},
+    line~\ref{alg:protocol:open:fundingSigned:mark}) (which also needs a valid
+    \alice-\bob{} interaction up to that point \TODO{more in-depth?})
+
+    When \environment{} sends (\textsc{checkNew}, \alice, \bob, \textit{tid}) to
+    \alice{} in the ideal world, line~\ref{alg:fpaynet:checkNew:valid} of
+    Fig.~\ref{alg:fpaynet:open} will allow execution to continue if there exists
+    an entry with temporary id \textit{tid} and member \alice{} marked as
+    ``\alice{} announced'' in \texttt{pendingOpen}(\textit{fchid}) for some
+    \textit{fchid}. This can only happen if line~\ref{alg:fpaynet:announced:add}
+    of Fig.~\ref{alg:fpaynet:open} is executed, where
+    \texttt{pendingOpen}(\textit{fchid}) contains \textit{tid} as temporary id.
+    This line in turn can only be executed if $\fpaynet{}_{\mathrm{, Open}}$
+    received $\left(\textsc{channelAnnounced}, \alice, p_{\alice, F}, p_{\bob,
+    F}, \mathit{fchid}, \mathit{pchid}, \mathit{tid}\right)$ from
+    $\simulator_{\mathrm{LN - Reg - Open}}$ such that
+    \texttt{pendingOpen}(\textit{fchid}) exists and has temporary id
+    \textit{tid}, as mandated by line~\ref{alg:fpaynet:announced:valid} of
+    Fig.~\ref{alg:fpaynet:open}. Such a message is sent by
+    $\simulator_{\mathrm{LN - Reg - Open}}$ of Fig.~\ref{alg:sim:open} either in
+    lines~\ref{alg:sim:open:announced:alice:bothhonest}/\ref{alg:sim:open:announced:alice:alicehonest},
+    or in
+    lines~\ref{alg:sim:open:announced:bob:bothhonest}/\ref{alg:sim:open:announced:bob:bobhonest}.
+    One of the first pair of lines is executed only if $\simulator_{\mathrm{LN -
+    Reg - Open}}$ receives (\textsc{openChannel}, \alice, \bob, $x$,
+    \textit{fchid}, \textit{tid}) from $\fpaynet{}_{\mathrm{, Open}}$ and the
+    simulated \adversary{} allows a valid \alice-\bob{} interaction up to the
+    point where \alice{} sends (\textsc{submit}) to \ledger, whereas one of the
+    second pair of lines is executed only if $\simulator_{\mathrm{LN - Reg -
+    Open}}$ receives (\textsc{openChannel}, \bob, \alice, $x$, \textit{fchid},
+    \textit{tid}) from $\fpaynet{}_{\mathrm{, Open}}$ and the simulated
+    \adversary{} allows a valid \alice-\bob{} interaction up to the point where
+    \alice{} sends (\textsc{fundingSigned}) to \bob.
+
+    The last two points lead us to deduce that
+    line~\ref{alg:fpaynet:checkNew:valid} of Fig.~\ref{alg:fpaynet:open} in the
+    ideal and line~\ref{alg:protocol:open:checkNew:valid} of
+    Fig.~\ref{alg:protocol:open:checkNew} in the real world will allow execution
+    to continue in the exact same cases with respect to the messages that
+    \environment{} and \adversary{} send.
   \end{proof}
