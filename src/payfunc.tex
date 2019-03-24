@@ -107,11 +107,11 @@
         \Statex
 
         \State Upon receiving $\left(\textsc{channelAnnounced}, \alice,
-        p_{\alice, F}, p_{\bob, F}, \mathit{fchid}, \mathit{pchid}\right)$ from
-        \simulator:
+        p_{\alice, F}, p_{\bob, F}, \mathit{fchid}, \mathit{pchid},
+        \mathit{tid}\right)$ from \simulator:
         \Indent
           \State ensure that there is a \texttt{pendingOpen}(\textit{fchid})
-          entry
+          entry with temporary id \textit{tid}
           \State add ``\alice{} announced'', $p_{\alice, F}, p_{\bob, F}$,
           \textit{pchid} to \texttt{pendingOpen}(\textit{fchid})
         \EndIndent
