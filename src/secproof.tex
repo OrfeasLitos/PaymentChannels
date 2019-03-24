@@ -194,10 +194,12 @@
             send $\left(\textsc{channelAnnounced}, \bob, p_{\alice, F}, p_{\bob,
             F}, \mathit{fchid}, \mathit{pchid}, \textit{tid}\right)$ to
             $\fpaynet{}_{\mathrm{, Open}}$.
+            \label{alg:sim:open:announced:bob:bothhonest}
             \State After submitting $F$ to \ledger{} as \alice, send
             $\left(\textsc{channelAnnounced}, \alice, p_{\alice, F}, p_{\bob,
             F}, \mathit{fchid}, \mathit{pchid}\right)$ to $\fpaynet{}_{\mathrm{,
             Open}}$.
+            \label{alg:sim:open:announced:alice:bothhonest}
           \ElsIf{\alice{} is honest, \bob{} is corrupted}
             \State Simulate \alice's part of the interaction between \alice{}
             and \bob{} in \alice's ITI, as defined in
@@ -209,6 +211,7 @@
             $\left(\textsc{channelAnnounced}, \alice, p_{\alice, F}, p_{\bob,
             F}, \mathit{fchid}, \mathit{pchid}\right)$ to $\fpaynet{}_{\mathrm{,
             Open}}$.
+            \label{alg:sim:open:announced:alice:alicehonest}
           \ElsIf{\alice{} is corrupted, \bob{} is honest}
             \State send (\textsc{openChannel}, \alice, \bob, $x$,
             \textit{fchid}, \textit{tid}) to simulated (corrupted) \alice
@@ -222,6 +225,7 @@
             send $\left(\textsc{channelAnnounced}, \bob, p_{\alice, F}, p_{\bob,
             F}, \mathit{fchid}, \mathit{pchid}\right)$ to $\fpaynet{}_{\mathrm{,
             Open}}$.
+            \label{alg:sim:open:announced:bob:bobhonest}
           \ElsIf{both \alice{} and \bob{} are corrupted}
             \State forward message to \adversary{} \Comment{\adversary{} may
             open the channel or not}
