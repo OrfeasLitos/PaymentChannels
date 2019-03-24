@@ -205,8 +205,8 @@
             and~\ref{alg:protocol:open:fundingSigned}.All messages should be
             handed to and received from \adversary, as in the real world
             execution.
-            \State After sending (\textsc{fundingSigned}) as \bob{} to \alice,
-            send $\left(\textsc{channelAnnounced}, \bob, p_{\alice, F}, p_{\bob,
+            \State After submitting $F$ to \ledger{} as \alice, send
+            $\left(\textsc{channelAnnounced}, \alice, p_{\alice, F}, p_{\bob,
             F}, \mathit{fchid}, \mathit{pchid}\right)$ to $\fpaynet{}_{\mathrm{,
             Open}}$.
           \ElsIf{\alice{} is corrupted, \bob{} is honest}
@@ -218,6 +218,10 @@
             and~\ref{alg:protocol:open:fundingCreated}.
             All messages should be handed to and received from \adversary, as in
             the real world execution.
+            \State After sending (\textsc{fundingSigned}) as \bob{} to \alice,
+            send $\left(\textsc{channelAnnounced}, \bob, p_{\alice, F}, p_{\bob,
+            F}, \mathit{fchid}, \mathit{pchid}\right)$ to $\fpaynet{}_{\mathrm{,
+            Open}}$.
           \ElsIf{both \alice{} and \bob{} are corrupted}
             \State forward message to \adversary{} \Comment{\adversary{} may
             open the channel or not}
