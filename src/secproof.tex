@@ -19,7 +19,7 @@
       \end{algorithmic}
     \end{systembox}
     \caption{}
-    \label{alg:fpaynet:dummy}
+    \label{alg:proof:fpaynet:dummy}
   \end{figure}
 
   \begin{figure}[H]
@@ -84,7 +84,7 @@
       \end{algorithmic}
     \end{systembox}
     \caption{}
-    \label{alg:fpaynet:reg}
+    \label{alg:proof:fpaynet:reg}
   \end{figure}
 
   \begin{figure}[H]
@@ -174,7 +174,7 @@
       \end{algorithmic}
     \end{systembox}
     \caption{}
-    \label{alg:fpaynet:open}
+    \label{alg:proof:fpaynet:open}
   \end{figure}
 
   \begin{figure}[H]
@@ -237,12 +237,12 @@
         from $\fpaynet{}_{\mathrm{, Open}}$:
         \Indent
           \State execute
-          lines~\ref{alg:protocol:open:checkNew:prand}-\ref{alg:protocol:open:checkNew:send}
-          of Fig.~\ref{alg:protocol:open:checkNew} with \alice's ITI
+          lines~\ref{alg:protocol:checkNew:prand}-\ref{alg:protocol:checkNew:send}
+          of Fig.~\ref{alg:protocol:checkNew} with \alice's ITI
           \If{\bob{} is honest}
             \State expect the delivery of \alice's (\textsc{fundingLocked})
             message from \adversary
-            \State simulate Fig.~\ref{alg:protocol:open:fundingLocked} with
+            \State simulate Fig.~\ref{alg:protocol:fundingLocked} with
             received message in \bob's ITI
           \EndIf
         \EndIndent
@@ -256,7 +256,7 @@
           \environment{} to \adversary
           \If{\bob{} is honest}
             \State expect a (\textsc{fundingLocked}) message from \adversary
-            \State simulate Fig.~\ref{alg:protocol:open:fundingLocked} with
+            \State simulate Fig.~\ref{alg:protocol:fundingLocked} with
             received message in \bob's ITI
           \EndIf
         \EndIndent
@@ -298,11 +298,11 @@
     we don't have to simulate those.
 
     When \environment{} sends (\textsc{checkNew}, \alice, \bob, \textit{tid}) to
-    \alice{} in the real world, line~\ref{alg:protocol:open:checkNew:valid} of
-    Fig.~\ref{alg:protocol:open:checkNew} will allow execution to continue if
-    there exists an entry with temporary id \textit{tid} in
-    \texttt{pendingOpen} marked as ``broadcast''. Such an entry can be added
-    either in Fig.~\ref{alg:protocol:open:env},
+    \alice{} in the real world, line~\ref{alg:protocol:checkNew:valid} of
+    Fig.~\ref{alg:protocol:checkNew} will allow execution to continue if there
+    exists an entry with temporary id \textit{tid} in \texttt{pendingOpen}
+    marked as ``broadcast''. Such an entry can be added either in
+    Fig.~\ref{alg:protocol:open:env},
     line~\ref{alg:protocol:open:env:pendingOpen} or in
     Fig.~\ref{alg:protocol:open:openChannel},
     line~\ref{alg:protocol:open:openChannel:pendingOpen}. The former event can

@@ -280,14 +280,16 @@
           \State ensure there is a matching \texttt{channel} in
           \texttt{pendingOpen} with id \textit{pchid}, with a ``broadcast''
           mark, funded with $x$ coins
-          \label{alg:protocol:open:checkNew:valid}
+          \label{alg:protocol:checkNew:valid}
           \State send (\textsc{read}) to \ledger{} and assign reply to
           $\Sigma_{\alice}$
+          \label{alg:protocol:checkNew:read}
           \State ensure $\exists$ unspent TX in $\Sigma_{\alice}$ with ID
           \textit{pchid} and a $\left(x, ph_F \wedge pt_F\right)$ output
+          \label{alg:protocol:checkNew:included}
           \State $\mathrm{prand}_2 \gets \texttt{PRF}\left(\mathtt{seed},
           2\right)$
-          \label{alg:protocol:open:checkNew:prand}
+          \label{alg:protocol:checkNew:prand}
           \State $\left(sh_{\mathrm{com}, 2}, ph_{\mathrm{com}, 2}\right) \gets
           \mathrm{KeyShareGen}\left(1^k; \mathrm{prand}_2\right)$
           \State add TX to \texttt{channel} data \State replace ``broadcast''
@@ -300,12 +302,12 @@
           \EndIf
           \State send (\textsc{fundingLocked}, \textit{pchid},
           $ph_{\mathrm{com}, 2}$) to \bob{}
-          \label{alg:protocol:open:checkNew:send}
+          \label{alg:protocol:checkNew:send}
         \EndIndent
       \end{algorithmic}
     \end{protocolbox}
     \caption{}
-    \label{alg:protocol:open:checkNew}
+    \label{alg:protocol:checkNew}
   \end{figure}
 
   \begin{figure}[H]
@@ -331,7 +333,7 @@
       \end{algorithmic}
     \end{protocolbox}
     \caption{}
-    \label{alg:protocol:open:fundingLocked}
+    \label{alg:protocol:fundingLocked}
   \end{figure}
 
   \begin{figure}[H]
