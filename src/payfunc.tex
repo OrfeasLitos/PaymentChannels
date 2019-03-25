@@ -161,14 +161,15 @@
             \EndIf
             \State add \texttt{channel} to \texttt{channels}
           \EndIf
-          \State send (\textsc{channelOpened}, \alice, \textit{fchid}) to
-          \simulator
           \State add \texttt{receipt}(\texttt{channel}) to
           \texttt{newChannels}(\alice)
           \If{\texttt{pendingOpen}(\textit{fchid}) is marked with ``\alice{}
           checked'' and ``\bob{} checked''}
             \State clear \texttt{pendingOpen}(\textit{fchid}) entry
           \EndIf
+          \State send (\textsc{channelOpened}, \alice, \textit{fchid}) to
+          \simulator
+          \label{alg:fpaynet:checkNew:sim}
         \EndIndent
       \end{algorithmic}
     \end{systembox}
