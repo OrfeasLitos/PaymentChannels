@@ -354,8 +354,28 @@
 
     The last two points lead us to deduce that
     line~\ref{alg:fpaynet:checkNew:valid} of Fig.~\ref{alg:fpaynet:open} in the
-    ideal and line~\ref{alg:protocol:open:checkNew:valid} of
-    Fig.~\ref{alg:protocol:open:checkNew} in the real world will allow execution
-    to continue in the exact same cases with respect to the messages that
-    \environment{} and \adversary{} send.
+    ideal and line~\ref{alg:protocol:checkNew:valid} of
+    Fig.~\ref{alg:protocol:checkNew} in the real world will allow execution to
+    continue in the exact same cases with respect to the messages that
+    \environment{} and \adversary{} send. Given that execution continues,
+    \alice{} subsequently sends (\textsc{read}) to \ledger{} and performs
+    identical checks in both the ideal (Fig.~\ref{alg:fpaynet:open},
+    lines~\ref{alg:fpaynet:checkNew:read}-\ref{alg:fpaynet:checkNew:included})
+    and the real world (Fig.~\ref{alg:protocol:checkNew},
+    lines~\ref{alg:protocol:checkNew:read}-\ref{alg:protocol:checkNew:included}).
+
+    Moving on, in the real world
+    lines~\ref{alg:protocol:checkNew:prand}-\ref{alg:protocol:checkNew:send} of
+    Fig.~\ref{alg:protocol:checkNew} are executed by \alice{} and, given that
+    \adversary{} allows it, the code of Fig.~\ref{alg:protocol:fundingLocked} is
+    executed by \bob. Likewise, in the ideal world, the functionality executes
+    lines~\ref{alg:fpaynet:checkNew:mark}-\ref{alg:fpaynet:checkNew:sim} and as
+    a result it (always) sends (\textsc{channelOpened}, \alice, \textit{fchid})
+    to \simulator. In turn \simulator{} simulates
+    lines~\ref{alg:protocol:checkNew:prand}-\ref{alg:protocol:checkNew:send} of
+    Fig.~\ref{alg:protocol:checkNew} with \alice's ITI and, if \adversary{}
+    allows it, \simulator{} simulates the code of
+    Fig.~\ref{alg:protocol:fundingLocked} with \bob's ITI. Once more we conclude
+    that both worlds appear to behave identically to both \environment{} and
+    \adversary{} under the same inputs from them.
   \end{proof}
