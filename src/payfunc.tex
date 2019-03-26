@@ -378,6 +378,25 @@
             \texttt{toReport}(\alice)
           \EndFor
         \EndIndent
+      \end{algorithmic}
+    \end{systembox}
+    \caption{}
+    \label{alg:fpaynet:poll}
+  \end{figure}
+
+  \begin{figure}[H]
+    \begin{systembox}{\fpaynet - miscalleanous}
+      \begin{algorithmic}[1]
+        \State Upon receiving (\textsc{push}, \textit{pchid}) from \alice:
+        \Indent
+          \State send (\textsc{push}, \textit{pchid}, \alice) to \simulator
+        \EndIndent
+        \Statex
+
+        \State Upon receiving (\textsc{commit}, \textit{pchid}) from \alice:
+        \Indent
+          \State send (\textsc{commit}, \textit{pchid}, \alice) to \simulator
+        \EndIndent
         \Statex
 
         \State Upon receiving (\textsc{getNew}) from \alice:
@@ -389,5 +408,5 @@
       \end{algorithmic}
     \end{systembox}
     \caption{}
-    \label{alg:fpaynet:poll}
+    \label{alg:fpaynet:misc}
   \end{figure}
