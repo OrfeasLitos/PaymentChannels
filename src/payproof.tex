@@ -34,8 +34,9 @@
       from $\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$:
       \Indent
         \State strip \textit{payid}, simulate receiving the message with
-        \alice{} ITI and further execute the parts of the real protocol that
-        correspond to honest parties (Fig.~\ref{alg:protocol:pay:invoice}-
+        \alice{} ITI and further execute the parts of the real protocol
+        $\Pi_{\mathrm{LN}}$ that correspond to honest parties
+        (Fig.~\ref{alg:protocol:pay:invoice}-
         Fig.~\ref{alg:protocol:pay:updateFulfillHtlc})
         \State \TODO{black magic} \Comment{results in $\mathtt{charged} \in
         \{\alice, \adversary, \bot\}$}
