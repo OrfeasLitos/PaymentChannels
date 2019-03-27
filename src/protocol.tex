@@ -582,6 +582,7 @@
                 \State send (\textsc{submit}, (sig, $R$, TX)) to \ledger{}
                 \Comment{shouldn't be already spent by remote
                 \texttt{HTLCTimeout}}
+                \label{alg:protocol:pay:updateFulfillHtlc:submit}
               \Else \Comment{counterparty still off-chain}
                 \State send $\left(\textsc{updateFulfillHtlc}, \mathit{pchid}',
                 \mathtt{HTLCNo}, R\right)$ to counterparty

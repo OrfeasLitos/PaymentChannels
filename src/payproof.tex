@@ -33,8 +33,12 @@
       \overrightarrow{\mathtt{path}}, \mathtt{receipt}, \mathit{payid}\right)$
       from $\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$:
       \Indent
-        \State Simulate payment from \alice{} to \bob{} along
-        $\overrightarrow{\mathtt{path}}$ \TODO{continue}
+        \State strip \textit{payid}, simulate receiving the message with
+        \alice{} ITI and further execute the parts of the real protocol that
+        correspond to honest parties (Fig.~\ref{alg:protocol:pay:invoice}-
+        Fig.~\ref{alg:protocol:pay:updateFulfillHtlc})
+        \orfeas{submit?~\ref{alg:protocol:pay:updateFulfillHtlc:submit}}
+        \State figure out who paid and name them \charlie \TODO{continue}
         \State send $\left(\textsc{resolvePay}, \mathit{payid},
         \charlie\right)$ to $\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$
       \EndIndent
