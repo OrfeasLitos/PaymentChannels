@@ -80,7 +80,7 @@
         \State At the end of each activation: \orfeas{can this part completely
         go?}
         \Indent
-          \State verify onChainbalance() for all parties is consistent with
+          \State verify onChainbalance() for honest parties is consistent with
           ledger (if not roll back the state and ignore command of activation).
         \EndIndent
       \end{algorithmic}
@@ -226,8 +226,10 @@
               \texttt{pendingUpdates}
             \EndIf
           \EndFor
-          \State $\mathtt{offChainBalance}\left(\charlie\right) \gets
-          \mathtt{offChainBalance}\left(\charlie\right) - x$
+          \If{$\charlie = \alice$}
+            \State $\mathtt{offChainBalance}\left(\alice\right) \gets
+            \mathtt{offChainBalance}\left(\alice\right) - x$
+          \EndIf
           \State $\mathtt{offChainBalance}\left(\bob\right) \gets
           \mathtt{offChainBalance}\left(\bob\right) + x$
         \EndIndent
