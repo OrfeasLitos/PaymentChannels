@@ -1,0 +1,60 @@
+\begin{figure}[H]
+  \begin{systembox}{$\fpaynet{}_{\mathrm{, dummy}}$}
+    \begin{algorithmic}[1]
+      \State Upon receiving any message $M$ from \alice:
+      \Indent
+        \If{$M$ is a valid \fpaynet{} message from a player}
+          \State send ($M, \alice$) to \simulator
+        \EndIf
+      \EndIndent
+      \Statex
+
+      \State Upon receiving any message ($M, \alice$) from \simulator:
+      \Indent
+        \If{$M$ is a valid \fpaynet{} message from \simulator}
+          \State send $M$ to \alice
+        \EndIf
+      \EndIndent
+    \end{algorithmic}
+  \end{systembox}
+  \caption{}
+  \label{alg:proof:fpaynet:dummy}
+\end{figure}
+
+\begin{figure}[H]
+  \begin{simulatorbox}{$\simulator{}_{\mathrm{LN}}$}
+    Expects the same messages as the protocol, but messages that the protocol
+    expects to receive from \environment, the simulator expects to receive
+    from $\fpaynet{}_{\mathrm{, dummy}}$ with the name of the player appended.
+    The simulator internally executes one copy of the protocol per player.
+    Upon receiving any message, the simulator runs the relevant code of the
+    protocol copy tied to the appended player name. Mimicking the real-world
+    case, if a protocol copy sends a message to another player, that message
+    is passed to \adversary{} as if sent by the player and if \adversary{}
+    allows the message to reach the receiver, then the simulator reacts by
+    acting upon the message with the protocol copy corresponding to the
+    recipient player. A message sent by a protocol copy to \environment{} will
+    be routed by \simulator{} to $\fpaynet{}_{\mathrm{, dummy}}$ instead. To
+    distinguish which player it comes from, \simulator{} also appends the
+    player name to the message.
+  \end{simulatorbox}
+  \caption{}
+  \label{alg:sim:ln}
+\end{figure}
+
+\begin{lemma}
+  \label{lemma:dummy}
+  $\textsc{Exec}^{\ledger}_{\Pi_{\mathrm{LN}}, \adversary_{\mathrm{d}},
+  \environment} = \textsc{Exec}^{\fpaynet{}_{\mathrm{, dummy}},
+  \ledger}_{\simulator_{\mathrm{LN}}, \environment}$
+\end{lemma}
+
+\begin{proof}
+  Consider a message that \environment{} sends. In the real world, the
+  protocol ITIs produce an output. In the ideal world, the message is given to
+  $\simulator{}_{\mathrm{LN}}$ through $\fpaynet{}_{\mathrm{, dummy}}$. The
+  former simulates the protocol ITIs of the real world (along with their coin
+  flips) and so produces an output from the exact same distribution, which is
+  given to \environment{} through $\fpaynet{}_{\mathrm{, dummy}}$. Thus the
+  two outputs are indistinguishable.
+\end{proof}

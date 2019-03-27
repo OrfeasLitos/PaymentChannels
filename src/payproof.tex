@@ -1,0 +1,56 @@
+\begin{figure}[H]
+  \begin{systembox}{$\fpaynet{}_{\mathrm{, Pay}}$}
+    \begin{algorithmic}[1]
+      \State For messages \textsc{pay}, \textsc{push} and \textsc{commit}, act
+      like \fpaynet{}.
+      \Statex
+
+      \State Upon receiving any other message $M$ from \alice:
+      \Indent
+        \If{$M$ is a valid \fpaynet{} message from a player}
+          \State send ($M, \alice$) to \simulator
+        \EndIf
+      \EndIndent
+      \Statex
+
+      \State Upon receiving any other message ($M, \alice$) from \simulator:
+      \Indent
+        \If{$M$ is a valid \fpaynet{} message from \simulator}
+          \State send $M$ to \alice
+        \EndIf
+      \EndIndent
+    \end{algorithmic}
+  \end{systembox}
+  \caption{}
+  \label{alg:proof:fpaynet:pay}
+\end{figure}
+
+\begin{figure}[H]
+  \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$}
+    Like $\simulator{}_{\mathrm{LN - Reg - Open}}$. Differences:
+    \begin{algorithmic}[1]
+      \State Upon receiving $\left(\textsc{pay}, \alice, \bob, x,
+      \overrightarrow{\mathtt{path}}, \mathtt{receipt}, \mathit{payid}\right)$
+      from $\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$:
+      \Indent
+        \State Simulate payment from \alice{} to \bob{} along
+        $\overrightarrow{\mathtt{path}}$ \TODO{continue}
+        \State send $\left(\textsc{resolvePay}, \mathit{payid},
+        \charlie\right)$ to $\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$
+      \EndIndent
+    \end{algorithmic}
+  \end{simulatorbox}
+  \caption{}
+  \label{alg:sim:pay}
+\end{figure}
+
+\begin{lemma}
+  \label{lemma:pay}
+  $\textsc{Exec}^{\fpaynet{}_{\mathrm{, Open}},
+  \ledger}_{\simulator_{\mathrm{LN - Reg - Open}}, \environment} =
+  \textsc{Exec}^{\fpaynet{}_{\mathrm{, Pay}}, \ledger}_{\simulator_{\mathrm{LN
+  - Reg - Open - Pay}}, \environment}$
+\end{lemma}
+
+\begin{proof}
+\end{proof}
