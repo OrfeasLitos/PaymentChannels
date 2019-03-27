@@ -37,10 +37,11 @@
         \alice{} ITI and further execute the parts of the real protocol that
         correspond to honest parties (Fig.~\ref{alg:protocol:pay:invoice}-
         Fig.~\ref{alg:protocol:pay:updateFulfillHtlc})
-        \orfeas{submit?~\ref{alg:protocol:pay:updateFulfillHtlc:submit}}
-        \State figure out who paid and name them \charlie \TODO{continue}
+        \State \TODO{black magic} \Comment{results in $\mathtt{charged} \in
+        \{\alice, \adversary, \bot\}$}
         \State send $\left(\textsc{resolvePay}, \mathit{payid},
-        \charlie\right)$ to $\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$
+        \mathtt{charged}\right)$ to $\simulator{}_{\mathrm{LN - Reg - Open -
+        Pay}}$
       \EndIndent
     \end{algorithmic}
   \end{simulatorbox}
