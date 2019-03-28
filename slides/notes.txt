@@ -1,0 +1,37 @@
+* p. 2
+  * Scalability: up to hundreds of txs/s (we need 10s of 1000s of txs/s to
+    compete with VISA)
+  * But I don't care to validate txs between e.g. internal departments of a
+    company, as long as the company doesn't cheat
+* p. 3
+  * in other words, any party that has money off-chain should be able to move
+    it on-chain again unilaterally. An honest party should never lose money
+    when doing this (apart from on-chain tx fees)
+  * optimistic progress
+* p. 4
+  * payment channels in general, not specifically LN
+  * only 2 members per channel
+  * Alice and Bob cooperate to create a tx and put it on-chain (1 on-chain tx)
+  * either party can spend F and take their part (they each hold special txs)
+* p. 5
+  * They can then create a new version where Alice has 1.1 and Bob 1.9
+  * They create new special txs to hold and invalidate old ones
+  * F is a real tx on-chain
+  * But the "channel" in the image isn't one tx, but rather some keys and txs
+    held by Alice and Bob, different in each specific construction.
+* p. 6
+  * They can do many updates
+  * No touching the blockchain
+* p. 8
+  * could be done by Bob
+  * many, many, many technicalities and asterisks
+* p. 9
+  * if Alice <-> Charlie and Charlie <-> Bob, then Alice <--> Bob
+* p. 10
+  * that's why a.k.a. payment networks
+  * that's why this is interesting
+  * Charlie can't keep it
+  * LN - like -- virtual channels somewhat different
+* p. 11
+  * Very LN - specific
+  * Hashed Time Locked Contract
