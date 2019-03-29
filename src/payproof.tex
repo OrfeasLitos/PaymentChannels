@@ -34,12 +34,19 @@
       from $\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$:
       \Indent
         \State strip \textit{payid}, simulate receiving the message with
-        \alice{} ITI and further execute the parts of the real protocol
-        $\Pi_{\mathrm{LN}}$ that correspond to honest parties
-        (Fig.~\ref{alg:protocol:pay:invoice}-
+        \alice{} ITI and further execute the parts of $\Pi_{\mathrm{LN}}$ that
+        correspond to honest parties (Fig.~\ref{alg:protocol:pay:invoice}-
         Fig.~\ref{alg:protocol:pay:updateFulfillHtlc})
-        \State \TODO{black magic} \Comment{results in $\mathtt{charged} \in
-        \{\alice, \adversary, \bot\}$}
+        \If{}
+          \State $\mathtt{charged} = \adversary$
+        \ElsIf{any ``ensure'' in $\Pi_{\mathrm{LN}}$ fails OR any added HTLC on
+        the path times out before it is committed} \Comment{payment failed}
+        \State \TODO{but what if party doesn't take advantage of it?}
+        \State \TODO{consider relay-negligent parties}
+          \State $\mathtt{charged} = \bot$
+        \Else
+          \State $\mathtt{charged} = \alice$
+        \EndIf
         \State send $\left(\textsc{resolvePay}, \mathit{payid},
         \mathtt{charged}\right)$ to $\simulator{}_{\mathrm{LN - Reg - Open -
         Pay}}$
