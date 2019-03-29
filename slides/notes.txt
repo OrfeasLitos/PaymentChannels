@@ -9,6 +9,7 @@
   * 2 members/channel
   * Members create and bcast F
   * "channel" not one tx: many keys and txs
+  * dashed - channel, solid - tx
 * p. 5
   * new version, diff balance
   * new txs that invalidate old
