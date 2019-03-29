@@ -1,37 +1,41 @@
 * p. 2
-  * Scalability: up to hundreds of txs/s (we need 10s of 1000s of txs/s to
-    compete with VISA)
-  * But I don't care to validate txs between e.g. internal departments of a
-    company, as long as the company doesn't cheat
+  * Scalability: all/all -> up to 100 tx/s
+  * No validate company depts txs, only no cheat
 * p. 3
-  * in other words, any party that has money off-chain should be able to move
-    it on-chain again unilaterally. An honest party should never lose money
-    when doing this (apart from on-chain tx fees)
+  * able to move off-chain to on-chain alone, loss-free
   * optimistic progress
 * p. 4
-  * payment channels in general, not specifically LN
-  * only 2 members per channel
-  * Alice and Bob cooperate to create a tx and put it on-chain (1 on-chain tx)
-  * either party can spend F and take their part (they each hold special txs)
+  * general Pay Chans, not only LN
+  * 2 members/channel
+  * Members create and bcast F
+  * "channel" not one tx: many keys and txs
 * p. 5
-  * They can then create a new version where Alice has 1.1 and Bob 1.9
-  * They create new special txs to hold and invalidate old ones
-  * F is a real tx on-chain
-  * But the "channel" in the image isn't one tx, but rather some keys and txs
-    held by Alice and Bob, different in each specific construction.
+  * new version, diff balance
+  * new txs that invalidate old
 * p. 6
-  * They can do many updates
-  * No touching the blockchain
+  * Can update repeatedly
+  * Nothing on-chain
 * p. 8
-  * could be done by Bob
-  * many, many, many technicalities and asterisks
-* p. 9
-  * if Alice <-> Charlie and Charlie <-> Bob, then Alice <--> Bob
+  * Bob could also do
+  * technicalities and asterisks
 * p. 10
+  * Charlie gets coins in ch w Alice, gives in ch w Bob. Total balance not changed
   * that's why a.k.a. payment networks
   * that's why this is interesting
   * Charlie can't keep it
-  * LN - like -- virtual channels somewhat different
+  * LN -- virtual channels different
 * p. 11
   * Very LN - specific
   * Hashed Time Locked Contract
+* p. 12
+  * hash hardcoded in contract
+  * let this sink in
+* p. 13
+  * pre-signatures phase
+* p. 14
+  * contract signing phase
+* p. 15
+  * contract fulfilling phase
+* p. 16
+  * surprisingly, no rigorous analysis yet
+  * real world protocol -> hard
