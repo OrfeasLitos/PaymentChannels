@@ -13,7 +13,7 @@
 
   \subsection{Correctness}
     \begin{itemize}
-      \item $\forall k \in \mathcal{N},$ \\
+      \item $\forall k \in \mathbb{N},$ \\
       $\Pr[(mpk, msk) \gets \textsc{MasterKeyGen}\left(1^k\right),$ \\
       $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$ \\
       $\left(cpk_1, csk_1\right) \gets \textsc{CombineKey}\left(msk, mpk, sk,
@@ -21,7 +21,7 @@
       $cpk_2 \gets \textsc{CombinePubKey}\left(mpk, pk\right),$ \\
       $cpk_1 = cpk_2] = 1$
 
-      \item $\forall k \in \mathcal{N}, m \in \mathcal{M},$ \\
+      \item $\forall k \in \mathbb{N}, m \in \mathcal{M},$ \\
       $\Pr[(mpk, msk) \gets \textsc{MasterKeyGen}\left(1^k\right),$ \\
       $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$ \\
       $\left(cpk, csk\right) \gets \textsc{CombineKey}\left(mpk, msk, pk,
