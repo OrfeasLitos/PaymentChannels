@@ -420,7 +420,8 @@
         $\overrightarrow{\mathtt{path}}$, \texttt{receipt}) from \environment:
         \Indent
           \State ensure that $\overrightarrow{\mathtt{path}}$ consists of valid
-          \textit{pchid}s
+          \textit{pchid}s and CltvExpiryDeltas \TODO{Mention equality with $3k +
+          \mathtt{RHSRelayDelay}$}
           \State ensure that the first $\mathit{pchid} \in
           \overrightarrow{\mathtt{path}}$ has the same \textit{pchid} as in
           \texttt{receipt}
@@ -442,12 +443,13 @@
           \texttt{pendingGetPaid}
           \State choose random, unique preimage $R$
           \State add (\bob, $R$, \textit{payid}) to \texttt{pendingGetPaid}
-          \State send (\textsc{invoice}, $\mathcal{H}\left(R\right)$,
-          \textit{payid}) to \bob{}
+          \State send $\left(\textsc{invoice}, \mathcal{H}\left(R\right),
+          \mathtt{relayDelay} + 2k + 1, \mathit{payid}\right)$ to \bob{}
         \EndIndent
         \Statex
 
-        \State Upon receiving (\textsc{invoice}, $h$, \textit{payid}) from \bob:
+        \State Upon receiving (\textsc{invoice}, $h$, minFinalCLTVExpiry,
+        \textit{payid}) from \bob:
         \Indent
           \State ensure there is a (\bob, $x$, $\overrightarrow{\mathtt{path}}$,
           \texttt{receipt}, \textit{payid}, ``waiting for invoice'') entry in
@@ -456,12 +458,13 @@
           \State remove entry from \texttt{pendingPay}
           \State send (\textsc{read}) to \ledger{} and assign largest block
           number to $t$
-          \State $m \gets$ the concatenation of \texttt{length}
-          $\overrightarrow{\mathtt{path}}$ $\left(x,
-          \mathtt{remoteDelay}_i\right)$ pairs, where the last
-          \texttt{remoteDelay} is $t + 2k + 1 + \mathtt{BobDelay}$ and every
-          previous \texttt{remoteDelay} is incremented by $3k +
-          \mathtt{RHSDelay}$ \TODO{\alice{} doesn't know these Bob, RHS delays}
+          \State $m \gets$ the concatenation of
+          $\mathtt{length}\left(\overrightarrow{\mathtt{path}}\right)$ $\left(x,
+          \mathtt{CltvExpiry}_i\right)$ pairs, where the last
+          \texttt{CltvExpiry} is set to minFinalCLTVExpiry and every previous
+          \texttt{CltvExpiry} is the current incremented by
+          \texttt{RHS-CltvExpiryDelta} (as given by \environment{} in
+          \textsc{pay})
           \State $\left(\mu_0, \delta_0\right) \gets
           \mathtt{SphinxCreate}\left(m, \text{ public keys of }
           \overrightarrow{\mathtt{path}} \text{ parties}\right)$
@@ -471,16 +474,16 @@
           \State add an additional $\left(x, ph_{\mathrm{rev}, n+1} \vee
           \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc}, n+1}, \text{
           on preimage}\right.\right.$ $\left.\left.\text{of } h\right) \vee
-          ph_{\mathrm{htlc}, n+1}, \text{largest } \mathtt{remoteRelayDelay}
-          \text{ absolute}\right)$ output (all with $n+1$ keys) to
-          \texttt{remoteCom}, marked with \texttt{HTLCNo}
+          ph_{\mathrm{htlc}, n+1}, \text{largest } \mathtt{CltvExpiry} \text{
+          absolute}\right)$ output (all with $n+1$ keys) to \texttt{remoteCom},
+          marked with \texttt{HTLCNo}
           \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one and
           associate $x, h, \mathit{pchid}$ with it
           \State mark \texttt{HTLCNo} as ``sender''
           \State send (\textsc{updateAddHtlc}, first \textit{pchid} of
           $\overrightarrow{\mathtt{path}}, \mathtt{HTLCNo}_{\textit{pchid}}, x,
-          h,$ largest \texttt{remoteDelay}, $\left(\mu_0, \delta_0\right)$) to
-          \textit{pchid} channel counterparty
+          h,$ largest \texttt{CltvExpiry}, $\left(\mu_0,
+          \delta_0\right)$) to \textit{pchid} channel counterparty
         \EndIndent
       \end{algorithmic}
     \end{protocolbox}
