@@ -509,8 +509,8 @@
             \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one
             \State mark \texttt{HTLCNo} as ``receiver''
           \Else \Comment{We are an intermediary}
-            \State ensure $x = x', \mathtt{CltvExpiry} = \mathtt{CltvExpiry}' +
-            \mathtt{relayDelay} + 3k$
+            \State ensure $x = x', \mathtt{CltvExpiry} \geq \mathtt{CltvExpiry}'
+            + \mathtt{relayDelay} + 3k$
             \State ensure $\mathtt{pchid}'$ corresponds to an open channel in
             \texttt{channels} where we have at least $x$
             \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one
