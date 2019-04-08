@@ -48,8 +48,8 @@
         \mathrm{pubKey}\right)$ from \simulator:
         \Indent
           \State $\mathtt{pubKey}\left(\alice\right) \gets \mathrm{pubKey}$
-          \State send (\textsc{register}, \alice, \texttt{delay},
-          \texttt{relayDelay}, pubKey) to \alice
+          \State send (\textsc{register}, \alice, \texttt{delay}(\alice),
+          \texttt{relayDelay}(\alice), pubKey) to \alice
         \EndIndent
         \Statex
 
