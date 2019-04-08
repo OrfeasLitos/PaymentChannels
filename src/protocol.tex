@@ -495,22 +495,22 @@
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{updateAddHtlc}}
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{updateAddHtlc}, \textit{pchid},
-        $\mathtt{HTLCNo}, x, h, \mathtt{remoteDelay}, M$) from \bob:
+        $\mathtt{HTLCNo}, x, h, \mathtt{CltvExpiry}, M$) from \bob:
         \Indent
           \State ensure \textit{pchid} corresponds to an open \texttt{channel}
           in \texttt{channels} where \bob{} has at least $x$
           \State ensure $\mathtt{HTLCNo} = \mathtt{HTLCNo}_{\mathit{pchid}} + 1$
-          \State $\left(\mathit{pchid}', x', \mathtt{remoteDelay}',
+          \State $\left(\mathit{pchid}', x', \mathtt{CltvExpiry}',
           \delta\right) \gets \mathtt{SphinxPeel}\left(sk_{\textit{Alice}},
           M\right)$
           \If{$\delta = \mathtt{receiver}$}
-            \State ensure $\mathit{pchid}' = \bot, x = x', \mathtt{remoteDelay}
-            = \mathtt{remoteDelay}' = 2k + 1 + \mathtt{delay}$
+            \State ensure $\mathit{pchid}' = \bot, x = x', \mathtt{CltvExpiry}
+            \geq \mathtt{CltvExpiry}' + \mathtt{relayDelay} + 2k + 1$
             \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one
             \State mark \texttt{HTLCNo} as ``receiver''
           \Else \Comment{We are an intermediary}
-            \State ensure $x = x', \mathtt{remoteDelay} = \mathtt{remoteDelay}'
-            + 3k + \mathtt{delay}$
+            \State ensure $x = x', \mathtt{CltvExpiry} = \mathtt{CltvExpiry}' +
+            \mathtt{relayDelay} + 3k$
             \State ensure $\mathtt{pchid}'$ corresponds to an open channel in
             \texttt{channels} where we have at least $x$
             \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one
@@ -521,7 +521,7 @@
           \State reduce delayed payment output in \texttt{remoteCom} by $x$
           \State add an $\left(x, ph_{\mathrm{rev}, n+1} \vee
           \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc}, n+1},
-          \mathtt{remoteRelayDelay} \text{ absolute}\right) \vee\right.$
+          \mathtt{CltvExpiry} \text{ absolute}\right) \vee\right.$
           $\left.ph_{\mathrm{htlc}, n+1}, \text{ on preimage of } h\right)$ htlc
           output (all with $n+1$ keys) to \texttt{remoteCom}, marked with
           \texttt{HTLCNo}
@@ -531,7 +531,7 @@
             \State add $\left(\mathtt{HTLCNo}, R\right)$ to
             $\mathtt{pendingFulfills}_{\textit{pchid}}$
           \ElsIf{$\delta \neq \mathtt{receiver}$} \Comment{Send HTLC to next
-          hop}
+          hop} \TODO{defer after commit \& push}
             \State retrieve $\mathit{pchid}'$ data
             \State let $\mathtt{remoteCom}_n$ the latest signed remote
             commitment tx
@@ -539,14 +539,14 @@
             \State add an additional $\left(x, ph_{\mathrm{rev}, n+1} \vee
             \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc}, n+1}, \text{
             on preimage}\right.\right.$ $\left.\left.\text{of } h\right) \vee
-            ph_{\mathrm{htlc}, n+1}\mathtt{remoteRelayDelay}' \text{
-            absolute}\right)$ output (all with $n+1$ keys) to
-            \texttt{remoteCom}, marked with \texttt{HTLCNo}
+            ph_{\mathrm{htlc}, n+1}\mathtt{CltvExpiry}' \text{ absolute}\right)$
+            output (all with $n+1$ keys) to \texttt{remoteCom}, marked with
+            \texttt{HTLCNo}
             \State increment \texttt{HTLCNo} by 1
             \State $M' \gets \mathtt{SphinxPrepare}\left(M, \delta,
             sk_{\mathit{Alice}}\right)$
             \State send (\textsc{updateAddHtlc}, $\mathit{pchid}'$,
-            \texttt{HTLCNo}, $x, h, \mathtt{remoteDelay}', M$) to
+            \texttt{HTLCNo}, $x, h, \mathtt{CltvExpiry}', M$) to
             $\mathit{pchid}'$ counterparty
           \EndIf
         \EndIndent
