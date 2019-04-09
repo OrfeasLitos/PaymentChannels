@@ -527,7 +527,7 @@
           \texttt{HTLCNo}
           \If{$\delta = \mathtt{receiver}$}
             \State retrieve $R : \mathcal{H}\left(R\right) = h$ from
-            \texttt{pendingGetPaid}
+            \texttt{pendingGetPaid} and clear entry
             \State add $\left(\mathtt{HTLCNo}, R\right)$ to
             $\mathtt{pendingFulfills}_{\textit{pchid}}$
           \ElsIf{$\delta \neq \mathtt{receiver}$} \Comment{Send HTLC to next
