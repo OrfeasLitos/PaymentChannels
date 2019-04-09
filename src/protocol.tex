@@ -167,7 +167,7 @@
           and has value $y \geq x$
           \State $F \gets$ TX \{input spends prevout with a
           \texttt{signature}(TX, $sk_{\alice}$), output 0 pays $y - x$ to
-          $pk_{\alice}$, output 1 pays $x$ to $\textit{tid}.ph_F \wedge pt_F$\}
+          $pk_{\alice}$, output 1 pays $x$ to $\mathit{tid}.ph_F \wedge pt_F$\}
           \State $\mathit{pchid} \gets \mathcal{H}\left(F\right)$
           \State add \textit{pchid} to \texttt{pendingOpen} entry with id
           \textit{tid}
@@ -430,7 +430,7 @@
           at least $x$.
           \State choose unique payment ID \textit{payid} \Comment{unique for
           \alice{} and \bob}
-          \State add (\textit{Bob}, $x$, $\overrightarrow{\mathtt{path}}$,
+          \State add (\bob, $x$, $\overrightarrow{\mathtt{path}}$,
           \texttt{receipt}, \textit{payid}, ``waiting for invoice'') to
           \texttt{pendingPay}
           \State send (\textsc{sendInvoice}, \textit{payid}) to \bob{}
@@ -477,11 +477,11 @@
           ph_{\mathrm{htlc}, n+1}, \text{largest } \mathtt{CltvExpiry} \text{
           absolute}\right)$ output (all with $n+1$ keys) to \texttt{remoteCom},
           marked with \texttt{HTLCNo}
-          \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one and
+          \State increment $\mathtt{HTLCNo}_{\mathit{pchid}}$ by one and
           associate $x, h, \mathit{pchid}$ with it
           \State mark \texttt{HTLCNo} as ``sender''
           \State send (\textsc{updateAddHtlc}, first \textit{pchid} of
-          $\overrightarrow{\mathtt{path}}, \mathtt{HTLCNo}_{\textit{pchid}}, x,
+          $\overrightarrow{\mathtt{path}}, \mathtt{HTLCNo}_{\mathit{pchid}}, x,
           h,$ largest \texttt{CltvExpiry}, $\left(\mu_0,
           \delta_0\right)$) to \textit{pchid} channel counterparty
         \EndIndent
@@ -501,19 +501,18 @@
           in \texttt{channels} where \bob{} has at least $x$
           \State ensure $\mathtt{HTLCNo} = \mathtt{HTLCNo}_{\mathit{pchid}} + 1$
           \State $\left(\mathit{pchid}', x', \mathtt{CltvExpiry}',
-          \delta\right) \gets \mathtt{SphinxPeel}\left(sk_{\textit{Alice}},
-          M\right)$
+          \delta\right) \gets \mathtt{SphinxPeel}\left(sk_{\alice}, M\right)$
           \If{$\delta = \mathtt{receiver}$}
             \State ensure $\mathit{pchid}' = \bot, x = x', \mathtt{CltvExpiry}
             \geq \mathtt{CltvExpiry}' + \mathtt{relayDelay} + 2k + 1$
-            \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one
+            \State increment $\mathtt{HTLCNo}_{\mathit{pchid}}$ by one
             \State mark \texttt{HTLCNo} as ``receiver''
           \Else \Comment{We are an intermediary}
             \State ensure $x = x', \mathtt{CltvExpiry} \geq \mathtt{CltvExpiry}'
             + \mathtt{relayDelay} + 3k$
             \State ensure $\mathtt{pchid}'$ corresponds to an open channel in
             \texttt{channels} where we have at least $x$
-            \State increment $\mathtt{HTLCNo}_{\textit{pchid}}$ by one
+            \State increment $\mathtt{HTLCNo}_{\mathit{pchid}}$ by one
             \State mark \texttt{HTLCNo} as ``intermediary''
           \EndIf
           \State let $\mathtt{remoteCom}_n$ the latest signed remote commitment
@@ -529,7 +528,7 @@
             \State retrieve $R : \mathcal{H}\left(R\right) = h$ from
             \texttt{pendingGetPaid} and clear entry
             \State add $\left(\mathtt{HTLCNo}, R\right)$ to
-            $\mathtt{pendingFulfills}_{\textit{pchid}}$
+            $\mathtt{pendingFulfills}_{\mathit{pchid}}$
           \ElsIf{$\delta \neq \mathtt{receiver}$} \Comment{Send HTLC to next
           hop}
             \State retrieve $\mathit{pchid}'$ data
@@ -546,7 +545,7 @@
             \State $M' \gets \mathtt{SphinxPrepare}\left(M, \delta,
             sk_{\mathit{Alice}}\right)$
             \State add $\left(\mathtt{HTLCNo}', x, h, \mathtt{CltvExpiry}',
-            M'\right)$ to $\mathtt{pendingAdds}_{\textit{pchid}'}$
+            M'\right)$ to $\mathtt{pendingAdds}_{\mathit{pchid}'}$
           \EndIf
         \EndIndent
       \end{algorithmic}
@@ -591,7 +590,7 @@
               \EndIf
             \Else \ \Comment{we haven't received \textsc{revokeAndAck}}
               \State add $\left(\mathtt{HTLCNo}', R\right)$ to
-              $\mathtt{pendingFulfills}_{\textit{pchid}'}$
+              $\mathtt{pendingFulfills}_{\mathit{pchid}'}$
             \EndIf
           \EndIf
         \EndIndent
