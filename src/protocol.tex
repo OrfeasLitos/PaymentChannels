@@ -541,12 +541,12 @@
             on preimage}\right.\right.$ $\left.\left.\text{of } h\right) \vee
             ph_{\mathrm{htlc}, n+1}\mathtt{CltvExpiry}' \text{ absolute}\right)$
             output (all with $n+1$ keys) to $\mathtt{remoteCom}'$, marked with
-            \texttt{HTLCNo}
-            \State increment \texttt{HTLCNo} by 1
+            $\texttt{HTLCNo}'$
+            \State increment $\texttt{HTLCNo}'$ by 1
             \State $M' \gets \mathtt{SphinxPrepare}\left(M, \delta,
             sk_{\mathit{Alice}}\right)$
             \State send (\textsc{updateAddHtlc}, $\mathit{pchid}'$,
-            \texttt{HTLCNo}, $x, h, \mathtt{CltvExpiry}', M$) to
+            $\mathtt{HTLCNo}', x, h, \mathtt{CltvExpiry}', M'$) to
             $\mathit{pchid}'$ counterparty
           \EndIf
         \EndIndent
@@ -586,11 +586,11 @@
                 \Comment{shouldn't be already spent by remote
                 \texttt{HTLCTimeout}}
                 \label{alg:protocol:pay:updateFulfillHtlc:submit}
-              \Else \Comment{counterparty still off-chain}
+              \Else \ \Comment{counterparty still off-chain}
                 \State send $\left(\textsc{updateFulfillHtlc}, \mathit{pchid}',
                 \mathtt{HTLCNo}, R\right)$ to counterparty
               \EndIf
-            \Else \Comment{we haven't received \textsc{revokeAndAck}}
+            \Else \ \Comment{we haven't received \textsc{revokeAndAck}}
               \State add $\left(\mathtt{HTLCNo}', R\right)$ to
               $\mathtt{pendingFulfills}_{\textit{pchid}'}$
             \EndIf
@@ -735,14 +735,14 @@
         \Indent
           \State ensure that there is a $\mathtt{channel} \in \mathtt{channels}$
           with ID \textit{pchid}
-          \State choose a member (HTLC\_no, $R$) of
+          \State choose a member (\texttt{HTLCNo}, $R$) of
           $\mathtt{pendingFulfills}_{\mathit{pchid}}$ that is both in an
           ``irrevocably committed'' $\mathtt{remoteCom}_n$ and
           $\mathtt{localCom}_n$
-          \State remove (HTLC\_no, $R$) from
+          \State remove (\texttt{HTLCNo}, $R$) from
           $\mathtt{pendingFulfills}_{\mathit{pchid}}$
-          \State send (\textsc{updateFulfillHtlc}, \textit{pchid}, HTLC\_no,
-          $R$) to \textit{pchid} counterparty
+          \State send (\textsc{updateFulfillHtlc}, \textit{pchid},
+          \texttt{HTLCNo}, $R$) to \textit{pchid} counterparty
         \EndIndent
       \end{algorithmic}
     \end{protocolbox}
