@@ -369,9 +369,17 @@
   \begin{figure}[H]
     \begin{systembox}{\fpaynet - miscalleanous}
       \begin{algorithmic}[1]
-        \State Upon receiving (\textsc{push}, \textit{pchid}) from \alice:
+        \State Upon receiving (\textsc{pushFulfill}, \textit{pchid}) from
+        \alice:
         \Indent
-          \State send (\textsc{push}, \textit{pchid}, \alice) to \simulator
+          \State send (\textsc{pushFulfill}, \textit{pchid}, \alice) to
+          \simulator
+        \EndIndent
+        \Statex
+
+        \State Upon receiving (\textsc{pushAdd}, \textit{pchid}) from \alice:
+        \Indent
+          \State send (\textsc{pushAdd}, \textit{pchid}, \alice) to \simulator
         \EndIndent
         \Statex
 

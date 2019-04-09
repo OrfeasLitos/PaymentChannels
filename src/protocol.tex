@@ -531,7 +531,7 @@
             \State add $\left(\mathtt{HTLCNo}, R\right)$ to
             $\mathtt{pendingFulfills}_{\textit{pchid}}$
           \ElsIf{$\delta \neq \mathtt{receiver}$} \Comment{Send HTLC to next
-          hop} \TODO{defer after commit \& push}
+          hop}
             \State retrieve $\mathit{pchid}'$ data
             \State let $\mathtt{remoteCom}_n'$ the latest signed remote
             commitment tx
@@ -545,9 +545,8 @@
             \State increment $\texttt{HTLCNo}'$ by 1
             \State $M' \gets \mathtt{SphinxPrepare}\left(M, \delta,
             sk_{\mathit{Alice}}\right)$
-            \State send (\textsc{updateAddHtlc}, $\mathit{pchid}'$,
-            $\mathtt{HTLCNo}', x, h, \mathtt{CltvExpiry}', M'$) to
-            $\mathit{pchid}'$ counterparty
+            \State add $\left(\mathtt{HTLCNo}', x, h, \mathtt{CltvExpiry}',
+            M'\right)$ to $\mathtt{pendingAdds}_{\textit{pchid}'}$
           \EndIf
         \EndIndent
       \end{algorithmic}
@@ -731,7 +730,8 @@
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{push}}
       \begin{algorithmic}[1]
-        \State Upon receiving (\textsc{push}, \textit{pchid}) from \environment:
+        \State Upon receiving (\textsc{pushFulfill}, \textit{pchid}) from
+        \environment:
         \Indent
           \State ensure that there is a $\mathtt{channel} \in \mathtt{channels}$
           with ID \textit{pchid}
@@ -743,6 +743,23 @@
           $\mathtt{pendingFulfills}_{\mathit{pchid}}$
           \State send (\textsc{updateFulfillHtlc}, \textit{pchid},
           \texttt{HTLCNo}, $R$) to \textit{pchid} counterparty
+        \EndIndent
+        \Statex
+
+        \State Upon receiving (\textsc{pushAdd}, \textit{pchid}) from
+        \environment:
+        \Indent
+          \State ensure that there is a $\mathtt{channel} \in \mathtt{channels}$
+          with ID \textit{pchid}
+          \State choose a member $\left(\mathtt{HTLCNo}, x, h,
+          \mathtt{CltvExpiry}, M\right)$ of
+          $\mathtt{pendingAdds}_{\mathit{pchid}}$ that is both in an
+          ``irrevocably committed'' $\mathtt{remoteCom}_n$ and
+          $\mathtt{localCom}_n$
+          \State remove chosen entry from
+          $\mathtt{pendingAdds}_{\mathit{pchid}}$
+          \State send (\textsc{updateAddHtlc}, \textit{pchid}, \texttt{HTLCNo},
+          $x, h, \mathtt{CltvExpiry}, M$) to \textit{pchid} counterparty
         \EndIndent
       \end{algorithmic}
     \end{protocolbox}
