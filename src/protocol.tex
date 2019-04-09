@@ -273,7 +273,6 @@
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{checkNew}}
       \begin{algorithmic}[1]
-        \State \TODO{explicitly add keys et al to \texttt{channel}}
         \State Upon receiving (\textsc{checkNew}, \alice, \bob, \textit{tid})
         from \environment: \Comment{new message: represents lnd polling daemon}
         \Indent
@@ -420,8 +419,9 @@
         $\overrightarrow{\mathtt{path}}$, \texttt{receipt}) from \environment:
         \Indent
           \State ensure that $\overrightarrow{\mathtt{path}}$ consists of valid
-          \textit{pchid}s and \texttt{CltvExpiryDelta}s \TODO{Mention equality
-          with $3k + \mathtt{RHSRelayDelay}$}
+          \textit{pchid}s and \texttt{CltvExpiryDelta}s \Comment{Payment
+          completes only if $\forall i \in \overrightarrow{\mathtt{path}},
+          \mathtt{CltvExpiryDelta}_i \geq 3k + \mathtt{RelayDelay}_i$}
           \State ensure that the first $\mathit{pchid} \in
           \overrightarrow{\mathtt{path}}$ has the same \textit{pchid} as in
           \texttt{receipt}
