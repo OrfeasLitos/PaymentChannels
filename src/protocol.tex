@@ -385,6 +385,12 @@
                   \State add (sig, TX) to \texttt{toSubmit}
                 \EndIf
               \EndFor
+              \ForAll{spent offered HTLC output $i$ of $\mathtt{remoteCom}_n$}
+                \State retrieve preimage $R$, \texttt{HTLCNo} and \textit{pchid}
+                from output $i$
+                \State add $\left(\mathtt{HTLCNo}, R\right)$ to
+                $\mathtt{pendingFulfills}_{\mathit{pchid}}$
+              \EndFor
             \Else \ \Comment{malicious closure}
               \State $\mathrm{rev} \gets$ TX \{inputs: all
               $\mathtt{remoteCom}_n$ outputs, choosing $ph_{\mathrm{rev}, n}$
