@@ -584,18 +584,20 @@
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{updateFulfillHtlc}}
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{updateFulfillHtlc}, \textit{pchid},
-        HTLC\_no, $R$) from \bob:
+        \texttt{HTLCNo}, $R$) from \bob:
         \Indent
-          \State ensure $\mathrm{HTLC\_no} \leq \mathtt{lastRemoteSigned},
-          \mathrm{HTLC\_no} \leq \mathtt{lastLocalSigned}$
-          \State ensure HTLC\_no is an offered HTLC (\texttt{localCom} has $h$
+          \State ensure $\mathtt{HTLCNo} \leq \mathtt{lastRemoteSigned},
+          \mathtt{HTLCNo} \leq \mathtt{lastLocalSigned}$
+          \State ensure \texttt{HTLCNo} is an offered HTLC (\texttt{localCom}
+          has $h$
           tied to a public key that we own)
           \State ensure $\mathcal{H}\left(R\right) = h$, where $h$ is the hash
-          in the HTLC with number HTLC\_no
+          in the HTLC with number \texttt{HTLCNo}
           \State add value of HTLC to delayed payment of \texttt{remoteCom}
-          \State remove HTLC output with number HTLC\_no from \texttt{remoteCom}
+          \State remove HTLC output with number \texttt{HTLCNo} from
+          \texttt{remoteCom}
           \State add value of HTLC to simple payment of \texttt{localCom}
-          \State remove HTLC output with number HTLC\_no from
+          \State remove HTLC output with number \texttt{HTLCNo} from
           \texttt{localCom}
           \If{we have a channel $\mathit{phcid}'$ that has a received HTLC with
           hash $h$ with number $\mathtt{HTLCNo}'$} \Comment{We are intermediary}
