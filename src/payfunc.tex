@@ -209,7 +209,14 @@
           remove it from \texttt{pendingPay}
           \If{$\mathtt{charged} = \bot$}
             \State \Return
-          \ElsIf{$\mathtt{charged} \notin \{\alice, \adversary\}$}
+          \ElsIf{$\mathtt{charged} \neq \alice \wedge \mathtt{charged} \notin
+          \texttt{corrupted} \wedge \mathtt{charged} \text{ has not been
+          (relay-)negligent \TODO{when?} } \wedge$ the scenario
+          ``\texttt{charged} passed on an \textsc{updateFulfillHtlc}, the
+          counterparty did not revoke but either (went on-chain with the
+          committment tx that contained the HTLC and \texttt{charged} did not
+          broadcast HTLC-success) or (did not go on-chain and \texttt{charged}
+          did not close the channel'' did not happen \TODO{fixup}}
             \State halt
           \EndIf
           \ForAll{$\mathtt{channel}\text{s} \in \overrightarrow{\mathtt{path}}$
@@ -228,9 +235,9 @@
               \texttt{pendingUpdates}
             \EndIf
           \EndFor
-          \If{$\mathtt{charged} = \alice$}
-            \State $\mathtt{offChainBalance}\left(\alice\right) \gets
-            \mathtt{offChainBalance}\left(\alice\right) - x$
+          \If{$\mathtt{charged} \notin \mathtt{corrupted}$}
+            \State $\mathtt{offChainBalance}\left(\mathtt{charged}\right) \gets
+            \mathtt{offChainBalance}\left(\mathtt{charged}\right) - x$
           \EndIf
           \State $\mathtt{offChainBalance}\left(\bob\right) \gets
           \mathtt{offChainBalance}\left(\bob\right) + x$
