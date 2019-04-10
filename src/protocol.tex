@@ -483,6 +483,13 @@
           ph_{\mathrm{htlc}, n+1}, \text{largest } \mathtt{CltvExpiry} \text{
           absolute}\right)$ output (all with $n+1$ keys) to \texttt{remoteCom},
           marked with \texttt{HTLCNo}
+          \State reduce delayed payment output in \texttt{localCom} by $x$
+          \State add an additional $\left(x, pt_{\mathrm{rev}, n+1} \vee
+          \left(pt_{\mathrm{htlc}, n+1}, \text{ on preimage}\right.\right.$
+          $\left.\left.\text{of } h\right) \vee \left(ph_{\mathrm{htlc}, n+1}
+          \wedge pt_{\mathrm{htlc}, n+1}, \text{largest } \mathtt{CltvExpiry}
+          \text{ absolute}\right)\right)$ output (all with $n+1$ keys) to
+          \texttt{localCom}, marked with \texttt{HTLCNo}
           \State increment $\mathtt{HTLCNo}_{\mathit{pchid}}$ by one and
           associate $x, h, \mathit{pchid}$ with it
           \State mark \texttt{HTLCNo} as ``sender''
@@ -530,6 +537,12 @@
           $\left.ph_{\mathrm{htlc}, n+1}, \text{ on preimage of } h\right)$ htlc
           output (all with $n+1$ keys) to \texttt{remoteCom}, marked with
           \texttt{HTLCNo}
+          \State reduce simple payment output in \texttt{localCom} by $x$
+          \State add an $\left(x, pt_{\mathrm{rev}, n+1} \vee pt_{\mathrm{htlc},
+          n+1}, \mathtt{CltvExpiry} \text{ absolute}\right) \vee$
+          $\left(\left(pt_{\mathrm{htlc}, n+1} \wedge ph_{\mathrm{htlc}, n+1},
+          \text{ on preimage of } h\right)\right)$ htlc output (all with $n+1$
+          keys) to \texttt{remoteCom}, marked with \texttt{HTLCNo}
           \If{$\delta = \mathtt{receiver}$}
             \State retrieve $R : \mathcal{H}\left(R\right) = h$ from
             \texttt{pendingGetPaid} and clear entry
@@ -547,6 +560,13 @@
             ph_{\mathrm{htlc}, n+1}\mathtt{CltvExpiry}' \text{ absolute}\right)$
             output (all with $n+1$ keys) to $\mathtt{remoteCom}'$, marked with
             $\texttt{HTLCNo}'$
+            \State reduce delayed payment output in $\mathtt{localCom}'$ by $x$
+            \State add an additional $\left(x, pt_{\mathrm{rev}, n+1} \vee
+            \left(pt_{\mathrm{htlc}, n+1}, \text{ on preimage}\right.\right.$
+            $\left.\left.\text{of } h\right) \vee \left(pt_{\mathrm{htlc}, n+1}
+            \wedge ph_{\mathrm{htlc}, n+1}\mathtt{CltvExpiry}' \text{
+            absolute}\right)\right)$ output (all with $n+1$ keys) to
+            $\mathtt{remoteCom}'$, marked with $\texttt{HTLCNo}'$
             \State increment $\texttt{HTLCNo}'$ by 1
             \State $M' \gets \mathtt{SphinxPrepare}\left(M, \delta,
             sk_{\mathit{Alice}}\right)$
@@ -574,6 +594,9 @@
           in the HTLC with number HTLC\_no
           \State add value of HTLC to delayed payment of \texttt{remoteCom}
           \State remove HTLC output with number HTLC\_no from \texttt{remoteCom}
+          \State add value of HTLC to simple payment of \texttt{localCom}
+          \State remove HTLC output with number HTLC\_no from
+          \texttt{localCom}
           \If{we have a channel $\mathit{phcid}'$ that has a received HTLC with
           hash $h$ with number $\mathtt{HTLCNo}'$} \Comment{We are intermediary}
             \If{$\mathtt{HTLCNo}' \leq \mathtt{lastRemoteSigned}'$}
