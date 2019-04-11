@@ -602,27 +602,25 @@
           \texttt{localCom}
           \If{we have a channel $\mathit{phcid}'$ that has a received HTLC with
           hash $h$ with number $\mathtt{HTLCNo}'$} \Comment{We are intermediary}
-            \If{$\mathtt{HTLCNo}' \leq \mathtt{lastRemoteSigned}'$}
-            \Comment{HTLC committed}
-              \State send (\textsc{read}) to \ledger{} and assign reply to
-              $\Sigma_{\alice}$
-              \If{latest $\mathtt{remoteCom}'_n \in \Sigma_{\alice}$}
-              \Comment{counterparty has gone on-chain}
-                \State $\mathrm{TX} \gets$ \{input: $\mathtt{remoteCom}'$ HTLC
-                output with number $\mathtt{HTLCNo}'$, output: $pk_{\alice}$\}
-                \State $\mathrm{sig} \gets \mathtt{signature}\left(\mathrm{TX},
-                sh_{\mathrm{htlc}, n}\right)$
-                \State send (\textsc{submit}, (sig, $R$, TX)) to \ledger{}
-                \Comment{shouldn't be already spent by remote
-                \texttt{HTLCTimeout}}
-                \label{alg:protocol:pay:updateFulfillHtlc:submit}
-              \Else \ \Comment{counterparty still off-chain}
-                \State send $\left(\textsc{updateFulfillHtlc}, \mathit{pchid}',
-                \mathtt{HTLCNo}, R\right)$ to counterparty
-              \EndIf
-            \Else \ \Comment{we haven't received \textsc{revokeAndAck}}
-              \State add $\left(\mathtt{HTLCNo}', R\right)$ to
-              $\mathtt{pendingFulfills}_{\mathit{pchid}'}$
+            \State send (\textsc{read}) to \ledger{} and assign reply to
+            $\Sigma_{\alice}$
+            \If{latest $\mathtt{remoteCom}'_n \in \Sigma_{\alice}$}
+            \Comment{counterparty has gone on-chain}
+              \State $\mathrm{TX} \gets$ \{input: ($\mathtt{remoteCom}'$ HTLC
+              output with number $\mathtt{HTLCNo}', R$), output:
+              $pk_{\alice}$\}
+              \State $\mathrm{sig} \gets \mathtt{signature}\left(\mathrm{TX},
+              sh_{\mathrm{htlc}, n}\right)$
+              \State send (\textsc{submit}, (sig, TX)) to \ledger{}
+              \Comment{shouldn't be already spent by remote
+              \texttt{HTLCTimeout}}
+              \label{alg:protocol:pay:updateFulfillHtlc:submit}
+            \Else \ \Comment{counterparty still off-chain}
+              \State \Comment{Not having the HTLC irrevocably committed is
+              impossible (Fig.~\ref{alg:protocol:pay:push},
+              l.~\ref{alg:protocol:pay:pushadd:choose})}
+              \State send $\left(\textsc{updateFulfillHtlc}, \mathit{pchid}',
+              \mathtt{HTLCNo}', R\right)$ to counterparty
             \EndIf
           \EndIf
         \EndIndent
