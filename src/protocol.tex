@@ -586,13 +586,14 @@
         \State Upon receiving (\textsc{updateFulfillHtlc}, \textit{pchid},
         \texttt{HTLCNo}, $R$) from \bob:
         \Indent
-          \State ensure $\mathtt{HTLCNo} \leq \mathtt{lastRemoteSigned},
-          \mathtt{HTLCNo} \leq \mathtt{lastLocalSigned}$
+          \If{$\mathtt{HTLCNo} > \mathtt{lastRemoteSigned} \vee \mathtt{HTLCNo}
+          > \mathtt{lastLocalSigned} \vee \mathcal{H}\left(R\right) \neq h$,
+          where $h$ is the hash in the HTLC with number \texttt{HTLCNo}}
+            \State close channel (as in Fig.~\ref{alg:protocol:close})
+            \State \Return
+          \EndIf
           \State ensure \texttt{HTLCNo} is an offered HTLC (\texttt{localCom}
-          has $h$
-          tied to a public key that we own)
-          \State ensure $\mathcal{H}\left(R\right) = h$, where $h$ is the hash
-          in the HTLC with number \texttt{HTLCNo}
+          has $h$ tied to a public key that we own)
           \State add value of HTLC to delayed payment of \texttt{remoteCom}
           \State remove HTLC output with number \texttt{HTLCNo} from
           \texttt{remoteCom}
@@ -683,16 +684,24 @@
           \State ensure $\mathtt{localCom} \neq \mathtt{localCom}_n$ and
           $\mathtt{localCom} \neq \mathtt{pendingLocalCom}$
           \Comment{there are uncommitted updates}
-          \State ensure $\mathtt{verify}\left(\mathtt{localCom},
-          \mathtt{comSig}_{n+1}, pt_F\right) = \mathtt{true}$
+          \If{$\mathtt{verify}\left(\mathtt{localCom},
+          \mathtt{comSig}_{n+1}, pt_F\right) = \mathtt{false} \vee
+          |\mathtt{HTLCSigs}_{n+1}| \neq \mathtt{HTLCNo} -
+          \mathtt{lastLocalSigned} + 1$}
+            \State close channel (as in Fig.~\ref{alg:protocol:close})
+            \State \Return
+          \EndIf
           \For{$i$ from \texttt{lastLocalSigned} to \texttt{HTLCNo}}
             \State $\mathtt{localHTLC}_{n+1, i} \gets$ TX \{input: HTLC output
             $i$ of $\mathtt{localCom}$, output: $\left(c_{\mathrm{htlc, i}},
             ph_{\mathrm{rev}, n+1} \vee \left(pt_{\mathrm{dpay}, n+1},
             \mathtt{remoteDelay} + k + 1 \text{ relative}\right)\right)$\}
-            \State ensure $\mathtt{verify}\left(\mathtt{localHTLC}_{n+1, i},
+            \If{$\mathtt{verify}\left(\mathtt{localHTLC}_{n+1, i},
             \mathtt{HTLCSigs}_{n+1, i}, pt_{\mathrm{htlc}, n+1}\right) =
-            \mathtt{true}$
+            \mathtt{false}$}
+              \State close channel (as in Fig.~\ref{alg:protocol:close})
+              \State \Return
+            \EndIf
           \EndFor
           \State $\mathtt{pendingLocalCom} \gets \mathtt{localCom}$
           \State mark $\mathtt{pendingLocalCom}$ as ``irrevocably committed''
@@ -718,8 +727,11 @@
           \State ensure there is a $\mathtt{channel} \in \mathtt{channels}$ with
           \bob{} with ID \textit{pchid} marked as ``waiting for
           \textsc{revokeAndAck}''
-          \State ensure $pk\left(st_{\mathrm{com}, n}\right) = pt_{\mathrm{com},
-          n}$
+          \If{$pk\left(st_{\mathrm{com}, n}\right) \neq pt_{\mathrm{com}, n}$}
+          \Comment{wrong $st_{\mathrm{com}, n}$ - closing}
+            \State close channel (as in Fig.~\ref{alg:protocol:close})
+            \State \Return
+          \EndIf
           \State mark $\mathtt{remoteCom}_{n+1}$ as ``irrevocably committed''
           \State $\mathtt{localCom}_{n+1} \gets \mathtt{pendingLocalCom}$
           \State unmark \texttt{channel}
