@@ -207,16 +207,20 @@
           \State retrieve $\left(\alice, \bob, x,
           \overrightarrow{\mathtt{path}}\right)$ with ID \textit{payid} and
           remove it from \texttt{pendingPay}
+          \State calculate \texttt{cltvExpiry} of \texttt{charged} (as in
+          Fig.~\ref{alg:protocol:pay:invoice},
+          l.~\ref{alg:protocol:pay:invoice:cltv})
           \If{$\mathtt{charged} = \bot$}
             \State \Return
-          \ElsIf{$\mathtt{charged} \neq \alice \wedge \mathtt{charged} \notin
-          \texttt{corrupted} \wedge \mathtt{charged} \text{ has not been
-          (relay-)negligent \TODO{when?} } \wedge$ the scenario
-          ``\texttt{charged} passed on an \textsc{updateFulfillHtlc}, the
-          counterparty did not revoke but either (went on-chain with the
-          committment tx that contained the HTLC and \texttt{charged} did not
-          broadcast HTLC-success) or (did not go on-chain and \texttt{charged}
-          did not close the channel'' did not happen \TODO{fixup}}
+          \ElsIf{$\mathtt{charged} \neq \alice \vee \mathtt{charged} \notin
+          \mathtt{corrupted} \vee$ \texttt{charged} has not been negligent from
+          (the moment the previous party on the $\overrightarrow{\mathtt{path}}$
+          irrevocably committed to the HTLC) + \texttt{delay} until
+          $\mathtt{cltvExpiry} - 2k - 1 \vee$ (\texttt{charged} has received
+          \textsc{poll} between $\mathtt{cltvExpiry} - \mathtt{relayDelay} - 2k$
+          and $\mathtt{cltvExpiry} - 2k - 1$ inclusive $\wedge$ \texttt{charged}
+          has received \textsc{fulfillOnChain} after the \textsc{poll} and
+          $\mathtt{cltvExpiry} - k$)}
             \State halt
           \EndIf
           \ForAll{$\mathtt{channel}\text{s} \in \overrightarrow{\mathtt{path}}$
@@ -393,6 +397,12 @@
         \State Upon receiving (\textsc{commit}, \textit{pchid}) from \alice:
         \Indent
           \State send (\textsc{commit}, \textit{pchid}, \alice) to \simulator
+        \EndIndent
+        \Statex
+
+        \State Upon receiving (\textsc{fulfillOnChain}) from \alice:
+        \Indent
+          \State send (\textsc{fulfillOnChain}, \alice) to \simulator
         \EndIndent
         \Statex
 

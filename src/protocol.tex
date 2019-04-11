@@ -471,6 +471,7 @@
           \texttt{CltvExpiry} is the current incremented by
           \texttt{RHS-CltvExpiryDelta} (as given by \environment{} in
           \textsc{pay})
+          \label{alg:protocol:pay:invoice:cltv}
           \State $\left(\mu_0, \delta_0\right) \gets
           \mathtt{SphinxCreate}\left(m, \text{ public keys of }
           \overrightarrow{\mathtt{path}} \text{ parties}\right)$
@@ -809,10 +810,28 @@
           $\mathtt{pendingAdds}_{\mathit{pchid}}$ that is both in an
           ``irrevocably committed'' $\mathtt{remoteCom}_n$ and
           $\mathtt{localCom}_n$
+          \label{alg:protocol:pay:pushadd:choose}
           \State remove chosen entry from
           $\mathtt{pendingAdds}_{\mathit{pchid}}$
           \State send (\textsc{updateAddHtlc}, \textit{pchid}, \texttt{HTLCNo},
           $x, h, \mathtt{CltvExpiry}, M$) to \textit{pchid} counterparty
+        \EndIndent
+        \Statex
+
+        \State Upon receiving (\textsc{fulfillOnChain}) from \environment:
+        \Indent
+          \State $\mathtt{toSubmit} \gets \emptyset$
+          \ForAll{channels}
+            \If{we have sent \textsc{updateFulfillHtlc} to counterparty and have
+            sent \textsc{commitmentSigned} to a transaction without that HTLC,
+            but have not received the corresponding \textsc{revokeAndAck}}
+              \State add the latest $\mathtt{localCom}_n$ of the channel and all
+              corresponding valid \texttt{HTLC-success}es and
+              \texttt{HTLC-timeout}s, along with their signatures to
+              \texttt{toSubmit}
+            \EndIf
+          \EndFor
+          \State send (\textsc{submit}, \texttt{toSubmit}) to \ledger
         \EndIndent
       \end{algorithmic}
     \end{protocolbox}
