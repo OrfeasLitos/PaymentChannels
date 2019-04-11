@@ -779,10 +779,23 @@
           $\mathtt{pendingFulfills}_{\mathit{pchid}}$ that is both in an
           ``irrevocably committed'' $\mathtt{remoteCom}_n$ and
           $\mathtt{localCom}_n$
+          \State send (\textsc{read}) to \ledger{} and assign reply to
+          $\Sigma_{\alice}$
           \State remove (\texttt{HTLCNo}, $R$) from
           $\mathtt{pendingFulfills}_{\mathit{pchid}}$
-          \State send (\textsc{updateFulfillHtlc}, \textit{pchid},
-          \texttt{HTLCNo}, $R$) to \textit{pchid} counterparty
+          \If{$\mathtt{remoteCom}_n \notin \Sigma_{\alice}$}
+          \Comment{counterparty cooperative}
+            \State send (\textsc{updateFulfillHtlc}, \textit{pchid},
+            \texttt{HTLCNo}, $R$) to \textit{pchid} counterparty
+          \Else \ \Comment{counterparty gone on-chain}
+            \State $\mathrm{TX} \gets$ \{input: ($\mathtt{remoteCom}_n$ HTLC
+            output with number $\mathtt{HTLCNo}, R$), output:
+            $pk_{\alice}$\}
+            \State $\mathrm{sig} \gets \mathtt{signature}\left(\mathrm{TX},
+            sh_{\mathrm{htlc}, n}\right)$
+            \State send (\textsc{submit}, (sig, TX)) to \ledger{}
+            \Comment{shouldn't be already spent by remote \texttt{HTLCTimeout}}
+          \EndIf
         \EndIndent
         \Statex
 
