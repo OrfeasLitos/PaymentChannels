@@ -41,15 +41,15 @@
         \textsc{updateAddHtlc} OR any added HTLC on the path times out before it
         is committed} \Comment{payment failed}
           \State $\mathtt{charged} = \bot$
-        \ElsIf{An honest player that sent \textsc{updateFulfillHtlc} to a
-        corrupted player gets the fulfillment of the HTLC irrevocably committed,
-        but the next honest player down the line successfully times out the HTLC
-        on-chain (due to no or bad communication from the corrupted player) OR
-        An honest player fails to irrevocably commit the fulfillment of the HTLC
-        (due to no or bad communication from the corrupted counterparty) and
-        successfully fulfills on-chain, but the next honest player down the line
-        successfully times out the HTLC on-chain}
-          \State $\mathtt{charged} = \adversary$
+        \ElsIf{honest $\charlie{} \in \overrightarrow{\mathtt{path}}$ that sent
+        \textsc{updateFulfillHtlc} to a corrupted player either (gets the
+        fulfillment of the HTLC irrevocably committed OR fulfills the HTLC
+        on-chain), AND the next honest player \dave{} down the line successfully
+        times out the HTLC on-chain (i.e. adds the relevant
+        \texttt{HTLC-Timeout} to \ledger) (due to no or bad communication from
+        the corrupted player)}
+          \State set \texttt{charged} to one of the corrupted parties between
+          \charlie{} and \dave{}
         \ElsIf{player before \charlie{} (closer to payer) goes on-chain with an
         older version (that doesn't contain the HTLC) and \charlie{} doesn't
         \textsc{poll} in time to revoke (is negligent) OR player after
