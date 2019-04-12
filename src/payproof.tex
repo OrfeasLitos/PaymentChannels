@@ -1,8 +1,8 @@
 \begin{figure}[H]
   \begin{systembox}{$\fpaynet{}_{\mathrm{, Pay}}$}
     \begin{algorithmic}[1]
-      \State For messages \textsc{pay}, \textsc{push} and \textsc{commit}, act
-      like \fpaynet{}.
+      \State For messages \textsc{poll}, \textsc{pay}, \textsc{push} and
+      \textsc{commit}, act like \fpaynet{}.
       \Statex
 
       \State Upon receiving any other message $M$ from \alice:
@@ -72,10 +72,10 @@
 
 \begin{lemma}
   \label{lemma:pay}
-  $\textsc{Exec}^{\fpaynet{}_{\mathrm{, Open}},
-  \ledger}_{\simulator_{\mathrm{LN - Reg - Open}}, \environment} =
-  \textsc{Exec}^{\fpaynet{}_{\mathrm{, Pay}}, \ledger}_{\simulator_{\mathrm{LN
-  - Reg - Open - Pay}}, \environment}$
+  $\textsc{Exec}^{\fpaynet{}_{\mathrm{, Open}}, \ledger}_{\simulator_{\mathrm{LN
+  - Reg - Open}}, \environment} \overset{c}{\approx}
+  \textsc{Exec}^{\fpaynet{}_{\mathrm{, Pay}}, \ledger}_{\simulator_{\mathrm{LN -
+  Reg - Open - Pay}}, \environment}$
 \end{lemma}
 
 \begin{proof}
