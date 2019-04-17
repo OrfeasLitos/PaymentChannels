@@ -34,7 +34,7 @@
     \begin{algorithmic}[1]
       \State Upon receiving $\left(\textsc{pay}, \alice, \bob, x,
       \overrightarrow{\mathtt{path}}, \mathtt{receipt}, \mathit{payid}\right)$
-      from $\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$:
+      from $\fpaynet{}_{\mathrm{, Pay}}$:
       \Indent
         \State strip \textit{payid}, simulate receiving the message with
         \alice{} ITI and further execute the parts of $\Pi_{\mathrm{LN}}$ that
@@ -64,8 +64,7 @@
           \State $\mathtt{charged} = \alice$
         \EndIf
         \State send $\left(\textsc{resolvePay}, \mathit{payid},
-        \mathtt{charged}\right)$ to $\simulator{}_{\mathrm{LN - Reg - Open -
-        Pay}}$
+        \mathtt{charged}\right)$ to $\fpaynet{}_{\mathrm{, Pay}}$
       \EndIndent
     \end{algorithmic}
   \end{simulatorbox}
