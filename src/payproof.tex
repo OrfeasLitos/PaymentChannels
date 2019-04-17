@@ -41,8 +41,7 @@
         correspond to honest parties (Fig.~\ref{alg:protocol:pay:invoice}-
         Fig.~\ref{alg:protocol:pay:updateFulfillHtlc})
         \If{any ``ensure'' in $\Pi_{\mathrm{LN}}$ fails until receiver processes
-        \textsc{updateAddHtlc} OR any added HTLC on the path times out before it
-        is committed} \Comment{payment failed}
+        \textsc{updateAddHtlc}} \Comment{payment failed}
           \State $\mathtt{charged} = \bot$
         \ElsIf{honest $\charlie{} \in \overrightarrow{\mathtt{path}}$ that sent
         \textsc{updateFulfillHtlc} to a corrupted player either (gets the
