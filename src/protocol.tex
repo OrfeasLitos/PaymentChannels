@@ -16,7 +16,8 @@
         \State Upon receiving (\textsc{register}, delay, relayDelay) from
         \environment:
         \Indent
-          \State $\mathtt{delay} \gets \mathrm{delay}$
+          \State $\mathtt{delay} \gets \mathrm{delay}$ \Comment{Must check chain
+          at least once every \texttt{delay} blocks}
           \label{alg:protocol:support:delay}
           \State $\mathtt{relayDelay} \gets \mathrm{relayDelay}$
           \State send (\textsc{read}) to \ledger{} and assign largest block

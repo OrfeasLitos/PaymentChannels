@@ -30,6 +30,8 @@
         \mathrm{relayDelay}\right)$ from \alice:
         \Indent
           \State $\mathtt{delay}\left(\alice\right) \gets \mathrm{delay}$
+          \Comment{Must check chain at least once every \textt{delay}(\alice)
+          blocks}
           \State $\mathtt{relayDelay}\left(\alice\right) \gets
           \mathrm{relayDelay}$
           \State $\mathtt{pendingUpdates}\left(\alice\right),
