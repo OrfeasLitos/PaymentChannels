@@ -28,6 +28,8 @@
   \label{alg:proof:fpaynet:pay}
 \end{figure}
 
+\TODO{fix delays everywhere to consider that tx doesn't enter chain directly,
+but maybe after l (?) blocks}
 \begin{figure}[H]
   \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$}
     Like $\simulator{}_{\mathrm{LN - Reg - Open}}$. Differences:
@@ -53,11 +55,13 @@
           \State set \texttt{charged} to one of the corrupted parties between
           \charlie{} and \dave{}
         \ElsIf{player before \charlie{} (closer to payer) goes on-chain with an
-        older version (that doesn't contain the HTLC) and \charlie{} doesn't
-        \textsc{poll} in time to revoke (is negligent) OR player after
+        older version (that doesn't contain the HTLC) at block $t$ and
+        \charlie{} doesn't \textsc{poll} in time to revoke (is negligent during
+        $\left[t + k, t + \mathtt{CharlieDelay}\right]$) OR player after
         \charlie{} (closer to receiver) fulfills the HTLC on-chain and
         \charlie{} doesn't \textsc{poll} in time to learn preimage and send
-        \textsc{updateFulfillHtlc} (is relay-negligent)}
+        \textsc{updateFulfillHtlc} (is relay-negligent during
+        $\left[\TODO{TODO}, \mathtt{cltvExpiry} - 2k - 1\right]$)}
           \State $\mathtt{charged} = \charlie$
         \Else
           \State $\mathtt{charged} = \alice$
