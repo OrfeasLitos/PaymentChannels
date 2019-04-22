@@ -215,14 +215,15 @@
           \If{$\mathtt{charged} = \bot$}
             \State \Return
           \ElsIf{$\mathtt{charged} \neq \alice \vee \mathtt{charged} \notin
-          \mathtt{corrupted} \vee$ \texttt{charged} has not been negligent from
-          (the moment the previous party on the $\overrightarrow{\mathtt{path}}$
-          irrevocably committed to the HTLC) + \texttt{delay} until
-          $\mathtt{cltvExpiry} - 2k - 1 \vee$ (\texttt{charged} has received
-          \textsc{poll} between $\mathtt{cltvExpiry} - \mathtt{relayDelay} - 2k$
-          and $\mathtt{cltvExpiry} - 2k - 1$ inclusive $\wedge$ \texttt{charged}
-          has received \textsc{fulfillOnChain} after the \textsc{poll} and
-          $\mathtt{cltvExpiry} - k$)}
+          \mathtt{corrupted} \ \vee$ \texttt{charged} has not been negligent
+          from (the moment \texttt{charged} committed to the HTLC to the
+          previous party on the $\overrightarrow{\mathtt{path}}$) +
+          \texttt{delay} + $k$ until $\mathtt{cltvExpiry} - 2k - 1 \TODO{fix} \
+          \vee$ (\texttt{charged} has received \textsc{poll} between
+          $\mathtt{cltvExpiry} - \mathtt{relayDelay} - 2k$ \TODO{fix} and
+          $\mathtt{cltvExpiry} - 2k - 1$ \TODO{fix} inclusive $\wedge$
+          \texttt{charged} has received \textsc{fulfillOnChain} between the
+          \textsc{poll} and $\mathtt{cltvExpiry} - k$)} \TODO{fix}
             \State halt
           \EndIf
           \ForAll{$\mathtt{channel}\text{s} \in \overrightarrow{\mathtt{path}}$
@@ -311,20 +312,21 @@
           \State $\mathtt{toReport}\left(\alice\right) \gets \emptyset$
           \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply
           to $\Sigma_{\alice}$
-          \State assign largest block number in $\Sigma_{\alice}$ to $t$
+          \State assign largest block number in $\Sigma_{\alice}$ to
+          $h_{\mathrm{max}}$
           \If{$\mathtt{lastPoll}\left(\alice\right) +
-          \mathtt{delay}\left(\alice\right) < t$}
-            \State add $\left[\mathtt{lastpoll}\left(\alice\right), t -
-            \texttt{delay}\left(\alice\right) - 1\right]$ to
+          \mathtt{delay}\left(\alice\right) < h_{\mathrm{max}} - k$}
+            \State add $\left[\mathtt{lastpoll}\left(\alice\right) + 1,
+            h_{\mathrm{max}} - \texttt{delay}\left(\alice\right) - k\right]$ to
             \texttt{negligent}(\alice)
           \EndIf
           \If{$\mathtt{lastPoll}\left(\alice\right) +
-          \mathtt{relayDelay}\left(\alice\right) < t$}
-            \State add $\left[\mathtt{lastpoll}\left(\alice\right), t -
-            \texttt{relayDelay}\left(\alice\right) - 1\right]$ to
-            \texttt{relayNegligent}(\alice)
+          \mathtt{relayDelay}\left(\alice\right) < h_{\mathrm{max}}$}
+            \State add $\left[\mathtt{lastpoll}\left(\alice\right),
+            h_{\mathrm{max}} - \texttt{relayDelay}\left(\alice\right) -
+            1\right]$ to \texttt{relayNegligent}(\alice)
           \EndIf
-          \State $\mathtt{lastPoll}\left(\alice\right) \gets t$
+          \State $\mathtt{lastPoll}\left(\alice\right) \gets h_{\mathrm{max}}$
           \State scan $\Sigma_{\alice}$ for honestly closed channels that
           contain \alice{} and exist in \texttt{channels} (txs that spend
           funding txs that have the same channel version as stored), remove them

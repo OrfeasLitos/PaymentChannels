@@ -1,4 +1,5 @@
 \section{Lightning Protocol}
+  \TODO{find out what \tochain{} (\textbackslash{}tochain) must be}
   \begin{figure}[H] % [!htbp]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ (self is \alice{} always) - support}
       \begin{algorithmic}[1]
@@ -107,8 +108,8 @@
           $\left.\left(phb_{\mathrm{rev}}, shb_{\mathrm{rev}}\right),
           \mathit{tid}\right)$ to \texttt{pendingOpen}
           \label{alg:protocol:open:env:pendingOpen}
-          \State send (\textsc{openChannel}, $x$, \texttt{delay},
-          \texttt{relayDelay}, $ph_F, phb_{\mathrm{pay}}, phb_{\mathrm{dpay}},
+          \State send (\textsc{openChannel}, $x, \mathtt{delay} + k + \tochain,
+          \mathtt{relayDelay}, ph_F, phb_{\mathrm{pay}}, phb_{\mathrm{dpay}},
           phb_{\mathrm{htlc}},$ $ph_{\mathrm{com}, 1}, phb_{\mathrm{rev}}$,
           \textit{tid}) to \bob{}
         \EndIndent
@@ -121,8 +122,8 @@
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{openChannel} from \bob}
       \begin{algorithmic}[1]
-        \State Upon receiving (\textsc{openChannel}, $x$, BobDelay, $pt_F,
-        ptb_{\mathrm{pay}}, ptb_{\mathrm{dpay}}, ptb_{\mathrm{htlc}},
+        \State Upon receiving (\textsc{openChannel}, $x, \mathtt{remoteDelay},
+        pt_F, ptb_{\mathrm{pay}}, ptb_{\mathrm{dpay}}, ptb_{\mathrm{htlc}},
         pt_{\mathrm{com}, 1}, ptb_{\mathrm{rev}}$, \textit{tid}) from \bob:
         \TODO{add 0-value output}
         \Indent
@@ -140,8 +141,8 @@
           \State associate keys with \textit{tid} and store in
           \texttt{pendingOpen}
           \label{alg:protocol:open:openChannel:pendingOpen}
-          \State send (\textsc{acceptChannel}, \texttt{delay},
-          \texttt{relayDelay}, $ph_F, phb_{\mathrm{pay}}, phb_{\mathrm{dpay}},
+          \State send (\textsc{acceptChannel}, $\mathtt{delay} + k + \tochain,
+          \mathtt{relayDelay}, ph_F, phb_{\mathrm{pay}}, phb_{\mathrm{dpay}},
           phb_{\mathrm{htlc}},$ $ph_{\mathrm{com}, 1}, phb_{\mathrm{rev}}$,
           \textit{tid}) to \bob{}
         \EndIndent
@@ -154,8 +155,8 @@
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{acceptChannel}}
       \begin{algorithmic}[1]
-        \State Upon receiving (\textsc{acceptChannel}, \texttt{remoteDelay},
-        $pt_F, ptb_{\mathrm{pay}}, ptb_{\mathrm{dpay}},$ $ptb_{\mathrm{htlc}},$
+        \State Upon receiving (\textsc{acceptChannel}, $\mathtt{remoteDelay},
+        pt_F, ptb_{\mathrm{pay}}, ptb_{\mathrm{dpay}},$ $ptb_{\mathrm{htlc}},$
         $pt_{\mathrm{com}, 1}, ptb_{\mathrm{rev}}$, \textit{tid}) from \bob:
         \TODO{add 0-value output}
         \Indent
@@ -188,7 +189,7 @@
           1}\right)$\}
           \State $\mathtt{localCom} \gets$ TX \{input: output 1 of $F$, output:
           $\left(x, pt_{\mathrm{rev}, 1} \vee \left(ph_{\mathrm{dpay}_1},
-          \mathtt{remoteDelay} + k + 1 \text{ relative}\right)\right)$
+          \mathtt{remoteDelay} \text{ relative}\right)\right)$
           \State add $\mathtt{remoteCom}$ and $\mathtt{localCom}$ to channel
           entry in \texttt{pendingOpen}
           \State $\mathrm{sig} \gets
@@ -227,7 +228,7 @@
           \mathtt{BobSig}_1, pt_F\right) = \mathtt{True}$
           \State $\mathtt{remoteCom} \gets \mathtt{remoteCom}_1 \gets$ TX
           \{input: output 1 of $F$, output: $\left(x, ph_{\mathrm{rev}} \vee
-          \left(pt_{\mathrm{dpay}}, \mathtt{delay} + k + 1 \text{
+          \left(pt_{\mathrm{dpay}}, \mathtt{delay} + k + \tochain{} \text{
           relative}\right)\right)\}$
           \State add $\mathtt{BobSig}_1, \mathtt{remoteCom}_1$ and
           $\mathtt{localCom}_1$ to channel entry in \texttt{pendingOpen}
@@ -656,7 +657,7 @@
             \State $\mathtt{remoteHTLC}_{n+1, i} \gets$ TX \{input: HTLC output
             $i$ of $\mathtt{remoteCom}_{n+1}$, output: $\left(c_{\mathrm{htlc,
             i}}, ph_{\mathrm{rev}, n+1} \vee \left(pt_{\mathrm{dpay}, n+1},
-            \mathtt{delay} + k + 1 \text{ relative}\right)\right)$\}
+            \mathtt{delay} + k + \tochain{} \text{ relative}\right)\right)$\}
             \State add $\mathtt{signature}\left(\mathtt{remoteHTLC}_{n+1, i},
             sh_{\mathrm{htlc}, n+1}\right)$ to HTLCSigs
           \EndFor
@@ -697,7 +698,7 @@
             \State $\mathtt{localHTLC}_{n+1, i} \gets$ TX \{input: HTLC output
             $i$ of $\mathtt{localCom}$, output: $\left(c_{\mathrm{htlc, i}},
             ph_{\mathrm{rev}, n+1} \vee \left(pt_{\mathrm{dpay}, n+1},
-            \mathtt{remoteDelay} + k + 1 \text{ relative}\right)\right)$\}
+            \mathtt{remoteDelay} \text{ relative}\right)\right)$\}
             \If{$\mathtt{verify}\left(\mathtt{localHTLC}_{n+1, i},
             \mathtt{HTLCSigs}_{n+1, i}, pt_{\mathrm{htlc}, n+1}\right) =
             \mathtt{false}$}
