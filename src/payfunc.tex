@@ -30,7 +30,7 @@
         \mathrm{relayDelay}\right)$ from \alice:
         \Indent
           \State $\mathtt{delay}\left(\alice\right) \gets \mathrm{delay}$
-          \Comment{Must check chain at least once every \textt{delay}(\alice)
+          \Comment{Must check chain at least once every \texttt{delay}(\alice)
           blocks}
           \State $\mathtt{relayDelay}\left(\alice\right) \gets
           \mathrm{relayDelay}$
@@ -258,7 +258,7 @@
     \begin{systembox}{\fpaynet - close}
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from
-        \alice \aggelos{(or \simulator) ?? } \orfeas{@Aggelos: why \simulator?}
+        \alice
         \Indent
           \State ensure that there is a $\mathtt{channel} \in \mathtt{channels}
           : \mathtt{receipt}\left(\mathtt{channel}\right) = \mathtt{receipt}$

@@ -124,6 +124,7 @@
         \State Upon receiving (\textsc{openChannel}, $x$, BobDelay, $pt_F,
         ptb_{\mathrm{pay}}, ptb_{\mathrm{dpay}}, ptb_{\mathrm{htlc}},
         pt_{\mathrm{com}, 1}, ptb_{\mathrm{rev}}$, \textit{tid}) from \bob:
+        \TODO{add 0-value output}
         \Indent
           \State ensure \textit{tid} has not been used yet with \bob
           \State $\left(\left(ph_F, sh_F\right), \left(phb_{\mathrm{pay}},
@@ -156,6 +157,7 @@
         \State Upon receiving (\textsc{acceptChannel}, \texttt{remoteDelay},
         $pt_F, ptb_{\mathrm{pay}}, ptb_{\mathrm{dpay}},$ $ptb_{\mathrm{htlc}},$
         $pt_{\mathrm{com}, 1}, ptb_{\mathrm{rev}}$, \textit{tid}) from \bob:
+        \TODO{add 0-value output}
         \Indent
           \State ensure there is a temporary ID \textit{tid} with \bob{} in
           \texttt{pendingOpen} on which \textsc{acceptChannel} hasn't been
