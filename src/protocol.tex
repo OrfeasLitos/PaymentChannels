@@ -360,20 +360,6 @@
           \ForAll{$\mathtt{remoteCom}_n \in \Sigma_{\alice}$ that spend $F$ of a
           $\mathtt{channel} \in \mathtt{channels}$}
             \If{we do not have $sh_{\mathrm{rev}, n}$} \Comment{Honest closure}
-              \ForAll{received HTLC outputs $i$ of $\mathtt{remoteCom}_n$}
-                \If{we know the preimage $R$}
-                  \State $\mathrm{TX} \gets$ \{input: $i$ HTLC output of
-                  $\mathtt{remoteCom}_n$ with $\left(ph_{\mathrm{htlc}, n},
-                  R\right)$ as method, output: $pk_{\alice}$\}
-                  \State $\mathrm{sig} \gets \mathtt{signature}\left(TX,
-                  sh_{\mathrm{htlc}, n}\right)$
-                  \State add (sig, TX) to \texttt{toSubmit}
-                \Else
-                  \State add $\left(\texttt{channel}, \mathtt{remoteCom}_n, h,
-                  sh_{\mathrm{htlc}, n}\right)$ to
-                  \texttt{unclaimedReceivedHTLCs}
-                \EndIf
-              \EndFor
               \ForAll{unspent offered HTLC outputs $i$ of
               $\mathtt{remoteCom}_n$}
                 \State $\mathrm{TX} \gets$ \{input: $i$ HTLC output of
@@ -388,10 +374,13 @@
                 \EndIf
               \EndFor
               \ForAll{spent offered HTLC output $i$ of $\mathtt{remoteCom}_n$}
-                \State retrieve preimage $R$, \texttt{HTLCNo} and \textit{pchid}
-                from output $i$
-                \State add $\left(\mathtt{HTLCNo}, R\right)$ to
-                $\mathtt{pendingFulfills}_{\mathit{pchid}}$
+                \If{we are intermediary}
+                  \State retrieve preimage $R$, $\mathit{pchid}'$ of previous
+                  channel on the path of the HTLC, and $\mathtt{HTLCNo}'$ of the
+                  corresponding $\mathrm{HTLC}'$ in $\mathit{pchid}'$
+                  \State add $\left(\mathtt{HTLCNo}', R\right)$ to
+                  $\mathtt{pendingFulfills}_{\mathit{pchid}'}$
+                \EndIf
               \EndFor
             \Else \ \Comment{malicious closure}
               \State $\mathrm{rev} \gets$ TX \{inputs: all
@@ -404,6 +393,23 @@
             \EndIf
             \State move \texttt{channel} from \texttt{channels} to
             \texttt{closedChannels}
+          \EndFor
+          \ForAll{honestly closed $\mathtt{remoteCom}_n$ that were processed
+          above, with channel id \textit{pchid}}
+            \ForAll{received HTLC outputs $i$ of $\mathtt{remoteCom}_n$}
+              \If{there is an entry in
+              $\mathtt{pendingFulfills}_{\mathit{pchid}}$ with the same
+              \texttt{HTLCNo} and $R$}
+                \State $\mathrm{TX} \gets$ \{input: $i$ HTLC output of
+                $\mathtt{remoteCom}_n$ with $\left(ph_{\mathrm{htlc}, n},
+                R\right)$ as method, output: $pk_{\alice}$\}
+                \State $\mathrm{sig} \gets \mathtt{signature}\left(TX,
+                sh_{\mathrm{htlc}, n}\right)$
+                \State add (sig, TX) to \texttt{toSubmit}
+                \State remove entry from
+                $\mathtt{pendingFulfills}_{\mathit{pchid}}$
+              \EndIf
+            \EndFor
           \EndFor
           \State send (\textsc{submit}, \texttt{toSubmit}) to \ledger
         \EndIndent
