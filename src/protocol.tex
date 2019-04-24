@@ -109,9 +109,8 @@
           \mathit{tid}\right)$ to \texttt{pendingOpen}
           \label{alg:protocol:open:env:pendingOpen}
           \State send (\textsc{openChannel}, $x, \mathtt{delay} + k + \tochain,
-          \mathtt{relayDelay}, ph_F, phb_{\mathrm{pay}}, phb_{\mathrm{dpay}},
-          phb_{\mathrm{htlc}},$ $ph_{\mathrm{com}, 1}, phb_{\mathrm{rev}}$,
-          \textit{tid}) to \bob{}
+          ph_F, phb_{\mathrm{pay}}, phb_{\mathrm{dpay}}, phb_{\mathrm{htlc}},$
+          $ph_{\mathrm{com}, 1}, phb_{\mathrm{rev}}$, \textit{tid}) to \bob{}
         \EndIndent
       \end{algorithmic}
     \end{protocolbox}
@@ -142,9 +141,8 @@
           \texttt{pendingOpen}
           \label{alg:protocol:open:openChannel:pendingOpen}
           \State send (\textsc{acceptChannel}, $\mathtt{delay} + k + \tochain,
-          \mathtt{relayDelay}, ph_F, phb_{\mathrm{pay}}, phb_{\mathrm{dpay}},
-          phb_{\mathrm{htlc}},$ $ph_{\mathrm{com}, 1}, phb_{\mathrm{rev}}$,
-          \textit{tid}) to \bob{}
+          ph_F, phb_{\mathrm{pay}}, phb_{\mathrm{dpay}}, phb_{\mathrm{htlc}},$
+          $ph_{\mathrm{com}, 1}, phb_{\mathrm{rev}}$, \textit{tid}) to \bob{}
         \EndIndent
       \end{algorithmic}
     \end{protocolbox}
