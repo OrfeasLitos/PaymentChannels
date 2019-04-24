@@ -55,10 +55,11 @@ but maybe after l (?) blocks}
           \State set \texttt{charged} to one of the corrupted parties between
           \charlie{} and \dave{}
         \ElsIf{player before \charlie{} (closer to payer) goes on-chain with an
-        older version (that doesn't contain the HTLC) at block $t$ and
-        \charlie{} doesn't \textsc{poll} in time to revoke (is negligent during
-        $\left[t + k, t + \mathtt{CharlieDelay}\right]$) OR player after
-        \charlie{} (closer to receiver) fulfills the HTLC on-chain and
+        older version (that doesn't contain the HTLC) at block
+        $h_{\mathrm{com}}$ and \charlie{} doesn't \textsc{poll} in time to
+        revoke (is negligent during $\left[h_{\mathrm{com}} + k,
+        h_{\mathrm{com}} + \mathtt{CharlieDelay} + k - 1\right]$) OR player
+        after \charlie{} (closer to receiver) fulfills the HTLC on-chain and
         \charlie{} doesn't \textsc{poll} in time to learn preimage and send
         \textsc{updateFulfillHtlc} (is relay-negligent during
         $\left[\TODO{TODO}, \mathtt{cltvExpiry} - 2k - 1\right]$)}
