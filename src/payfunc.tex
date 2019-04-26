@@ -36,10 +36,9 @@
           \mathrm{relayDelay}$
           \State $\mathtt{pendingUpdates}\left(\alice\right),
           \mathtt{newChannels}\left(\alice\right) \gets \emptyset$
-          \State $\mathtt{negligent}\left(\alice\right),
-          \mathtt{relayNegligent}\left(\alice\right) \gets \emptyset$
-          \State send (\textsc{read}) to \ledger{} as \alice{} and assign
-          largest block number to \texttt{lastPoll}(\alice)
+          \State $\mathtt{polls}\left(\alice\right) \gets \emptyset$
+          \State send (\textsc{read}) to \ledger{} as \alice{} and add largest
+          block number to \texttt{polls}(\alice)
           \label{alg:fpaynet:support:lastpoll}
           \State send $\left(\textsc{register}, \alice, \mathrm{delay},
           \mathrm{relayDelay}, \mathrm{lastPoll}\right)$ to \simulator
@@ -309,70 +308,63 @@
       \begin{algorithmic}[1]
         \State Upon receiving $\left(\textsc{poll}\right)$ from \alice:
         \Indent
-          \State $\mathtt{toReport}\left(\alice\right) \gets \emptyset$
           \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply
           to $\Sigma_{\alice}$
-          \State assign largest block number in $\Sigma_{\alice}$ to
-          $h_{\mathrm{max}}$
-          \If{$\mathtt{lastPoll}\left(\alice\right) +
-          \mathtt{delay}\left(\alice\right) < h_{\mathrm{max}} - k$}
-            \State add $\left[\mathtt{lastpoll}\left(\alice\right) + 1,
-            h_{\mathrm{max}} - \texttt{delay}\left(\alice\right) - k\right]$ to
-            \texttt{negligent}(\alice)
-          \EndIf
-          \If{$\mathtt{lastPoll}\left(\alice\right) +
-          \mathtt{relayDelay}\left(\alice\right) < h_{\mathrm{max}}$}
-            \State add $\left[\mathtt{lastpoll}\left(\alice\right),
-            h_{\mathrm{max}} - \texttt{relayDelay}\left(\alice\right) -
-            1\right]$ to \texttt{relayNegligent}(\alice)
-          \EndIf
-          \State $\mathtt{lastPoll}\left(\alice\right) \gets h_{\mathrm{max}}$
+          \State add largest block number in $\Sigma_{\alice}$ to
+          \texttt{polls}(\alice)
           \State scan $\Sigma_{\alice}$ for honestly closed channels that
           contain \alice{} and exist in \texttt{channels} (txs that spend
           funding txs that have the same channel version as stored), remove them
-          from \texttt{channels} and add them to \texttt{toReport}(\alice)
-          (marked as ``honest'')
+          from \texttt{channels} and add them to \texttt{toReport} (marked as
+          ``honest'')
           \State scan $\Sigma_{\alice}$ for malicioulsy closed channels that
           contain \alice{} and exist in \texttt{channels} (txs that spend
           funding txs that have an older channel version than stored)
-          \ForAll{maliciously closed \texttt{channel}s of which the spending txs
-          can still be spent by \alice} \Comment{If \alice{} is negligent, she
-          may be unable to punish}
-            \If{\alice{} cannot spend those spending txs and \alice{} has not
-            been negligent in the last interval}
-              \State halt
+          \ForAll{maliciously closed \texttt{channel}s by a remote committment
+          \texttt{tx} in block with height $h_{\mathtt{tx}}$}
+            \If{the delayed output (of the counterparty) has been spent AND
+            \texttt{polls}(\alice) has an element in $\left[h_{\mathtt{tx}} + k,
+            h_{\mathtt{tx}} + k + \mathtt{delay}\left(\alice\right) - 1\right]$}
+              \State halt \Comment{\alice{} wasn't negligent but couldn't punish
+              - bad event}
             \EndIf
-            \State add \texttt{channel} to \texttt{toReport}(\alice) (marked as
+            \State add \texttt{channel} to \texttt{toReport} (marked as
             ``malicious'')
           \EndFor
-          \State send (\textsc{getClosedFunds}, \texttt{toReport}(\alice),
-          \alice) to \simulator
+          \State generate unique \textit{reportid} and store \texttt{toReport}
+          with it
+          \State send (\textsc{getClosedFunds}, \texttt{toReport}, \alice,
+          \textit{reportid}) to \simulator
         \EndIndent
         \Statex
 
+        \State \Comment{Expected after resolutions are visible on-chain}
         \State Upon receiving (\textsc{channelsClosed}, \texttt{details},
-        \alice) from \simulator:
+        \alice, \textit{reportid}) from \simulator:
         \Indent
+          \State retrieve \texttt{toReport} associated with \textit{reportid}
+          (if none, ignore message) and remove pair from storage
           \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply
           to $\Sigma_{\alice}$
           \ForAll{$\mathtt{channel} \in \mathtt{details}$}
-            \State ensure $\mathtt{channel} \in
-            \mathtt{toReport}\left(\alice\right)$
+            \State ensure $\mathtt{channel} \in \mathtt{toReport}$
             \If{\texttt{channel} is marked as ``malicious''}
               \State ensure that transactions that spend the funding tx of
               \texttt{channel} and pay \alice{} the entire \texttt{channel}
-              value exist in $\Sigma_{\alice}$
+              value exist in $\Sigma_{\alice}$, otherwise halt
             \Else \ \Comment{\texttt{channel} is marked as ``honest''}
               \State ensure that transactions that spend the funding tx of
-              \texttt{channel} and pay \alice{} the her part in \texttt{channel}
-              exist in $\Sigma_{\alice}$
-              \State ensure that \alice{} has not suffered losses for multi-hop
-              payments where she was not the payer
+              \texttt{channel} and pay \alice{} her part in the latest state of
+              \texttt{channel} exist in $\Sigma_{\alice}$ AND she received funds
+              from all ``received HTLCs'' for which she knew the preimage when
+              she received the associated \textsc{poll} AND received funds from
+              all ''offered HTLCs'' that had timed out when she received the
+              associated \textsc{poll}, otherwise halt
+              \State \TODO{find where to add bounds from photo}
             \EndIf
             \State add the receipt of \texttt{channel} to
             \texttt{closedChannels}(\alice)
-            \State remove \texttt{channel} from \texttt{channels} and
-            \texttt{toReport}(\alice)
+            \State remove \texttt{channel} from \texttt{channels}
           \EndFor
         \EndIndent
       \end{algorithmic}
