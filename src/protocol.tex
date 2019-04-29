@@ -124,7 +124,6 @@
         \State Upon receiving (\textsc{openChannel}, $x, \mathtt{remoteDelay},
         pt_F, ptb_{\mathrm{pay}}, ptb_{\mathrm{dpay}}, ptb_{\mathrm{htlc}},
         pt_{\mathrm{com}, 1}, ptb_{\mathrm{rev}}$, \textit{tid}) from \bob:
-        \TODO{add 0-value output}
         \Indent
           \State ensure \textit{tid} has not been used yet with \bob
           \State $\left(\left(ph_F, sh_F\right), \left(phb_{\mathrm{pay}},
@@ -156,7 +155,6 @@
         \State Upon receiving (\textsc{acceptChannel}, $\mathtt{remoteDelay},
         pt_F, ptb_{\mathrm{pay}}, ptb_{\mathrm{dpay}},$ $ptb_{\mathrm{htlc}},$
         $pt_{\mathrm{com}, 1}, ptb_{\mathrm{rev}}$, \textit{tid}) from \bob:
-        \TODO{add 0-value output}
         \Indent
           \State ensure there is a temporary ID \textit{tid} with \bob{} in
           \texttt{pendingOpen} on which \textsc{acceptChannel} hasn't been
@@ -183,11 +181,13 @@
           \texttt{PubKeyGen}\left(phb_{\mathrm{pay}}, ph_{\mathrm{com},
           1}\right)$
           \State $\mathtt{remoteCom} \gets \mathtt{remoteCom}_1 \gets$ TX
-          \{input: output 1 of $F$, output: $\left(x, ph_{\mathrm{pay},
-          1}\right)$\}
-          \State $\mathtt{localCom} \gets$ TX \{input: output 1 of $F$, output:
-          $\left(x, pt_{\mathrm{rev}, 1} \vee \left(ph_{\mathrm{dpay}_1},
-          \mathtt{remoteDelay} \text{ relative}\right)\right)$
+          \{input: output 1 of $F$, outputs: $\left(x, ph_{\mathrm{pay},
+          1}\right), \left(0, ph_{\mathrm{rev}, 1} \vee \left(pt_{\mathrm{dpay},
+          1}, \mathtt{delay} + k + \tochain{} \text{ relative}\right)\right)$\}
+          \State $\mathtt{localCom} \gets$ TX \{input: output 1 of $F$, outputs:
+          $\left(x, pt_{\mathrm{rev}, 1} \vee \left(ph_{\mathrm{dpay}, 1},
+          \mathtt{remoteDelay} \text{ relative}\right)\right), \left(0,
+          pt_{\mathrm{pay}, 1}\right)$\}
           \State add $\mathtt{remoteCom}$ and $\mathtt{localCom}$ to channel
           entry in \texttt{pendingOpen}
           \State $\mathrm{sig} \gets
@@ -221,13 +221,15 @@
           \texttt{PubKeyGen}\left(ptb_{\mathrm{pay}}, pt_{\mathrm{com},
           1}\right)$
           \State $\mathtt{localCom} \gets \mathtt{localCom}_1 \gets$ TX \{input:
-          output 1 of $F$, output: $\left(x, pt_{\mathrm{pay}, 1}\right)$\}
+          output 1 of $F$, outputs: $\left(x, pt_{\mathrm{pay}, 1}\right),
+          \left(0, pt_{\mathrm{rev}, 1} \vee \left(ph_{\mathrm{dpay}, 1},
+          \mathtt{remoteDelay} \text{ relative}\right)\right)$\}
           \State ensure $\mathtt{verify}\left(\mathtt{localCom}_1,
           \mathtt{BobSig}_1, pt_F\right) = \mathtt{True}$
           \State $\mathtt{remoteCom} \gets \mathtt{remoteCom}_1 \gets$ TX
-          \{input: output 1 of $F$, output: $\left(x, ph_{\mathrm{rev}} \vee
-          \left(pt_{\mathrm{dpay}}, \mathtt{delay} + k + \tochain{} \text{
-          relative}\right)\right)\}$
+          \{input: output 1 of $F$, outputs: $\left(x, ph_{\mathrm{rev}, 1} \vee
+          \left(pt_{\mathrm{dpay}, 1}, \mathtt{delay} + k + \tochain{} \text{
+          relative}\right)\right), \left(0, ph_{\mathrm{pay}, 1}\right)\}$
           \State add $\mathtt{BobSig}_1, \mathtt{remoteCom}_1$ and
           $\mathtt{localCom}_1$ to channel entry in \texttt{pendingOpen}
           \State $\mathrm{sig} \gets
