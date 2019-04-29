@@ -165,7 +165,7 @@
           \State assign to \texttt{prevout} a transaction output found in
           $\Sigma_{\alice}$ that is currently exclusively spendable by \alice{}
           and has value $y \geq x$
-          \State $F \gets$ TX \{input spends prevout with a
+          \State $F \gets$ TX \{input spends \texttt{prevout} with a
           \texttt{signature}(TX, $sk_{\alice}$), output 0 pays $y - x$ to
           $pk_{\alice}$, output 1 pays $x$ to $\mathit{tid}.ph_F \wedge pt_F$\}
           \State $\mathit{pchid} \gets \mathcal{H}\left(F\right)$
