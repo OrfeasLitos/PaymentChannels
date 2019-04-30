@@ -844,7 +844,9 @@
             \tochain{} - 1 + t\right]$}
               \State add $\mathtt{localCom}_n$ of the channel and all
               corresponding valid \texttt{HTLC-success}es and
-              \texttt{HTLC-timeout}s, along with their signatures to
+              \texttt{HTLC-timeout}s (for both $\mathtt{localCom}_n$ and
+              $\mathtt{remoteCom}_n$\footnote{Ensures funds retrieval if
+              counterparty has gone on-chain}), along with their signatures to
               \texttt{toSubmit}
             \EndIf
           \EndFor
