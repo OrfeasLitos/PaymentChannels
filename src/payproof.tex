@@ -51,7 +51,7 @@
         Fig.~\ref{alg:protocol:pay:updateFulfillHtlc})
         \If{any ``ensure'' in $\Pi_{\mathrm{LN}}$ fails until receiver processes
         \textsc{updateAddHtlc}} \Comment{payment failed}
-          \State $\mathtt{charged} = \bot$
+          \State $\mathtt{charged} \gets \bot$
         \ElsIf{honest $\charlie{} \in \overrightarrow{\mathtt{path}}$ that sent
         \textsc{updateFulfillHtlc} to a corrupted player either (gets the
         fulfillment of the HTLC irrevocably committed OR fulfills the HTLC
@@ -70,9 +70,9 @@
         \charlie{} doesn't \textsc{poll} in time to learn preimage and send
         \textsc{updateFulfillHtlc} (is relay-negligent during
         $\left[\TODO{TODO}, \mathtt{cltvExpiry} - 2k - 1\right]$)}
-          \State $\mathtt{charged} = \charlie$
+          \State $\mathtt{charged} \gets \charlie$
         \Else
-          \State $\mathtt{charged} = \alice$
+          \State $\mathtt{charged} \gets \alice$
         \EndIf
         \State send $\left(\textsc{resolvePay}, \mathit{payid},
         \mathtt{charged}\right)$ to $\fpaynet{}_{\mathrm{, Pay}}$
