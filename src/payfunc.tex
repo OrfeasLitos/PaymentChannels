@@ -398,7 +398,7 @@
           \State send (\textsc{read}) to \ledger{} as \alice{} and assign
           largest block number to $t$
           \State add $t$ to \texttt{focs}(\alice)
-          \State send (\textsc{fulfillOnChain}, \alice, $t$) to \simulator
+          \State send (\textsc{fulfillOnChain}, $t$, \alice) to \simulator
         \EndIndent
         \Statex
 

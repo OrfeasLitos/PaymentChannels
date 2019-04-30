@@ -835,6 +835,7 @@
           \State send (\textsc{read}) to \ledger{} and assign largest block
           number to $t$
           \State $\mathtt{toSubmit} \gets \emptyset$
+          \label{alg:protocol:pay:foc:tosubmit}
           \ForAll{channels}
             \If{there exists an HTLC in latest $\mathtt{localCom}_n$ for which
             we have sent both \textsc{updateFulfillHtlc} and
@@ -851,6 +852,7 @@
             \EndIf
           \EndFor
           \State send (\textsc{submit}, \texttt{toSubmit}) to \ledger
+          \label{alg:protocol:pay:foc:submit}
         \EndIndent
       \end{algorithmic}
     \end{protocolbox}

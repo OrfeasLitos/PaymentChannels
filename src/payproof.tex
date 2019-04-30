@@ -32,6 +32,15 @@
   \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$}
     Like $\simulator{}_{\mathrm{LN - Reg - Open}}$. Differences:
     \begin{algorithmic}[1]
+      \State Upon receiving $\left(\textsc{fulfillOnChain}, t, \alice\right)$
+      from $\fpaynet{}_{\mathrm{, Pay}}$:
+      \Indent
+        \State Execute
+        lines~\ref{alg:protocol:pay:foc:tosubmit}-\ref{alg:protocol:pay:foc:submit}
+        of Fig.~\ref{alg:protocol:pay:push} as \alice{}, using $t$ from message
+      \EndIndent
+      \Statex
+
       \State Upon receiving $\left(\textsc{pay}, \alice, \bob, x,
       \overrightarrow{\mathtt{path}}, \mathtt{receipt}, \mathit{payid}\right)$
       from $\fpaynet{}_{\mathrm{, Pay}}$:
