@@ -37,6 +37,7 @@
           \State $\mathtt{pendingUpdates}\left(\alice\right),
           \mathtt{newChannels}\left(\alice\right) \gets \emptyset$
           \State $\mathtt{polls}\left(\alice\right) \gets \emptyset$
+          \State $\mathtt{focs}\left(\alice\right) \gets \emptyset$
           \State send (\textsc{read}) to \ledger{} as \alice{} and add largest
           block number to \texttt{polls}(\alice)
           \label{alg:fpaynet:support:lastpoll}
@@ -208,21 +209,18 @@
           \State retrieve $\left(\alice, \bob, x,
           \overrightarrow{\mathtt{path}}\right)$ with ID \textit{payid} and
           remove it from \texttt{pendingPay}
-          \State calculate \texttt{cltvExpiry} of \texttt{charged} (as in
+          \State calculate \texttt{IncomingCltvExpiry},
+          \texttt{OutgoingCltvExpiry} of \texttt{charged} (as in
           Fig.~\ref{alg:protocol:pay:invoice},
           l.~\ref{alg:protocol:pay:invoice:cltv})
           \If{$\mathtt{charged} = \bot$}
             \State \Return
           \ElsIf{$\mathtt{charged} \neq \alice \vee \mathtt{charged} \notin
-          \mathtt{corrupted} \ \vee$ \texttt{charged} has not been negligent
-          from (the moment \texttt{charged} committed to the HTLC to the
-          previous party on the $\overrightarrow{\mathtt{path}}$) +
-          \texttt{delay} + $k$ until $\mathtt{cltvExpiry} - 2k - 1 \TODO{fix} \
-          \vee$ (\texttt{charged} has received \textsc{poll} between
-          $\mathtt{cltvExpiry} - \mathtt{relayDelay} - 2k$ \TODO{fix} and
-          $\mathtt{cltvExpiry} - 2k - 1$ \TODO{fix} inclusive $\wedge$
-          \texttt{charged} has received \textsc{fulfillOnChain} between the
-          \textsc{poll} and $\mathtt{cltvExpiry} - k$)} \TODO{fix}
+          \mathtt{corrupted} \ \vee$ (\texttt{polls}(\texttt{charged}) contains
+          an element in $\left[\mathtt{OutgoingCltvExpiry} + 2k + \tochain{} -
+          2, \mathtt{IncomingCltvExpiry} - \TODO{2?}k - \tochain{} - 1\right]
+          \wedge$ \texttt{polls}(\texttt{charged}) contains
+          $\mathtt{OutgoingCltvExpiry} - 2k - \tochain{} - 1$)}
             \State halt
           \EndIf
           \ForAll{$\mathtt{channel}\text{s} \in \overrightarrow{\mathtt{path}}$
@@ -397,7 +395,10 @@
 
         \State Upon receiving (\textsc{fulfillOnChain}) from \alice:
         \Indent
-          \State send (\textsc{fulfillOnChain}, \alice) to \simulator
+          \State send (\textsc{read}) to \ledger{} as \alice{} and assign
+          largest block number to $t$
+          \State add $t$ to \texttt{focs}(\alice)
+          \State send (\textsc{fulfillOnChain}, \alice, $t$) to \simulator
         \EndIndent
         \Statex
 
