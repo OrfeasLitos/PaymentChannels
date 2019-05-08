@@ -1,23 +1,71 @@
 \section{Payment Network Functionality}
   \begin{figure}[H]
-    \begin{systembox}{\fpaynet - support}
-      \funcsection{Parameters}
+    \begin{systembox}{\fpaynet - preamble}
+      Parameters:
         \begin{itemize}
           \item one-way, collision-free hash function $\mathcal{H}$ (for
           generating transaction IDs)
         \end{itemize}
 
-      \funcsection{Interface (messages from $\mathcal{E}$)}
-      \TODO{check}
+      Interface: \TODO{check}
+      \begin{itemize}
+        \item from $\environment$:
         \begin{itemize}
-          \item (\textsc{register})
-          \item (\textsc{setDelay}, delay)
-          \item (\textsc{openChannel}, self, peer, selfCoins)
+          \item (\textsc{register}, delay, relayDelay)
+          \item (\textsc{registered})
+          \item (\textsc{openChannel}, \alice, \bob, $x$, \textit{tid})
+          \item (\textsc{checkNew}, \alice, \bob, \textit{tid})
+          \item (\textsc{pay}, \bob, $x, \overrightarrow{\mathtt{path}}$,
+          \texttt{receipt})
           \item (\textsc{closeChannel}, receipt)
-          \item (\textsc{pay}, peer, coins, path, receipt)
+          \item (\textsc{poll})
+          \item (\textsc{pushFulfill}, \textit{pchid})
+          \item (\textsc{pushAdd}, \textit{pchid})
+          \item (\textsc{commit}, \textit{pchid})
+          \item (\textsc{fulfillOnChain})
+          \item (\textsc{getNews})
         \end{itemize}
+        \item to $\environment$:
+        \begin{itemize}
+          \item (\textsc{register}, \alice, \texttt{delay}(\alice),
+          \texttt{relayDelay}(\alice), pubKey)
+          \item (\textsc{registered})
+          \item (\textsc{channelClosed}, \texttt{receipt})
+          \item (\textsc{news}, newChannels, closedChannels, pendingUpdates)
+        \end{itemize}
+        \item from $\simulator$:
+        \begin{itemize}
+          \item (\textsc{registerDone}, \alice, pubKey)
+          \item (\textsc{corrupted}, \alice)
+          \item (\textsc{channelAnnounced}, \alice, $p_{\alice, F}, p_{\bob,
+          F}$, \textit{fchid}, \textit{pchid}, \textit{tid})
+          \item (\textsc{resolvePay}, \textit{payid}, \texttt{charged})
+          \item (\textsc{channelClosed}, \textit{fchid})
+          \item (\textsc{channelsClosed}, \texttt{details}, \alice,
+          \textit{reportid})
+        \end{itemize}
+        \item to $\simulator$:
+        \begin{itemize}
+          \item (\textsc{register}, \alice, delay, relayDelay, lastPoll)
+          \item (\textsc{openChannel}, \alice, \bob, $x$, \textit{fchid},
+          \textit{tid})
+          \item (\textsc{channelOpened}, \alice, \textit{fchid})
+          \item (\textsc{pay}, \alice, \bob, $x,
+          \overrightarrow{\mathtt{path}}$, \texttt{receipt}, \textit{payid})
+          \item (\textsc{closeChannel}, \textit{fchid}, \alice)
+          \item (\textsc{getClosedFunds}, \texttt{toReport}, \alice,
+          \textit{reportid})
+          \item (\textsc{pushFulfill}, \textit{pchid}, \alice)
+          \item (\textsc{pushAdd}, \textit{pchid}, \alice)
+          \item (\textsc{commit}, \textit{pchid}, \alice)
+          \item (\textsc{fulfillOnChain}, $t$, \alice)
+        \end{itemize}
+      \end{itemize}
+    \end{systembox}
+  \end{figure}
 
-      \funcsection{Initialisation}
+  \begin{figure}[H]
+    \begin{systembox}{\fpaynet - support}
       \begin{algorithmic}[1]
         \State Initialisation:
         \Indent
