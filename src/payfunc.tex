@@ -358,11 +358,14 @@
           to $\Sigma_{\alice}$
           \State add largest block number in $\Sigma_{\alice}$ to
           \texttt{polls}(\alice)
+          \State generate unique \textit{reportid}
+          \State $\mathtt{toReport}\left(\mathit{reportid}\right) \gets
+          \emptyset$
           \State scan $\Sigma_{\alice}$ for honestly closed channels that
           contain \alice{} and exist in \texttt{channels} (txs that spend
           funding txs that have the same channel version as stored), remove them
-          from \texttt{channels} and add them to \texttt{toReport} (marked as
-          ``honest'')
+          from \texttt{channels} and add them to
+          \texttt{toReport}(\textit{reportid}) (marked as ``honest'')
           \State scan $\Sigma_{\alice}$ for malicioulsy closed channels that
           contain \alice{} and exist in \texttt{channels} (txs that spend
           funding txs that have an older channel version than stored)
@@ -374,13 +377,12 @@
               \State halt \Comment{\alice{} wasn't negligent but couldn't punish
               - bad event}
             \EndIf
-            \State add \texttt{channel} to \texttt{toReport} (marked as
-            ``malicious'')
+            \State add \texttt{channel} to \texttt{toReport}(\textit{reportid})
+            (marked as ``malicious'')
           \EndFor
-          \State generate unique \textit{reportid} and store \texttt{toReport}
-          with it
-          \State send (\textsc{getClosedFunds}, \texttt{toReport}, \alice,
-          \textit{reportid}) to \simulator
+          \State send (\textsc{getClosedFunds},
+          \texttt{toReport}(\textit{reportid}), \alice, \textit{reportid}) to
+          \simulator
         \EndIndent
         \Statex
 
@@ -388,12 +390,13 @@
         \State Upon receiving (\textsc{channelsClosed}, \texttt{details},
         \alice, \textit{reportid}) from \simulator:
         \Indent
-          \State retrieve \texttt{toReport} associated with \textit{reportid}
-          (if none, ignore message) and remove pair from storage
+          \If{\texttt{toReport}(\textit{reportid}) not in storage}
+            \State ignore message
+          \EndIf
           \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply
           to $\Sigma_{\alice}$
-          \ForAll{$\mathtt{channel} \in \mathtt{details}$}
-            \State ensure $\mathtt{channel} \in \mathtt{toReport}$
+          \ForAll{$\mathtt{channel} \in \mathtt{details}$} \State ensure
+          $\mathtt{channel} \in \mathtt{toReport}\left(\mathit{reportid}\right)$
             \If{\texttt{channel} is marked as ``malicious''}
               \State ensure that transactions that spend the funding tx of
               \texttt{channel} and pay \alice{} the entire \texttt{channel}
@@ -411,6 +414,7 @@
             \texttt{closedChannels}(\alice)
             \State remove \texttt{channel} from \texttt{channels}
           \EndFor
+          \State remove \texttt{toReport}(\textit{reportid}) from storage
         \EndIndent
       \end{algorithmic}
     \end{systembox}
