@@ -51,31 +51,47 @@
         Fig.~\ref{alg:protocol:pay:updateFulfillHtlc})
         \If{any ``ensure'' in $\Pi_{\mathrm{LN}}$ fails until receiver processes
         \textsc{updateAddHtlc}} \Comment{payment failed}
-          \State $\mathtt{charged} \gets \bot$
-        \ElsIf{honest $\charlie{} \in \overrightarrow{\mathtt{path}}$ that sent
-        \textsc{updateFulfillHtlc} to a corrupted player either (gets the
-        fulfillment of the HTLC irrevocably committed OR fulfills the HTLC
-        on-chain), AND the next honest player \dave{} down the line successfully
-        times out the HTLC on-chain (i.e. adds the relevant
-        \texttt{HTLC-Timeout} to \ledger) (due to no or bad communication from
-        the corrupted player)}
-          \State set \texttt{charged} to one of the corrupted parties between
-          \charlie{} and \dave{}
-        \ElsIf{player before \charlie{} (closer to payer) goes on-chain with an
-        older version (that doesn't contain the HTLC) at block
-        $h_{\mathrm{com}}$ and \charlie{} doesn't \textsc{poll} in time to
-        revoke (is negligent during $\left[h_{\mathrm{com}} + k,
-        h_{\mathrm{com}} + \mathtt{CharlieDelay} + k - 1\right]$) OR player
-        after \charlie{} (closer to receiver) fulfills the HTLC on-chain and
-        \charlie{} doesn't \textsc{poll} in time to learn preimage and send
-        \textsc{updateFulfillHtlc} (is relay-negligent during
-        $\left[\TODO{TODO}, \mathtt{cltvExpiry} - 2k - 1\right]$)}
-          \State $\mathtt{charged} \gets \charlie$
-        \Else
-          \State $\mathtt{charged} \gets \alice$
+          \State send $\left(\textsc{resolvePay}, \mathit{payid}, \bot\right)$
+          to $\fpaynet{}_{\mathrm{, Pay}}$
         \EndIf
-        \State send $\left(\textsc{resolvePay}, \mathit{payid},
-        \mathtt{charged}\right)$ to $\fpaynet{}_{\mathrm{, Pay}}$
+      \EndIndent
+      \Statex
+
+      \State Upon receiving btw $\Sigma_{\charlie}$ from $\fpaynet{}_{\mathrm{,
+      Pay}}$: \TODO{fix the two ifs to care only about \charlie}
+        \Indent
+        \State $\mathtt{charged} \gets \emptyset$
+        \ForAll{\textit{payid}s}
+          \If{honest $\charlie{} \in \overrightarrow{\mathtt{path}}$ that sent
+          \textsc{updateFulfillHtlc} to a corrupted player either (gets the
+          fulfillment of the HTLC irrevocably committed OR fulfills the HTLC
+          on-chain), AND the next honest player \dave{} down the line
+          successfully times out the HTLC on-chain (i.e. adds the relevant
+          \texttt{HTLC-Timeout} to \ledger) (due to no or bad communication from
+          the corrupted player)}
+            \State set \texttt{charged} to one of the corrupted parties between
+            \charlie{} and \dave{}
+          \ElsIf{(player before \charlie{} (closer to payer) puts in block
+          $h_{\mathrm{com}}$ an older channel commitment tx (that doesn't
+          contain the HTLC) AND \simulator{} hasn't received
+          (\textsc{getClosedFunds}, \texttt{report}, \charlie,
+          \textit{reportid}) from $\fpaynet{}_{\mathrm{, Pay}}$ with the
+          offending tx in \texttt{report} during $\left[h_{\mathrm{com}} + k,
+          h_{\mathrm{com}} + \mathtt{CharlieDelay} + k - 1\right]$\TODO{fix}) OR
+          (player after \charlie{} (closer to receiver) fulfills the HTLC
+          on-chain AND \simulator{} hasn't received (\textsc{fulfillOnChain},
+          $\mathrm{cltvExpiry} - 2k - \tochain - 1$, \charlie) from
+          $\fpaynet{}_{\mathrm{, Pay}}$, where cltvExpiry is the outgoing CLTV
+          expiry of \charlie{} in $\overrightarrow{\mathtt{path}}$)}
+            \State (\charlie, \textit{payid}) add to \texttt{charged}
+          \Else
+            \State let \alice{} the payer in $\overrightarrow{\mathtt{path}}$ of
+            \textit{payid}
+            \State (\alice, \textit{payid}) add to \texttt{charged}
+          \EndIf
+        \EndFor
+        \State send $\left(\textsc{resolvePays}, \mathtt{charged}\right)$ to
+        $\fpaynet{}_{\mathrm{, Pay}}$
       \EndIndent
     \end{algorithmic}
   \end{simulatorbox}
