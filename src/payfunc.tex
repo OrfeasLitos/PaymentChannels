@@ -87,7 +87,8 @@
           \State $\mathtt{polls}\left(\alice\right) \gets \emptyset$
           \State $\mathtt{focs}\left(\alice\right) \gets \emptyset$
           \State send (\textsc{read}) to \ledger{} as \alice{} and add largest
-          block number to \texttt{polls}(\alice)
+          block number to \texttt{polls}(\alice) \TODO{send \ledger{} to
+          \simulator{} btw often}
           \label{alg:fpaynet:support:lastpoll}
           \State send $\left(\textsc{register}, \alice, \mathrm{delay},
           \mathrm{relayDelay}, \mathrm{lastPoll}\right)$ to \simulator
@@ -251,8 +252,8 @@
         \EndIndent
         \Statex
 
-        \State Upon receiving $\left(\textsc{resolvePay}, \mathit{payid},
-        \mathtt{charged}\right)$ from \simulator:
+        \State Upon receiving $\left(\textsc{resolvePays}, \mathit{payid},
+        \mathtt{charged}\right)$ from \simulator: \TODO{fix}
         \Indent
           \State retrieve $\left(\alice, \bob, x,
           \overrightarrow{\mathtt{path}}\right)$ with ID \textit{payid} and
