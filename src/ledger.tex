@@ -2,21 +2,21 @@
   We next provide the complete description of the ledger functionality that is
   based on the UC formalisation of~\cite{BMTZ17,genesis}.
 
-  The key characteristics of the functionality are as follows. A variable
-  $\state$ maintains the current immutable state of the ledger. Honest parties
-  that are synchronised may find themselves  to consider finalised various
-  prefixes of $\state$ (specified by a pointer position $\pt_{i}$  for party
-  $\stkh_i$ below) but nevertheless no such prefix will be shorter than a
-  parameter $\windowSize$ from $\state$. On any input originating from an honest
-  party the functionality will run the $\LFextend$ function that will ensure
-  that a suitable sequence of transactions will be ``blockified'' and added to
+  The key characteristics of the functionality are as follows. The variable
+  $\state$ maintains the current immutable state of the ledger. An honest,
+  synchronised party considers finalised a prefix of $\state$ (specified by a
+  pointer position $\pt_{i}$ for party $\stkh_i$ below). The functionality has a
+  parameter $\windowSize$ such that no finalised prefix of any player will be
+  shorter than $|\state| - \windowSize$. On any input originating from an honest
+  party the functionality will run the $\LFextend$ function that ensures that a
+  suitable sequence of transactions will be ``blockified'' and added to
   $\state$. Honest parties may also find themselves in a desynchronised state:
   this is when honest parties lose access to some of their resources. The
-  resources that are necessary for proper ledger maintenance and the
+  resources that are necessary for proper ledger maintenance and that the
   functionality keeps track of are the global random oracle $\Foracle$, the
-  clock $\Fclock$ and network $\FnetworkEd$. When an honest party maintains
-  registration with all the resources then after $\vdelay$ clock ticks it must
-  necessarily become synchronised.
+  clock $\Fclock$ and network $\FnetworkEd$. If an honest party maintains
+  registration with all the resources then after $\vdelay$ clock ticks it
+  necessarily becomes synchronised.
 
   The progress of the $\state$ variable is guaranteed via the $\LFextend$
   function that is executed when honest parties submit inputs to the
@@ -26,9 +26,9 @@
   \begin{enumerate}
     \item in a period of time equal to $\maxTime$, at least $\windowSize$ blocks
     are added to  $\state$.
-    \item each window of $\windowSize$ blocks should have a limit of
-    $\advBlocksinWindowSize$ of adversarial blocks included in it.
-    \item any transaction transmitted by an honest party earlier than
+    \item each window of $\windowSize$ blocks has at most
+    $\advBlocksinWindowSize$ adversarial blocks included in it.
+    \item any transaction submitted by an honest party earlier than
     $\frac{\vdelay}{2}$ ticks before the time that the  block that is
     $\windowSize$ positions before the head of the $\state$ must be included in
     an honest block.
@@ -39,10 +39,11 @@
 
   \begin{proposition}
     Consider any synchronised honest party that wishes to place a transaction
-    $\tx$ in some specific block height $(h+1, h+t-1)$ where $t$ is a parameter
+    $\tx$ in some specific block height $[h+1, h+t-1]$ where $t$ is a parameter
     and $h$ an arbitrary positive integer. Then, as long as $t\geq ???$, $\tx$
     is guaranteed to be included in the correct block range as long as the party
-    submits $\tx$ to the ledger functionality no later than $????$.
+    submits $\tx$ to the ledger functionality within \orfeas{rounds or blocks?}
+    $[????, ????]$.
   \end{proposition}
 
   \begin{proof}
