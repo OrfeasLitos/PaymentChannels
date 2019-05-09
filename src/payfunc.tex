@@ -39,7 +39,7 @@
           \item (\textsc{corrupted}, \alice)
           \item (\textsc{channelAnnounced}, \alice, $p_{\alice, F}, p_{\bob,
           F}$, \textit{fchid}, \textit{pchid}, \textit{tid})
-          \item (\textsc{resolvePay}, \textit{payid}, \texttt{charged})
+          \item (\textsc{resolvePays}, \textit{payid}, \texttt{charged})
           \item (\textsc{channelClosed}, \textit{fchid})
           \item (\textsc{channelsClosed}, \texttt{details}, \alice,
           \textit{reportid})
@@ -70,7 +70,7 @@
         \State Initialisation:
         \Indent
           \State $\mathtt{channels}, \mathtt{pendingPay}, \mathtt{pendingOpen},
-          \mathtt{corrupted} \gets \emptyset$
+          \mathtt{corrupted}, \Sigma \gets \emptyset$
         \EndIndent
         \Statex
 
@@ -86,9 +86,9 @@
           \mathtt{newChannels}\left(\alice\right) \gets \emptyset$
           \State $\mathtt{polls}\left(\alice\right) \gets \emptyset$
           \State $\mathtt{focs}\left(\alice\right) \gets \emptyset$
-          \State send (\textsc{read}) to \ledger{} as \alice{} and add largest
-          block number to \texttt{polls}(\alice) \TODO{send \ledger{} to
-          \simulator{} btw often}
+          \State send (\textsc{read}) to \ledger{} as \alice{}, store reply to
+          $\Sigma_{\alice}$, add $\Sigma_{\alice}$ to $\Sigma$ and add largest
+          block number to \texttt{polls}(\alice)
           \label{alg:fpaynet:support:lastpoll}
           \State send $\left(\textsc{register}, \alice, \mathrm{delay},
           \mathrm{relayDelay}, \mathrm{lastPoll}\right)$ to \simulator
@@ -106,7 +106,7 @@
 
         \State Upon receiving (\textsc{registered}) from \alice:
         \Indent
-          \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply
+          \State send (\textsc{read}) to \ledger{} as \alice{} and store reply
           to $\Sigma_{\alice}$
           \State assign the sum of all output values that are exclusively
           spendable by \alice{} to \texttt{onChainBalance}
@@ -172,7 +172,7 @@
           \State $\left(\mathrm{funder}, \mathrm{fundee}, x, p_{\alice, F},
           p_{\bob, F}\right) \gets
           \mathtt{pendingOpen}\left(\mathit{fchid}\right)$
-          \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply
+          \State send (\textsc{read}) to \ledger{} as \alice{} and store reply
           to $\Sigma_{\alice}$
           \label{alg:fpaynet:checkNew:read}
           \State ensure that there is a TX $F \in \Sigma_{\alice}$ with a
@@ -239,58 +239,73 @@
           \State add $\left(\alice, \bob, x, \overrightarrow{\mathtt{path}},
           \mathit{payid}\right)$ to \texttt{pendingPay}
           \State send $\left(\textsc{pay}, \alice, \bob, x,
-          \overrightarrow{\mathtt{path}}, \mathtt{receipt},
-          \mathit{payid}\right)$ to \simulator
-        \EndIndent
-        \Statex
-
-        \State Upon receiving $\left(\textsc{resolvePays}, \mathit{payid},
-        \mathtt{charged}\right)$ from \simulator: \TODO{fix}
-        \Indent
-          \State retrieve $\left(\alice, \bob, x,
-          \overrightarrow{\mathtt{path}}\right)$ with ID \textit{payid} and
-          remove it from \texttt{pendingPay}
-          \State calculate \texttt{IncomingCltvExpiry},
-          \texttt{OutgoingCltvExpiry} of \texttt{charged} (as in
-          Fig.~\ref{alg:protocol:pay:invoice},
-          l.~\ref{alg:protocol:pay:invoice:cltv})
-          \If{$\mathtt{charged} = \bot$}
-            \State \Return
-          \ElsIf{$\mathtt{charged} \neq \alice \vee \mathtt{charged} \notin
-          \mathtt{corrupted} \ \vee$ (\texttt{polls}(\texttt{charged}) contains
-          an element in $\left[\mathtt{OutgoingCltvExpiry} + 2k + \tochain{} -
-          1, \mathtt{IncomingCltvExpiry} - \TODO{2?}k - \tochain{} - 1\right]
-          \wedge$ \texttt{focs}(\texttt{charged}) contains
-          $\mathtt{OutgoingCltvExpiry} - 2k - \tochain{} - 1$)}
-            \State halt
-          \EndIf
-          \ForAll{$\mathtt{channel}\text{s} \in \overrightarrow{\mathtt{path}}$
-          starting from the one where \texttt{charged} pays}
-            \State in the first iteration, \texttt{payer} is \texttt{charged}. In
-            subsequent iterations, \texttt{payer} is the unique player that has
-            received but has not given. The other \texttt{channel} party is
-            \texttt{payee}
-            \If{\texttt{payer} has $x$ or more in \texttt{channel}}
-              \State update \texttt{channel} to the next version and transfer
-              $x$ from \texttt{payer} to \texttt{payee}
-              \State add \texttt{receipt}(\texttt{channel}) to both parties'
-              \texttt{pendingUpdates}
-            \Else
-              \State revert all updates and remove them from
-              \texttt{pendingUpdates}
-            \EndIf
-          \EndFor
-          \If{$\mathtt{charged} \notin \mathtt{corrupted}$}
-            \State $\mathtt{offChainBalance}\left(\mathtt{charged}\right) \gets
-            \mathtt{offChainBalance}\left(\mathtt{charged}\right) - x$
-          \EndIf
-          \State $\mathtt{offChainBalance}\left(\bob\right) \gets
-          \mathtt{offChainBalance}\left(\bob\right) + x$
+          \overrightarrow{\mathtt{path}}, \mathtt{receipt}, \mathit{payid},
+          \textsc{state}, \Sigma\right)$ to \simulator
         \EndIndent
       \end{algorithmic}
     \end{systembox}
     \caption{}
     \label{alg:fpaynet:pay}
+  \end{figure}
+
+  \begin{figure}[H]
+    \begin{systembox}{\fpaynet - resolve payments}
+      \begin{algorithmic}[1]
+        \State Upon receiving any message with a concatenated
+        $\left(\textsc{resolvePays}, \mathtt{charged}\right)$ from \simulator:
+        \Comment{from \textsc{resolvePay}, \textsc{channelsClosed}, from
+        \textsc{pushFulfill}, from \textsc{pushAdd}, from \textsc{commit}}
+        \Indent
+          \ForAll{$\charlie \text{ keys} \in \texttt{charged}$}
+            \ForAll{$\left(\dave, \mathit{payid}\right) \in
+            \mathtt{charged}\left(\charlie\right)$}
+              \State retrieve $\left(\alice, \bob, x,
+              \overrightarrow{\mathtt{path}}\right)$ with ID \textit{payid} and
+              remove it from \texttt{pendingPay}
+              \State calculate \texttt{IncomingCltvExpiry},
+              \texttt{OutgoingCltvExpiry} of \dave{} (as in
+              Fig.~\ref{alg:protocol:pay:invoice},
+              l.~\ref{alg:protocol:pay:invoice:cltv})
+              \If{$\dave{} = \bot$}
+                \State \Return
+              \ElsIf{$\dave{} \neq \alice{} \vee \dave{} \notin
+              \mathtt{corrupted} \ \vee$ (\texttt{polls}(\dave) contains an
+              element in $\left[\mathtt{OutgoingCltvExpiry} + 2k + \tochain{} -
+              1, \mathtt{IncomingCltvExpiry} - \TODO{2?}k - \tochain{} -
+              1\right] \wedge$ \texttt{focs}(\dave) contains
+              $\mathtt{OutgoingCltvExpiry} - 2k - \tochain{} - 1$)}
+                \State halt
+              \EndIf
+              \ForAll{$\mathtt{channel}\text{s} \in
+              \overrightarrow{\mathtt{path}}$ starting from the one where
+              \dave{} pays}
+                \State in the first iteration, \texttt{payer} is \dave. In
+                subsequent iterations, \texttt{payer} is the unique player that
+                has received but has not given. The other \texttt{channel} party
+                is \texttt{payee}
+                \If{\texttt{payer} has $x$ or more in \texttt{channel}}
+                  \State update \texttt{channel} to the next version and
+                  transfer $x$ from \texttt{payer} to \texttt{payee}
+                  \State add \texttt{receipt}(\texttt{channel}) to both parties'
+                  \texttt{pendingUpdates}
+                \Else
+                  \State revert all updates and remove them from
+                  \texttt{pendingUpdates}
+                \EndIf
+              \EndFor
+              \If{$\dave{} \notin \mathtt{corrupted}$}
+                \State $\mathtt{offChainBalance}\left(\dave\right) \gets
+                \mathtt{offChainBalance}\left(\dave\right) - x$
+              \EndIf
+              \State $\mathtt{offChainBalance}\left(\bob\right) \gets
+              \mathtt{offChainBalance}\left(\bob\right) + x$
+            \EndFor
+          \EndFor
+        \EndIndent
+      \end{algorithmic}
+    \end{systembox}
+    \caption{}
+    \label{alg:fpaynet:resolvepay}
   \end{figure}
 
   \begin{figure}[H]
@@ -315,7 +330,7 @@
           \State retrieve $\charlie, \bob, x, y, \mathit{pchid}$ from
           \texttt{channel} with ID \textit{fchid}
           \State ensure that $\charlie{} = \alice$
-          \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply
+          \State send (\textsc{read}) to \ledger{} as \alice{} and store reply
           to $\Sigma_{\alice}$
           \State ensure that transaction with ID \textit{pchid} is in
           $\Sigma_{\alice}$, is spent, $x$ of its coins are spendable or
@@ -347,7 +362,7 @@
       \begin{algorithmic}[1]
         \State Upon receiving $\left(\textsc{poll}\right)$ from \alice:
         \Indent
-          \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply
+          \State send (\textsc{read}) to \ledger{} as \alice{} and store reply
           to $\Sigma_{\alice}$
           \State add largest block number in $\Sigma_{\alice}$ to
           \texttt{polls}(\alice)
@@ -374,8 +389,8 @@
             (marked as ``malicious'')
           \EndFor
           \State send (\textsc{getClosedFunds},
-          \texttt{toReport}(\textit{reportid}), \alice, \textit{reportid}) to
-          \simulator
+          \texttt{toReport}(\textit{reportid}), \alice, \textit{reportid},
+          \textsc{state}, $\Sigma$) to \simulator
         \EndIndent
         \Statex
 
@@ -386,7 +401,7 @@
           \If{\texttt{toReport}(\textit{reportid}) not in storage}
             \State ignore message
           \EndIf
-          \State send (\textsc{read}) to \ledger{} as \alice{} and assign reply
+          \State send (\textsc{read}) to \ledger{} as \alice{} and store reply
           to $\Sigma_{\alice}$
           \ForAll{$\mathtt{channel} \in \mathtt{details}$} \State ensure
           $\mathtt{channel} \in \mathtt{toReport}\left(\mathit{reportid}\right)$
@@ -421,27 +436,29 @@
         \State Upon receiving (\textsc{pushFulfill}, \textit{pchid}) from
         \alice:
         \Indent
-          \State send (\textsc{pushFulfill}, \textit{pchid}, \alice) to
-          \simulator
+          \State send (\textsc{pushFulfill}, \textit{pchid}, \alice,
+          \textsc{state}, $\Sigma$) to \simulator
         \EndIndent
         \Statex
 
         \State Upon receiving (\textsc{pushAdd}, \textit{pchid}) from \alice:
         \Indent
-          \State send (\textsc{pushAdd}, \textit{pchid}, \alice) to \simulator
+          \State send (\textsc{pushAdd}, \textit{pchid}, \alice, \textsc{state},
+          $\Sigma$) to \simulator
         \EndIndent
         \Statex
 
         \State Upon receiving (\textsc{commit}, \textit{pchid}) from \alice:
         \Indent
-          \State send (\textsc{commit}, \textit{pchid}, \alice) to \simulator
+          \State send (\textsc{commit}, \textit{pchid}, \alice, \textsc{state},
+          $\Sigma$) to \simulator
         \EndIndent
         \Statex
 
         \State Upon receiving (\textsc{fulfillOnChain}) from \alice:
         \Indent
-          \State send (\textsc{read}) to \ledger{} as \alice{} and assign
-          largest block number to $t$
+          \State send (\textsc{read}) to \ledger{} as \alice{}, store reply to
+          $\Sigma_{\alice}$ and assign largest block number to $t$
           \State add $t$ to \texttt{focs}(\alice)
           \State send (\textsc{fulfillOnChain}, $t$, \alice) to \simulator
         \EndIndent

@@ -29,7 +29,7 @@
 \end{figure}
 
 \begin{figure}[H]
-  \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$}
+  \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$ - pay}
     Like $\simulator{}_{\mathrm{LN - Reg - Open}}$. Differences:
     \begin{algorithmic}[1]
       \State Upon receiving $\left(\textsc{fulfillOnChain}, t, \alice\right)$
@@ -51,52 +51,80 @@
         Fig.~\ref{alg:protocol:pay:updateFulfillHtlc})
         \If{any ``ensure'' in $\Pi_{\mathrm{LN}}$ fails until receiver processes
         \textsc{updateAddHtlc}} \Comment{payment failed}
-          \State send $\left(\textsc{resolvePay}, \mathit{payid}, \bot\right)$
-          to $\fpaynet{}_{\mathrm{, Pay}}$
+          \State add $\left(\bot, \mathit{payid}\right)$ to
+          \texttt{charged}(\alice)
+        \Else
+          \State add ($\overrightarrow{\mathtt{path}}$, \textit{payid}) to
+          \texttt{payids}
         \EndIf
-      \EndIndent
-      \Statex
-
-      \State Upon receiving btw $\Sigma_{\charlie}$ from $\fpaynet{}_{\mathrm{,
-      Pay}}$: \TODO{fix the two ifs to care only about \charlie}
-        \Indent
-        \State $\mathtt{charged} \gets \emptyset$
-        \ForAll{\textit{payid}s}
-          \If{honest $\charlie{} \in \overrightarrow{\mathtt{path}}$ that sent
-          \textsc{updateFulfillHtlc} to a corrupted player either (gets the
-          fulfillment of the HTLC irrevocably committed OR fulfills the HTLC
-          on-chain), AND the next honest player \dave{} down the line
-          successfully times out the HTLC on-chain (i.e. adds the relevant
-          \texttt{HTLC-Timeout} to \ledger) (due to no or bad communication from
-          the corrupted player)}
-            \State set \texttt{charged} to one of the corrupted parties between
-            \charlie{} and \dave{}
-          \ElsIf{(player before \charlie{} (closer to payer) puts in block
-          $h_{\mathrm{com}}$ an older channel commitment tx (that doesn't
-          contain the HTLC) AND \simulator{} hasn't received
-          (\textsc{getClosedFunds}, \texttt{report}, \charlie,
-          \textit{reportid}) from $\fpaynet{}_{\mathrm{, Pay}}$ with the
-          offending tx in \texttt{report} during $\left[h_{\mathrm{com}} + k,
-          h_{\mathrm{com}} + \mathtt{CharlieDelay} + k - 1\right]$\TODO{fix}) OR
-          (player after \charlie{} (closer to receiver) fulfills the HTLC
-          on-chain AND \simulator{} hasn't received (\textsc{fulfillOnChain},
-          $\mathrm{cltvExpiry} - 2k - \tochain - 1$, \charlie) from
-          $\fpaynet{}_{\mathrm{, Pay}}$, where cltvExpiry is the outgoing CLTV
-          expiry of \charlie{} in $\overrightarrow{\mathtt{path}}$)}
-            \State (\charlie, \textit{payid}) add to \texttt{charged}
-          \Else
-            \State let \alice{} the payer in $\overrightarrow{\mathtt{path}}$ of
-            \textit{payid}
-            \State (\alice, \textit{payid}) add to \texttt{charged}
-          \EndIf
-        \EndFor
-        \State send $\left(\textsc{resolvePays}, \mathtt{charged}\right)$ to
-        $\fpaynet{}_{\mathrm{, Pay}}$
       \EndIndent
     \end{algorithmic}
   \end{simulatorbox}
   \caption{}
   \label{alg:sim:pay}
+\end{figure}
+
+\begin{figure}[H]
+  \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$ - resolve
+  payments}
+    \begin{algorithmic}[1]
+      \State Upon receiving any message with a concatenated (\textsc{state},
+      $\Sigma$) part from $\fpaynet{}_{\mathrm{, Pay}}$: \Comment{\textsc{pay},
+      \textsc{getClosedFunds}, \textsc{pushFulfill}, \textsc{pushAdd},
+      \textsc{commit}}
+        \Indent
+        \State handle first part of the message normally
+        \ForAll{$\Sigma_{\alice} \in \Sigma$}
+          \ForAll{$(\overrightarrow{\mathtt{path}}, \mathit{payid}) \in
+          \mathtt{payids} : \alice \in \overrightarrow{\mathtt{path}}$}
+            \If{\alice{} sent \textsc{updateFulfillHtlc} to a corrupted player
+            and either (got the fulfillment of the HTLC irrevocably committed OR
+            fulfilled the HTLC on-chain (i.e. permanently added
+            \texttt{HTLC-success} to \ledger)), AND the next honest player
+            \bob{} down the line successfully timed out the HTLC on-chain (i.e.
+            permanently added the relevant \texttt{HTLC-Timeout} to \ledger)
+            (due to no or bad communication from the previous player)}
+              \State add to \texttt{charged}(\alice) a tuple
+              (\texttt{corrupted}, \textit{payid}) where \texttt{corrupted} is
+              set to one of the corrupted parties between \alice{} and \bob{}
+              \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid})
+              from \texttt{payids}
+            \ElsIf{(player before \alice{} (closer to payer) has put in block
+            $h_{\mathrm{com}}$ of $\Sigma_{\alice}$ an older \texttt{commitment}
+            tx (that doesn't contain the HTLC) AND \simulator{} hasn't received
+            (\textsc{getClosedFunds}, \texttt{report}, \alice,
+            \textit{reportid}) from $\fpaynet{}_{\mathrm{, Pay}}$ with the
+            offending tx in \texttt{report} during $\left[h_{\mathrm{com}} + k,
+            h_{\mathrm{com}} + k + \mathtt{AliceDelay} - 1\right]$) OR (player
+            after \alice{} (closer to receiver) has irrevocably fulfilled the
+            HTLC on-chain with the \texttt{HTLC-success} tx in block
+            $h_{\mathrm{fulfill}}$ of $\Sigma_{\alice}$ AND \simulator{} hasn't
+            received (\textsc{fulfillOnChain}, $\mathrm{cltvExpiry} - 2k -
+            \tochain - 1$, \alice) from $\fpaynet{}_{\mathrm{, Pay}}$, where
+            cltvExpiry is the incoming CLTV expiry of \alice{} in
+            $\overrightarrow{\mathtt{path}}$)}
+              \State add (\alice, \textit{payid}) to \texttt{charged}(\alice)
+              \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid})
+              from \texttt{payids}
+            \ElsIf{\alice{} is the payer in $\overrightarrow{\mathtt{path}}$ AND
+            ((she has received \textsc{updateFulfillHtlc} AND has subsequently
+            sent \textsc{commit} and \textsc{revokeAndAck}) OR player after
+            \alice{} has irrevocably fulfilled the HTLC on-chain with the
+            \texttt{HTLC-success} tx)} \Comment{honest payment completed}
+              \State add (\alice, \textit{payid}) to \texttt{charged}(\alice)
+              \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid})
+              from \texttt{payids}
+            \EndIf
+          \EndFor
+        \EndFor
+        \State append $\left(\textsc{resolvePays}, \mathtt{charged}\right)$ to
+        the message to be sent, clear \texttt{charged} and send message to
+        $\fpaynet{}_{\mathrm{, Pay}}$
+      \EndIndent
+    \end{algorithmic}
+  \end{simulatorbox}
+  \caption{}
+  \label{alg:sim:resolvepay}
 \end{figure}
 
 \begin{lemma}
