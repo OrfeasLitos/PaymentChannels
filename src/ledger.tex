@@ -1,327 +1,382 @@
+\section{The Ledger Functionality and its Properties}
+  We next provide the complete description of the ledger functionality that is
+  based on the UC formalisation of~\cite{BMTZ17,genesis}.
+
+  The key characteristics of the functionality are as follows. A variable
+  $\state$ maintains the current immutable state of the ledger. Honest parties
+  that are synchronised may find themselves  to consider finalised various
+  prefixes of $\state$ (specified by a pointer position $\pt_{i}$  for party
+  $\stkh_i$ below) but nevertheless no such prefix will be shorter than a
+  parameter $\windowSize$ from $\state$. On any input originating from an honest
+  party the functionality will run the $\LFextend$ function that will ensure
+  that a suitable sequence of transactions will be ``blockified'' and added to
+  $\state$. Honest parties may also find themselves in a desynchronised state:
+  this is when honest parties lose access to some of their resources. The
+  resources that are necessary for proper ledger maintenance and the
+  functionality keeps track of are the global random oracle $\Foracle$, the
+  clock $\Fclock$ and network $\FnetworkEd$. When an honest party maintains
+  registration with all the resources then after $\vdelay$ clock ticks it must
+  necessarily become synchronised.
+
+  The progress of the $\state$ variable is guaranteed via the $\LFextend$
+  function that is executed when honest parties submit inputs to the
+  functionality. While we do not specify $\LFextend$ in our paper (we refer to
+  the citations above for the full specification) it is sufficient to note that
+  $\LFextend$ guarantees the following properties:
+  \begin{enumerate}
+    \item in a period of time equal to $\maxTime$, at least $\windowSize$ blocks
+    are added to  $\state$.
+    \item each window of $\windowSize$ blocks should have a limit of
+    $\advBlocksinWindowSize$ of adversarial blocks included in it.
+    \item any transaction transmitted by an honest party earlier than
+    $\frac{\vdelay}{2}$ ticks before the time that the  block that is
+    $\windowSize$ positions before the head of the $\state$ must be included in
+    an honest block.
+  \end{enumerate}
+
+  Given a synchronised honest party, we say that a transaction $\tx$ is
+  finalised when it becomes a part of $\state$ in its view.
+
+  \begin{proposition}
+    Consider any synchronised honest party that wishes to place a transaction
+    $\tx$ in some specific block height $(h+1, h+t-1)$ where $t$ is a parameter
+    and $h$ an arbitrary positive integer. Then, as long as $t\geq ???$, $\tx$
+    is guaranteed to be included in the correct block range as long as the party
+    submits $\tx$ to the ledger functionality no later than $????$.
+  \end{proposition}
+
+  \begin{proof}
+    TBD
+  \end{proof}
+
+  \begin{systembox}{$\Fledger$}\vspace{1ex}
+    \small
+    {\bf General:}
+    The functionality is parameterized by four algorithms, \LFvalidate,
+    \LFextend, \LFblockify, and \vsync, along with three parameters:
+    $\windowSize, \vdelay\in\mathbb{N}$, and $\StakeHolderSet :=
+    \{(\stkh_{1},\stake_{1}),\ldots,(\stkh_{n},\stake_{n})\}$.
+    %
+    The functionality manages variables $\state$ (the immutable state of the
+    ledger), $\cbuffer$ (a list of transaction identifiers to be added to the
+    ledger), \buffer (the set of pending transactions), $\LFtau$ (the rules
+    under which the state is extended), and \tlast (the time sequence where all
+    immutable blocks where added). The variables are initialized as follows:
+    $\state:=\tlast:= \cbuffer:= \varepsilon$, $\buffer:=\emptyset$, $\LFtau=0$.
+  %
+    For each party $\party\in\PS$ the functionality maintains a pointer $\pt_i$
+    (initially set to 1) and a current-state view $\state_p:=\varepsilon$
+    (initially set to empty). The functionality also keeps track of the  timed
+    honest-input sequence in a vector $\TIH$ (initially $\TIH:=\varepsilon$).
+    \medskip
+
+    {\bf Party Management:}
+    The functionality maintains the set of registered parties $\PS$, the
+    (sub-)set of honest parties $\HO \subseteq \PS$, and the (sub-set) of
+    de-synchronized honest parties $\DSyncPS\subset\HO$ (as discussed below).
+    The sets $\PS, \HS, \DSyncPS$ are all initially set to $\emptyset$. When a
+    (currently unregistered) honest party is registered at the ledger, {\em if
+    it is registered with the clock and the global RO already,} then it is added
+    to the party sets $\HS$ and $\PS$ and the current time of registration is
+    also recorded; if the current time is $\LFtau > 0$, it is also added to
+    $\DSyncPS$. Similarly, when a party is deregistered, it is removed from both
+    $\PS$ (and therefore also from $\DSyncPS$ or $\HS$). The ledger maintains
+    the invariant that it is registered (as a functionality) to the clock
+    whenever $\HS \neq \emptyset$.
+
+    \medskip
+
+    {\bf Handling initial stakeholders:}
+    If during round $\tau = 0$, the ledger did not received a registration from
+    each initial stakeholder, i.e., $\party \in \StakeHolderSet$, the
+    functionality halts.
+
+    \medskip
+    \hrule
+    \medskip
+
+    %\emph{To be executed upon any activation:}
+    {\bf Upon receiving any input $I$} from any party or from the adversary,
+    send $(\ClockRead, \sidClock)$ to \Fclock and upon receiving response
+    $(\ClockRead, \sidClock, \current)$ set $\LFtau:=\current$ and do the
+    following if $\current > 0$ (otherwise, ignore input):
+
+    \begin{enumerate}\setlength\itemsep{1.5ex}
+      \item Updating synchronized/desynchronized party set:
+      \begin{enumerate}
+        \item Let $\hat{\PS}\subseteq\DSyncPS$  denote the set of desynchronized
+        honest parties that have been registered (continuously) to the ledger,
+        the clock, and the GRO since time $\tau' < \LFtau-\vdelay$. Set
+        $\DSyncPS:=\DSyncPS\setminus\hat{\PS}$.
+        \item For any synchronized party $\party\in\HO\setminus\DSyncPS$, if
+        $\party$ is not registered to the clock, then consider it
+        desynchronized, i.e., set $\DSyncPS\cup\{\party\}$.
+      \end{enumerate}
+      \item If $I$ was received from an honest party $\party\in\PS$:\\[1ex]
+      \begin{enumerate}\setlength\itemsep{1ex}
+        \item Set $\TIH:=\TIH||(I,\party,\LFtau)$;
+        \item Compute
+        $\vec{N}=(\vec{N}_1,\ldots,\vec{N}_\ell):=\LFextend(\TIH,\state,\cbuffer,\buffer,\tlast)$
+        and if $\vec{N}\neq\varepsilon$ set
+        $\state:=\state||\LFblockify(\vec{N}_1)||\ldots||\LFblockify(\vec{N}_\ell)$
+        and $ \tlast:=\tlast||\LFtau^\ell$, where
+        $\LFtau^\ell=\LFtau||\ldots,||\LFtau$.
+        \item For each $\BTX\in\buffer$: if $\LFvalidate(\BTX,\state,\buffer)=0$
+        then delete  $\BTX$ from $\buffer$. Also, reset $\cbuffer:=
+        \varepsilon$.
+        \item If there exists $\stkh_{j}\in\HS\setminus\DSyncPS$ such that
+        $|\state| -\pt_{j} > \windowSize$ or $\pt_{j} < |\state_{j}|$, then set
+        $\pt_{k}:=|\state|$ for all $\stkh_{k}\in\HS\setminus\DSyncPS$.
+      \end{enumerate}
+
+      \item If the calling party $\party$ is \emph{stalled or time-unaware}
+      (according to the defined party classification), then no further actions
+      are taken. Otherwise, depending on the above input $I$ and its sender's
+      ID, $\Fledger$ executes the corresponding code from the following list:
+      \begin{itemize}
+        \let\labelitemi\labelitemii
+        \item \emph{Submitting a transaction:}\\
+        If $I=(\LFsubmit, \sid,\tx)$ and is received from a party $\party \in
+        \PS$ or from \Adv (on behalf of a corrupted party $\party$) do the
+        following%\\[0.5ex]
+        \begin{enumerate}\setlength\itemsep{1ex}
+          \item Choose a unique transaction ID $\txid$ and set
+          $\BTX:=(\tx,\txid,\LFtau,\party)$
+          \item If $\LFvalidate(\BTX,\state,\buffer)=1$, then
+          $\buffer:=\buffer\cup\{\BTX\}$.
+          \item Send $(\LFsubmit, \BTX)$ to \Adv.%\\[2ex]
+        \end{enumerate}
+
+        \item \emph{Reading the state:}\\ If $I=(\LFread, \sid)$ is received
+        from a party $\party \in \PS$ then set $\state_p:=
+        \state|_{\min\{\pt_p,|\state|\}}$ and return $(\LFread, \sid, \state_p)$
+        to the requester. If the requester is \Adv then send
+        $(\state,\buffer,\TIH)$ to~\Adv.%\\[2ex]
+
+        \item \emph{Maintaining the ledger state:}\\
+        If $I=(\LFmine,\sid, \minerID)$ is received by an honest party
+        $\party\in\PS$ and  (after updating \TIH  as above)
+        $\vsync(\TIH)=\hat{\tau}>\LFtau$ then send $(\ClockUp, \sidClock)$ to
+        \Fclock. Else send $I$ to \Adv.%\\[2ex]
+
+
+        \item \emph{The adversary proposing the next block:} \\
+        If $I=(\LFmkcore, \honestyFlag, (\txid_1,\ldots,\txid_\ell))$ is sent
+        from the adversary, update \cbuffer as follows:%\\[1ex]
+        \begin{enumerate}\setlength\itemsep{1ex}
+          \item Set $\mathrm{listOfTxid} \gets \epsilon$
+          \item For $i=1,\ldots, \ell$ do: if there exists
+          $\BTX:=(x,\txid,\minerID,\LFtau,\stkh_j)\in\buffer$ with ID
+          $\txid=\txid_i$ then set
+          $\mathrm{listOfTxid}:=\mathrm{listOfTxid}||\txid_i$.
+          \item Finally, set $\cbuffer:= \cbuffer
+          ||(\honestyFlag,\mathrm{listOfTxid})$ and output $(\LFmkcore, ok)$ to
+          \Adv.%\\[2ex]
+        \end{enumerate}
+        \item \emph{The adversary setting state-slackness:}\\
+        If $I=(\LFslack,(\stkh_{i_1},\hat{\pt}_{i_1}),\ldots,
+        (\stkh_{i_\ell},\hat{\pt}_{i_\ell})),$ with
+        $\{\party_{i_1},\ldots,\party_{i_\ell}\}\subseteq\HS\setminus\DSyncPS$
+        is received from the adversary \Adv do the following:%\\[1ex]
+        \begin{enumerate}\setlength\itemsep{1ex}
+          \item If for all $j\in[\ell]:$  $|\state|
+          -\hat{\pt}_{i_j}\leq\windowSize$ and $\hat{\pt}_{i_j}\geq
+          |\state_{i_j}|$, set $\pt_{i_1}:=\hat{\pt}_{i_1}$ for every
+          $j\in[\ell]$ and return $(\LFslack,ok)$ to \Adv.
+          \item Otherwise set $\pt_{i_j}:=|\state|$ for all $j\in[\ell]$.
+        \end{enumerate}
+        \item \emph{The adversary setting the state for desychronized
+        parties:}\\
+        If $I=(\LFdsstate,(\stkh_{i_1},\state_{i_1}'),\ldots,
+        (\stkh_{i_\ell},\state_{i_\ell}')),$ with
+        $\{\stkh_{i_1},\ldots,\stkh_{i_\ell}\}\subseteq\DSyncPS$ is received
+        from the adversary \Adv, set $\state_{i_j}:=\state_{i_j}'$ for each
+        $j\in[\ell]$ and return $(\LFdsstate,ok)$ to \Adv.
+      \end{itemize}
+    \end{enumerate}
+  \end{systembox}
+
+
+  \ignore{ %%% WE SKIP THE BELOW FOR SIMPLICITY
+  \subsection{Formal Specification of \LFextend for the PoS Ledger}\label{app:model_extpol}
+
+  The detailed ExtendPolicy for Ouroboros is given below. % for completeness.
+  %The extend policy is
+  %parameterized by the ledger parameters that control the speed and the quality of
+  %the ledger.
+
+  \begin{algobox}{\LFextend for $\Fledger$}
+    \begin{algorithmic}
+      \Function{\text{$\LFextend$}}{$\TIH,\state,\cbuffer,\buffer,\tlast$}
+    \State \Comment{First, create a default honest client block as alternative:}  
+      \State $\defaultblock \gets$ \Call{DefaultExtension}{$\TIH,\LFstate,\cbuffer,\buffer,\tlast$} \Comment{Extension if adversary violates policy.}
+      \State Let $\tau_L$ be current ledger time (computed from $\TIH$)  
+      \State \Comment{The function must not have side-effects: Only modify copies of relevant values.}
+      \State Create local copies of the values $\buffer$, $\state$, and $\tlast$.
+    
+      \State \Comment{Now, parse the proposed block by the adversary}
+      \State Parse $\cbuffer$ as a vector $((\honestyFlag_1,\cbuffer_1), \cdots, (\honestyFlag_n, \cbuffer_n))$
+      \State $\vec{N} \gets \varepsilon$
+      \quad\Comment{Initialize Result}
+      \State \Comment{Determine the time of the state block which is $\windowSize$ blocks behind the head of the state}
+      \If{$|\state| \geq \windowSize$}
+      \State Set $\timeLast \gets \tlast[|\state|-\windowSize + 1]$
+      \Else
+      \State Set  $\timeLast \gets 1$
+      \EndIf
+      \State $\mathsf{oldValidTxMissing} \gets \mathsf{false}$ \quad \Comment{Flag to keep track whether old enough, valid transactions are inserted.}
+      \For{each list $\cbuffer_i$ of transaction IDs}  
+      \State \Comment{Compute the next state block}
+      %\State $\vec{N}_i \gets \varepsilon$ \TODO{Assignment never used?}
+      \State \Comment{Verify validity of $\cbuffer_i$ and compute content}
+      \State Use the $\txid$ contained in $\cbuffer_i$ to determine the list of transactions
+      \State Let $\vec{\tx}=(\tx_1,\dots,\tx_{|\cbuffer_i|})$ denote the transactions of $\cbuffer_i$
+      \If{$\tx_1$ is not a coin-base transaction}
+      \State \Return $\defaultblock$
+      \Else
+      \State $\vec{N}_i \gets \tx_1$
+      \For{$j=2$ to $|\cbuffer_i|$}
+      \State Set $\st_i \gets \bitcoinBlockify(\vec{N}_i)$
+      \If{$\bitcoinValid(\tx_j,\state||\st_i)=0$}
+      \State  \Return $\defaultblock$
+      \EndIf
+      \State $\vec{N}_i \gets \vec{N}_i||\tx_j$
+      \EndFor
+      \State Set $\st_i \gets \bitcoinBlockify(\vec{N}_i)$
+      \EndIf
+      
+      \State \Comment{Test that all old valid transaction are included}
+      \If{the proposal is declared to be an honest block, i.e., $\honestyFlag_i=1$}
+      \For{each $\BTX=(\tx,\txid,\tau',\party) \in \buffer$ of an honest party $\party$ with time $\tau' < \timeLast - \frac{\vdelay}{2}$}
+      \If{$\bitcoinValid(\tx,\state||\st_i)=1$ but $\tx \not \in \vec{N}_i$}
+      \State $\mathsf{oldValidTxMissing} \gets \mathsf{true}$
+      \EndIf
+      \EndFor
+      \EndIf
+      \State $\vec{N} \gets \vec{N}||\vec{N}_i$
+      \State $\state \gets \state||\st_i$
+      \State $\tlast \gets \tlast||\tau_L$
+      \State \Comment{Must not proceed with too many adversarial blocks}
+      \State $i \gets \max\lbrace \{\windowSize\} \cup \{k \ | \ \st_k \in \state \wedge \, \text{proposal of } \st_k \text{ had } \honestyFlag=1\}\rbrace$ \Comment{Determine most}
+      \State \Comment{recent honestly-generated block in the interval behind the head.}
+      \If{$|\state|-i \geq \advBlocksinWindowSize$}
+      \State \Return $\defaultblock$
+      \EndIf
+      
+      \State \Comment{Update $\timeLast$: the time of the state block which is $\windowSize$ blocks behind the head of the}
+      \State \Comment{current, potentially already extended state}
+      \If{$|\state| \geq \windowSize$}
+      \State Set $\timeLast \gets \tlast[|\state|-\windowSize + 1]$
+      \Else
+      \State Set  $\timeLast \gets 1$
+      \EndIf
+      \EndFor
+      
+      %Now, the checks proceed.
+      \State \Comment{Final checks (if policy is violated, it is enforced by the ledger):}
+      \State \Comment{Must not proceed too slow or with missing transaction.}
+      \If{$\timeLast > 0$ \textbf{and}  $\tau_L - \timeLast > \maxTime$} \Comment{A sequence of blocks cannot take too much time.}
+      \State \Return $\defaultblock$
+      \ElsIf{$\timeLast = 0$ \textbf{and}  $\tau_L - \timeLast > 2\cdot\maxTime$} \Comment{Bootstrapping cannot take too much time.}
+      \State \Return $\defaultblock$
+      \ElsIf{$\mathsf{oldValidTxMissing}$} \Comment{If not all old enough, valid transactions have been included.}
+      \State \Return $\defaultblock$
+      \EndIf
+      \State \Return $\vec{N}$
+      \EndFunction
+    \end{algorithmic}
+  \end{algobox}
 
 
 
+  \begin{figure}
+  \begin{algobox}{{\bf for Default State Extension}}
+    \begin{algorithmic}
+      \Function{{DefaultExtension}}{$\TIH,\LFstate,\cbuffer,\buffer,\tlast$}
+      \State {\it \textcolor{gray}{We assume call-by-value and hence the function has no side effects.}}
+      \State {\it \textcolor{gray}{The function returns a policy-compliant extension of the ledger state.}}
+      \State
+      \State Set $\defaultblock\gets \coinbase{\minerID}$ of an honest
+      miner
+      \State Sort $\buffer$ according to time stamps.
+      \State Let $\vec{\tx}=(\tx_1,\dots,\tx_{\ell})$ be the transactions in $\buffer$
+      \State Set $\st \gets \bitcoinBlockify(\defaultblock)$
+      \Repeat
+      \State Let $\vec{\tx}=(\tx_1,\dots,\tx_{\ell})$ be the current list of (remaining) transactions
+      \For{$i=1$ to $\ell$}
+      \If{$\bitcoinValid(\tx_i,\state||\st)=1$}
+      \State $\defaultblock \gets \defaultblock||\tx_i$
+      \State Remove $\tx_i$ from $\vec{\tx}$
+      \State Set $\st \gets \bitcoinBlockify(\defaultblock)$
+      \EndIf
+      \EndFor
+      \Until{$\defaultblock$ does not increase anymore}  
+      %PG: I guess this is a forgotten comment from an older version?
+      %\State \Comment{Possibly more than one block have to be added}
+      \State \Comment{Let $\timeLast$ be the time of the block which is $\windowSize-1$ blocks behind the head of the state.}
+      \If{$|\state| + 1 \geq \windowSize$}
+      \State Set $\timeLast \gets \tlast[|\state|-\windowSize + 2]$
+      \Else
+      \State Set  $\timeLast \gets 1$ \Comment{First epoch starts at time $1$ (time $0$ is initialization time).}
+      \EndIf
+      \State $c \gets 1$
+      \While{$\tau_L - \timeLast > \maxTime$}
+      \State Set $\vec{N}_c \gets \coinbase{\minerID}$ of an honest miner
+      \State $\defaultblock \gets \defaultblock||\vec{N}_c$
+      \State $c \gets c+1$
+      \State \Comment{Update $\timeLast$ to the time of the state block which is $\windowSize-c$ blocks behind the head.}
+      \If{$|\state| + c \geq \windowSize$}
+      \State Set $\timeLast \gets \tlast[|\state|-\windowSize + c + 1]$
+      \Else
+      \State Set  $\timeLast \gets 1$
+      \EndIf
+      \EndWhile  
+      \State \Return $\defaultblock$
+      \EndFunction
+    \end{algorithmic}
+  \end{algobox}
+  \caption{Function to compute a policiy-compliant default ledger-state extension.}
+  \label{fig:defaultExtension}
+  \end{figure}
+  }%%%%%%%%%%%
 
 
-\section{The Ledger Functionality and its Properties} 
-We next provide the complete description of the ledger functionality that is based on the UC formalisation of 
-\cite{BMTZ17,genesis}. 
+  \begin{systembox}{Functionality $\Fclock$}
+    The functionality manages the set $\PS$ of registered identities, i.e.,
+    parties $\party = (\pid,\sid)$. It also manages the set $F$ of
+    functionalities (together with their session identifier). Initially,
+    $\PS:=\emptyset$ and $F := \emptyset$.
 
-The key characteristics of the functionality are as follows. 
-A variable $\state$ maintains the current immutable state of the ledger. 
-Honest parties that are synchronised may find themselves  to consider finalised 
-various prefixes of $\state$ (specified by a pointer position $\pt_{i}$  for party
-$\stkh_i$ below) but nevertheless no such prefix will be shorter than a parameter
-$\windowSize$ from $\state$. On any input originating from an honest party 
-the functionality will run the $\LFextend$ function that will ensure that
-a suitable sequence of transactions will be ``blockified'' and added
-to $\state$. Honest parties may also find themselves in a desynchronised
-state: this is when honest parties lose access to some of their resources.
-The resources that are necessary for proper ledger maintenance 
-and the functionality
-keeps track of are the global random oracle $\Foracle$, the clock $\Fclock$
-and network $\FnetworkEd$. 
-When an honest party maintains registration with all the resources
-then afte $\vdelay$ clock ticks it must necessarily become synchronised. 
+    \smallskip
+    For each session $\sid$ the clock maintains a variable $\current_\sid$. For
+    each identity $\party := (\pid,\sid) \in \PS$ it manages variable
+    $d_\party$. For each pair $(\Func,\sid) \in F$ it manages variable
+    $d_{(\Func,\sid)}$ (all integer variables are initially $0$).
 
-The progress of the $\state$ variable is guaranteed via 
-the $\LFextend$ function that is executed when honest parties
-submit inputs to the functionality. 
-While we do not specify $\LFextend$ in our paper
-(we refer to the citations above for the full specification)
-it is sufficient to note that $\LFextend$ guarantees
-the following properties  
-(i) in a period of time equal to $\maxTime$, 
-at least $\windowSize$ blocks are added
-to  $\state$. 
-(ii) each window of $\windowSize$ blocks should have a limit of $\advBlocksinWindowSize$ of adversarial blocks included in it. 
-(iii) 
-any transaction transmitted by an honest party earlier than
-$\frac{\vdelay}{2}$ ticks before the time 
-that the  block that is $\windowSize$ positions before the head
-of the $\state$ must be included in an honest block. 
+    \medskip
 
-Given a synchronised honest party, we say that a transaction
-$\tx$ is finalised when it becomes a part of $\state$ in its view. 
+    \emph{Synchronization:}
+    \begin{itemize}
+      \item Upon receiving $(\ClockUp, \sidClock)$ from some party $\party \in
+      \PS$ set $d_{\party}:=1$; execute \emph{Round-Update} and forward
+      $(\ClockUp, \sidClock, \party)$  to $\Adv$.
 
-\begin{proposition}
-Consider any synchronised honest party that wishes to place
-a transaction $\tx$ in some specific block height $(h+1, h+t-1)$ where
-$t$ is a parameter and $h$ an arbitrary positive integer.
-Then, as long as $t\geq ???$, $\tx$ is guaranteed
-to be included in the correct block range 
-as long as the party submits $\tx$ to the ledger functionality 
-no later than $????$. 
-\end{proposition}
+      \item Upon receiving $(\ClockUp, \sidClock)$ from some functionality
+      $\Func$ in a session $\sid$ such that $(\Func,\sid) \in F$ set
+      $d_{(\Func,\sid)}:=1$, execute \emph{Round-Update} and return $(\ClockUp,
+      \sidClock,\Func)$ to this instance of $\Func$.
 
-\begin{proof}
-TBD
-\end{proof}
+      \item Upon receiving $(\ClockRead, \sidClock)$ from any participant
+      (including the environment on behalf of a party, the adversary, or any
+      ideal---shared or local---functionality) return $(\ClockRead,
+      \sid,\current_\sid)$ to the requestor (where $\sid$ is the sid of the
+      calling instance).
+    \end{itemize}
 
-\begin{systembox}{$\Fledger$}\vspace{1ex}
-	\small
-{\bf General:}
-The functionality is parameterized by four algorithms, \LFvalidate, \LFextend,
-	\LFblockify, and \vsync, along with three parameters:  $\windowSize,
-	\vdelay\in\mathbb{N}$, and $\StakeHolderSet := \{(\stkh_{1},\stake_{1}),\ldots,(\stkh_{n},\stake_{n})\}$.
-	%
-	The functionality manages variables $\state$ (the immutable state of the ledger), $\cbuffer$ (a list of transaction identifiers to be added to the ledger), \buffer (the set of pending transactions), $\LFtau$ (the rules under which the state is extended), and \tlast (the time sequence where all immutable blocks where added). The variables are initialized as follows:  
-	$\state:=\tlast:= \cbuffer:= \varepsilon$, $\buffer:=\emptyset$, $\LFtau=0$.
-%
-For each party $\party\in\PS$ the functionality maintains a pointer $\pt_i$
-	(initially set to 1) and a current-state view $\state_p:=\varepsilon$
-	(initially set to empty). The functionality also keeps track of the  timed
-	honest-input sequence in a vector $\TIH$ (initially $\TIH:=\varepsilon$).
-	\medskip
-	
-	{\bf Party Management:}
-	The functionality maintains the set of registered parties $\PS$, the (sub-)set of honest parties $\HO \subseteq \PS$, and the (sub-set)
-	of de-synchronized honest parties $\DSyncPS\subset\HO$ (as discussed below). 
-	The sets $\PS, \HS, \DSyncPS$ are all
-	initially set to $\emptyset$. When a (currently unregistered) honest party is registered at the ledger, {\em if it is registered with the clock and the global RO already,} then it is
-	added to the party sets $\HS$ and $\PS$ and the current time
-	of registration is also recorded; if the current time is $\LFtau > 0$, it is also added to $\DSyncPS$. Similarly, when a party is deregistered, it
-	is removed from both $\PS$ (and therefore also from $\DSyncPS$ or $\HS$). The ledger maintains the invariant that it is registered (as a functionality) to the clock whenever $\HS \neq \emptyset$.
-	
-	\medskip
-	
-	{\bf Handling initial stakeholders:}
-	If during round $\tau = 0$, the ledger did not received a registration from each initial stakeholder, i.e., $\party \in \StakeHolderSet$, the functionality halts.
-	
-	\medskip
-	\hrule
-	\medskip
-	
-	%\emph{To be executed upon any activation:}
-	{\bf Upon receiving any input $I$} from any party or from the adversary, send
-	$(\ClockRead, \sidClock)$ to \Fclock and upon receiving response $(\ClockRead,
-	\sidClock, \current)$ set $\LFtau:=\current$ and do the following if $\current > 0$ (otherwise, ignore input):
-	
-	\begin{enumerate}\setlength\itemsep{1.5ex}
-		\item Updating synchronized/desynchronized party set: 
-			\begin{enumerate}
-			\item Let $\hat{\PS}\subseteq\DSyncPS$  denote the set of desynchronized honest parties that have been registered (continuously) to the ledger, the clock, and the GRO since time $\tau' < \LFtau-\vdelay$. Set $\DSyncPS:=\DSyncPS\setminus\hat{\PS}$.
-		        \item For any synchronized party $\party\in\HO\setminus\DSyncPS$, if $\party$ is not registered to the clock, then consider it desynchronized, i.e., set $\DSyncPS\cup\{\party\}$. 
-		        \end{enumerate}
-		\item If  $I$ was received from an honest party $\party\in\PS$:\\[1ex]
-		\begin{enumerate}\setlength\itemsep{1ex}
-			\item Set  $\TIH:=\TIH||(I,\party,\LFtau)$; 
-			\item Compute $\vec{N}=(\vec{N}_1,\ldots,\vec{N}_\ell):=\LFextend(\TIH,\state,\cbuffer,\buffer,\tlast)$ and if $\vec{N}\neq\varepsilon$ set $\state:=\state||\LFblockify(\vec{N}_1)||\ldots||\LFblockify(\vec{N}_\ell)$ and $
-			\tlast:=\tlast||\LFtau^\ell$, where $\LFtau^\ell=\LFtau||\ldots,||\LFtau$.
-			\item For each $\BTX\in\buffer$: if $\LFvalidate(\BTX,\state,\buffer)=0$ then delete  $\BTX$ from $\buffer$.  
-			Also, reset $\cbuffer:= \varepsilon$.
-			\item If there exists $\stkh_{j}\in\HS\setminus\DSyncPS$ such that  $|\state| -\pt_{j} > \windowSize$ or $\pt_{j} < |\state_{j}|$, then set  $\pt_{k}:=|\state|$ for all $\stkh_{k}\in\HS\setminus\DSyncPS$.
-		\end{enumerate}
-		
-		\item If the calling party $\party$ is \emph{stalled or time-unaware} (according to the defined party classification), then no further actions are taken. Otherwise, depending on the above input $I$ and its sender's ID,  $\Fledger$
-		executes the corresponding code from the following list:
-		
-		\begin{itemize}
-			\let\labelitemi\labelitemii
-			
-			\item  \emph{Submitting a transaction:}\\
-			If $I=(\LFsubmit, \sid,\tx)$ and is received from a party $\party \in \PS$ or from \Adv (on behalf of a corrupted party $\party$) do the following%\\[0.5ex]
-			\begin{enumerate}\setlength\itemsep{1ex}
-				\item Choose a unique transaction ID $\txid$ and set $\BTX:=(\tx,\txid,\LFtau,\party)$
-				\item If $\LFvalidate(\BTX,\state,\buffer)=1$,  then $\buffer:=\buffer\cup\{\BTX\}$.
-				\item Send $(\LFsubmit, \BTX)$ to \Adv.%\\[2ex]
-			\end{enumerate}
-			
-			\item \emph{Reading the state:}\\ If $I=(\LFread, \sid)$ is received from a party $\party \in \PS$ then set $\state_p:= \state|_{\min\{\pt_p,|\state|\}}$ and return $(\LFread, \sid, \state_p)$ to the requester. If the requester is \Adv then send $(\state,\buffer,\TIH)$ to~\Adv.%\\[2ex]
-			
-			\item \emph{Maintaining the ledger state:}\\
-			If $I=(\LFmine,\sid, \minerID)$ is received by an honest party $\party\in\PS$ and  (after updating \TIH  as above) $\vsync(\TIH)=\hat{\tau}>\LFtau$ 
-			then send $(\ClockUp, \sidClock)$ to \Fclock. Else send $I$ to \Adv.%\\[2ex]
-			
-			
-			\item \emph{The adversary proposing the next block:} \\
-			If $I=(\LFmkcore, \honestyFlag, (\txid_1,\ldots,\txid_\ell))$ is sent from the adversary, update \cbuffer as follows:%\\[1ex]
-			\begin{enumerate}\setlength\itemsep{1ex}
-				\item Set $\mathrm{listOfTxid} \gets \epsilon$
-				\item For $i=1,\ldots, \ell$ do: if there exists $\BTX:=(x,\txid,\minerID,\LFtau,\stkh_j)\in\buffer$ with ID $\txid=\txid_i$ then set $\mathrm{listOfTxid}:=\mathrm{listOfTxid}||\txid_i$.
-				\item Finally, set $\cbuffer:= \cbuffer ||(\honestyFlag,\mathrm{listOfTxid})$ and output $(\LFmkcore, ok)$ to \Adv.%\\[2ex]
-			\end{enumerate}
-			
-			\item \emph{The adversary setting state-slackness:}\\
-			If $I=(\LFslack,(\stkh_{i_1},\hat{\pt}_{i_1}),\ldots, (\stkh_{i_\ell},\hat{\pt}_{i_\ell})),$ with $\{\party_{i_1},\ldots,\party_{i_\ell}\}\subseteq\HS\setminus\DSyncPS$ is received from the adversary \Adv do the following:%\\[1ex]
-			\begin{enumerate}\setlength\itemsep{1ex}
-				\item If for all $j\in[\ell]:$  $|\state| -\hat{\pt}_{i_j}\leq\windowSize$ and $\hat{\pt}_{i_j}\geq |\state_{i_j}|$, set $\pt_{i_1}:=\hat{\pt}_{i_1}$ for every $j\in[\ell]$ and return $(\LFslack,ok)$ to \Adv.
-				\item Otherwise set $\pt_{i_j}:=|\state|$ for all $j\in[\ell]$.
-			\end{enumerate}
-			
-			\item \emph{The adversary setting the state for desychronized parties:}\\
-			If $I=(\LFdsstate,(\stkh_{i_1},\state_{i_1}'),\ldots, (\stkh_{i_\ell},\state_{i_\ell}')),$ with $\{\stkh_{i_1},\ldots,\stkh_{i_\ell}\}\subseteq\DSyncPS$ is received from the adversary \Adv, set $\state_{i_j}:=\state_{i_j}'$ for each $j\in[\ell]$ and return $(\LFdsstate,ok)$ to \Adv.
-		\end{itemize}
-		
-	\end{enumerate}
-	
-\end{systembox}
-
-
-\ignore{ %%% WE SKIP THE BELOW FOR SIMPLICITY 
-\subsection{Formal Specification of \LFextend for the PoS Ledger}\label{app:model_extpol}
-
-The detailed ExtendPolicy for Ouroboros is given below. % for completeness. 
-%The extend policy is
-%parameterized by the ledger parameters that control the speed and the quality of
-%the ledger.
-
-\begin{algobox}{\LFextend for $\Fledger$}
-	\begin{algorithmic}
-		\Function{\text{$\LFextend$}}{$\TIH,\state,\cbuffer,\buffer,\tlast$}
-	\State \Comment{First, create a default honest client block as alternative:}	
-		\State $\defaultblock \gets$ \Call{DefaultExtension}{$\TIH,\LFstate,\cbuffer,\buffer,\tlast$} \Comment{Extension if adversary violates policy.}
-		\State Let $\tau_L$ be current ledger time (computed from $\TIH$)	
-		\State \Comment{The function must not have side-effects: Only modify copies of relevant values.}
-		\State Create local copies of the values $\buffer$, $\state$, and $\tlast$.
-	
-		\State \Comment{Now, parse the proposed block by the adversary}
-		\State Parse $\cbuffer$ as a vector $((\honestyFlag_1,\cbuffer_1), \cdots, (\honestyFlag_n, \cbuffer_n))$
-		\State $\vec{N} \gets \varepsilon$
-		\quad\Comment{Initialize Result}
-		\State \Comment{Determine the time of the state block which is $\windowSize$ blocks behind the head of the state}
-		\If{$|\state| \geq \windowSize$}
-		\State Set $\timeLast \gets \tlast[|\state|-\windowSize + 1]$ 
-		\Else
-		\State Set  $\timeLast \gets 1$
-		\EndIf
-		\State $\mathsf{oldValidTxMissing} \gets \mathsf{false}$ \quad \Comment{Flag to keep track whether old enough, valid transactions are inserted.}
-		\For{each list $\cbuffer_i$ of transaction IDs}	
-		\State \Comment{Compute the next state block} 
-		%\State $\vec{N}_i \gets \varepsilon$ \TODO{Assignment never used?}
-		\State \Comment{Verify validity of $\cbuffer_i$ and compute content}
-		\State Use the $\txid$ contained in $\cbuffer_i$ to determine the list of transactions
-		\State Let $\vec{\tx}=(\tx_1,\dots,\tx_{|\cbuffer_i|})$ denote the transactions of $\cbuffer_i$
-		\If{$\tx_1$ is not a coin-base transaction}
-		\State \Return $\defaultblock$
-		\Else
-		\State $\vec{N}_i \gets \tx_1$
-		\For{$j=2$ to $|\cbuffer_i|$}
-		\State Set $\st_i \gets \bitcoinBlockify(\vec{N}_i)$
-		\If{$\bitcoinValid(\tx_j,\state||\st_i)=0$}
-		\State	\Return $\defaultblock$
-		\EndIf
-		\State $\vec{N}_i \gets \vec{N}_i||\tx_j$
-		\EndFor
-		\State Set $\st_i \gets \bitcoinBlockify(\vec{N}_i)$
-		\EndIf
-		
-		\State \Comment{Test that all old valid transaction are included}
-		\If{the proposal is declared to be an honest block, i.e., $\honestyFlag_i=1$}
-		\For{each $\BTX=(\tx,\txid,\tau',\party) \in \buffer$ of an honest party $\party$ with time $\tau' < \timeLast - \frac{\vdelay}{2}$}
-		\If{$\bitcoinValid(\tx,\state||\st_i)=1$ but $\tx \not \in \vec{N}_i$}
-		\State $\mathsf{oldValidTxMissing} \gets \mathsf{true}$
-		\EndIf
-		\EndFor
-		\EndIf
-		\State $\vec{N} \gets \vec{N}||\vec{N}_i$
-		\State $\state \gets \state||\st_i$
-		\State $\tlast \gets \tlast||\tau_L$
-		\State \Comment{Must not proceed with too many adversarial blocks}
-		\State $i \gets \max\lbrace \{\windowSize\} \cup \{k \ | \ \st_k \in \state \wedge \, \text{proposal of } \st_k \text{ had } \honestyFlag=1\}\rbrace$ \Comment{Determine most}
-		\State \Comment{recent honestly-generated block in the interval behind the head.}
-		\If{$|\state|-i \geq \advBlocksinWindowSize$}
-		\State \Return $\defaultblock$
-		\EndIf
-		
-		\State \Comment{Update $\timeLast$: the time of the state block which is $\windowSize$ blocks behind the head of the}
-		\State \Comment{current, potentially already extended state}
-		\If{$|\state| \geq \windowSize$}
-		\State Set $\timeLast \gets \tlast[|\state|-\windowSize + 1]$ 
-		\Else
-		\State Set  $\timeLast \gets 1$
-		\EndIf
-		\EndFor
-		
-		%Now, the checks proceed.
-		\State \Comment{Final checks (if policy is violated, it is enforced by the ledger):}
-		\State \Comment{Must not proceed too slow or with missing transaction.}
-		\If{$\timeLast > 0$ \textbf{and}  $\tau_L - \timeLast > \maxTime$} \Comment{A sequence of blocks cannot take too much time.}
-		\State \Return $\defaultblock$
-		\ElsIf{$\timeLast = 0$ \textbf{and}  $\tau_L - \timeLast > 2\cdot\maxTime$} \Comment{Bootstrapping cannot take too much time.}
-		\State \Return $\defaultblock$
-		\ElsIf{$\mathsf{oldValidTxMissing}$} \Comment{If not all old enough, valid transactions have been included.}
-		\State \Return $\defaultblock$
-		\EndIf
-		\State \Return $\vec{N}$
-		\EndFunction
-	\end{algorithmic}
-\end{algobox}
-
-
-
-\begin{figure}
-\begin{algobox}{{\bf for Default State Extension}}
-	\begin{algorithmic}
-		\Function{{DefaultExtension}}{$\TIH,\LFstate,\cbuffer,\buffer,\tlast$} 
-		\State {\it \textcolor{gray}{We assume call-by-value and hence the function has no side effects.}}
-		\State {\it \textcolor{gray}{The function returns a policy-compliant extension of the ledger state.}}
-		\State 
-		\State Set $\defaultblock\gets \coinbase{\minerID}$ of an honest
-		miner
-		\State Sort $\buffer$ according to time stamps.
-		\State Let $\vec{\tx}=(\tx_1,\dots,\tx_{\ell})$ be the transactions in $\buffer$
-		\State Set $\st \gets \bitcoinBlockify(\defaultblock)$
-		\Repeat
-		\State Let $\vec{\tx}=(\tx_1,\dots,\tx_{\ell})$ be the current list of (remaining) transactions
-		\For{$i=1$ to $\ell$}
-		\If{$\bitcoinValid(\tx_i,\state||\st)=1$}
-		\State $\defaultblock \gets \defaultblock||\tx_i$
-		\State Remove $\tx_i$ from $\vec{\tx}$
-		\State Set $\st \gets \bitcoinBlockify(\defaultblock)$
-		\EndIf
-		\EndFor
-		\Until{$\defaultblock$ does not increase anymore}	
-		%PG: I guess this is a forgotten comment from an older version?
-		%\State \Comment{Possibly more than one block have to be added}
-		\State \Comment{Let $\timeLast$ be the time of the block which is $\windowSize-1$ blocks behind the head of the state.}
-		\If{$|\state| + 1 \geq \windowSize$}
-		\State Set $\timeLast \gets \tlast[|\state|-\windowSize + 2]$ 
-		\Else
-		\State Set  $\timeLast \gets 1$ \Comment{First epoch starts at time $1$ (time $0$ is initialization time).}
-		\EndIf
-		\State $c \gets 1$
-		\While{$\tau_L - \timeLast > \maxTime$}
-		\State Set $\vec{N}_c \gets \coinbase{\minerID}$ of an honest miner
-		\State $\defaultblock \gets \defaultblock||\vec{N}_c$
-		\State $c \gets c+1$
-		\State \Comment{Update $\timeLast$ to the time of the state block which is $\windowSize-c$ blocks behind the head.}
-		\If{$|\state| + c \geq \windowSize$}
-		\State Set $\timeLast \gets \tlast[|\state|-\windowSize + c + 1]$ 
-		\Else
-		\State Set  $\timeLast \gets 1$
-		\EndIf
-		\EndWhile	
-		\State \Return $\defaultblock$
-		\EndFunction
-	\end{algorithmic}
-\end{algobox}
-\caption{Function to compute a policiy-compliant default ledger-state extension.}
-\label{fig:defaultExtension}
-\end{figure}
-}%%%%%%%%%%% 
-
-
-\begin{systembox}{Functionality $\Fclock$}
-	The functionality manages the set $\PS$ of registered identities, i.e., parties $\party = (\pid,\sid)$. It also manages the set $F$ of functionalities (together with their session identifier). Initially,
-	$\PS:=\emptyset$ and $F := \emptyset$.
-	
-	\smallskip
-	For each session $\sid$ the clock maintains a variable $\current_\sid$. For each identity $\party := (\pid,\sid) \in \PS$ it manages variable $d_\party$. For each pair $(\Func,\sid) \in F$ it manages variable $d_{(\Func,\sid)}$ (all integer variables are initially $0$).
-	
-	\medskip
-	
-	\emph{Synchronization:}
-	\begin{itemize}
-		\item Upon receiving $(\ClockUp, \sidClock)$ from some party $\party \in \PS$ set $d_{\party}:=1$; execute \emph{Round-Update} and forward $(\ClockUp, \sidClock, \party)$  to $\Adv$. 
-		
-		\item Upon receiving $(\ClockUp, \sidClock)$ from some functionality $\Func$ in a session $\sid$ such that $(\Func,\sid) \in F$ set $d_{(\Func,\sid)}:=1$, execute \emph{Round-Update} 
-		and return $(\ClockUp, \sidClock,\Func)$ to this instance of $\Func$.
-		
-		\item Upon receiving $(\ClockRead, \sidClock)$ from any participant (including the environment on behalf of a party, the adversary, or any ideal---shared or local---functionality) return $(\ClockRead, \sid,\current_\sid)$ to the requestor (where $\sid$ is the sid of the calling instance).
-	\end{itemize}
-	
-	\emph{Procedure Round-Update:}
-	For each session $\sid$ do:
-	If $d_{(\Func,\sid)}:=1$ for all $\Func \in F$ and $d_{\party}=1$ for all honest parties $\party=(\cdot,\sid) \in \PS$, then set $\current_\sid:=\current_\sid+1$  and reset $d_{(\Func,\sid)}:=0$ and $d_{\party}:=0$ for all parties $\party=(\cdot,\sid) \in \PS$.
-\end{systembox}
+    \emph{Procedure Round-Update:}
+    For each session $\sid$ do:
+    If $d_{(\Func,\sid)}:=1$ for all $\Func \in F$ and $d_{\party}=1$ for all
+    honest parties $\party=(\cdot,\sid) \in \PS$, then set
+    $\current_\sid:=\current_\sid+1$  and reset $d_{(\Func,\sid)}:=0$ and
+    $d_{\party}:=0$ for all parties $\party=(\cdot,\sid) \in \PS$.
+  \end{systembox}
