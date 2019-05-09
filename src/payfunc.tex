@@ -62,6 +62,8 @@
         \end{itemize}
       \end{itemize}
     \end{systembox}
+    \caption{}
+    \label{alg:fpaynet:interface}
   \end{figure}
 
   \begin{figure}[H]
@@ -392,8 +394,15 @@
           \texttt{toReport}(\textit{reportid}), \alice, \textit{reportid},
           \textsc{state}, $\Sigma$) to \simulator
         \EndIndent
-        \Statex
+      \end{algorithmic}
+    \end{systembox}
+    \caption{}
+    \label{alg:fpaynet:poll}
+  \end{figure}
 
+  \begin{figure}[H]
+    \begin{systembox}{\fpaynet - verify closed channels}
+      \begin{algorithmic}[1]
         \State \Comment{Expected after resolutions are visible on-chain}
         \State Upon receiving (\textsc{channelsClosed}, \texttt{details},
         \alice, \textit{reportid}) from \simulator:
@@ -427,7 +436,7 @@
       \end{algorithmic}
     \end{systembox}
     \caption{}
-    \label{alg:fpaynet:poll}
+    \label{alg:fpaynet:verifyclosed}
   \end{figure}
 
   \begin{figure}[H]
@@ -468,7 +477,7 @@
         \Indent
           \State clear \texttt{newChannels}(\alice),
           \texttt{closedChannels}(\alice), \texttt{pendingUpdates}(\alice) and
-          send them to \alice with header \textsc{news}
+          send them to \alice{} with header \textsc{news}
         \EndIndent
       \end{algorithmic}
     \end{systembox}
