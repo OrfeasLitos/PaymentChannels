@@ -58,6 +58,38 @@
           \texttt{payids}
         \EndIf
       \EndIndent
+      \Statex
+
+      \State Upon receiving (\textsc{pushFulfill}, \textit{pchid}, \alice) from
+      $\fpaynet{}_{\mathrm{, Pay}}$:
+      \Indent
+        \State simulate Fig.~\ref{alg:protocol:pay:push},
+        lines~\ref{alg:protocol:pushfulfill:start}-\ref{alg:protocol:pushfulfill:end}
+        on input (\textsc{pushFulfill}, \textit{pchid}) with \alice's ITI and
+        handle subsequent messages by simulating respective ITIs of honest
+        players or sending to \adversary{} the messages for corrupted players
+      \EndIndent
+      \Statex
+
+      \State Upon receiving (\textsc{pushAdd}, \textit{pchid}, \alice) from
+      $\fpaynet{}_{\mathrm{, Pay}}$:
+      \Indent
+        \State simulate Fig.~\ref{alg:protocol:pay:push},
+        lines~\ref{alg:protocol:pushadd:start}-\ref{alg:protocol:pushadd:end} on
+        input (\textsc{pushAdd}, \textit{pchid}) with \alice's ITI and handle
+        subsequent messages by simulating respective ITIs of honest players or
+        sending to \adversary{} the messages for corrupted players
+      \EndIndent
+      \Statex
+
+      \State Upon receiving (\textsc{commit}, \textit{pchid}, \alice) from
+      $\fpaynet{}_{\mathrm{, Pay}}$:
+      \Indent
+        \State simulate Fig.~\ref{alg:protocol:pay:commit} on input
+        (\textsc{commit}, \textit{pchid}) with \alice's ITI and handle
+        subsequent messages by simulating respective ITIs of honest players or
+        sending to \adversary{} the messages for corrupted players
+      \EndIndent
     \end{algorithmic}
   \end{simulatorbox}
   \caption{}
