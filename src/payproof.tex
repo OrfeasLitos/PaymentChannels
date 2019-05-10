@@ -60,6 +60,25 @@
       \EndIndent
       \Statex
 
+      \State Upon receiving (\textsc{getClosedFunds}, \texttt{toReport},
+      $\Sigma_{\alice}$, \alice, \textit{reportid}) from $\fpaynet{}_{\mathrm{,
+      Pay}}$:
+      \Indent
+        \State simulate Fig.~\ref{alg:protocol:poll},
+        lines~\ref{alg:protocol:poll:afterread}-\ref{alg:protocol:poll:beforesubmit}
+        on input (\textsc{poll}), using $\Sigma_{\alice}$ from the message, with
+        \alice's ITI
+        \State add all channels in \texttt{toSubmit} to \texttt{details}(\alice)
+        \State The first time we receive a message from $\fpaynet{}_{\mathrm{,
+        Pay}}$ that contains $\Sigma_{\alice}$ that is at least $k$ blocks
+        longer than the current one, concatenate (\textsc{channelsClosed},
+        \texttt{details}(\alice), \texttt{reportid}) to the first subsequent
+        message to $\fpaynet{}_{\mathrm{, Pay}}$ and clear
+        \texttt{details}(\alice)
+        \State send (\textsc{submit}, \texttt{toSubmit}) to \ledger{} as \alice
+      \EndIndent
+      \Statex
+
       \State Upon receiving (\textsc{pushFulfill}, \textit{pchid}, \alice) from
       $\fpaynet{}_{\mathrm{, Pay}}$:
       \Indent

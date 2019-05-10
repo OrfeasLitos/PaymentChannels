@@ -53,8 +53,8 @@
           \item (\textsc{pay}, \alice, \bob, $x,
           \overrightarrow{\mathtt{path}}$, \texttt{receipt}, \textit{payid})
           \item (\textsc{closeChannel}, \textit{fchid}, \alice)
-          \item (\textsc{getClosedFunds}, \texttt{toReport}, \alice,
-          \textit{reportid})
+          \item (\textsc{getClosedFunds}, \texttt{toReport}, $\Sigma_{\alice}$,
+          \alice, \textit{reportid})
           \item (\textsc{pushFulfill}, \textit{pchid}, \alice)
           \item (\textsc{pushAdd}, \textit{pchid}, \alice)
           \item (\textsc{commit}, \textit{pchid}, \alice)
@@ -391,8 +391,8 @@
             (marked as ``malicious'')
           \EndFor
           \State send (\textsc{getClosedFunds},
-          \texttt{toReport}(\textit{reportid}), \alice, \textit{reportid},
-          \textsc{state}, $\Sigma$) to \simulator
+          \texttt{toReport}(\textit{reportid}), $\Sigma_{\alice}$, \alice,
+          \textit{reportid}, \textsc{state}, $\Sigma$) to \simulator
         \EndIndent
       \end{algorithmic}
     \end{systembox}
@@ -404,34 +404,39 @@
     \begin{systembox}{\fpaynet - verify closed channels}
       \begin{algorithmic}[1]
         \State \Comment{Expected after resolutions are visible on-chain}
-        \State Upon receiving (\textsc{channelsClosed}, \texttt{details},
-        \alice, \textit{reportid}) from \simulator:
+        \State Upon receiving a message that contains (\textsc{channelsClosed},
+        \texttt{details}, \alice, \textit{reportid}) from \simulator:
         \Indent
           \If{\texttt{toReport}(\textit{reportid}) not in storage}
             \State ignore message
           \EndIf
-          \State send (\textsc{read}) to \ledger{} as \alice{} and store reply
-          to $\Sigma_{\alice}$
-          \ForAll{$\mathtt{channel} \in \mathtt{details}$} \State ensure
-          $\mathtt{channel} \in \mathtt{toReport}\left(\mathit{reportid}\right)$
-            \If{\texttt{channel} is marked as ``malicious''}
-              \State ensure that transactions that spend the funding tx of
-              \texttt{channel} and pay \alice{} the entire \texttt{channel}
-              value exist in $\Sigma_{\alice}$, otherwise halt
-            \Else \ \Comment{\texttt{channel} is marked as ``honest''}
-              \State ensure that transactions that spend the funding tx of
+          \State the next time (\textsc{read}) is sent to \ledger{} as \alice{}
+          and just after a reply $\Sigma_{\alice}$ is received, do the
+          following:
+          \Indent
+            \ForAll{$\mathtt{channel} \in \mathtt{details}$} \State ensure
+            $\mathtt{channel} \in
+            \mathtt{toReport}\left(\mathit{reportid}\right)$
+              \If{\texttt{channel} is marked as ``malicious''}
+                \State ensure that transactions that spend the funding tx of
+                \texttt{channel} and pay \alice{} the entire \texttt{channel}
+                value exist in $\Sigma_{\alice}$, otherwise halt
+              \Else \ \Comment{\texttt{channel} is marked as ``honest''} \State
+              ensure that transactions that spend the funding tx of
               \texttt{channel} and pay \alice{} her part in the latest state of
               \texttt{channel} exist in $\Sigma_{\alice}$ AND she received funds
               from all ``received HTLCs'' for which she knew the preimage when
               she received the associated \textsc{poll} AND received funds from
               all ''offered HTLCs'' that had timed out when she received the
               associated \textsc{poll}, otherwise halt
-            \EndIf
-            \State add the receipt of \texttt{channel} to
-            \texttt{closedChannels}(\alice)
-            \State remove \texttt{channel} from \texttt{channels}
-          \EndFor
-          \State remove \texttt{toReport}(\textit{reportid}) from storage
+              \EndIf
+              \State add the receipt of \texttt{channel} to
+              \texttt{closedChannels}(\alice)
+              \State remove \texttt{channel} from \texttt{channels}
+            \EndFor
+            \State remove \texttt{toReport}(\textit{reportid}) from storage
+          \EndIndent
+          \State handle the first part of the received message
         \EndIndent
       \end{algorithmic}
     \end{systembox}
