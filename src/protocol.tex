@@ -436,17 +436,16 @@
         \State Upon receiving (\textsc{pay}, \textit{Bob}, $x$,
         $\overrightarrow{\mathtt{path}}$) from \environment:
         \Indent
-          \State ensure that $\overrightarrow{\mathtt{path}}$ consists of valid
-          \textit{pchid}s and \texttt{CltvExpiryDelta}s \Comment{Payment
-          completes only if $\forall i \in \overrightarrow{\mathtt{path}},
-          \mathtt{CltvExpiryDelta}_i \geq 3k + \mathtt{RelayDelay}_i$}
+          \State ensure that $\overrightarrow{\mathtt{path}}$ consists of
+          syntactically valid (\textit{pchid}, \texttt{CltvExpiryDelta}) pair
+          \Comment{Payment completes only if $\forall i \in
+          \overrightarrow{\mathtt{path}}, \mathtt{CltvExpiryDelta}_i \geq 3k +
+          \mathtt{RelayDelay}_i$}
           \label{alg:protocol:pay:validpath}
           \State ensure that the first $\mathit{pchid} \in
-          \overrightarrow{\mathtt{path}}$ has the same \textit{pchid} as in
-          \texttt{receipt}
-          \State ensure that \texttt{receipt} corresponds to the latest version
-          of an open $\mathtt{channel} \in \mathtt{channels}$ in which we have
-          at least $x$.
+          \overrightarrow{\mathtt{path}}$ corresponds to an open
+          $\mathtt{channel} \in \mathtt{channels}$ in which we own at least $x$
+          in the irrevocably committed state.
           \label{alg:protocol:pay:validchannel}
           \State choose unique payment ID \textit{payid} \Comment{unique for
           \alice{} and \bob}
