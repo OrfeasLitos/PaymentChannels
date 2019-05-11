@@ -440,12 +440,14 @@
           \textit{pchid}s and \texttt{CltvExpiryDelta}s \Comment{Payment
           completes only if $\forall i \in \overrightarrow{\mathtt{path}},
           \mathtt{CltvExpiryDelta}_i \geq 3k + \mathtt{RelayDelay}_i$}
+          \label{alg:protocol:pay:validpath}
           \State ensure that the first $\mathit{pchid} \in
           \overrightarrow{\mathtt{path}}$ has the same \textit{pchid} as in
           \texttt{receipt}
           \State ensure that \texttt{receipt} corresponds to the latest version
           of an open $\mathtt{channel} \in \mathtt{channels}$ in which we have
           at least $x$.
+          \label{alg:protocol:pay:validchannel}
           \State choose unique payment ID \textit{payid} \Comment{unique for
           \alice{} and \bob}
           \State add (\bob, $x$, $\overrightarrow{\mathtt{path}}$,
@@ -867,6 +869,7 @@
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - close}
       \begin{algorithmic}[1]
+        \TODO{remove receipt?}
         \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from
         \environment:
         \Indent
