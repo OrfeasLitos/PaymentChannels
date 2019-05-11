@@ -226,7 +226,7 @@
     \begin{systembox}{\fpaynet - pay}
       \begin{algorithmic}[1]
         \State Upon receiving $\left(\textsc{pay}, \bob, x,
-        \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from \alice:
+        \overrightarrow{\mathtt{path}}\right)$ from \alice:
         \Indent
           \State ensure that $\left(\alice, c\right) \in \mathtt{receipt}$ and
           $c \geq x$
@@ -241,8 +241,8 @@
           \State add $\left(\alice, \bob, x, \overrightarrow{\mathtt{path}},
           \mathit{payid}\right)$ to \texttt{pendingPay}
           \State send $\left(\textsc{pay}, \alice, \bob, x,
-          \overrightarrow{\mathtt{path}}, \mathtt{receipt}, \mathit{payid},
-          \textsc{state}, \Sigma\right)$ to \simulator
+          \overrightarrow{\mathtt{path}}, \mathit{payid}, \textsc{state},
+          \Sigma\right)$ to \simulator
         \EndIndent
       \end{algorithmic}
     \end{systembox}

@@ -434,7 +434,7 @@
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - invoice}
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{pay}, \textit{Bob}, $x$,
-        $\overrightarrow{\mathtt{path}}$, \texttt{receipt}) from \environment:
+        $\overrightarrow{\mathtt{path}}$) from \environment:
         \Indent
           \State ensure that $\overrightarrow{\mathtt{path}}$ consists of valid
           \textit{pchid}s and \texttt{CltvExpiryDelta}s \Comment{Payment
@@ -449,8 +449,7 @@
           \State choose unique payment ID \textit{payid} \Comment{unique for
           \alice{} and \bob}
           \State add (\bob, $x$, $\overrightarrow{\mathtt{path}}$,
-          \texttt{receipt}, \textit{payid}, ``waiting for invoice'') to
-          \texttt{pendingPay}
+          \textit{payid}, ``waiting for invoice'') to \texttt{pendingPay}
           \State send (\textsc{sendInvoice}, \textit{payid}) to \bob{}
         \EndIndent
         \Statex
@@ -470,8 +469,7 @@
         \State Upon receiving (\textsc{invoice}, $h$, \textit{payid}) from \bob:
         \Indent
           \State ensure there is a (\bob, $x$, $\overrightarrow{\mathtt{path}}$,
-          \texttt{receipt}, \textit{payid}, ``waiting for invoice'') entry in
-          \texttt{pendingPay}
+          \textit{payid}, ``waiting for invoice'') entry in \texttt{pendingPay}
           \State ensure $h$ is valid (in the range of $\mathcal{H}$)
           \State remove entry from \texttt{pendingPay}
           \State send (\textsc{read}) to \ledger{} and assign largest block
