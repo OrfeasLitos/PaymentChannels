@@ -188,10 +188,18 @@
 \end{lemma}
 
 \begin{proof}
-  \TODO{continue}
   When \environment{} sends $\left(\textsc{pay}, \bob, x,
-  \overrightarrow{\mathtt{path}}\right)$
+  \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to \alice{} in the
+  ideal world, \simulator{} is always notified (Fig.~\ref{alg:fpaynet:pay},
+  line~\ref{alg:fpaynet:pay:send}) and simulates the relevant execution of the
+  real world (Fig.~\ref{alg:sim:pay}, line~\ref{alg:sim:pay:simulate}). No
+  messages to \ledger{} or \environment{} that differ from the real world are
+  generated in the process. At the end of this simulation, no further messages
+  are sent (and the control returns to \environment). Therefore, when
+  \environment{} sends \textsc{pay}, no opportunity for distinguishability
+  arises.
 
+  \TODO{continue}
   When \environment{} sends (\textsc{poll}) to \alice{}
 
   When \environment{} sends (\textsc{pushAdd}, \textit{pchid}) to \alice{}
