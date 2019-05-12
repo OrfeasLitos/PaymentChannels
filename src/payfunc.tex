@@ -444,6 +444,7 @@
         \Indent
           \State send (\textsc{pushFulfill}, \textit{pchid}, \alice,
           \textsc{state}, $\Sigma$) to \simulator
+          \label{alg:fpaynet:daemon:fulfill}
         \EndIndent
         \Statex
 
@@ -451,6 +452,7 @@
         \Indent
           \State send (\textsc{pushAdd}, \textit{pchid}, \alice, \textsc{state},
           $\Sigma$) to \simulator
+          \label{alg:fpaynet:daemon:add}
         \EndIndent
         \Statex
 
@@ -458,6 +460,7 @@
         \Indent
           \State send (\textsc{commit}, \textit{pchid}, \alice, \textsc{state},
           $\Sigma$) to \simulator
+          \label{alg:fpaynet:daemon:commit}
         \EndIndent
         \Statex
 
@@ -479,5 +482,5 @@
       \end{algorithmic}
     \end{systembox}
     \caption{}
-    \label{alg:fpaynet:misc}
+    \label{alg:fpaynet:daemon}
   \end{figure}
