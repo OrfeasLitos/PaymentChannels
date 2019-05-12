@@ -836,9 +836,11 @@
         \Statex
 
         \State Upon receiving (\textsc{fulfillOnChain}) from \environment:
+        \label{alg:protocol:pay:foc:top}
         \Indent
           \State send (\textsc{read}) to \ledger{} and assign largest block
           number to $t$
+          \label{alg:protocol:pay:foc:read}
           \State $\mathtt{toSubmit} \gets \emptyset$
           \label{alg:protocol:pay:foc:tosubmit}
           \ForAll{channels}

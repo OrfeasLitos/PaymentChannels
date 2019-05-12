@@ -468,6 +468,7 @@
         \Indent
           \State send (\textsc{read}) to \ledger{} as \alice{}, store reply to
           $\Sigma_{\alice}$ and assign largest block number to $t$
+          \label{alg:fpaynet:daemon:foc:read}
           \State add $t$ to \texttt{focs}(\alice)
           \State send (\textsc{fulfillOnChain}, $t$, \alice) to \simulator
         \EndIndent

@@ -34,10 +34,12 @@
     \begin{algorithmic}[1]
       \State Upon receiving $\left(\textsc{fulfillOnChain}, t, \alice\right)$
       from $\fpaynet{}_{\mathrm{, Pay}}$:
+      \label{alg:sim:pay:foc:top}
       \Indent
         \State execute
         lines~\ref{alg:protocol:pay:foc:tosubmit}-\ref{alg:protocol:pay:foc:submit}
         of Fig.~\ref{alg:protocol:pay:push} as \alice{}, using $t$ from message
+        \label{alg:sim:pay:foc:run}
       \EndIndent
       \Statex
 
