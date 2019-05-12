@@ -202,14 +202,25 @@
   \environment{} sends \textsc{pay}, no opportunity for distinguishability
   arises.
 
+  When \environment{} sends any message of (\textsc{pushAdd}, \textit{pchid}),
+  (\textsc{pushFulfill}, \textit{pchid}), (\textsc{commit}, \textit{pchid}) to
+  \alice{} in the ideal world, it is forwarded to \simulator{}
+  (Fig.~\ref{alg:fpaynet:daemon},
+  lines~\ref{alg:fpaynet:daemon:fulfill},~\ref{alg:fpaynet:daemon:add},~\ref{alg:fpaynet:daemon:commit}
+  respectively), who in turn simulates \alice's real-world execution with her
+  simulated ITI and the handling of any subsequent messages sent by \alice's ITI
+  (Fig.~\ref{alg:sim:pay},
+  lines~\ref{alg:sim:pay:fulfill},~\ref{alg:sim:pay:add},~\ref{alg:sim:pay:commit}).
+  Neither $\fpaynet{}_{\mathrm{, Pay}}$ nor \simulator{} alter their state as a
+  result of these messages, apart from the state of \alice's simulated ITI and
+  the state of other simulated ITIs that receive and handle messages that were
+  sent as a result of \alice's ITI simulation. The states of these ITIs are
+  modified in the exact same way as they would in the real world. We deduce that
+  these three messages do not introduce any opportunity for \environment{} to
+  distinguish the real and the ideal world.
+
   \TODO{continue}
-  When \environment{} sends (\textsc{poll}) to \alice{}
-
-  When \environment{} sends (\textsc{pushAdd}, \textit{pchid}) to \alice{}
-
-  When \environment{} sends (\textsc{pushFulfill}, \textit{pchid}) to \alice{}
-
   When \environment{} sends (\textsc{fulfillOnChain}) to \alice{}
 
-  When \environment{} sends (\textsc{commit}, \textit{pchid}) to \alice{}
+  When \environment{} sends (\textsc{poll}) to \alice{}
 \end{proof}
