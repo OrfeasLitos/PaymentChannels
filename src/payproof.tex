@@ -221,8 +221,27 @@
   these three messages do not introduce any opportunity for \environment{} to
   distinguish the real and the ideal world.
 
-  \TODO{continue}
-  When \environment{} sends (\textsc{fulfillOnChain}) to \alice{}
+  When \environment{} sends (\textsc{fulfillOnChain}) to \alice{} in the real
+  world, lines~\ref{alg:protocol:pay:foc:top}-\ref{alg:protocol:pay:foc:submit}
+  of Fig.~\ref{alg:protocol:pay:push} are executed by \alice. In the ideal world
+  on the other hand, $\fpaynet{}_{\mathrm{, Pay}}$ sends (\textsc{read}) to
+  \ledger{} (Fig.~\ref{alg:fpaynet:daemon},
+  line~\ref{alg:fpaynet:daemon:foc:read}) as \alice{} and subsequently lets
+  \simulator{} simulate \alice{}'s ITI receiving (\textsc{fulfillOnChain})
+  (Fig.~\ref{alg:sim:pay},
+  lines~\ref{alg:sim:pay:foc:top}-\ref{alg:sim:pay:foc:run}). Observe that
+  during this simulation a second message to \ledger{} (that would not match any
+  message in the real world) is avoided because \simulator{} skips
+  line~\ref{alg:protocol:pay:foc:read} of Fig.~\ref{alg:protocol:pay:push},
+  using as $t$ the one received from $\fpaynet{}_{\mathrm{, Pay}}$ in the
+  message (\textsc{fulfillOnChain}, $t$, \alice). Since $\fpaynet{}_{\mathrm{,
+  Pay}}$ sends (\textsc{read}) to \ledger{} as \alice{} and given that after
+  \ledger{} replies, control is given directly to \simulator{}, the $t$ used
+  during the simulation of \alice's ITI is identical to the one that \alice{}
+  would obtain in the real-world execution. The rest of the simulation is thus
+  identical with the real-world execution, therefore \textsc{fulfillOnChain}
+  does not introduce any opportunity for distinghuishability.
 
+  \TODO{continue}
   When \environment{} sends (\textsc{poll}) to \alice{}
 \end{proof}
