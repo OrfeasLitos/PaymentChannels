@@ -371,7 +371,7 @@
           funding txs that have the same channel version as stored), remove them
           from \texttt{channels} and add them to
           \texttt{toReport}(\textit{reportid}) (marked as ``honest'')
-          \State scan $\Sigma_{\alice}$ for malicioulsy closed channels that
+          \State scan $\Sigma_{\alice}$ for maliciously closed channels that
           contain \alice{} and exist in \texttt{channels} (txs that spend
           funding txs that have an older channel version than stored)
           \label{alg:fpaynet:poll:malicious}
