@@ -23,14 +23,17 @@
   the full specification) it is sufficient to note that \LFextend guarantees the
   following properties:
   \begin{enumerate}
-    \item in a period of time equal to \maxTime, at least \windowSize blocks are
+    \item in a period of time equal to \maxTime, a number of blocks at least
+    \windowSize are
     added to \state.
-    \item each window of \windowSize blocks has at most \advBlocksinWindowSize
+    \item in a period of time equal to $\minTime$, no more blocks may be added to $\state$ if $\windowSize$ blocks have been already added. 
+    \item each window of \windowSize blocks has at most \advBlocksinWindowSize\/
     adversarial blocks included in it.
-    \item any transaction submitted by an honest party earlier than
-    $\frac{\vdelay}{2}$ ticks before the time that the  block that is
-    \windowSize positions before the head of the \state must be included in an
-    honest block.
+    \item any transaction that (i) is submitted by an honest party earlier than
+    $\frac{\vdelay}{2}$ rounds before the time that the block that is
+    \windowSize positions before the head of the \state was included, 
+    and (ii) is valid with respect to an honest block that extends $\state$,
+    then it must be included in such block. 
   \end{enumerate}
 
   Given a synchronised honest party, we say that a transaction \tx is
@@ -39,14 +42,36 @@
   \begin{proposition}
     Consider any synchronised honest party that wishes to place a transaction
     \tx in some specific block height $[h+1, h+t-1]$ where $t$ is a parameter
-    and $h$ an arbitrary positive integer. Then, as long as $t\geq ???$, \tx is
-    guaranteed to be included in the correct block range as long as the party
-    submits \tx to the ledger functionality within \orfeas{rounds or blocks?}
-    $[????, ????]$.
+    and $h$ an arbitrary positive integer. Then, as long as $t\geq 1+(2+r)\windowSize$, where $r = \lceil (\maxTime +  \frac{\vdelay}{2})/ \minTime \rceil$, \tx is
+    guaranteed to be included in the intended block range as long as the party
+    submits $\tx$ to the ledger functionality 
+    by the time the block indexed by $h+ t - 1 - (2+r) \windowSize$
+    is added to $\state$ in its view.
   \end{proposition}
 
   \begin{proof}
-    TBD
+Consider $\tau^{\stkh}_{h+x}$ to be 
+the round that a party $\stkh$  becomes aware of the 
+$(h+x)$-th block in the $\state$. It follows that 
+$\tau_{h+x} \leq \tau^{\stkh}_{h+x}$ where $\tau_{h+x}$ is the round the $(h+x)$ enters $\state$. Note that by time $\tau_{h+x} + \maxTime$ another $\windowSize$
+blocks are added to $\state$ and thus $\tau^{\stkh}_{h+x} 
+\leq \tau_{h+x}  + \maxTime$. 
+
+Suppose $\stkh$ transmits the transaction $\tx$
+to the ledger at time $\tau^{\stkh}_{h+x}$. Observe that as
+long as $\tau_{h+x} + \maxTime$ is $\vdelay/2$ 
+before the time that block with index $h+t-1-2\windowSize$ 
+enters $\state$, then $\tx$ is guaranteed to enter the $\state$ in a 
+block with index up to $h+t-1$ since $\advBlocksinWindowSize<\windowSize$. 
+It follows we need
+$\tau_{h+x}  + \maxTime < \tau_{h+t-1-2\windowSize} - \frac{\vdelay}{2} $. 
+Let $r = \lceil (\maxTime +  \frac{\vdelay}{2})/ \minTime \rceil$.
+Recall that in a period of $\minTime$ rounds at most $\windowSize$
+blocks enter $\state$. As a result $r \windowSize$ blocks require
+at least $r \minTime \geq \maxTime +  \frac{\vdelay}{2}$ rounds. 
+It follows that if $t \geq 1+(2+r)\windowSize$
+and $x = t - 1 - (2+r) \windowSize$
+the inequality follows. 
   \end{proof}
 
   \begin{systembox}{$\Fledger$}\vspace{1ex}
