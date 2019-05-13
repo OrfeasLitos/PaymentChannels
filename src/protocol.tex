@@ -356,7 +356,13 @@
             \If{input of $\tau$ has been spent} \Comment{by
             \texttt{remote HTLC-success}}
               \State remove $\tau$ from \texttt{unclaimedOfferedHTLCs}
-              \State remember preimage - hash combination
+              \If{we are intermediary}
+                \State retrieve preimage $R$, $\mathit{pchid}'$ of previous
+                channel on the path of the HTLC, and $\mathtt{HTLCNo}'$ of the
+                corresponding $\mathrm{HTLC}'$ in $\mathit{pchid}'$
+                \State add $\left(\mathtt{HTLCNo}', R\right)$ to
+                $\mathtt{pendingFulfills}_{\mathit{pchid}'}$
+              \EndIf
             \ElsIf{input of $\tau$ has not been spent and timelock is over}
               \State remove $\tau$ from \texttt{unclaimedOfferedHTLCs}
               \State add $\tau$ to \texttt{toSubmit}
