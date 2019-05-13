@@ -72,7 +72,8 @@
         on input (\textsc{poll}), using $\Sigma_{\alice}$ from the message, with
         \alice's ITI
         \label{alg:sim:poll:run}
-        \State add all channels in \texttt{toSubmit} to \texttt{details}(\alice)
+        \State add all channels in \texttt{toSubmit} of \alice's ITI to
+        \texttt{details}(\alice)
         \label{alg:sim:poll:save}
         \State The next time we receive a message from $\fpaynet{}_{\mathrm{,
         Pay}}$ that contains a $\Sigma_{\alice}$ that contains all txs in
@@ -232,17 +233,18 @@
   \simulator{} simulate \alice{}'s ITI receiving (\textsc{fulfillOnChain})
   (Fig.~\ref{alg:sim:pay},
   lines~\ref{alg:sim:pay:foc:top}-\ref{alg:sim:pay:foc:run}). Observe that
-  during this simulation a second message to \ledger{} (that would not match any
-  message in the real world) is avoided because \simulator{} skips
-  line~\ref{alg:protocol:pay:foc:read} of Fig.~\ref{alg:protocol:pay:push},
-  using as $t$ the one received from $\fpaynet{}_{\mathrm{, Pay}}$ in the
-  message (\textsc{fulfillOnChain}, $t$, \alice). Since $\fpaynet{}_{\mathrm{,
-  Pay}}$ sends (\textsc{read}) to \ledger{} as \alice{} and given that after
-  \ledger{} replies, control is given directly to \simulator{}, the $t$ used
-  during the simulation of \alice's ITI is identical to the one that \alice{}
-  would obtain in the real-world execution. The rest of the simulation is thus
-  identical with the real-world execution, therefore \textsc{fulfillOnChain}
-  does not introduce any opportunity for distinghuishability.
+  during this simulation a second (\textsc{read}) message to \ledger{} (that
+  would not match any message in the real world) is avoided because \simulator{}
+  skips line~\ref{alg:protocol:pay:foc:read} of
+  Fig.~\ref{alg:protocol:pay:push}, using as $t$ the one received from
+  $\fpaynet{}_{\mathrm{, Pay}}$ in the message (\textsc{fulfillOnChain}, $t$,
+  \alice). Since $\fpaynet{}_{\mathrm{, Pay}}$ sends (\textsc{read}) to
+  \ledger{} as \alice{} and given that after \ledger{} replies, control is given
+  directly to \simulator{}, the $t$ used during the simulation of \alice's ITI
+  is identical to the one that \alice{} would obtain in the real-world
+  execution. The rest of the simulation is thus identical with the real-world
+  execution, therefore \textsc{fulfillOnChain} does not introduce any
+  opportunity for distinghuishability.
 
   When \environment{} sends (\textsc{poll}) to \alice, the first action is
   sending (\textsc{read}) as \alice{} to \ledger{} both in the ideal
