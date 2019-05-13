@@ -75,7 +75,7 @@
         \State The first time we receive a message from $\fpaynet{}_{\mathrm{,
         Pay}}$ that contains $\Sigma_{\alice}$ that is at least $k$ blocks
         longer than the current one, concatenate (\textsc{channelsClosed},
-        \texttt{details}(\alice), \texttt{reportid}) to the first subsequent
+        \texttt{details}(\alice), \textit{reportid}) to the first subsequent
         message to $\fpaynet{}_{\mathrm{, Pay}}$ and clear
         \texttt{details}(\alice)
         \State send (\textsc{submit}, \texttt{toSubmit}) to \ledger{} as \alice
