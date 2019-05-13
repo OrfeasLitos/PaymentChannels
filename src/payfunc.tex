@@ -358,6 +358,7 @@
         \Indent
           \State send (\textsc{read}) to \ledger{} as \alice{} and store reply
           to $\Sigma_{\alice}$
+          \label{alg:fpaynet:poll:read}
           \State add largest block number in $\Sigma_{\alice}$ to
           \texttt{polls}(\alice)
           \State generate unique \textit{reportid}

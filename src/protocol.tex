@@ -22,7 +22,8 @@
           \label{alg:protocol:support:delay}
           \State $\mathtt{relayDelay} \gets \mathrm{relayDelay}$
           \State send (\textsc{read}) to \ledger{} and assign largest block
-          number to \texttt{lastPoll}
+          number to \texttt{lastPoll} \TODO{maybe remove lastPoll from real
+          world?}
           \label{alg:protocol:support:lastpoll}
           \State $\left(pk_{\alice}, sk_{\alice}\right) \gets
           \mathrm{KeyGen}\left(\right)$
@@ -346,6 +347,7 @@
         \Indent
           \State send (\textsc{read}) to \ledger{} and assign reply to
           $\Sigma_{\alice}$
+          \label{alg:protocol:poll:read}
           \State assign largest block number in $\Sigma_{\alice}$ to
           \texttt{lastPoll}
           \label{alg:protocol:poll:afterread}
