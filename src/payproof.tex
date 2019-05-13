@@ -71,14 +71,18 @@
         lines~\ref{alg:protocol:poll:afterread}-\ref{alg:protocol:poll:beforesubmit}
         on input (\textsc{poll}), using $\Sigma_{\alice}$ from the message, with
         \alice's ITI
+        \label{alg:sim:poll:run}
         \State add all channels in \texttt{toSubmit} to \texttt{details}(\alice)
+        \label{alg:sim:poll:save}
         \State The next time we receive a message from $\fpaynet{}_{\mathrm{,
         Pay}}$ that contains a $\Sigma_{\alice}$ that contains all txs in
         \texttt{toSubmit}, concatenate (\textsc{channelsClosed},
         \texttt{details}(\alice), \textit{reportid}) to the first subsequent
         message to $\fpaynet{}_{\mathrm{, Pay}}$ and clear
         \texttt{details}(\alice)
+        \label{alg:sim:poll:inform}
         \State send (\textsc{submit}, \texttt{toSubmit}) to \ledger{} as \alice
+        \label{alg:sim:poll:submit}
       \EndIndent
       \Statex
 

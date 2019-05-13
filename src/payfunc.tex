@@ -361,7 +361,9 @@
           \label{alg:fpaynet:poll:read}
           \State add largest block number in $\Sigma_{\alice}$ to
           \texttt{polls}(\alice)
+          \label{alg:fpaynet:poll:height}
           \State generate unique \textit{reportid}
+          \label{alg:fpaynet:poll:id}
           \State $\mathtt{toReport}\left(\mathit{reportid}\right) \gets
           \emptyset$
           \State scan $\Sigma_{\alice}$ for honestly closed channels that
@@ -372,12 +374,15 @@
           \State scan $\Sigma_{\alice}$ for malicioulsy closed channels that
           contain \alice{} and exist in \texttt{channels} (txs that spend
           funding txs that have an older channel version than stored)
+          \label{alg:fpaynet:poll:malicious}
           \ForAll{maliciously closed \texttt{channel}s by a remote committment
           \texttt{tx} in block with height $h_{\mathtt{tx}}$}
             \If{the delayed output (of the counterparty) has been spent AND
             \texttt{polls}(\alice) has an element in $\left[h_{\mathtt{tx}} + k,
             h_{\mathtt{tx}} + k + \mathtt{delay}\left(\alice\right) - 1\right]$}
+            \label{alg:fpaynet:poll:badevent}
               \State halt \Comment{\alice{} wasn't negligent but couldn't punish
+              \label{alg:fpaynet:poll:halt}
               - bad event}
             \EndIf
             \State add \texttt{channel} to \texttt{toReport}(\textit{reportid})

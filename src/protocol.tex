@@ -397,10 +397,12 @@
               \State $\mathrm{rev} \gets$ TX \{inputs: all
               $\mathtt{remoteCom}_n$ outputs, choosing $ph_{\mathrm{rev}, n}$
               method, output: $pk_{\mathit{Alice}}$\}
+              \label{alg:protocol:poll:mal:tx}
               \State $\mathrm{sig} \gets \mathtt{signature}\left(\mathrm{rev},
               sh_{\mathrm{rev}, n}\right)$
               \State add $\left(\mathrm{sig}, \mathrm{rev}\right)$ to
               \texttt{toSubmit}
+              \label{alg:protocol:poll:mal:submit}
             \EndIf
             \State move \texttt{channel} from \texttt{channels} to
             \texttt{closedChannels}
@@ -424,6 +426,7 @@
           \EndFor
           \label{alg:protocol:poll:beforesubmit}
           \State send (\textsc{submit}, \texttt{toSubmit}) to \ledger
+          \label{alg:protocol:poll:submit}
         \EndIndent
         \Statex
 
