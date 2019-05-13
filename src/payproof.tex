@@ -250,4 +250,78 @@
   sending (\textsc{read}) as \alice{} to \ledger{} both in the ideal
   (Fig.~\ref{alg:fpaynet:poll}, line~\ref{alg:fpaynet:poll:read}) and the real
   (Fig.~\ref{alg:protocol:poll}, line~\ref{alg:protocol:poll:read}) worlds.
+  Subsequently, in the real world
+  lines~\ref{alg:protocol:poll:afterread}-\ref{alg:protocol:poll:submit} of
+  Fig.~\ref{alg:protocol:poll} are executed by \alice, whereas in the ideal
+  world the functionality compiles a list of closed-but-not-acted-upon channels
+  (Fig.~\ref{alg:fpaynet:poll},
+  lines~\ref{alg:fpaynet:poll:id}-\ref{alg:fpaynet:poll:malicious}) and then,
+  given that the check of line~\ref{alg:fpaynet:poll:badevent} does not lead to
+  a bad event (and thus given that the functionality does not halt in
+  line~\ref{alg:fpaynet:poll:halt}), a (\textsc{getClosedFunds}) message is sent
+  to \simulator. We will prove later that $\fpaynet{}_{\mathrm{, Pay}}$ halts
+  here only with negligible probability. Upon receiving
+  (\textsc{getClosedFunds}), \simulator{} simulates receiving (\textsc{poll})
+  with \alice's ITI (Fig.~\ref{alg:sim:pay}, line~\ref{alg:sim:poll:run}), but
+  does not \textsc{read} from \ledger{} and uses instead the $\Sigma_{\alice}$
+  provided along with the message. A reasoning identical to that found in the
+  previous paragraph shows that this $\Sigma_{\alice}$ is exactly the same as
+  that which \alice's ITI would obtain had it executed
+  line~\ref{alg:protocol:poll:read} of Fig.~\ref{alg:protocol:poll} and thus the
+  simulation of \alice's ITI is identical to what would happen in the same case
+  in the real world, up to and including
+  line~\ref{alg:protocol:poll:beforesubmit} of Fig.~\ref{alg:protocol:poll}.
+  Then (Fig.~\ref{alg:sim:pay},
+  lines~\ref{alg:sim:poll:save}-\ref{alg:sim:poll:inform}) \simulator{} prepares
+  to inform $\fpaynet{}_{\mathrm{, Pay}}$ which channels are being closed; this
+  information will be given to the functionality when \simulator{} learns that
+  the closing transactions have become part of $\Sigma_{\alice}$. Finally
+  \simulator{} submits to \ledger{} the closing transactions that \alice's
+  simulated ITI specified (Fig.~\ref{alg:sim:pay},
+  line~\ref{alg:sim:poll:submit}). Since \texttt{toSubmit} is copied from
+  \alice's ITI and given the fact that \simulator{} does not yield control of
+  the execution after completing \alice's ITI simulation and before sending
+  (\textsc{submit}), exactly the same transactions are submitted to \ledger{} as
+  those in the real world execution.
+
+  Let $E$ the ``bad'' event in which $\fpaynet{}_{\mathrm{, Pay}}$ executes
+  line~\ref{alg:fpaynet:poll:halt} of Fig.~\ref{alg:fpaynet:poll} and halts. We
+  will now prove that, during $\textsc{Exec}^{\fpaynet{}_{\mathrm{, Pay}},
+  \ledger}_{\simulator_{\mathrm{LN - Reg - Open - Pay}}, \environment}$, it is
+  $\Pr[E] = 0$. The condition of Fig.~\ref{alg:fpaynet:poll},
+  line~\ref{alg:fpaynet:poll:badevent} is triggered if the delayed output (that
+  of the malicious party) of $\mathtt{tx}_1$ has been spent by the transaction
+  $\mathtt{tx}_2$ in $\Sigma_{\alice}$ (event $E_1$) and \texttt{polls}(\alice)
+  contains an element in $\left[h_1 + k, h_1 + k +
+  \mathtt{delay}\left(\alice\right) - 1\right]$, where $h_1$ is the block height
+  where $\mathtt{tx}_1$ is (event $E_2$). Observe that $E = E_1 \wedge E_2$. We
+  note that the elements in \texttt{polls}(\alice) correspond to the block
+  heights of $\Sigma_{\alice}$ at the moments when \alice{} \textsc{poll}s
+  (Fig.~\ref{alg:fpaynet:poll}, line~\ref{alg:fpaynet:poll:height}). Due to the
+  fact that $\mathtt{tx}_2$ spends an output locked with a relative timelock of
+  length $\mathtt{delay}\left(\alice\right) + k + \tochain$, the committment
+  transaction $\mathtt{tx}_1$ can reside in a block of maximum height $h_1 \leq
+  h_2 - \mathtt{delay}\left(\alice\right) - k - \tochain$, where $h_2$ is the
+  block height where $\mathtt{tx}_2$ is. If \alice{} \textsc{poll}s on a moment
+  when $|\Sigma_{\alice}| \geq h_1 + k, \Sigma_{\alice}$ necessarily contains
+  $\mathtt{tx}_1$. Furthermore, if \alice{} \textsc{poll}s on a moment when
+  $|\Sigma_{\alice}| \leq h_1 + k + \mathtt{delay}\left(\alice\right) - 1 \leq
+  h_2 - \tochain{} - 1$, she sees $\mathtt{tx}_1$ and directly submits the
+  punishment transaction $\mathtt{tx}_3$ (which she has, given that a
+  maliciously closed channel is defined as one where the non-closing party has
+  the punishment transaction) (Fig.~\ref{alg:protocol:poll},
+  lines~\ref{alg:protocol:poll:mal:tx}-\ref{alg:protocol:poll:mal:submit}).
+  Given that $\mathtt{tx}_3$ is broadcast when $|\Sigma_{\alice}| \leq h_2 -
+  \tochain{} - 1$, it is guaranteed to be on-chain in a block $h_3 \leq h_2 -
+  1$ (according to Proposition~\ref{prop:tochain}). Since $\mathtt{tx}_3$ spends
+  the same funds as $\mathtt{tx}_2$, the two cannot be part of the chain
+  simultaneously. Since $E_1 \Rightarrow \Sigma_{\alice}$ contains
+  $\mathtt{tx}_2$ and $E_2 \Rightarrow \Sigma_{\alice}$ contains
+  $\mathtt{tx}_3$, $E_1$ and $E_2$ are mutually exclusive, therefore it is
+  impossible for event $E$ to happen, i.e. $\Pr\left[E\right] = 0$.
+
+  We conclude that \textsc{poll} does not introduce any opportunity for
+  distinghuishability.
+
+  \TODO{prove state - resolvePays, channelsclosed}
 \end{proof}
