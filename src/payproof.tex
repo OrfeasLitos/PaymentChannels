@@ -242,6 +242,8 @@
   identical with the real-world execution, therefore \textsc{fulfillOnChain}
   does not introduce any opportunity for distinghuishability.
 
-  \TODO{continue}
-  When \environment{} sends (\textsc{poll}) to \alice{}
+  When \environment{} sends (\textsc{poll}) to \alice, the first action is
+  sending (\textsc{read}) as \alice{} to \ledger{} both in the ideal
+  (Fig.~\ref{alg:fpaynet:poll}, line~\ref{alg:fpaynet:poll:read}) and the real
+  (Fig.~\ref{alg:protocol:poll}, line~\ref{alg:protocol:poll:read}) worlds.
 \end{proof}
