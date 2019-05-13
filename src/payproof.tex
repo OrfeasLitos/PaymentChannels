@@ -288,7 +288,7 @@
   line~\ref{alg:fpaynet:poll:halt} of Fig.~\ref{alg:fpaynet:poll} and halts. We
   will now prove that, during $\textsc{Exec}^{\fpaynet{}_{\mathrm{, Pay}},
   \ledger}_{\simulator_{\mathrm{LN - Reg - Open - Pay}}, \environment}$, it is
-  $\Pr[E] = 0$. The condition of Fig.~\ref{alg:fpaynet:poll},
+  $\Pr[E] \leq \negl$. The condition of Fig.~\ref{alg:fpaynet:poll},
   line~\ref{alg:fpaynet:poll:badevent} is triggered if the delayed output (that
   of the malicious party) of $\mathtt{tx}_1$ has been spent by the transaction
   $\mathtt{tx}_2$ in $\Sigma_{\alice}$ (event $E_1$) and \texttt{polls}(\alice)
@@ -297,31 +297,43 @@
   where $\mathtt{tx}_1$ is (event $E_2$). Observe that $E = E_1 \wedge E_2$. We
   note that the elements in \texttt{polls}(\alice) correspond to the block
   heights of $\Sigma_{\alice}$ at the moments when \alice{} \textsc{poll}s
-  (Fig.~\ref{alg:fpaynet:poll}, line~\ref{alg:fpaynet:poll:height}). Due to the
-  fact that $\mathtt{tx}_2$ spends an output locked with a relative timelock of
-  length $\mathtt{delay}\left(\alice\right) + k + \tochain$, the committment
-  transaction $\mathtt{tx}_1$ can reside in a block of maximum height $h_1 \leq
-  h_2 - \mathtt{delay}\left(\alice\right) - k - \tochain$, where $h_2$ is the
-  block height where $\mathtt{tx}_2$ is. If \alice{} \textsc{poll}s on a moment
-  when $|\Sigma_{\alice}| \geq h_1 + k, \Sigma_{\alice}$ necessarily contains
-  $\mathtt{tx}_1$. Furthermore, if \alice{} \textsc{poll}s on a moment when
-  $|\Sigma_{\alice}| \leq h_1 + k + \mathtt{delay}\left(\alice\right) - 1 \leq
-  h_2 - \tochain{} - 1$, she sees $\mathtt{tx}_1$ and directly submits the
-  punishment transaction $\mathtt{tx}_3$ (which she has, given that a
-  maliciously closed channel is defined as one where the non-closing party has
-  the punishment transaction) (Fig.~\ref{alg:protocol:poll},
+  (Fig.~\ref{alg:fpaynet:poll}, line~\ref{alg:fpaynet:poll:height}). Consider
+  the following two events: $E_{1,1}: \mathtt{tx}_2$ spends the delayed output
+  with a signature valid by the delayed payment public key after the locktime
+  expires. $E_{1,2}: \mathtt{tx}_2$ spends the delayed output with a signature
+  valid by the revocation public key $p_{\alice, \mathrm{rev}}$. Note that $E_1
+  = E_{1,1} \vee E_{1,2}$ and $E_{1,1}, E_{1,2}$ are mutually exclusive (since
+  the same output cannot be spent twice). Observe that, since only \alice{}
+  knows the revocation secret key $s_{\alice, \mathrm{rev}}$, forgery of the
+  signature required in $E_{1,2}$ can happen only with negligible probability,
+  i.e. $\Pr\left[E_{1,2}\right] \leq \negl$. We now concetrate on the event
+  $E_{1,1}$. Due to the fact that $\mathtt{tx}_2$ spends an output locked with a
+  relative timelock of length $\mathtt{delay}\left(\alice\right) + k +
+  \tochain$, the committment transaction $\mathtt{tx}_1$ can reside in a block
+  of maximum height $h_1 \leq h_2 - \mathtt{delay}\left(\alice\right) - k -
+  \tochain$, where $h_2$ is the block height where $\mathtt{tx}_2$ is. If
+  \alice{} \textsc{poll}s on a moment when $|\Sigma_{\alice}| \geq h_1 + k,
+  \Sigma_{\alice}$ necessarily contains $\mathtt{tx}_1$. Furthermore, if
+  \alice{} \textsc{poll}s on a moment when $|\Sigma_{\alice}| \leq h_1 + k +
+  \mathtt{delay}\left(\alice\right) - 1 \leq h_2 - \tochain{} - 1$, she sees
+  $\mathtt{tx}_1$ and directly submits the punishment transaction
+  $\mathtt{tx}_3$ (which she has, given that a maliciously closed channel is
+  defined as one where the non-closing party has the punishment transaction)
+  (Fig.~\ref{alg:protocol:poll},
   lines~\ref{alg:protocol:poll:mal:tx}-\ref{alg:protocol:poll:mal:submit}).
   Given that $\mathtt{tx}_3$ is broadcast when $|\Sigma_{\alice}| \leq h_2 -
-  \tochain{} - 1$, it is guaranteed to be on-chain in a block $h_3 \leq h_2 -
-  1$ (according to Proposition~\ref{prop:tochain}). Since $\mathtt{tx}_3$ spends
+  \tochain{} - 1$, it is guaranteed to be on-chain in a block $h_3 \leq h_2 - 1$
+  (according to Proposition~\ref{prop:tochain}). Since $\mathtt{tx}_3$ spends
   the same funds as $\mathtt{tx}_2$, the two cannot be part of the chain
-  simultaneously. Since $E_1 \Rightarrow \Sigma_{\alice}$ contains
+  simultaneously. Since $E_{1,1} \Rightarrow \Sigma_{\alice}$ contains
   $\mathtt{tx}_2$ and $E_2 \Rightarrow \Sigma_{\alice}$ contains
-  $\mathtt{tx}_3$, $E_1$ and $E_2$ are mutually exclusive, therefore it is
-  impossible for event $E$ to happen, i.e. $\Pr\left[E\right] = 0$.
-
-  We conclude that \textsc{poll} does not introduce any opportunity for
-  distinghuishability.
+  $\mathtt{tx}_3$, $E_{1,1}$ and $E_2$ are mutually exclusive. Therefore
+  $\Pr\left[E\right] = \Pr\left[\left(E_{1,1} \vee E_{1,2}\right) \wedge
+  E_2\right] = \Pr\left[\left(E_{1,1} \wedge E_2\right) \vee \left(E_{1,2}
+  \wedge E_2\right)\right] \leq \Pr\left[E_{1,1} \wedge E_2\right] +
+  \Pr\left[E_{1,2} \wedge E_2\right] = \Pr\left[E_{1,2} \wedge E_2\right] \leq
+  \Pr\left[E_{1,2}\right] \leq \negl$. We conclude that \textsc{poll} introduces
+  only a negligible opportunity for distinghuishability.
 
   \TODO{prove state - resolvePays, channelsclosed}
 \end{proof}
