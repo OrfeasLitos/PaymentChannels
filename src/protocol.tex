@@ -434,23 +434,23 @@
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - invoice}
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{pay}, \textit{Bob}, $x$,
-        $\overrightarrow{\mathtt{path}}$, \texttt{receipt}) from \environment:
+        $\overrightarrow{\mathtt{path}}$) from \environment:
         \Indent
-          \State ensure that $\overrightarrow{\mathtt{path}}$ consists of valid
-          \textit{pchid}s and \texttt{CltvExpiryDelta}s \Comment{Payment
-          completes only if $\forall i \in \overrightarrow{\mathtt{path}},
-          \mathtt{CltvExpiryDelta}_i \geq 3k + \mathtt{RelayDelay}_i$}
+          \State ensure that $\overrightarrow{\mathtt{path}}$ consists of
+          syntactically valid (\textit{pchid}, \texttt{CltvExpiryDelta}) pair
+          \Comment{Payment completes only if $\forall i \in
+          \overrightarrow{\mathtt{path}}, \mathtt{CltvExpiryDelta}_i \geq 3k +
+          \mathtt{RelayDelay}_i$}
+          \label{alg:protocol:pay:validpath}
           \State ensure that the first $\mathit{pchid} \in
-          \overrightarrow{\mathtt{path}}$ has the same \textit{pchid} as in
-          \texttt{receipt}
-          \State ensure that \texttt{receipt} corresponds to the latest version
-          of an open $\mathtt{channel} \in \mathtt{channels}$ in which we have
-          at least $x$.
+          \overrightarrow{\mathtt{path}}$ corresponds to an open
+          $\mathtt{channel} \in \mathtt{channels}$ in which we own at least $x$
+          in the irrevocably committed state.
+          \label{alg:protocol:pay:validchannel}
           \State choose unique payment ID \textit{payid} \Comment{unique for
           \alice{} and \bob}
           \State add (\bob, $x$, $\overrightarrow{\mathtt{path}}$,
-          \texttt{receipt}, \textit{payid}, ``waiting for invoice'') to
-          \texttt{pendingPay}
+          \textit{payid}, ``waiting for invoice'') to \texttt{pendingPay}
           \State send (\textsc{sendInvoice}, \textit{payid}) to \bob{}
         \EndIndent
         \Statex
@@ -470,8 +470,7 @@
         \State Upon receiving (\textsc{invoice}, $h$, \textit{payid}) from \bob:
         \Indent
           \State ensure there is a (\bob, $x$, $\overrightarrow{\mathtt{path}}$,
-          \texttt{receipt}, \textit{payid}, ``waiting for invoice'') entry in
-          \texttt{pendingPay}
+          \textit{payid}, ``waiting for invoice'') entry in \texttt{pendingPay}
           \State ensure $h$ is valid (in the range of $\mathcal{H}$)
           \State remove entry from \texttt{pendingPay}
           \State send (\textsc{read}) to \ledger{} and assign largest block
@@ -837,9 +836,11 @@
         \Statex
 
         \State Upon receiving (\textsc{fulfillOnChain}) from \environment:
+        \label{alg:protocol:pay:foc:top}
         \Indent
           \State send (\textsc{read}) to \ledger{} and assign largest block
           number to $t$
+          \label{alg:protocol:pay:foc:read}
           \State $\mathtt{toSubmit} \gets \emptyset$
           \label{alg:protocol:pay:foc:tosubmit}
           \ForAll{channels}
@@ -869,6 +870,7 @@
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - close}
       \begin{algorithmic}[1]
+        \TODO{remove receipt?}
         \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from
         \environment:
         \Indent

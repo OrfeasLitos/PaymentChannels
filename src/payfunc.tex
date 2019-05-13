@@ -226,23 +226,15 @@
     \begin{systembox}{\fpaynet - pay}
       \begin{algorithmic}[1]
         \State Upon receiving $\left(\textsc{pay}, \bob, x,
-        \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ from \alice:
+        \overrightarrow{\mathtt{path}}\right)$ from \alice:
         \Indent
-          \State ensure that $\left(\alice, c\right) \in \mathtt{receipt}$ and
-          $c \geq x$
-          \State ensure that there is a $\mathtt{channel} \in \mathtt{channels}
-          : \mathtt{receipt}\left(\mathtt{channel}\right) = \mathtt{receipt}$
-          \State ensure that $\overrightarrow{\mathtt{path}}$ consists of
-          (channel, CltvExpiryDelta) pairs where $\mathrm{channel} \in
-          \mathtt{channels}$
-          \State ensure that each consecutive pair of channels in
-          $\overrightarrow{\mathtt{path}}$ has a common member
           \State choose unique payment ID \textit{payid}
           \State add $\left(\alice, \bob, x, \overrightarrow{\mathtt{path}},
           \mathit{payid}\right)$ to \texttt{pendingPay}
           \State send $\left(\textsc{pay}, \alice, \bob, x,
-          \overrightarrow{\mathtt{path}}, \mathtt{receipt}, \mathit{payid},
-          \textsc{state}, \Sigma\right)$ to \simulator
+          \overrightarrow{\mathtt{path}}, \mathit{payid}, \textsc{state},
+          \Sigma\right)$ to \simulator
+          \label{alg:fpaynet:pay:send}
         \EndIndent
       \end{algorithmic}
     \end{systembox}
@@ -452,6 +444,7 @@
         \Indent
           \State send (\textsc{pushFulfill}, \textit{pchid}, \alice,
           \textsc{state}, $\Sigma$) to \simulator
+          \label{alg:fpaynet:daemon:fulfill}
         \EndIndent
         \Statex
 
@@ -459,6 +452,7 @@
         \Indent
           \State send (\textsc{pushAdd}, \textit{pchid}, \alice, \textsc{state},
           $\Sigma$) to \simulator
+          \label{alg:fpaynet:daemon:add}
         \EndIndent
         \Statex
 
@@ -466,6 +460,7 @@
         \Indent
           \State send (\textsc{commit}, \textit{pchid}, \alice, \textsc{state},
           $\Sigma$) to \simulator
+          \label{alg:fpaynet:daemon:commit}
         \EndIndent
         \Statex
 
@@ -473,6 +468,7 @@
         \Indent
           \State send (\textsc{read}) to \ledger{} as \alice{}, store reply to
           $\Sigma_{\alice}$ and assign largest block number to $t$
+          \label{alg:fpaynet:daemon:foc:read}
           \State add $t$ to \texttt{focs}(\alice)
           \State send (\textsc{fulfillOnChain}, $t$, \alice) to \simulator
         \EndIndent
@@ -487,5 +483,5 @@
       \end{algorithmic}
     \end{systembox}
     \caption{}
-    \label{alg:fpaynet:misc}
+    \label{alg:fpaynet:daemon}
   \end{figure}

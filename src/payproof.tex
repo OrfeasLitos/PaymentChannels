@@ -34,10 +34,12 @@
     \begin{algorithmic}[1]
       \State Upon receiving $\left(\textsc{fulfillOnChain}, t, \alice\right)$
       from $\fpaynet{}_{\mathrm{, Pay}}$:
+      \label{alg:sim:pay:foc:top}
       \Indent
         \State execute
         lines~\ref{alg:protocol:pay:foc:tosubmit}-\ref{alg:protocol:pay:foc:submit}
         of Fig.~\ref{alg:protocol:pay:push} as \alice{}, using $t$ from message
+        \label{alg:sim:pay:foc:run}
       \EndIndent
       \Statex
 
@@ -49,6 +51,7 @@
         \alice{} ITI and further execute the parts of $\Pi_{\mathrm{LN}}$ that
         correspond to honest parties (Fig.~\ref{alg:protocol:pay:invoice}-
         Fig.~\ref{alg:protocol:pay:updateFulfillHtlc})
+        \label{alg:sim:pay:simulate}
         \If{any ``ensure'' in $\Pi_{\mathrm{LN}}$ fails until receiver processes
         \textsc{updateAddHtlc}} \Comment{payment failed}
           \State add $\left(\bot, \mathit{payid}\right)$ to
@@ -87,6 +90,7 @@
         on input (\textsc{pushFulfill}, \textit{pchid}) with \alice's ITI and
         handle subsequent messages by simulating respective ITIs of honest
         players or sending to \adversary{} the messages for corrupted players
+        \label{alg:sim:pay:fulfill}
       \EndIndent
       \Statex
 
@@ -98,6 +102,7 @@
         input (\textsc{pushAdd}, \textit{pchid}) with \alice's ITI and handle
         subsequent messages by simulating respective ITIs of honest players or
         sending to \adversary{} the messages for corrupted players
+        \label{alg:sim:pay:add}
       \EndIndent
       \Statex
 
@@ -108,6 +113,7 @@
         (\textsc{commit}, \textit{pchid}) with \alice's ITI and handle
         subsequent messages by simulating respective ITIs of honest players or
         sending to \adversary{} the messages for corrupted players
+        \label{alg:sim:pay:commit}
       \EndIndent
     \end{algorithmic}
   \end{simulatorbox}
@@ -187,17 +193,55 @@
 \end{lemma}
 
 \begin{proof}
-  \TODO{continue}
   When \environment{} sends $\left(\textsc{pay}, \bob, x,
-  \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$
+  \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to \alice{} in the
+  ideal world, \simulator{} is always notified (Fig.~\ref{alg:fpaynet:pay},
+  line~\ref{alg:fpaynet:pay:send}) and simulates the relevant execution of the
+  real world (Fig.~\ref{alg:sim:pay}, line~\ref{alg:sim:pay:simulate}). No
+  messages to \ledger{} or \environment{} that differ from the real world are
+  generated in the process. At the end of this simulation, no further messages
+  are sent (and the control returns to \environment). Therefore, when
+  \environment{} sends \textsc{pay}, no opportunity for distinguishability
+  arises.
 
-  When \environment{} sends (\textsc{poll})
+  When \environment{} sends any message of (\textsc{pushAdd}, \textit{pchid}),
+  (\textsc{pushFulfill}, \textit{pchid}), (\textsc{commit}, \textit{pchid}) to
+  \alice{} in the ideal world, it is forwarded to \simulator{}
+  (Fig.~\ref{alg:fpaynet:daemon},
+  lines~\ref{alg:fpaynet:daemon:fulfill},~\ref{alg:fpaynet:daemon:add},~\ref{alg:fpaynet:daemon:commit}
+  respectively), who in turn simulates \alice's real-world execution with her
+  simulated ITI and the handling of any subsequent messages sent by \alice's ITI
+  (Fig.~\ref{alg:sim:pay},
+  lines~\ref{alg:sim:pay:fulfill},~\ref{alg:sim:pay:add},~\ref{alg:sim:pay:commit}).
+  Neither $\fpaynet{}_{\mathrm{, Pay}}$ nor \simulator{} alter their state as a
+  result of these messages, apart from the state of \alice's simulated ITI and
+  the state of other simulated ITIs that receive and handle messages that were
+  sent as a result of \alice's ITI simulation. The states of these ITIs are
+  modified in the exact same way as they would in the real world. We deduce that
+  these three messages do not introduce any opportunity for \environment{} to
+  distinguish the real and the ideal world.
 
-  When \environment{} sends (\textsc{pushAdd}, \textit{pchid})
+  When \environment{} sends (\textsc{fulfillOnChain}) to \alice{} in the real
+  world, lines~\ref{alg:protocol:pay:foc:top}-\ref{alg:protocol:pay:foc:submit}
+  of Fig.~\ref{alg:protocol:pay:push} are executed by \alice. In the ideal world
+  on the other hand, $\fpaynet{}_{\mathrm{, Pay}}$ sends (\textsc{read}) to
+  \ledger{} (Fig.~\ref{alg:fpaynet:daemon},
+  line~\ref{alg:fpaynet:daemon:foc:read}) as \alice{} and subsequently lets
+  \simulator{} simulate \alice{}'s ITI receiving (\textsc{fulfillOnChain})
+  (Fig.~\ref{alg:sim:pay},
+  lines~\ref{alg:sim:pay:foc:top}-\ref{alg:sim:pay:foc:run}). Observe that
+  during this simulation a second message to \ledger{} (that would not match any
+  message in the real world) is avoided because \simulator{} skips
+  line~\ref{alg:protocol:pay:foc:read} of Fig.~\ref{alg:protocol:pay:push},
+  using as $t$ the one received from $\fpaynet{}_{\mathrm{, Pay}}$ in the
+  message (\textsc{fulfillOnChain}, $t$, \alice). Since $\fpaynet{}_{\mathrm{,
+  Pay}}$ sends (\textsc{read}) to \ledger{} as \alice{} and given that after
+  \ledger{} replies, control is given directly to \simulator{}, the $t$ used
+  during the simulation of \alice's ITI is identical to the one that \alice{}
+  would obtain in the real-world execution. The rest of the simulation is thus
+  identical with the real-world execution, therefore \textsc{fulfillOnChain}
+  does not introduce any opportunity for distinghuishability.
 
-  When \environment{} sends (\textsc{pushFulfill}, \textit{pchid})
-
-  When \environment{} sends (\textsc{fulfillOnChain})
-
-  When \environment{} sends (\textsc{commit}, \textit{pchid})
+  \TODO{continue}
+  When \environment{} sends (\textsc{poll}) to \alice{}
 \end{proof}
