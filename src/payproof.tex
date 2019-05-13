@@ -72,9 +72,9 @@
         on input (\textsc{poll}), using $\Sigma_{\alice}$ from the message, with
         \alice's ITI
         \State add all channels in \texttt{toSubmit} to \texttt{details}(\alice)
-        \State The first time we receive a message from $\fpaynet{}_{\mathrm{,
-        Pay}}$ that contains $\Sigma_{\alice}$ that is at least $k$ blocks
-        longer than the current one, concatenate (\textsc{channelsClosed},
+        \State The next time we receive a message from $\fpaynet{}_{\mathrm{,
+        Pay}}$ that contains a $\Sigma_{\alice}$ that contains all txs in
+        \texttt{toSubmit}, concatenate (\textsc{channelsClosed},
         \texttt{details}(\alice), \textit{reportid}) to the first subsequent
         message to $\fpaynet{}_{\mathrm{, Pay}}$ and clear
         \texttt{details}(\alice)
