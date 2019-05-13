@@ -131,8 +131,7 @@
     \begin{algorithmic}[1]
       \State Upon receiving any message with a concatenated (\textsc{state},
       $\Sigma$) part from $\fpaynet{}_{\mathrm{, Pay}}$: \Comment{\textsc{pay},
-      \textsc{getClosedFunds}, \textsc{pushFulfill}, \textsc{pushAdd},
-      \textsc{commit}}
+      \textsc{pushFulfill}, \textsc{pushAdd}, \textsc{commit}}
         \Indent
         \State handle first part of the message normally
         \ForAll{$\Sigma_{\alice} \in \Sigma$}
