@@ -245,10 +245,10 @@
   \begin{figure}[H]
     \begin{systembox}{\fpaynet - resolve payments}
       \begin{algorithmic}[1]
-        \State Upon receiving any message with a concatenated
-        $\left(\textsc{resolvePays}, \mathtt{charged}\right)$ from \simulator:
-        \Comment{from \textsc{resolvePay}, \textsc{channelsClosed}, from
-        \textsc{pushFulfill}, from \textsc{pushAdd}, from \textsc{commit}}
+        \State Upon receiving $\left(\textsc{resolvePays},
+        \mathtt{charged}\right)$ from \simulator:
+        \Comment{after first sending \textsc{pay}, \textsc{pushFulfill},
+        \textsc{pushAdd}, \textsc{commit}}
         \Indent
           \ForAll{$\charlie \text{ keys} \in \texttt{charged}$}
             \ForAll{$\left(\dave, \mathit{payid}\right) \in

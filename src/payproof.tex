@@ -177,9 +177,8 @@
             \EndIf
           \EndFor
         \EndFor
-        \State append $\left(\textsc{resolvePays}, \mathtt{charged}\right)$ to
-        the message to be sent, clear \texttt{charged} and send message to
-        $\fpaynet{}_{\mathrm{, Pay}}$
+        \State clear \texttt{charged} and send $\left(\textsc{resolvePays},
+        \mathtt{charged}\right)$ to $\fpaynet{}_{\mathrm{, Pay}}$
       \EndIndent
     \end{algorithmic}
   \end{simulatorbox}
