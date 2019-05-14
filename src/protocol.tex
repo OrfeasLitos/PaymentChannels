@@ -872,8 +872,8 @@
             we have sent both \textsc{updateFulfillHtlc} and
             \textsc{commitmentSigned} to a transaction without that HTLC to
             counterparty, but have not received the corresponding
-            \textsc{revokeAndAck} AND the HTLC expires within $\left[t,
-            \TODO{2?}k + \tochain{} - 1 + t\right]$}
+            \textsc{revokeAndAck} AND the HTLC expires within $\left[t, t + k +
+            \tochain{}\right]$}
               \State add $\mathtt{localCom}_n$ of the channel and all
               corresponding valid \texttt{HTLC-success}es and
               \texttt{HTLC-timeout}s (for both $\mathtt{localCom}_n$ and
