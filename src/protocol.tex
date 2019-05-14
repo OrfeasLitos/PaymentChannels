@@ -7,7 +7,8 @@
         \Indent
           \State $\mathtt{channels}, \mathtt{pendingOpen}, \mathtt{pendingPay},
           \mathtt{pendingClose} \gets \emptyset$
-          \State $\mathtt{newChannels}, \mathtt{closedChannels} \gets \emptyset$
+          \State $\mathtt{newChannels}, \mathtt{closedChannels},
+          \mathtt{updatesToReport} \gets \emptyset$
           \State $\mathtt{unclaimedOfferedHTLCs},
           \mathtt{unclaimedReceivedHTLCs}, \mathtt{pendingGetPaid} \gets
           \emptyset$
@@ -768,6 +769,8 @@
           \State mark $\mathtt{remoteCom}_{n+1}$ as ``irrevocably committed''
           \State $\mathtt{localCom}_{n+1} \gets \mathtt{pendingLocalCom}$
           \State unmark \texttt{channel}
+          \State add \texttt{receipt}(\texttt{channel}) to
+          \texttt{updatesToReport}
           \State $sh_{\mathrm{rev}, n} \gets
           \mathtt{CombineKey}\left(shb_{\mathrm{rev}}, phb_{\mathrm{rev}},
           st_{\mathrm{com} n}, pt_{\mathrm{com}, n}\right)$
