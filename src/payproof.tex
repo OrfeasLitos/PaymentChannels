@@ -47,17 +47,18 @@
       \overrightarrow{\mathtt{path}}, \mathtt{receipt}, \mathit{payid}\right)$
       from $\fpaynet{}_{\mathrm{, Pay}}$:
       \Indent
+        \State add ($\overrightarrow{\mathtt{path}}$, \textit{payid}) to
+        \texttt{payids}
         \State strip \textit{payid}, simulate receiving the message with
         \alice{} ITI and further execute the parts of $\Pi_{\mathrm{LN}}$ that
         correspond to honest parties (Fig.~\ref{alg:protocol:pay:invoice}-
         Fig.~\ref{alg:protocol:pay:updateFulfillHtlc})
         \label{alg:sim:pay:simulate}
-        \If{any ``ensure'' in $\Pi_{\mathrm{LN}}$ fails until receiver processes
+        \If{any ``ensure'' in $\Pi_{\mathrm{LN}}$ fails until \bob{} processes
         \textsc{updateAddHtlc}} \Comment{payment failed}
           \State add $\left(\bot, \mathit{payid}\right)$ to
           \texttt{charged}(\alice)
-        \Else
-          \State add ($\overrightarrow{\mathtt{path}}$, \textit{payid}) to
+          \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid}) from
           \texttt{payids}
         \EndIf
       \EndIndent
