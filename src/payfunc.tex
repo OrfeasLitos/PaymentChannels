@@ -236,6 +236,15 @@
           \Sigma\right)$ to \simulator
           \label{alg:fpaynet:pay:send}
         \EndIndent
+        \Statex
+
+        \State Upon receiving (\textsc{update}, \texttt{receipt}, \alice) from
+        \simulator:
+        \Indent
+          \State add \texttt{receipt} to \texttt{updatesToReport}(\alice)
+          \Comment{trust \simulator{} here, check on \textsc{resolvePays}}
+          \State send (\textsc{continue}) to \simulator
+        \EndIndent
       \end{algorithmic}
     \end{systembox}
     \caption{}
@@ -280,11 +289,8 @@
                 \If{\texttt{payer} has $x$ or more in \texttt{channel}}
                   \State update \texttt{channel} to the next version and
                   transfer $x$ from \texttt{payer} to \texttt{payee}
-                  \State add \texttt{receipt}(\texttt{channel}) to both parties'
-                  \texttt{updatesToReport}
                 \Else
-                  \State revert all updates and remove them from
-                  \texttt{updatesToReport}
+                  \State revert all updates
                 \EndIf
               \EndFor
               \If{$\dave{} \notin \mathtt{corrupted}$}

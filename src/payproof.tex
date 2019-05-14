@@ -127,6 +127,17 @@
         subsequent messages by simulating respective ITIs of honest players or
         sending to \adversary{} the messages for corrupted players
         \label{alg:sim:push:commit}
+        \If{during the simulation above, line~\ref{alg:protocol:pay:raa:report}
+        of Fig.~\ref{alg:protocol:pay:revokeAndAck} is simulated in \alice's
+        ITI}
+          \State send (\textsc{update}, \texttt{receipt}, \alice) to
+          $\fpaynet{}_{\mathrm{, Pay}}$, where \texttt{receipt} is the receipt
+          just added to the simulated \texttt{updatesToReport}
+          (Fig.~\ref{alg:protocol:pay:revokeAndAck},
+          line~\ref{alg:protocol:pay:raa:report})
+          \State upon receiving (\textsc{continue}) from $\fpaynet{}_{\mathrm{,
+          Pay}}$, carry on with the simulation
+        \EndIf
       \EndIndent
     \end{algorithmic}
   \end{simulatorbox}
