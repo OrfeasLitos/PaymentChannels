@@ -33,6 +33,7 @@
           \item (\textsc{corrupted}, \alice)
           \item (\textsc{channelAnnounced}, \alice, $p_{\alice, F}, p_{\bob,
           F}$, \textit{fchid}, \textit{pchid}, \textit{tid})
+          \item (\textsc{update}, \texttt{receipt}, \alice)
           \item (\textsc{resolvePays}, \textit{payid}, \texttt{charged})
           \item (\textsc{channelClosed}, \textit{fchid})
           \item (\textsc{channelsClosed}, \texttt{details}, \alice,
@@ -46,6 +47,7 @@
           \item (\textsc{channelOpened}, \alice, \textit{fchid})
           \item (\textsc{pay}, \alice, \bob, $x,
           \overrightarrow{\mathtt{path}}$, \texttt{receipt}, \textit{payid})
+          \item (\textsc{continue})
           \item (\textsc{closeChannel}, \textit{fchid}, \alice)
           \item (\textsc{getClosedFunds}, \texttt{toReport}, $\Sigma_{\alice}$,
           \alice, \textit{reportid})
