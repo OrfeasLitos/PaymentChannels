@@ -135,49 +135,55 @@
       \textsc{pushFulfill}, \textsc{pushAdd}, \textsc{commit}}
         \Indent
         \State handle first part of the message normally
-        \ForAll{$\Sigma_{\alice} \in \Sigma$}
-          \ForAll{$(\overrightarrow{\mathtt{path}}, \mathit{payid}) \in
-          \mathtt{payids} : \alice \in \overrightarrow{\mathtt{path}}$}
-            \If{\alice{} sent \textsc{updateFulfillHtlc} to a corrupted player
-            and either (got the fulfillment of the HTLC irrevocably committed OR
-            fulfilled the HTLC on-chain (i.e. permanently added
-            \texttt{HTLC-success} to \ledger)), AND the next honest player
-            \bob{} down the line successfully timed out the HTLC on-chain (i.e.
-            permanently added the relevant \texttt{HTLC-Timeout} to \ledger)
-            (due to no or bad communication from the previous player)}
-              \State add to \texttt{charged}(\alice) a tuple
-              (\texttt{corrupted}, \textit{payid}) where \texttt{corrupted} is
-              set to one of the corrupted parties between \alice{} and \bob{}
-              \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid})
-              from \texttt{payids}
-            \ElsIf{(player before \alice{} (closer to payer) has put in block
-            $h_{\mathrm{com}}$ of $\Sigma_{\alice}$ an older \texttt{commitment}
-            tx (that doesn't contain the HTLC) AND \simulator{} hasn't received
-            (\textsc{getClosedFunds}, \texttt{report}, \alice,
-            \textit{reportid}) from $\fpaynet{}_{\mathrm{, Pay}}$ with the
-            offending tx in \texttt{report} during $\left[h_{\mathrm{com}} + k,
-            h_{\mathrm{com}} + k + \mathtt{AliceDelay} - 1\right]$) OR (player
-            after \alice{} (closer to receiver) has irrevocably fulfilled the
-            HTLC on-chain with the \texttt{HTLC-success} tx in block
-            $h_{\mathrm{fulfill}}$ of $\Sigma_{\alice}$ AND \simulator{} hasn't
-            received (\textsc{fulfillOnChain}, $\mathrm{cltvExpiry} - 2k -
-            \tochain - 1$, \alice) from $\fpaynet{}_{\mathrm{, Pay}}$, where
-            cltvExpiry is the incoming CLTV expiry of \alice{} in
-            $\overrightarrow{\mathtt{path}}$)}
-              \State add (\alice, \textit{payid}) to \texttt{charged}(\alice)
-              \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid})
-              from \texttt{payids}
-            \ElsIf{\alice{} is the payer in $\overrightarrow{\mathtt{path}}$ AND
-            ((she has received \textsc{updateFulfillHtlc} AND has subsequently
-            sent \textsc{commit} and \textsc{revokeAndAck}) OR player after
-            \alice{} has irrevocably fulfilled the HTLC on-chain with the
-            \texttt{HTLC-success} tx)} \Comment{honest payment completed}
-              \State add (\alice, \textit{payid}) to \texttt{charged}(\alice)
-              \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid})
-              from \texttt{payids}
-            \EndIf
+        \label{alg:sim:resolvepay:firstmsg}
+        \If{at the end of the simulation above, control is still held by
+        \simulator}
+        \label{alg:sim:resolvepay:mayberesolve}
+          \ForAll{$\Sigma_{\alice} \in \Sigma$}
+          \label{alg:sim:resolvepay:everystate}
+            \ForAll{$(\overrightarrow{\mathtt{path}}, \mathit{payid}) \in
+            \mathtt{payids} : \alice \in \overrightarrow{\mathtt{path}}$}
+              \If{\alice{} sent \textsc{updateFulfillHtlc} to a corrupted player
+              and either (got the fulfillment of the HTLC irrevocably committed OR
+              fulfilled the HTLC on-chain (i.e. permanently added
+              \texttt{HTLC-success} to \ledger)), AND the next honest player
+              \bob{} down the line successfully timed out the HTLC on-chain (i.e.
+              permanently added the relevant \texttt{HTLC-Timeout} to \ledger)
+              (due to no or bad communication from the previous player)}
+                \State add to \texttt{charged}(\alice) a tuple
+                (\texttt{corrupted}, \textit{payid}) where \texttt{corrupted} is
+                set to one of the corrupted parties between \alice{} and \bob{}
+                \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid})
+                from \texttt{payids}
+              \ElsIf{(player before \alice{} (closer to payer) has put in block
+              $h_{\mathrm{com}}$ of $\Sigma_{\alice}$ an older \texttt{commitment}
+              tx (that doesn't contain the HTLC) AND \simulator{} hasn't received
+              (\textsc{getClosedFunds}, \texttt{report}, \alice,
+              \textit{reportid}) from $\fpaynet{}_{\mathrm{, Pay}}$ with the
+              offending tx in \texttt{report} during $\left[h_{\mathrm{com}} + k,
+              h_{\mathrm{com}} + k + \mathtt{AliceDelay} - 1\right]$) OR (player
+              after \alice{} (closer to receiver) has irrevocably fulfilled the
+              HTLC on-chain with the \texttt{HTLC-success} tx in block
+              $h_{\mathrm{fulfill}}$ of $\Sigma_{\alice}$ AND \simulator{} hasn't
+              received (\textsc{fulfillOnChain}, $\mathrm{cltvExpiry} - 2k -
+              \tochain - 1$, \alice) from $\fpaynet{}_{\mathrm{, Pay}}$, where
+              cltvExpiry is the incoming CLTV expiry of \alice{} in
+              $\overrightarrow{\mathtt{path}}$)}
+                \State add (\alice, \textit{payid}) to \texttt{charged}(\alice)
+                \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid})
+                from \texttt{payids}
+              \ElsIf{\alice{} is the payer in $\overrightarrow{\mathtt{path}}$ AND
+              ((she has received \textsc{updateFulfillHtlc} AND has subsequently
+              sent \textsc{commit} and \textsc{revokeAndAck}) OR player after
+              \alice{} has irrevocably fulfilled the HTLC on-chain with the
+              \texttt{HTLC-success} tx)} \Comment{honest payment completed}
+                \State add (\alice, \textit{payid}) to \texttt{charged}(\alice)
+                \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid})
+                from \texttt{payids}
+              \EndIf
+            \EndFor
           \EndFor
-        \EndFor
+        \EndIf
         \State clear \texttt{charged} and send $\left(\textsc{resolvePays},
         \mathtt{charged}\right)$ to $\fpaynet{}_{\mathrm{, Pay}}$
       \EndIndent
