@@ -290,7 +290,7 @@
                   \State update \texttt{channel} to the next version and
                   transfer $x$ from \texttt{payer} to \texttt{payee}
                 \Else
-                  \State revert all updates
+                  \State revert all updates done in this loop
                 \EndIf
               \EndFor
               \If{$\dave{} \notin \mathtt{corrupted}$}
