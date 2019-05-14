@@ -86,8 +86,15 @@
         \State send (\textsc{submit}, \texttt{toSubmit}) to \ledger{} as \alice
         \label{alg:sim:poll:submit}
       \EndIndent
-      \Statex
+    \end{algorithmic}
+  \end{simulatorbox}
+  \caption{}
+  \label{alg:sim:pay}
+\end{figure}
 
+\begin{figure}[H]
+  \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$ - push}
+    \begin{algorithmic}[1]
       \State Upon receiving (\textsc{pushFulfill}, \textit{pchid}, \alice) from
       $\fpaynet{}_{\mathrm{, Pay}}$:
       \Indent
@@ -96,7 +103,7 @@
         on input (\textsc{pushFulfill}, \textit{pchid}) with \alice's ITI and
         handle subsequent messages by simulating respective ITIs of honest
         players or sending to \adversary{} the messages for corrupted players
-        \label{alg:sim:pay:fulfill}
+        \label{alg:sim:push:fulfill}
       \EndIndent
       \Statex
 
@@ -108,7 +115,7 @@
         input (\textsc{pushAdd}, \textit{pchid}) with \alice's ITI and handle
         subsequent messages by simulating respective ITIs of honest players or
         sending to \adversary{} the messages for corrupted players
-        \label{alg:sim:pay:add}
+        \label{alg:sim:push:add}
       \EndIndent
       \Statex
 
@@ -119,12 +126,12 @@
         (\textsc{commit}, \textit{pchid}) with \alice's ITI and handle
         subsequent messages by simulating respective ITIs of honest players or
         sending to \adversary{} the messages for corrupted players
-        \label{alg:sim:pay:commit}
+        \label{alg:sim:push:commit}
       \EndIndent
     \end{algorithmic}
   \end{simulatorbox}
   \caption{}
-  \label{alg:sim:pay}
+  \label{alg:sim:push}
 \end{figure}
 
 \begin{figure}[H]
@@ -221,8 +228,8 @@
   lines~\ref{alg:fpaynet:daemon:fulfill},~\ref{alg:fpaynet:daemon:add},~\ref{alg:fpaynet:daemon:commit}
   respectively), who in turn simulates \alice's real-world execution with her
   simulated ITI and the handling of any subsequent messages sent by \alice's ITI
-  (Fig.~\ref{alg:sim:pay},
-  lines~\ref{alg:sim:pay:fulfill},~\ref{alg:sim:pay:add},~\ref{alg:sim:pay:commit}).
+  (Fig.~\ref{alg:sim:push},
+  lines~\ref{alg:sim:push:fulfill},~\ref{alg:sim:push:add},~\ref{alg:sim:push:commit}).
   Neither $\fpaynet{}_{\mathrm{, Pay}}$ nor \simulator{} alter their state as a
   result of these messages, apart from the state of \alice's simulated ITI and
   the state of other simulated ITIs that receive and handle messages that were
