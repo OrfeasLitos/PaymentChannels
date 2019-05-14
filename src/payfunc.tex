@@ -31,7 +31,7 @@
           \texttt{relayDelay}(\alice), pubKey)
           \item (\textsc{registered})
           \item (\textsc{channelClosed}, \texttt{receipt})
-          \item (\textsc{news}, newChannels, closedChannels, pendingUpdates)
+          \item (\textsc{news}, newChannels, closedChannels, updatesToReport)
         \end{itemize}
         \item from $\simulator$:
         \begin{itemize}
@@ -84,7 +84,7 @@
           blocks}
           \State $\mathtt{relayDelay}\left(\alice\right) \gets
           \mathrm{relayDelay}$
-          \State $\mathtt{pendingUpdates}\left(\alice\right),
+          \State $\mathtt{updatesToReport}\left(\alice\right),
           \mathtt{newChannels}\left(\alice\right) \gets \emptyset$
           \State $\mathtt{polls}\left(\alice\right) \gets \emptyset$
           \State $\mathtt{focs}\left(\alice\right) \gets \emptyset$
@@ -281,10 +281,10 @@
                   \State update \texttt{channel} to the next version and
                   transfer $x$ from \texttt{payer} to \texttt{payee}
                   \State add \texttt{receipt}(\texttt{channel}) to both parties'
-                  \texttt{pendingUpdates}
+                  \texttt{updatesToReport}
                 \Else
                   \State revert all updates and remove them from
-                  \texttt{pendingUpdates}
+                  \texttt{updatesToReport}
                 \EndIf
               \EndFor
               \If{$\dave{} \notin \mathtt{corrupted}$}
@@ -483,7 +483,7 @@
         \State Upon receiving (\textsc{getNews}) from \alice:
         \Indent
           \State clear \texttt{newChannels}(\alice),
-          \texttt{closedChannels}(\alice), \texttt{pendingUpdates}(\alice) and
+          \texttt{closedChannels}(\alice), \texttt{updatesToReport}(\alice) and
           send them to \alice{} with header \textsc{news}
         \EndIndent
       \end{algorithmic}
