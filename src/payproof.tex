@@ -187,28 +187,6 @@
               recent $\mathtt{remoteCom}_l$ or $\mathtt{localCom}_l$ and the
               \texttt{HTLC-timeout} for HTLC of the channel after \alice{})}
               \Comment{\alice{} did not fulfill in time}
-%              \ElsIf{(player before \alice{} (closer to payer) has put in block
-%              $h_{\mathrm{com}}$ of $\Sigma_{\alice}$ an older
-%              \texttt{commitment} tx (that doesn't contain the HTLC) AND
-%              \simulator{} hasn't received (\textsc{getClosedFunds},
-%              \texttt{report}, $\Sigma_{\alice}$, \alice, \textit{reportid})
-%              from $\fpaynet{}_{\mathrm{, Pay}}$ with the offending tx in
-%              \texttt{report} during $\left[h_{\mathrm{com}} + k,
-%              h_{\mathrm{com}} + k + \mathtt{AliceDelay} - 1\right]$) OR (player
-%              after \alice{} (closer to receiver) has irrevocably fulfilled the
-%              HTLC on-chain with the \texttt{HTLC-success} tx in block
-%              $h_{\mathrm{fulfill}}$ of $\Sigma_{\alice}$ AND (\simulator{} has
-%              not received (\textsc{getClosedFunds}, \texttt{report},
-%              $\Sigma_{\alice}$, \alice, \textit{reportid}) from
-%              $\fpaynet{}_{\mathrm{, Pay}}$ with \texttt{report} containing an
-%              \texttt{HTLC-success} with the preimage to the hash of the
-%              incoming HTLC when $|\Sigma_{\alice}| \in
-%              [\mathtt{OutgoingCltvExpiry} + k + \tochain{} + 1,
-%              \mathtt{IncomingCltvExpiry} - k - \tochain{}]$ OR \simulator{}
-%              hasn't received (\textsc{fulfillOnChain}, $\mathrm{cltvExpiry} -
-%              2k - \tochain{} - 1$, \alice) from $\fpaynet{}_{\mathrm{, Pay}}$,
-%              where cltvExpiry is the incoming CLTV expiry of \alice{} in
-%              $\overrightarrow{\mathtt{path}}$))}
                 \State add (\alice, \textit{payid}) to \texttt{charged}(\alice)
                 \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid})
                 from \texttt{payids}
