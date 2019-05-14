@@ -380,7 +380,7 @@
           contain \alice{} and exist in \texttt{channels} (txs that spend
           funding txs that have an older channel version than stored)
           \label{alg:fpaynet:poll:malicious}
-          \ForAll{maliciously closed \texttt{channel}s by a remote committment
+          \ForAll{maliciously closed \texttt{channel}s by a remote commitment
           \texttt{tx} in block with height $h_{\mathtt{tx}}$}
             \If{the delayed output (of the counterparty) has been spent AND
             \texttt{polls}(\alice) has an element in $\left[h_{\mathtt{tx}} + k,
