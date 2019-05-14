@@ -259,13 +259,14 @@
               \State retrieve $\left(\alice, \bob, x,
               \overrightarrow{\mathtt{path}}\right)$ with ID \textit{payid} and
               remove it from \texttt{pendingPay}
+              \If{$\dave{} = \bot$}
+                \State \Return
+              \EndIf
               \State calculate \texttt{IncomingCltvExpiry},
               \texttt{OutgoingCltvExpiry} of \dave{} (as in
               Fig.~\ref{alg:protocol:pay:invoice},
               l.~\ref{alg:protocol:pay:invoice:cltv})
-              \If{$\dave{} = \bot$}
-                \State \Return
-              \ElsIf{$\dave{} \neq \alice{} \vee \dave{} \notin
+              \If{$\dave{} \neq \alice{} \vee \dave{} \notin
               \mathtt{corrupted} \ \vee$ (\texttt{polls}(\dave) contains an
               element in $\left[\mathtt{OutgoingCltvExpiry} + 2k + \tochain{} -
               1,\right.$ $\left.\mathtt{IncomingCltvExpiry} - \TODO{2?}k -
