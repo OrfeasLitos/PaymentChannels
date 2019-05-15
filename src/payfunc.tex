@@ -269,13 +269,20 @@
               Fig.~\ref{alg:protocol:pay:invoice},
               l.~\ref{alg:protocol:pay:invoice:cltv})
               \If{$\dave{} \neq \alice{} \wedge \dave{} \notin
-              \mathtt{corrupted} \ \wedge$ \texttt{polls}(\dave) contains an
-              element in $\left[\mathtt{OutgoingCltvExpiry} + k + \tochain{} +
-              1,\right.$ $\left.\mathtt{IncomingCltvExpiry} - k -
-              \tochain{}\right] \wedge$ \texttt{focs}(\dave) contains
-              $\mathtt{IncomingCltvExpiry} - k - \tochain{} \ \wedge$ the
-              element in \texttt{polls}(\dave) was added before the element in
-              \texttt{focs}(\dave)}
+              \mathtt{corrupted} \ \wedge ((\Sigma_{\dave}$ contains in block
+              $h_{\mathtt{tx}}$ an old $\mathtt{remoteCom}_m$ that does not
+              contain the HTLC and a tx that spends the delayed output of
+              $\mathtt{remoteCom}_m \ \wedge$ \texttt{polls}(\dave) contains an
+              element in $[h_{\mathtt{tx}} + k, h_{\mathtt{tx}} + k +
+              \mathtt{delay}\left(\dave\right) - 1]) \ \vee$ ($\Sigma_{\dave}$
+              does not contain such a $\mathtt{remoteCom}_m \ \wedge$
+              \texttt{polls}(\dave) contains an element in
+              $[\mathtt{OutgoingCltvExpiry} + k + \tochain{} + 1,
+              \mathtt{IncomingCltvExpiry} - k - \tochain{}] \ \wedge$
+              \texttt{focs}(\dave) contains $\mathtt{IncomingCltvExpiry} - k -
+              \tochain{} \ \wedge$ the element in \texttt{polls}(\dave) was
+              added before the element in \texttt{focs}(\dave)))} \TODO{maybe 2
+              polls??}
                 \State halt
               \EndIf
               \ForAll{$\mathtt{channel}\text{s} \in
