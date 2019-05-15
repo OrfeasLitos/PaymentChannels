@@ -363,5 +363,128 @@
   \Pr\left[E_{1,2}\right] \leq \negl$. We conclude that \textsc{poll} introduces
   only a negligible opportunity for distinghuishability.
 
-  \TODO{prove state - resolvePays, channelsclosed}
+  We now treat the effects of the (\textsc{state}, $\Sigma$) message that
+  $\fpaynet{}_{\mathrm{, Pay}}$ sends to \simulator{} as a concatenation to
+  \textsc{pay}, \textsc{pushFulfill}, \textsc{pushAdd} and \textsc{commit}
+  messages. We first observe that the (\textsc{state}) message is handled after
+  handling the first message (which is of one of the four aforementioned types)
+  (Fig.~\ref{alg:sim:resolvepay}, line~\ref{alg:sim:resolvepay:firstmsg}). It
+  may be the case that at the end of the handling of
+  line~\ref{alg:sim:resolvepay:firstmsg}, \simulator{} does not have control of
+  the execution. That can happen if a simulated ITI sends a message to a
+  corrupted player and that player does not respond (e.g. in
+  Fig.~\ref{alg:protocol:pay:invoice}, line~\ref{alg:protocol:pay:sendinvoice},
+  when the first message is $\left(\textsc{pay}, \bob, x,
+  \overrightarrow{\mathtt{path}}\right)$ and \bob{} is corrupted), or if the
+  handling of the message results in sending (\textsc{submit}) to \ledger{}
+  (e.g. in Fig.~\ref{alg:protocol:pay:push},
+  line~\ref{alg:protocol:pushfulfill:submit} when the first message is
+  (\textsc{pushFulfill}, \textit{pchid}) and counterparty has gone on-chain). In
+  that case, the (\textsc{state}) message is simply ignored
+  (Fig.~\ref{alg:sim:resolvepay}, line~\ref{alg:sim:resolvepay:mayberesolve})
+  and does not influence execution in any way.
+
+  In the case when $\left(\textsc{state}, \Sigma\right)$ is handled,
+  \simulator{} attempts to specify who was charged for each pending payment,
+  based on the information that the potentially paying party sees in its view of
+  the \ledger{} state (Fig.~\ref{alg:sim:resolvepay},
+  lines~\ref{alg:sim:resolvepay:everystate}-\ref{alg:sim:resolvepay:loopend}).
+  The resolution is then sent to $\fpaynet{}_{\mathrm{, Pay}}$ with the message
+  (\textsc{resolvePays}, \texttt{charged}). $\fpaynet{}_{\mathrm{, Pay}}$
+  handles this message in Fig.~\ref{alg:fpaynet:resolvepay}, where, if it does
+  not halt (line~\ref{alg:fpaynet:resolvepay:halt}), it updates the state of
+  each affected channel (line~\ref{alg:fpaynet:resolvepay:update}) and does not
+  send any message, thus control returns to \environment. Therefore we have to
+  prove that $\fpaynet{}_{\mathrm{, Pay}}$ halts with at most negligible
+  probability in order to conclude that the handling of a (\textsc{state})
+  message does not introduce opportunity for distinguishability.
+
+  $\fpaynet{}_{\mathrm{, Pay}}$ halts if the player \dave{} charged for a
+  payment is an honest intermediary of that payment, (has \textsc{poll}ed in time
+  to catch a malicious closure (event $A$) but a malicious closure succeeded
+  (event $B$)) or (no malicious closure succeeded ($\neg B$) and \dave{} has
+  \textsc{poll}ed in time to to learn the preimage of the HTLC early enough
+  (event $C$) and has attempted to fulfill on chain at the right moment (event
+  $D$)) (Fig.~\ref{alg:fpaynet:resolvepay},
+  line~\ref{alg:fpaynet:resolvepay:haltcond}) -- i.e. halts in the event $(A
+  \wedge B) \vee (\neg B \wedge C \wedge D)$. \simulator{} decides that \dave{}
+  is charged if his previous counterparty did a malicious closure to a channel
+  version without the HTLC and spent their (delayed) output ($B$), or if his
+  next counterparty fulfilled (event $F$) and his previous counterparty timed
+  out the HTLC (event $G$) (Fig.~\ref{alg:sim:resolvepay},
+  line~\ref{alg:sim:resolvepay:negligent}), -- i.e. \dave{} is charged in the
+  evnet $B \vee (F \wedge G)$.
+
+  We will now show that $\Pr[A \wedge B] \leq \negl \wedge \Pr[(C \wedge D)
+  \wedge (F \wedge G)] \leq \negl$, from which we can deduce that $\Pr[(A \wedge
+  B) \vee ((C \wedge D) \wedge (F \wedge G))] \leq \negl$ and thus $\Pr[((A
+  \wedge B) \vee (\neg B \wedge C \wedge D)) \wedge (B \vee (F \wedge G))] \leq
+  \negl$. This last step holds because $(A \wedge B) \vee ((C \wedge D) \wedge
+  (F \wedge G)) = (A \wedge B) \vee (C \wedge D \wedge F \wedge G)$ and $((A
+  \wedge B) \vee (\neg B \wedge C \wedge D)) \wedge (B \vee (F \wedge G)) = (A
+  \wedge B) \vee (\neg B \wedge C \wedge D \wedge F \wedge G)$ and the latter is
+  a subset of the former.
+
+  The analysis of the event $A \wedge B$ is identical to the one we did
+  previously for the events $E_1, E_2$, with $A$ corresponding to $E_2$ and $B$
+  to $E_1$. We thus deduce that $\Pr[A \wedge B] \leq \negl$.
+
+  The only way for event $C$ to be true is if \environment{} sends
+  (\textsc{poll}) to \dave{} during the prescribed time period
+  (Fig.~\ref{alg:fpaynet:poll}, line~\ref{alg:fpaynet:poll:height}) -- note that
+  the addition to \texttt{polls}(\dave) during registration
+  (Fig.~\ref{alg:fpaynet:support}, line~\ref{alg:fpaynet:support:lastpoll})
+  cannot be within the desired range due to the fact that
+  \texttt{OutgoingCltvExpiry} is not smaller than the chain height when the
+  corresponding (\textsc{invoice}) was received
+  (Fig.~\ref{alg:protocol:pay:invoice},
+  line~\ref{alg:protocol:pay:invoice:cltv}), registration happens necessarily
+  before handling (\textsc{invoice}) (Fig.~\ref{alg:fpaynet:support},
+  line~\ref{alg:fpaynet:support:unreg}) and the element added to
+  \texttt{polls}(\dave) at registration is the chain height at that time
+  (Fig.~\ref{alg:fpaynet:support}, line~\ref{alg:fpaynet:support:lastpoll}).
+  When \dave{} receives (\textsc{poll}), $\fpaynet{}_{\mathrm{, Pay}}$ sends
+  (\textsc{getClosedFunds}) to \simulator{} (Fig.~\ref{alg:fpaynet:poll},
+  line~\ref{alg:fpaynet:poll:send}) with overwhelming probability (since, as we
+  saw earlier, $\fpaynet{}_{\mathrm{, Pay}}$ halts in
+  line~\ref{alg:fpaynet:poll:halt} only with negligible probability).
+
+  Event $G$ happens only when the previous counterparty successfully appends
+  \texttt{HTLC-timeout} to $\Sigma_{\dave}$, which is a valid transaction only
+  from the block of height $\mathtt{IncomingCltvExpiry} + 1$ and on, or if the
+  previous counterparty learns the preimage of the HTLC and forges a signature
+  valid by \dave's public HTLC key, or if the previous counterparty forges a
+  signature valid by \dave's public revocation key; the two latter scenarios can
+  happen only with negligible probability. Thus, given that $F$ happens until a
+  moment when $|\Sigma_{\dave}| \leq \mathtt{IncomingCltvExpiry} - k -
+  \tochain{}$, \dave{} has the time to successfully fulfill the HTLC with
+  overwhelming probability. Given $C$, \dave{} has \textsc{poll}ed at two
+  moments $h_1, h_2 \in [\mathtt{OutgoingCltvExpiry} + k + \tochain{} + 1,
+  \mathtt{IncomingCltvExpiry} - k - \tochain{}],$ such that $h_2 \geq h_1 + k +
+  \tochain{}$. If $\Sigma_{\dave}$ contains the preimage at moment $h_1$ or
+  $h_2$, then \dave{} may try to update the previous channel off-chain if he
+  receives a (\texttt{pushFulfill}) for that channel
+  (Fig.~\ref{alg:protocol:pay:push},
+  lines~\ref{alg:protocol:pushfulfill:start}-\ref{alg:protocol:pushfulfill:submit}),
+  and if the off-chain update is never attempted (because (\texttt{pushFulfill})
+  and (\texttt{commit}) are not received) or fails (because the previous
+  counterparty does not send (\texttt{revokeAndAck})), then the
+  (\texttt{fulfillOnChain}) that he receives according to $D$ will make him
+  submit \texttt{HTLC-success} (Fig.~\ref{alg:protocol:pay:push},
+  lines~\ref{alg:protocol:pay:foc:top}-\ref{alg:protocol:pay:foc:submit}) and
+  have it on-chain by block of height \texttt{IncomingCltvExpiry}
+  (Proposition~\ref{prop:tochain}). Furthermore, in the case that the
+  \texttt{HTLC-success} is not found at the (\textsc{poll}) of $h_1$, \dave{}
+  immediately submits \texttt{HTLC-timeout}
+  (Fig.~\ref{alg:protocol:poll:closedch},
+  line~\ref{alg:protocol:poll:htlc:submit}), which either ends up in
+  $\Sigma_{\dave}$ by block height $h_1 + \tochain{}$
+  (Proposition~\ref{prop:tochain}) or is rejected because the counterparty
+  managed to append \texttt{HTLC-success} before it. In the first case, \dave{}
+  is not charged for the payment. In the second case, the second (\textsc{poll})
+  (at block height $h_2$) necessarily reveals the \texttt{HTLC-success} to
+  \dave{} and subsequently the (\textsc{fulfillOnChain}) causes \dave{} to
+  fulfill the HTLC with the previous counterparty, as argued above. Therefore in
+  all but negligible cases \dave{} is not charged for the payment, i.e. $\Pr[(C
+  \wedge D) \wedge (F \wedge G)] \leq \negl$.
 \end{proof}
