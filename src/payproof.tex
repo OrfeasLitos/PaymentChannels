@@ -184,8 +184,9 @@
               relevant HTLC $\vee$ \alice's latest irrevocably committed
               $\mathtt{remoteCom}_n$ for the channel before \alice{} does not
               contain the HTLC) $\wedge \Sigma_{\alice}$ contains the most
-              recent $\mathtt{remoteCom}_l$ or $\mathtt{localCom}_l$ and the
-              \texttt{HTLC-timeout} for HTLC of the channel after \alice{})}
+              recent $\mathtt{remoteCom}_l$ or $\mathtt{localCom}_l$ and (the
+              \texttt{HTLC-timeout} or an \texttt{HTLC-success} that pays the
+              counterparty) for HTLC of the channel after \alice{})}
               \Comment{\alice{} did not fulfill in time}
                 \State add (\alice, \textit{payid}) to \texttt{charged}(\alice)
                 \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid})
