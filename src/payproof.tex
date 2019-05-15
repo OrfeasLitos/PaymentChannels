@@ -188,6 +188,7 @@
               \texttt{HTLC-timeout} or an \texttt{HTLC-success} that pays the
               counterparty) for HTLC of the channel after \alice{})}
               \Comment{\alice{} did not fulfill in time}
+              \label{alg:sim:resolvepay:negligent}
                 \State add (\alice, \textit{payid}) to \texttt{charged}(\alice)
                 \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid})
                 from \texttt{payids}
@@ -203,6 +204,7 @@
               \EndIf
             \EndFor
           \EndFor
+          \label{alg:sim:resolvepay:loopend}
         \EndIf
         \State clear \texttt{charged} and send $\left(\textsc{resolvePays},
         \mathtt{charged}\right)$ to $\fpaynet{}_{\mathrm{, Pay}}$

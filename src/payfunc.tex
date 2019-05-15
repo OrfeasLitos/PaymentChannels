@@ -116,6 +116,7 @@
         $\left(\textsc{register}\right)$ from \alice:
         \Indent
           \State ignore message if \alice{} has not registered
+          \label{alg:fpaynet:support:unreg}
         \EndIndent
         \Statex
 
@@ -283,7 +284,9 @@
               \texttt{focs}(\dave) contains $\mathtt{IncomingCltvExpiry} - k -
               \tochain{} \ \wedge$ the element in \texttt{polls}(\dave) was
               added before the element in \texttt{focs}(\dave)))}
+              \label{alg:fpaynet:resolvepay:haltcond}
                 \State halt
+                \label{alg:fpaynet:resolvepay:halt}
               \EndIf
               \ForAll{$\mathtt{channel}\text{s} \in
               \overrightarrow{\mathtt{path}}$ starting from the one where
@@ -295,6 +298,7 @@
                 \If{\texttt{payer} has $x$ or more in \texttt{channel}}
                   \State update \texttt{channel} to the next version and
                   transfer $x$ from \texttt{payer} to \texttt{payee}
+                  \label{alg:fpaynet:resolvepay:update}
                 \Else
                   \State revert all updates done in this loop
                 \EndIf
@@ -403,6 +407,7 @@
           \State send (\textsc{getClosedFunds},
           \texttt{toReport}(\textit{reportid}), $\Sigma_{\alice}$, \alice,
           \textit{reportid}) to \simulator
+          \label{alg:fpaynet:poll:send}
         \EndIndent
       \end{algorithmic}
     \end{systembox}

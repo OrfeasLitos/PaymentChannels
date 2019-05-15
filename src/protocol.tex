@@ -421,6 +421,7 @@
                 \State add (sig, TX) to \texttt{unclaimedOfferedHTLCs}
               \ElsIf{timelock has expired}
                 \State add (sig, TX) to \texttt{toSubmit}
+                \label{alg:protocol:poll:htlc:submit}
               \EndIf
             \EndFor
             \ForAll{spent offered HTLC output $i$ of $\mathtt{remoteCom}_n$}
@@ -474,6 +475,7 @@
           \State add (\bob, $x$, $\overrightarrow{\mathtt{path}}$,
           \textit{payid}, ``waiting for invoice'') to \texttt{pendingPay}
           \State send (\textsc{sendInvoice}, \textit{payid}) to \bob{}
+          \label{alg:protocol:pay:sendinvoice}
         \EndIndent
         \Statex
 
@@ -771,6 +773,7 @@
           \State unmark \texttt{channel}
           \State add \texttt{receipt}(\texttt{channel}) to
           \texttt{updatesToReport}
+          \label{alg:protocol:pay:raa:report}
           \State $sh_{\mathrm{rev}, n} \gets
           \mathtt{CombineKey}\left(shb_{\mathrm{rev}}, phb_{\mathrm{rev}},
           st_{\mathrm{com} n}, pt_{\mathrm{com}, n}\right)$
@@ -834,6 +837,7 @@
             sh_{\mathrm{htlc}, n}\right)$
             \State send (\textsc{submit}, (sig, TX)) to \ledger{}
             \Comment{shouldn't be already spent by remote \texttt{HTLCTimeout}}
+            \label{alg:protocol:pushfulfill:submit}
           \EndIf
           \label{alg:protocol:pushfulfill:end}
         \EndIndent
