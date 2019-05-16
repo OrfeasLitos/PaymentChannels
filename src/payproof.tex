@@ -64,27 +64,14 @@
       \EndIndent
       \Statex
 
-      \State Upon receiving (\textsc{getClosedFunds}, \texttt{toReport},
-      $\Sigma_{\alice}$, \alice, \textit{reportid}) from $\fpaynet{}_{\mathrm{,
-      Pay}}$:
+      \State Upon receiving (\textsc{poll}, $\Sigma_{\alice}$, \alice) from
+      $\fpaynet{}_{\mathrm{, Pay}}$:
       \Indent
         \State simulate Fig.~\ref{alg:protocol:poll},
-        lines~\ref{alg:protocol:poll:afterread}-\ref{alg:protocol:poll:beforesubmit}
-        on input (\textsc{poll}), using $\Sigma_{\alice}$ from the message, with
-        \alice's ITI
+        lines~\ref{alg:protocol:poll:afterread}-\ref{alg:protocol:poll:submit}
+        receiving (\textsc{poll}), using $\Sigma_{\alice}$ from the message,
+        with \alice's ITI
         \label{alg:sim:poll:run}
-        \State add all channels in \texttt{toSubmit} of \alice's ITI to
-        \texttt{details}(\alice)
-        \label{alg:sim:poll:save}
-        \State The next time we receive a message from $\fpaynet{}_{\mathrm{,
-        Pay}}$ that contains a $\Sigma_{\alice}$ that contains all txs in
-        \texttt{toSubmit}, concatenate (\textsc{channelsClosed},
-        \texttt{details}(\alice), \textit{reportid}) to the first subsequent
-        message to $\fpaynet{}_{\mathrm{, Pay}}$ and clear
-        \texttt{details}(\alice)
-        \label{alg:sim:poll:inform}
-        \State send (\textsc{submit}, \texttt{toSubmit}) to \ledger{} as \alice
-        \label{alg:sim:poll:submit}
       \EndIndent
     \end{algorithmic}
   \end{simulatorbox}
@@ -281,36 +268,20 @@
   Subsequently, in the real world
   lines~\ref{alg:protocol:poll:afterread}-\ref{alg:protocol:poll:submit} of
   Fig.~\ref{alg:protocol:poll} are executed by \alice, whereas in the ideal
-  world the functionality compiles a list of closed-but-not-acted-upon channels
-  (Fig.~\ref{alg:fpaynet:poll},
-  lines~\ref{alg:fpaynet:poll:id}-\ref{alg:fpaynet:poll:malicious}) and then,
-  given that the check of line~\ref{alg:fpaynet:poll:badevent} does not lead to
-  a bad event (and thus given that the functionality does not halt in
-  line~\ref{alg:fpaynet:poll:halt}), a (\textsc{getClosedFunds}) message is sent
-  to \simulator. We will prove later that $\fpaynet{}_{\mathrm{, Pay}}$ halts
-  here only with negligible probability. Upon receiving
-  (\textsc{getClosedFunds}), \simulator{} simulates receiving (\textsc{poll})
-  with \alice's ITI (Fig.~\ref{alg:sim:pay}, line~\ref{alg:sim:poll:run}), but
-  does not \textsc{read} from \ledger{} and uses instead the $\Sigma_{\alice}$
-  provided along with the message. A reasoning identical to that found in the
-  previous paragraph shows that this $\Sigma_{\alice}$ is exactly the same as
-  that which \alice's ITI would obtain had it executed
-  line~\ref{alg:protocol:poll:read} of Fig.~\ref{alg:protocol:poll} and thus the
-  simulation of \alice's ITI is identical to what would happen in the same case
-  in the real world, up to and including
-  line~\ref{alg:protocol:poll:beforesubmit} of Fig.~\ref{alg:protocol:poll}.
-  Then (Fig.~\ref{alg:sim:pay},
-  lines~\ref{alg:sim:poll:save}-\ref{alg:sim:poll:inform}) \simulator{} prepares
-  to inform $\fpaynet{}_{\mathrm{, Pay}}$ which channels are being closed; this
-  information will be given to the functionality when \simulator{} learns that
-  the closing transactions have become part of $\Sigma_{\alice}$. Finally
-  \simulator{} submits to \ledger{} the closing transactions that \alice's
-  simulated ITI specified (Fig.~\ref{alg:sim:pay},
-  line~\ref{alg:sim:poll:submit}). Since \texttt{toSubmit} is copied from
-  \alice's ITI and given the fact that \simulator{} does not yield control of
-  the execution after completing \alice's ITI simulation and before sending
-  (\textsc{submit}), exactly the same transactions are submitted to \ledger{} as
-  those in the real world execution.
+  world, given that the check of line~\ref{alg:fpaynet:poll:badevent} does not
+  lead to a bad event (and thus given that the functionality does not halt in
+  line~\ref{alg:fpaynet:poll:halt}), a (\textsc{poll}) message is sent to
+  \simulator. We will prove later that $\fpaynet{}_{\mathrm{, Pay}}$ halts here
+  only with negligible probability. Upon receiving (\textsc{poll}), \simulator{}
+  simulates receiving (\textsc{poll}) with \alice's ITI (Fig.~\ref{alg:sim:pay},
+  line~\ref{alg:sim:poll:run}), but does not \textsc{read} from \ledger{} and
+  uses instead the $\Sigma_{\alice}$ provided along with the message. A
+  reasoning identical to that found in the previous paragraph shows that this
+  $\Sigma_{\alice}$ is exactly the same as that which \alice's ITI would obtain
+  had it executed line~\ref{alg:protocol:poll:read} of
+  Fig.~\ref{alg:protocol:poll} and thus the simulation of \alice's ITI is
+  identical to what would happen in the same case in the real world, up to and
+  including line~\ref{alg:protocol:poll:submit} of Fig.~\ref{alg:protocol:poll}.
 
   Let $E$ the ``bad'' event in which $\fpaynet{}_{\mathrm{, Pay}}$ executes
   line~\ref{alg:fpaynet:poll:halt} of Fig.~\ref{alg:fpaynet:poll} and halts. We

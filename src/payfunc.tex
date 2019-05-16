@@ -36,8 +36,6 @@
           \item (\textsc{update}, \texttt{receipt}, \alice)
           \item (\textsc{resolvePays}, \textit{payid}, \texttt{charged})
           \item (\textsc{channelClosed}, \textit{fchid})
-          \item (\textsc{channelsClosed}, \texttt{details}, \alice,
-          \textit{reportid})
         \end{itemize}
         \item to $\simulator$:
         \begin{itemize}
@@ -49,8 +47,7 @@
           \overrightarrow{\mathtt{path}}$, \texttt{receipt}, \textit{payid})
           \item (\textsc{continue})
           \item (\textsc{closeChannel}, \textit{fchid}, \alice)
-          \item (\textsc{getClosedFunds}, \texttt{toReport}, $\Sigma_{\alice}$,
-          \alice, \textit{reportid})
+          \item (\textsc{poll}, $\Sigma_{\alice}$, \alice)
           \item (\textsc{pushFulfill}, \textit{pchid}, \alice)
           \item (\textsc{pushAdd}, \textit{pchid}, \alice)
           \item (\textsc{commit}, \textit{pchid}, \alice)
@@ -378,21 +375,11 @@
           \State add largest block number in $\Sigma_{\alice}$ to
           \texttt{polls}(\alice)
           \label{alg:fpaynet:poll:height}
-          \State generate unique \textit{reportid}
-          \label{alg:fpaynet:poll:id}
-          \State $\mathtt{toReport}\left(\mathit{reportid}\right) \gets
-          \emptyset$
-          \State scan $\Sigma_{\alice}$ for honestly closed channels that
-          contain \alice{} and exist in \texttt{channels} (txs that spend
-          funding txs that have the same channel version as stored), remove them
-          from \texttt{channels} and add them to
-          \texttt{toReport}(\textit{reportid}) (marked as ``honest'')
-          \State scan $\Sigma_{\alice}$ for maliciously closed channels that
-          contain \alice{} and exist in \texttt{channels} (txs that spend
-          funding txs that have an older channel version than stored)
+          \ForAll{$\mathtt{channel}s \in \Sigma_{\alice}$ that contain alice and
+          are maliciously closed by a remote commitment \texttt{tx} (one with an
+          older channel version than the irrevocably committed one) in block
+          with height $h_{\mathtt{tx}}$}
           \label{alg:fpaynet:poll:malicious}
-          \ForAll{maliciously closed \texttt{channel}s by a remote commitment
-          \texttt{tx} in block with height $h_{\mathtt{tx}}$}
             \If{the delayed output (of the counterparty) has been spent AND
             \texttt{polls}(\alice) has an element in $\left[h_{\mathtt{tx}} + k,
             h_{\mathtt{tx}} + k + \mathtt{delay}\left(\alice\right) - 1\right]$}
@@ -401,62 +388,14 @@
               \label{alg:fpaynet:poll:halt}
               - bad event}
             \EndIf
-            \State add \texttt{channel} to \texttt{toReport}(\textit{reportid})
-            (marked as ``malicious'')
           \EndFor
-          \State send (\textsc{getClosedFunds},
-          \texttt{toReport}(\textit{reportid}), $\Sigma_{\alice}$, \alice,
-          \textit{reportid}) to \simulator
+          \State send (\textsc{poll}, $\Sigma_{\alice}$, \alice) to \simulator
           \label{alg:fpaynet:poll:send}
         \EndIndent
       \end{algorithmic}
     \end{systembox}
     \caption{}
     \label{alg:fpaynet:poll}
-  \end{figure}
-
-  \begin{figure}[H]
-    \begin{systembox}{\fpaynet - verify closed channels}
-      \begin{algorithmic}[1]
-        \State \Comment{Expected after resolutions are visible on-chain}
-        \State Upon receiving a message that contains (\textsc{channelsClosed},
-        \texttt{details}, \alice, \textit{reportid}) from \simulator:
-        \Indent
-          \If{\texttt{toReport}(\textit{reportid}) not in storage}
-            \State ignore message
-          \EndIf
-          \State the next time (\textsc{read}) is sent to \ledger{} as \alice{}
-          and just after a reply $\Sigma_{\alice}$ is received, do the
-          following:
-          \Indent
-            \ForAll{$\mathtt{channel} \in \mathtt{details}$} \State ensure
-            $\mathtt{channel} \in
-            \mathtt{toReport}\left(\mathit{reportid}\right)$
-              \If{\texttt{channel} is marked as ``malicious''}
-                \State ensure that transactions that spend the funding tx of
-                \texttt{channel} and pay \alice{} the entire \texttt{channel}
-                value exist in $\Sigma_{\alice}$, otherwise halt
-              \Else \ \Comment{\texttt{channel} is marked as ``honest''} \State
-              ensure that transactions that spend the funding tx of
-              \texttt{channel} and pay \alice{} her part in the latest state of
-              \texttt{channel} exist in $\Sigma_{\alice}$ AND she received funds
-              from all ``received HTLCs'' for which she knew the preimage when
-              she received the associated \textsc{poll} AND received funds from
-              all ''offered HTLCs'' that had timed out when she received the
-              associated \textsc{poll}, otherwise halt
-              \EndIf
-              \State add the receipt of \texttt{channel} to
-              \texttt{closedChannels}(\alice)
-              \State remove \texttt{channel} from \texttt{channels}
-            \EndFor
-            \State remove \texttt{toReport}(\textit{reportid}) from storage
-          \EndIndent
-          \State handle the first part of the received message
-        \EndIndent
-      \end{algorithmic}
-    \end{systembox}
-    \caption{}
-    \label{alg:fpaynet:verifyclosed}
   \end{figure}
 
   \begin{figure}[H]
