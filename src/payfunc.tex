@@ -325,7 +325,7 @@
           : \mathtt{receipt}\left(\mathtt{channel}\right) = \mathtt{receipt}$
           \State retrieve \textit{fchid} from \texttt{channel}
           \State $\mathtt{pendingClose}\left(\mathit{fchid}\right) \gets \alice$
-          \State send (\textsc{closeChannel}, \textit{fchid}, \alice) to
+          \State send (\textsc{closeChannel}, \texttt{receipt}, \alice) to
           \simulator
         \EndIndent
         \Statex
