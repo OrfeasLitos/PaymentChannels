@@ -4,3 +4,15 @@
   \subimport{./}{openproof.tex}
   \subimport{./}{payproof.tex}
   \subimport{./}{closeproof.tex}
+
+  \begin{theorem}[Lightning Payment Network Security] \
+    \label{theorem:simulation}
+    $\textsc{Exec}^{\ledger}_{\Pi_{\mathrm{LN}}, \adversary_{\mathrm{d}},
+    \environment} \overset{c}{\approx} \textsc{Exec}^{\fpaynet,
+    \ledger}_{\simulator, \environment}$
+  \end{theorem}
+
+  \begin{proof}
+    The theorem is a direct result of the application of
+    Lemmas~\ref{lemma:dummy}-\ref{lemma:close}.
+  \end{proof}
