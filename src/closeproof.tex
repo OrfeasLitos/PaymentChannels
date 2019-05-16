@@ -2,7 +2,13 @@
   \begin{simulatorbox}{$\simulator$}
     Like $\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$. Differences:
     \begin{algorithmic}[1]
-      \State Upon receiving
+      \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}, \alice)
+      from \fpaynet:
+      \Indent
+        \State simulate Fig.~\ref{alg:protocol:close} receiving
+        (\textsc{closeChannel}, \texttt{receipt}) with \alice's ITI
+        \label{alg:sim:close}
+      \EndIndent
     \end{algorithmic}
   \end{simulatorbox}
   \caption{}
