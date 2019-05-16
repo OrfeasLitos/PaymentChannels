@@ -143,7 +143,7 @@
         \State handle first part of the message normally
         \label{alg:sim:resolvepay:firstmsg}
         \If{at the end of the simulation above, control is still held by
-        \simulator}
+        $\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$}
         \label{alg:sim:resolvepay:mayberesolve}
           \ForAll{$\Sigma_{\alice} \in \Sigma$}
           \label{alg:sim:resolvepay:everystate}
@@ -213,31 +213,31 @@
 \begin{proof}
   When \environment{} sends $\left(\textsc{pay}, \bob, x,
   \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to \alice{} in the
-  ideal world, \simulator{} is always notified (Fig.~\ref{alg:fpaynet:pay},
-  line~\ref{alg:fpaynet:pay:send}) and simulates the relevant execution of the
-  real world (Fig.~\ref{alg:sim:pay}, line~\ref{alg:sim:pay:simulate}). No
-  messages to \ledger{} or \environment{} that differ from the real world are
-  generated in the process. At the end of this simulation, no further messages
-  are sent (and the control returns to \environment). Therefore, when
-  \environment{} sends \textsc{pay}, no opportunity for distinguishability
-  arises.
+  ideal world, $\simulator_{\mathrm{LN - Reg - Open}}$ is always notified
+  (Fig.~\ref{alg:fpaynet:pay}, line~\ref{alg:fpaynet:pay:send}) and simulates
+  the relevant execution of the real world (Fig.~\ref{alg:sim:pay},
+  line~\ref{alg:sim:pay:simulate}). No messages to \ledger{} or \environment{}
+  that differ from the real world are generated in the process. At the end of
+  this simulation, no further messages are sent (and the control returns to
+  \environment). Therefore, when \environment{} sends \textsc{pay}, no
+  opportunity for distinguishability arises.
 
   When \environment{} sends any message of (\textsc{pushAdd}, \textit{pchid}),
   (\textsc{pushFulfill}, \textit{pchid}), (\textsc{commit}, \textit{pchid}) to
-  \alice{} in the ideal world, it is forwarded to \simulator{}
-  (Fig.~\ref{alg:fpaynet:daemon},
+  \alice{} in the ideal world, it is forwarded to $\simulator_{\mathrm{LN - Reg
+  - Open}}$ (Fig.~\ref{alg:fpaynet:daemon},
   lines~\ref{alg:fpaynet:daemon:fulfill},~\ref{alg:fpaynet:daemon:add},~\ref{alg:fpaynet:daemon:commit}
   respectively), who in turn simulates \alice's real-world execution with her
   simulated ITI and the handling of any subsequent messages sent by \alice's ITI
   (Fig.~\ref{alg:sim:push},
   lines~\ref{alg:sim:push:fulfill},~\ref{alg:sim:push:add},~\ref{alg:sim:push:commit}).
-  Neither $\fpaynet{}_{\mathrm{, Pay}}$ nor \simulator{} alter their state as a
-  result of these messages, apart from the state of \alice's simulated ITI and
-  the state of other simulated ITIs that receive and handle messages that were
-  sent as a result of \alice's ITI simulation. The states of these ITIs are
-  modified in the exact same way as they would in the real world. We deduce that
-  these three messages do not introduce any opportunity for \environment{} to
-  distinguish the real and the ideal world.
+  Neither $\fpaynet{}_{\mathrm{, Pay}}$ nor $\simulator_{\mathrm{LN - Reg -
+  Open}}$ alter their state as a result of these messages, apart from the state
+  of \alice's simulated ITI and the state of other simulated ITIs that receive
+  and handle messages that were sent as a result of \alice's ITI simulation. The
+  states of these ITIs are modified in the exact same way as they would in the
+  real world. We deduce that these three messages do not introduce any
+  opportunity for \environment{} to distinguish the real and the ideal world.
 
   When \environment{} sends (\textsc{fulfillOnChain}) to \alice{} in the real
   world, lines~\ref{alg:protocol:pay:foc:top}-\ref{alg:protocol:pay:foc:submit}
@@ -245,21 +245,22 @@
   on the other hand, $\fpaynet{}_{\mathrm{, Pay}}$ sends (\textsc{read}) to
   \ledger{} (Fig.~\ref{alg:fpaynet:daemon},
   line~\ref{alg:fpaynet:daemon:foc:read}) as \alice{} and subsequently lets
-  \simulator{} simulate \alice{}'s ITI receiving (\textsc{fulfillOnChain})
-  (Fig.~\ref{alg:sim:pay},
+  $\simulator_{\mathrm{LN - Reg - Open}}$ simulate \alice{}'s ITI receiving
+  (\textsc{fulfillOnChain}) (Fig.~\ref{alg:sim:pay},
   lines~\ref{alg:sim:pay:foc:top}-\ref{alg:sim:pay:foc:run}). Observe that
   during this simulation a second (\textsc{read}) message to \ledger{} (that
-  would not match any message in the real world) is avoided because \simulator{}
-  skips line~\ref{alg:protocol:pay:foc:read} of
-  Fig.~\ref{alg:protocol:pay:push}, using as $t$ the one received from
-  $\fpaynet{}_{\mathrm{, Pay}}$ in the message (\textsc{fulfillOnChain}, $t$,
-  \alice). Since $\fpaynet{}_{\mathrm{, Pay}}$ sends (\textsc{read}) to
-  \ledger{} as \alice{} and given that after \ledger{} replies, control is given
-  directly to \simulator{}, the $t$ used during the simulation of \alice's ITI
-  is identical to the one that \alice{} would obtain in the real-world
-  execution. The rest of the simulation is thus identical with the real-world
-  execution, therefore \textsc{fulfillOnChain} does not introduce any
-  opportunity for distinghuishability.
+  would not match any message in the real world) is avoided because
+  $\simulator_{\mathrm{LN - Reg - Open}}$ skips
+  line~\ref{alg:protocol:pay:foc:read} of Fig.~\ref{alg:protocol:pay:push},
+  using as $t$ the one received from $\fpaynet{}_{\mathrm{, Pay}}$ in the
+  message (\textsc{fulfillOnChain}, $t$, \alice). Since $\fpaynet{}_{\mathrm{,
+  Pay}}$ sends (\textsc{read}) to \ledger{} as \alice{} and given that after
+  \ledger{} replies, control is given directly to $\simulator_{\mathrm{LN - Reg
+  - Open}}$, the $t$ used during the simulation of \alice's ITI is identical to
+  the one that \alice{} would obtain in the real-world execution. The rest of
+  the simulation is thus identical with the real-world execution, therefore
+  \textsc{fulfillOnChain} does not introduce any opportunity for
+  distinghuishability.
 
   When \environment{} sends (\textsc{poll}) to \alice, the first action is
   sending (\textsc{read}) as \alice{} to \ledger{} both in the ideal
@@ -271,8 +272,9 @@
   world, given that the check of line~\ref{alg:fpaynet:poll:badevent} does not
   lead to a bad event (and thus given that the functionality does not halt in
   line~\ref{alg:fpaynet:poll:halt}), a (\textsc{poll}) message is sent to
-  \simulator. We will prove later that $\fpaynet{}_{\mathrm{, Pay}}$ halts here
-  only with negligible probability. Upon receiving (\textsc{poll}), \simulator{}
+  $\simulator_{\mathrm{LN - Reg - Open}}$. We will prove later that
+  $\fpaynet{}_{\mathrm{, Pay}}$ halts here only with negligible probability.
+  Upon receiving (\textsc{poll}), $\simulator_{\mathrm{LN - Reg - Open}}$
   simulates receiving (\textsc{poll}) with \alice's ITI (Fig.~\ref{alg:sim:pay},
   line~\ref{alg:sim:poll:run}), but does not \textsc{read} from \ledger{} and
   uses instead the $\Sigma_{\alice}$ provided along with the message. A
@@ -308,8 +310,8 @@
   i.e. $\Pr\left[E_{1,2}\right] \leq \negl$. We now concetrate on the event
   $E_{1,1}$. Due to the fact that $\mathtt{tx}_2$ spends an output locked with a
   relative timelock of length $\mathtt{delay}\left(\alice\right) + k +
-  \tochain$, the commitment transaction $\mathtt{tx}_1$ can reside in a block
-  of maximum height $h_1 \leq h_2 - \mathtt{delay}\left(\alice\right) - k -
+  \tochain$, the commitment transaction $\mathtt{tx}_1$ can reside in a block of
+  maximum height $h_1 \leq h_2 - \mathtt{delay}\left(\alice\right) - k -
   \tochain$, where $h_2$ is the block height where $\mathtt{tx}_2$ is. If
   \alice{} \textsc{poll}s on a moment when $|\Sigma_{\alice}| \geq h_1 + k,
   \Sigma_{\alice}$ necessarily contains $\mathtt{tx}_1$. Furthermore, if
@@ -335,15 +337,16 @@
   only a negligible opportunity for distinghuishability.
 
   We now treat the effects of the (\textsc{state}, $\Sigma$) message that
-  $\fpaynet{}_{\mathrm{, Pay}}$ sends to \simulator{} as a concatenation to
-  \textsc{pay}, \textsc{pushFulfill}, \textsc{pushAdd} and \textsc{commit}
-  messages. We first observe that the (\textsc{state}) message is handled after
-  handling the first message (which is of one of the four aforementioned types)
-  (Fig.~\ref{alg:sim:resolvepay}, line~\ref{alg:sim:resolvepay:firstmsg}). It
-  may be the case that at the end of the handling of
-  line~\ref{alg:sim:resolvepay:firstmsg}, \simulator{} does not have control of
-  the execution. That can happen if a simulated ITI sends a message to a
-  corrupted player and that player does not respond (e.g. in
+  $\fpaynet{}_{\mathrm{, Pay}}$ sends to $\simulator_{\mathrm{LN - Reg - Open}}$
+  as a concatenation to \textsc{pay}, \textsc{pushFulfill}, \textsc{pushAdd} and
+  \textsc{commit} messages. We first observe that the (\textsc{state}) message
+  is handled after handling the first message (which is of one of the four
+  aforementioned types) (Fig.~\ref{alg:sim:resolvepay},
+  line~\ref{alg:sim:resolvepay:firstmsg}). It may be the case that at the end of
+  the handling of line~\ref{alg:sim:resolvepay:firstmsg},
+  $\simulator_{\mathrm{LN - Reg - Open}}$ does not have control of the
+  execution. That can happen if a simulated ITI sends a message to a corrupted
+  player and that player does not respond (e.g. in
   Fig.~\ref{alg:protocol:pay:invoice}, line~\ref{alg:protocol:pay:sendinvoice},
   when the first message is $\left(\textsc{pay}, \bob, x,
   \overrightarrow{\mathtt{path}}\right)$ and \bob{} is corrupted), or if the
@@ -356,9 +359,9 @@
   and does not influence execution in any way.
 
   In the case when $\left(\textsc{state}, \Sigma\right)$ is handled,
-  \simulator{} attempts to specify who was charged for each pending payment,
-  based on the information that the potentially paying party sees in its view of
-  the \ledger{} state (Fig.~\ref{alg:sim:resolvepay},
+  $\simulator_{\mathrm{LN - Reg - Open}}$ attempts to specify who was charged
+  for each pending payment, based on the information that the potentially paying
+  party sees in its view of the \ledger{} state (Fig.~\ref{alg:sim:resolvepay},
   lines~\ref{alg:sim:resolvepay:everystate}-\ref{alg:sim:resolvepay:loopend}).
   The resolution is then sent to $\fpaynet{}_{\mathrm{, Pay}}$ with the message
   (\textsc{resolvePays}, \texttt{charged}). $\fpaynet{}_{\mathrm{, Pay}}$
@@ -371,20 +374,20 @@
   message does not introduce opportunity for distinguishability.
 
   $\fpaynet{}_{\mathrm{, Pay}}$ halts if the player \dave{} charged for a
-  payment is an honest intermediary of that payment, (has \textsc{poll}ed in time
-  to catch a malicious closure (event $A$) but a malicious closure succeeded
-  (event $B$)) or (no malicious closure succeeded ($\neg B$) and \dave{} has
-  \textsc{poll}ed in time to to learn the preimage of the HTLC early enough
-  (event $C$) and has attempted to fulfill on chain at the right moment (event
-  $D$)) (Fig.~\ref{alg:fpaynet:resolvepay},
+  payment is an honest intermediary of that payment, (has \textsc{poll}ed in
+  time to catch a malicious closure (event $A$) but a malicious closure
+  succeeded (event $B$)) or (no malicious closure succeeded ($\neg B$) and
+  \dave{} has \textsc{poll}ed in time to to learn the preimage of the HTLC early
+  enough (event $C$) and has attempted to fulfill on chain at the right moment
+  (event $D$)) (Fig.~\ref{alg:fpaynet:resolvepay},
   line~\ref{alg:fpaynet:resolvepay:haltcond}) -- i.e. halts in the event $(A
-  \wedge B) \vee (\neg B \wedge C \wedge D)$. \simulator{} decides that \dave{}
-  is charged if his previous counterparty did a malicious closure to a channel
-  version without the HTLC and spent their (delayed) output ($B$), or if his
-  next counterparty fulfilled (event $F$) and his previous counterparty timed
-  out the HTLC (event $G$) (Fig.~\ref{alg:sim:resolvepay},
-  line~\ref{alg:sim:resolvepay:negligent}), -- i.e. \dave{} is charged in the
-  evnet $B \vee (F \wedge G)$.
+  \wedge B) \vee (\neg B \wedge C \wedge D)$. $\simulator_{\mathrm{LN - Reg -
+  Open}}$ decides that \dave{} is charged if his previous counterparty did a
+  malicious closure to a channel version without the HTLC and spent their
+  (delayed) output ($B$), or if his next counterparty fulfilled (event $F$) and
+  his previous counterparty timed out the HTLC (event $G$)
+  (Fig.~\ref{alg:sim:resolvepay}, line~\ref{alg:sim:resolvepay:negligent}), --
+  i.e. \dave{} is charged in the evnet $B \vee (F \wedge G)$.
 
   We will now show that $\Pr[A \wedge B] \leq \negl \wedge \Pr[(C \wedge D)
   \wedge (F \wedge G)] \leq \negl$, from which we can deduce that $\Pr[(A \wedge
@@ -415,10 +418,11 @@
   \texttt{polls}(\dave) at registration is the chain height at that time
   (Fig.~\ref{alg:fpaynet:support}, line~\ref{alg:fpaynet:support:lastpoll}).
   When \dave{} receives (\textsc{poll}), $\fpaynet{}_{\mathrm{, Pay}}$ sends
-  (\textsc{getClosedFunds}) to \simulator{} (Fig.~\ref{alg:fpaynet:poll},
-  line~\ref{alg:fpaynet:poll:send}) with overwhelming probability (since, as we
-  saw earlier, $\fpaynet{}_{\mathrm{, Pay}}$ halts in
-  line~\ref{alg:fpaynet:poll:halt} only with negligible probability).
+  (\textsc{getClosedFunds}) to $\simulator_{\mathrm{LN - Reg - Open}}$
+  (Fig.~\ref{alg:fpaynet:poll}, line~\ref{alg:fpaynet:poll:send}) with
+  overwhelming probability (since, as we saw earlier, $\fpaynet{}_{\mathrm{,
+  Pay}}$ halts in line~\ref{alg:fpaynet:poll:halt} only with negligible
+  probability).
 
   Event $G$ happens only when the previous counterparty successfully appends
   \texttt{HTLC-timeout} to $\Sigma_{\dave}$, which is a valid transaction only

@@ -221,10 +221,11 @@
   executed by \bob. Likewise, in the ideal world, the functionality executes
   lines~\ref{alg:fpaynet:checkNew:mark}-\ref{alg:fpaynet:checkNew:sim} and as
   a result it (always) sends (\textsc{channelOpened}, \alice, \textit{fchid})
-  to \simulator. In turn \simulator{} simulates
+  to $\simulator_{\mathrm{LN - Reg - Open}}$. In turn $\simulator_{\mathrm{LN -
+  Reg - Open}}$ simulates
   lines~\ref{alg:protocol:checkNew:prand}-\ref{alg:protocol:checkNew:send} of
   Fig.~\ref{alg:protocol:checkNew} with \alice's ITI and, if \adversary{}
-  allows it, \simulator{} simulates the code of
+  allows it, $\simulator_{\mathrm{LN - Reg - Open}}$ simulates the code of
   Fig.~\ref{alg:protocol:fundingLocked} with \bob's ITI. Once more we conclude
   that both worlds appear to behave identically to both \environment{} and
   \adversary{} under the same inputs from them.
