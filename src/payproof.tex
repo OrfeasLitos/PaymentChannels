@@ -5,7 +5,7 @@
       \textsc{registered}, \textsc{openChannel}, \textsc{channelAnnounced},
       \textsc{checkNew}, \textsc{poll}, \textsc{pay}, \textsc{pushAdd},
       \textsc{pushFulfill}, \textsc{fulfillOnChain} and \textsc{commit}, act
-      like \fpaynet{}.
+      like \fpaynet{}, but skip lines that call \texttt{checkClosed}().
       \Statex
 
       \State Upon receiving any other message $M$ from \alice:

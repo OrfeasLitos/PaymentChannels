@@ -2,7 +2,8 @@
   \begin{systembox}{$\fpaynet{}_{\mathrm{, Reg}}$}
     \begin{algorithmic}[1]
       \State For messages \textsc{register}, \textsc{registerDone} and
-      \textsc{registered}, act like \fpaynet{}.
+      \textsc{registered}, act like \fpaynet{}, but skip lines that call
+      \texttt{checkClosed}().
       \Statex
 
       \State Upon receiving any other message $M$ from \alice:
