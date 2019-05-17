@@ -83,8 +83,8 @@
           \State send (\textsc{read}) to \ledger{} as \alice{}, store reply to
           $\Sigma_{\alice}$, add $\Sigma_{\alice}$ to $\Sigma$ and add largest
           block number to \texttt{polls}(\alice)
-          \State \texttt{checkClosed}($\Sigma_{\alice}$)
           \label{alg:fpaynet:support:lastpoll}
+          \State \texttt{checkClosed}($\Sigma_{\alice}$)
           \State send $\left(\textsc{register}, \alice, \mathrm{delay},
           \mathrm{relayDelay}, \mathrm{lastPoll}\right)$ to \simulator
         \EndIndent
@@ -340,6 +340,7 @@
 
         \Function{checkClosed}{$\Sigma_{\alice}$} \Comment{Called after every
         (\textsc{read}), ensures requested closes eventually happen}
+        \label{alg:fpaynet:close:func:start}
           \ForAll{entries $(\mathit{fchid}, \mathtt{receipt}, h) \in
           \mathtt{pendingClose}(\alice)$}
             \If{there is a closing transaction in $\Sigma_{\alice}$ for open
@@ -375,6 +376,7 @@
             \EndIf
           \EndFor
         \EndFunction
+        \label{alg:fpaynet:close:func:end}
       \end{algorithmic}
     \end{systembox}
     \caption{}
