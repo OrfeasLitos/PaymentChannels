@@ -903,6 +903,7 @@
         \Indent
           \State ensure \texttt{receipt} corresponds to an open
           $\mathtt{channel} \in \mathtt{channels}$
+          \label{alg:protocol:close:ensure}
           \State assign latest \texttt{channel} sequence number to $n$
           \State $\mathrm{HTLCs} \gets \emptyset$
           \For{every $\text{HTLC output } \in \mathtt{localCom}_n$ with number
@@ -916,6 +917,7 @@
           \State $\mathrm{sig} \gets
           \mathtt{signature}\left(\mathtt{localCom}_n, sh_F\right)$
           \State remove \texttt{channel} from \texttt{channels}
+          \label{alg:protocol:close:remove}
           \State send (\textsc{submit}, $\left(\mathrm{sig},
           \mathtt{remoteSig}_n, \mathtt{localCom}_n\right), \mathrm{HTLCs}$) to
           \ledger
