@@ -365,7 +365,9 @@
             \ElsIf{there is a closing transaction in $\Sigma_{\alice}$ for open
             \texttt{channel} with ID \textit{fchid} with a balance that does not
             correspond to the \texttt{receipt}}
-              \State halt
+              \If{\texttt{polls}(\alice) contains an entry in $[\TODO{fill}]$}
+                \State halt
+              \EndIf
             \ElsIf{there is no such closing transaction $\wedge \ h = \bot$}
               \State assign largest block number of $\Sigma_{\alice}$ to $h$ of
               entry
