@@ -335,8 +335,8 @@
         \EndIndent
         \Statex
 
-        \Function{checkClosed}{$\Sigma_{\alice}$} \Comment{Ensures requested
-        closes eventually happen}
+        \Function{checkClosed}{$\Sigma_{\alice}$} \Comment{Called after every
+        (\textsc{read}), ensures requested closes eventually happen}
           \ForAll{entries $(\mathit{fchid}, \mathtt{receipt}, h) \in
           \mathtt{pendingClose}(\alice)$}
             \If{there is a closing transaction in $\Sigma_{\alice}$ for open
