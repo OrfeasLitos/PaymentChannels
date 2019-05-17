@@ -22,5 +22,30 @@
 \end{lemma}
 
 \begin{proof}
+  When \environment{} sends (\textsc{closeChannel}, \texttt{receipt}) to \alice,
+  in the ideal world, if it is not the first closing message to \alice{} the
+  message is ignored (Fig.~\ref{alg:fpaynet:close},
+  line~\ref{alg:fpaynet:close:noserve}). Similarly in the real world, if there
+  has been another such message, \alice{} ignores it
+  (Fig.\ref{alg:protocol:close}, lines~\ref{alg:protocol:close:remove}
+  and~\ref{alg:protocol:close:ensure}).
+
+  In the case that it is indeed the first closing message, in the ideal world
+  \fpaynet{} takes note that this close is pending
+  (Fig.~\ref{alg:fpaynet:close},
+  lines~\ref{alg:fpaynet:close:retrieve}-\ref{alg:fpaynet:close:mark}) and stops
+  serving more requests for this channel (line~\ref{alg:fpaynet:close:noserve}),
+  before asking \simulator{} to carry out channel closing. \simulator{} then
+  simulates the response to the original message from \environment{} with
+  \alice's ITI (Fig.~\ref{alg:sim:close}). Observe that, since \fpaynet{} has
+  ensured that this is the first request for closing this particular channel,
+  the simulated check of line~\ref{alg:protocol:close:ensure} in
+  Fig.~\ref{alg:protocol:close} always passes and the rest of
+  Fig.~\ref{alg:protocol:close} is executed. In the real world, the check also
+  passes (since we are in the case where this is the first closing message) and
+  Fig.~\ref{alg:protocol:close} is executed by the real \alice{} in its
+  entirety. Therefore, when \environment{} sends \textsc{closeChannel}, no
+  opportunity for distinguishability arises.
+
   When \environment{} sends (\textsc{getNews}) to \alice,
 \end{proof}
