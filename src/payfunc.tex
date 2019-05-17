@@ -362,10 +362,12 @@
               \texttt{pendingClose}(\bob)}
                 \State remove it from \texttt{pendingClose}(\bob)
               \EndIf
-            \ElsIf{there is a closing transaction in $\Sigma_{\alice}$ for open
-            \texttt{channel} with ID \textit{fchid} with a balance that does not
-            correspond to the \texttt{receipt}}
-              \If{\texttt{polls}(\alice) contains an entry in $[\TODO{fill}]$}
+            \ElsIf{there is a closing transaction in block of height $h$ in
+            $\Sigma_{\alice}$ for open \texttt{channel} with ID \textit{fchid}
+            with a balance that does not correspond to the \texttt{receipt} and
+            the delayed output has been spent by the counterparty}
+              \If{\texttt{polls}(\alice) contains an entry in $[h + k, h + k +
+              \mathtt{delay}(\alice) - 1]$}
                 \State halt
               \EndIf
             \ElsIf{there is no such closing transaction $\wedge \ h = \bot$}
