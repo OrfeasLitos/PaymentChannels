@@ -56,5 +56,40 @@
   called with the reply of the \ledger{} as argument. This function does not
   generate new messages, but may cause the \fpaynet{} to halt. We will now prove
   that this happens only with negligible probability.
-  \TODO{continue}
+
+  \fpaynet{} halts in line~\ref{alg:fpaynet:close:func:malicious} in case a
+  malicious closure by the counterparty was successful, in spite of the fact
+  that \alice{} polled in time to apply the punishment. A (\textsc{poll})
+  message to \alice{} within the prescribed time frame
+  (line~\ref{alg:fpaynet:close:func:ifmalicious}) would cause \fpaynet{} to
+  alert \simulator{} (Fig.~\ref{alg:fpaynet:poll},
+  line~\ref{alg:fpaynet:poll:send}), who in turn would submit the punishment
+  transaction in time to prevent the counterparty from spending the delayed
+  payment (Fig.~\ref{alg:protocol:poll:closedch},
+  lines~\ref{alg:protocol:poll:mal:tx}-\ref{alg:protocol:poll:mal:submit}).
+  Therefore the only way for a malicious counterparty to spend the delayed
+  output before \alice{} has the time to punish is by spending the punishment
+  output themself. This however can only happen with negligible probability,
+  since the counterparty would need to forge a signature valid by the public
+  revocation key.
+
+  \fpaynet{} halts in line~\ref{alg:fpaynet:close:func:idle} of
+  Fig.~\ref{alg:fpaynet:close} in case \environment{} has asked for the channel
+  to close, but too much time has passed since. This event cannot happen,
+  because \fpaynet{} forwards a \textsc{closeChannel} message to \simulator{}
+  (Fig.~\ref{alg:fpaynet:close}, line~\ref{alg:fpaynet:close:send}) for every
+  element that it adds to \texttt{pendingPay} (Fig~\ref{alg:fpaynet:close},
+  line~\ref{alg:fpaynet:close:mark}) and this causes \simulator{} to submit the
+  closing transaction to \ledger{} (Fig.~\ref{alg:protocol:close},
+  line~\ref{alg:protocol:close:submit}). This transaction is necessarily valid,
+  because there is no other transaction that spends the funding transaction of
+  the channel, according to the first check of
+  line~\ref{alg:fpaynet:close:func:ifidle} of Fig.~\ref{alg:fpaynet:close}.
+  \fpaynet{} halts in this case only if it is sure that the chain has grown by
+  \tochain{} blocks, and thus if the closing transaction had been submitted when
+  \textsc{closeChannel} was received, it should have been necessarily included
+  (Proposition~\ref{prop:tochain}). Therefore \fpaynet{} cannot halt in
+  line~\ref{alg:fpaynet:close:func:idle} of Fig.~\ref{alg:fpaynet:close}. We
+  deduce that the execution of \texttt{checkClosed} by \fpaynet{} increases the
+  probability of distinguishability only by a negligible amount.
 \end{proof}
