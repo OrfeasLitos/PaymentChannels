@@ -1,6 +1,6 @@
 \section{Payment Network Functionality}
   \begin{figure}[H]
-    \begin{systembox}{\fpaynet - preamble}
+    \begin{systembox}{\fpaynet{} - preamble}
       Interface: \TODO{check}
       \begin{itemize}
         \item from $\environment$:
@@ -59,7 +59,7 @@
   \end{figure}
 
   \begin{figure}[H]
-    \begin{systembox}{\fpaynet - support}
+    \begin{systembox}{\fpaynet{} - support}
       \begin{algorithmic}[1]
         \State Initialisation:
         \Indent
@@ -130,7 +130,7 @@
   \end{figure}
 
   \begin{figure}[H]
-    \begin{systembox}{\fpaynet - open}
+    \begin{systembox}{\fpaynet{} - open}
       \begin{algorithmic}[1]
         \State Upon receiving $\left(\textsc{openChannel}, \alice, \bob, x,
         \mathit{tid}\right)$ from \alice:
@@ -219,7 +219,7 @@
   \end{figure}
 
   \begin{figure}[H]
-    \begin{systembox}{\fpaynet - pay}
+    \begin{systembox}{\fpaynet{} - pay}
       \begin{algorithmic}[1]
         \State Upon receiving $\left(\textsc{pay}, \bob, x,
         \overrightarrow{\mathtt{path}}\right)$ from \alice:
@@ -248,7 +248,7 @@
   \end{figure}
 
   \begin{figure}[H]
-    \begin{systembox}{\fpaynet - resolve payments}
+    \begin{systembox}{\fpaynet{} - resolve payments}
       \begin{algorithmic}[1]
         \State Upon receiving $\left(\textsc{resolvePays},
         \mathtt{charged}\right)$ from \simulator:
@@ -318,7 +318,7 @@
   \end{figure}
 
   \begin{figure}[H]
-    \begin{systembox}{\fpaynet - close}
+    \begin{systembox}{\fpaynet{} - close}
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from
         \alice
@@ -386,7 +386,7 @@
   \end{figure}
 
   \begin{figure}[H]
-    \begin{systembox}{\fpaynet - poll}
+    \begin{systembox}{\fpaynet{} - poll}
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{poll}) from \alice:
         \Indent
@@ -421,7 +421,7 @@
   \end{figure}
 
   \begin{figure}[H]
-    \begin{systembox}{\fpaynet - daemon messages}
+    \begin{systembox}{\fpaynet{} - daemon messages}
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{pushFulfill}, \textit{pchid}) from
         \alice:
