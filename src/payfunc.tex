@@ -328,7 +328,8 @@
           \State retrieve \textit{fchid} from \texttt{channel}
           \State add (\textit{fchid}, \texttt{receipt}(\texttt{channel}),
           $\bot$) to \texttt{pendingClose}(\alice)
-          \State do not serve any other (\textsc{pay}) message for this channel
+          \State do not serve any other (\textsc{pay} or \textsc{closeChannel})
+          message from \alice{} for this channel
           \State send (\textsc{closeChannel}, \texttt{receipt}, \alice) to
           \simulator
         \EndIndent
