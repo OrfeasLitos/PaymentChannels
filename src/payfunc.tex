@@ -394,11 +394,11 @@
         \Indent
           \State send (\textsc{read}) to \ledger{} as \alice{} and store reply
           to $\Sigma_{\alice}$
-          \State \texttt{checkClosed}($\Sigma_{\alice}$)
-          \label{alg:fpaynet:poll:read}
           \State add largest block number in $\Sigma_{\alice}$ to
           \texttt{polls}(\alice)
           \label{alg:fpaynet:poll:height}
+          \State \texttt{checkClosed}($\Sigma_{\alice}$)
+          \label{alg:fpaynet:poll:read}
           \ForAll{$\mathtt{channel}s \in \Sigma_{\alice}$ that contain alice and
           are maliciously closed by a remote commitment \texttt{tx} (one with an
           older channel version than the irrevocably committed one) in block
