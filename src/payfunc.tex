@@ -335,6 +335,7 @@
           \label{alg:fpaynet:close:noserve}
           \State send (\textsc{closeChannel}, \texttt{receipt}, \alice) to
           \simulator
+          \label{alg:fpaynet:close:send}
         \EndIndent
         \Statex
 
@@ -368,7 +369,9 @@
             the delayed output has been spent by the counterparty}
               \If{\texttt{polls}(\alice) contains an entry in $[h + k, h + k +
               \mathtt{delay}(\alice) - 1]$}
+              \label{alg:fpaynet:close:func:ifmalicious}
                 \State halt
+                \label{alg:fpaynet:close:func:malicious}
               \EndIf
             \ElsIf{there is no such closing transaction $\wedge \ h = \bot$}
               \State assign largest block number of $\Sigma_{\alice}$ to $h$ of
@@ -376,7 +379,9 @@
             \ElsIf{there is no such closing transaction $\wedge \ h \neq \bot \
             \wedge$ (largest block number of $\Sigma_{\alice}) \geq h +
             \tochain{}$}
+            \label{alg:fpaynet:close:func:ifidle}
               \State halt
+              \label{alg:fpaynet:close:func:idle}
             \EndIf
           \EndFor
         \EndFunction
