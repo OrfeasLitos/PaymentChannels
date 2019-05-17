@@ -35,7 +35,6 @@
           F}$, \textit{fchid}, \textit{pchid}, \textit{tid})
           \item (\textsc{update}, \texttt{receipt}, \alice)
           \item (\textsc{resolvePays}, \textit{payid}, \texttt{charged})
-          \item (\textsc{channelClosed}, \textit{fchid})
         \end{itemize}
         \item to $\simulator$:
         \begin{itemize}
@@ -84,6 +83,7 @@
           \State send (\textsc{read}) to \ledger{} as \alice{}, store reply to
           $\Sigma_{\alice}$, add $\Sigma_{\alice}$ to $\Sigma$ and add largest
           block number to \texttt{polls}(\alice)
+          \State \texttt{checkClosed}($\Sigma_{\alice}$)
           \label{alg:fpaynet:support:lastpoll}
           \State send $\left(\textsc{register}, \alice, \mathrm{delay},
           \mathrm{relayDelay}, \mathrm{lastPoll}\right)$ to \simulator
@@ -103,6 +103,7 @@
         \Indent
           \State send (\textsc{read}) to \ledger{} as \alice{} and store reply
           to $\Sigma_{\alice}$
+          \State \texttt{checkClosed}($\Sigma_{\alice}$)
           \State assign the sum of all output values that are exclusively
           spendable by \alice{} to \texttt{onChainBalance}
           \State send (\textsc{registered}) to \alice
@@ -170,6 +171,7 @@
           \mathtt{pendingOpen}\left(\mathit{fchid}\right)$
           \State send (\textsc{read}) to \ledger{} as \alice{} and store reply
           to $\Sigma_{\alice}$
+          \State \texttt{checkClosed}($\Sigma_{\alice}$)
           \label{alg:fpaynet:checkNew:read}
           \State ensure that there is a TX $F \in \Sigma_{\alice}$ with a
           $\left(x, \left(p_{\mathrm{funder}, F} \wedge p_{\mathrm{fundee},
@@ -324,40 +326,51 @@
           \State ensure that there is a $\mathtt{channel} \in \mathtt{channels}
           : \mathtt{receipt}\left(\mathtt{channel}\right) = \mathtt{receipt}$
           \State retrieve \textit{fchid} from \texttt{channel}
-          \State $\mathtt{pendingClose}\left(\mathit{fchid}\right) \gets \alice$
+          \State add (\textit{fchid}, \texttt{receipt}(\texttt{channel}),
+          $\bot$) to \texttt{pendingClose}(\alice)
+          \State do not serve any other (\textsc{pay}) message for this channel
           \State send (\textsc{closeChannel}, \texttt{receipt}, \alice) to
           \simulator
         \EndIndent
         \Statex
 
-        \State Upon receiving (\textsc{channelClosed}, \textit{fchid}) from
-        \simulator:
-        \Indent
-          \State $\alice \gets \mathtt{pendingClose}\left(\mathit{fchid}\right)$
-          \State retrieve $\charlie, \bob, x, y, \mathit{pchid}$ from
-          \texttt{channel} with ID \textit{fchid}
-          \State ensure that $\charlie{} = \alice$
-          \State send (\textsc{read}) to \ledger{} as \alice{} and store reply
-          to $\Sigma_{\alice}$
-          \State ensure that transaction with ID \textit{pchid} is in
-          $\Sigma_{\alice}$, is spent, $x$ of its coins are spendable or
-          will be spendable exclusively by \alice{} and $y$ of its coins are
-          spendable exclusively by \bob
-          \State $\mathtt{pendingClose}\left(\mathit{fchid}\right) \gets \bot$
-          \State add receipt of \texttt{channel} to
-          \texttt{closedChannels}(\bob)
-          \State remove \texttt{channel} from \texttt{channels}
-          \State $\mathtt{onChainBalance}\left(\alice\right) \gets
-          \mathtt{onChainBalance}\left(\alice\right) + x$
-          \State $\mathtt{onChainBalance}\left(\bob\right) \gets
-          \mathtt{onChainBalance}\left(\bob\right) + y$
-          \State $\mathtt{offChainBalance}\left(\alice\right) \gets
-          \mathtt{offChainBalance}\left(\alice\right) - x$
-          \State $\mathtt{offChainBalance}\left(\bob\right) \gets
-          \mathtt{offChainBalance}\left(\bob\right) - y$
-          \State send (\textsc{channelClosed}, receipt from \texttt{channel}) to
-          \alice
-        \EndIndent
+        \Function{checkClosed}{$\Sigma_{\alice}$} \Comment{Ensures requested
+        closes eventually happen}
+          \ForAll{entries $(\mathit{fchid}, \mathtt{receipt}, h) \in
+          \mathtt{pendingClose}(\alice)$}
+            \If{there is a closing transaction in $\Sigma_{\alice}$ for open
+            \texttt{channel} with ID \textit{fchid} with a balance that
+            corresponds to \texttt{receipt}}
+              \State let $x, y$ the balances of \alice{} and the
+              \texttt{channel} counterparty \bob{} respectively
+              \State $\mathrm{offChainBalance}\left(\alice\right) \gets
+              \mathrm{offChainBalance}\left(\alice\right) + x$
+              \State $\mathrm{onfChainBalance}\left(\alice\right) \gets
+              \mathrm{onChainBalance}\left(\alice\right) - x$
+              \State $\mathrm{offChainBalance}\left(\bob\right) \gets
+              \mathrm{offChainBalance}\left(\bob\right) + y$
+              \State $\mathrm{onChainBalance}\left(\bob\right) \gets
+              \mathrm{onChainBalance}\left(\bob\right) - y$
+              \State remove \texttt{channel} from \texttt{channels}
+              \State remove entry from \texttt{pendingClose}(\alice)
+              \If{there is an (\textit{fchid}, \_, \_) entry in
+              \texttt{pendingClose}(\bob)}
+                \State remove it from \texttt{pendingClose}(\bob)
+              \EndIf
+            \ElsIf{there is a closing transaction in $\Sigma_{\alice}$ for open
+            \texttt{channel} with ID \textit{fchid} with a balance that does not
+            correspond to the \texttt{receipt}}
+              \State halt
+            \ElsIf{there is no such closing transaction $\wedge \ h = \bot$}
+              \State assign largest block number of $\Sigma_{\alice}$ to $h$ of
+              entry
+            \ElsIf{there is no such closing transaction $\wedge \ h \neq \bot \
+            \wedge$ (largest block number of $\Sigma_{\alice}) \geq h +
+            \tochain{}$}
+              \State halt
+            \EndIf
+          \EndFor
+        \EndFunction
       \end{algorithmic}
     \end{systembox}
     \caption{}
@@ -371,6 +384,7 @@
         \Indent
           \State send (\textsc{read}) to \ledger{} as \alice{} and store reply
           to $\Sigma_{\alice}$
+          \State \texttt{checkClosed}($\Sigma_{\alice}$)
           \label{alg:fpaynet:poll:read}
           \State add largest block number in $\Sigma_{\alice}$ to
           \texttt{polls}(\alice)
@@ -430,6 +444,7 @@
         \Indent
           \State send (\textsc{read}) to \ledger{} as \alice{}, store reply to
           $\Sigma_{\alice}$ and assign largest block number to $t$
+          \State \texttt{checkClosed}($\Sigma_{\alice}$)
           \label{alg:fpaynet:daemon:foc:read}
           \State add $t$ to \texttt{focs}(\alice)
           \State send (\textsc{fulfillOnChain}, $t$, \alice) to \simulator
