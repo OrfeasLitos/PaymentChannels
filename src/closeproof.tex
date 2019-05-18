@@ -47,7 +47,42 @@
   entirety. Therefore, when \environment{} sends \textsc{closeChannel}, no
   opportunity for distinguishability arises.
 
-  When \environment{} sends (\textsc{getNews}) to \alice, \TODO{continue}
+  When \environment{} sends (\textsc{getNews}) to \alice, in the ideal world
+  \fpaynet{} sends (\textsc{news}, \texttt{newChannels}(\alice),
+  \texttt{closedChannels}(\alice), \texttt{updatesToReport}(\alice)) to
+  \environment{} and empties these fields (Fig.~\ref{alg:fpaynet:daemon},
+  lines~\ref{alg:fpaynet:getnews}-\ref{alg:fpaynet:getnews:send}). In the real
+  world, \alice{} sends (\textsc{news}, \texttt{newChannels},
+  \texttt{closedChannels}, \texttt{updatesToReport}) to \environment{} and
+  empties these fields as well (Fig.~\ref{alg:protocol:poll},
+  lines~\ref{alg:protocol:getnews}-\ref{alg:protocol:getnews:send}).
+
+  Regarding \texttt{updatesToReport}, in the real world it is populated
+  exclusively in line~\ref{alg:protocol:pay:raa:report} of
+  Fig.~\ref{alg:protocol:pay:revokeAndAck}. In the ideal world on the other
+  hand, it is updated in line~\ref{alg:fpaynet:update} of
+  Fig.~\ref{alg:fpaynet:pay}, which is triggered only by an (\textsc{update})
+  message by \simulator. This message is sent only when
+  line~\ref{alg:protocol:pay:raa:report} of
+  Fig.~\ref{alg:protocol:pay:revokeAndAck} is simulated by \simulator{}
+  (Fig.~\ref, line~\ref). In the real world, this happens only after receiving
+  a valid (\textsc{revokeAndAck}) message from the channel counterparty and
+  after first having sent a corresponding (\textsc{commitmentSigned}) message
+  (Fig.~\ref{alg:protocol:pay:revokeAndAck},
+  line~\ref{alg:protocol:pay:revokeAndAck:ensure} and
+  Fig.~\ref{alg:protocol:pay:commitmentSigned},
+  lines~\ref{alg:protocol:pay:commit:nomark}
+  and~\ref{alg:protocol:pay:commit:mark}), which happens only after receiving
+  (\textsc{commit}) from \environment. In the ideal world a simulation of the
+  same events can only happen in the exact same case, i.e. when \environment{}
+  sends an identical (\textsc{commit}) to the same player. Indeed, \fpaynet{}
+  simply forwards this message to \simulator{} (Fig.~\ref{alg:fpaynet:daemon},
+  line~\ref{alg:fpaynet:daemon:commit}), who in turn simply simulates the
+  response to the message with the simulated ITI that corresponds to the player
+  that would receive the message in the real world (Fig.~\ref{alg:sim:push},
+  line~\ref{alg:sim:push:commit}). We conclude that the \texttt{updatesToReport}
+  sent to \environment{} in either the real or the ideal world are always
+  identical.
 
   Lastly, in the ideal world, whenever (\textsc{read}) is sent to \ledger{} and
   a reply is received, the function \texttt{checkClosed}
