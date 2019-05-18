@@ -242,6 +242,7 @@
         \Indent
           \State add \texttt{receipt} to \texttt{updatesToReport}(\alice)
           \Comment{trust \simulator{} here, check on \textsc{resolvePays}}
+          \label{alg:fpaynet:update}
           \State send (\textsc{continue}) to \simulator
         \EndIndent
       \end{algorithmic}
@@ -470,10 +471,12 @@
         \Statex
 
         \State Upon receiving (\textsc{getNews}) from \alice:
+        \label{alg:fpaynet:getnews}
         \Indent
           \State clear \texttt{newChannels}(\alice),
           \texttt{closedChannels}(\alice), \texttt{updatesToReport}(\alice) and
           send them to \alice{} with message name \textsc{news}
+          \label{alg:fpaynet:getnews:send}
         \EndIndent
       \end{algorithmic}
     \end{systembox}

@@ -303,6 +303,7 @@
             \State move channel data from \texttt{pendingOpen} to
             \texttt{channels}
             \State add receipt of channel to \texttt{newChannels}
+            \label{alg:protocol:checkNew:report}
           \EndIf
           \State send (\textsc{fundingLocked}, \textit{pchid},
           $ph_{\mathrm{com}, 2}$) to \bob{}
@@ -333,6 +334,7 @@
           \State move channel data from \texttt{pendingOpen} to
           \texttt{channels}
           \State add receipt of channel to \texttt{newChannels}
+          \label{alg:protocol:fundingLocked}
         \EndIndent
       \end{algorithmic}
     \end{protocolbox}
@@ -393,10 +395,12 @@
         \Statex
 
         \State Upon receiving (\textsc{getNews}) from \alice:
+        \label{alg:protocol:getnews}
         \Indent
           \State clear \texttt{newChannels}, \texttt{closedChannels},
           \texttt{updatesToReport} and send them to \alice{} with message name
           \textsc{news}
+          \label{alg:protocol:getnews:send}
         \EndIndent
       \end{algorithmic}
     \end{protocolbox}
@@ -683,6 +687,7 @@
           \Comment{there are uncommitted updates}
           \State ensure \texttt{channel} is not marked as ``waiting for
           \textsc{revokeAndAck}''
+          \label{alg:protocol:pay:commit:nomark}
           \State $\mathtt{remoteCom}_{n+1} \gets \mathtt{remoteCom}$
           \State $\mathrm{ComSig} \gets
           \mathtt{signature}\left(\mathtt{remoteCom}_{n+1}, sh_F\right)$
@@ -699,6 +704,7 @@
           sh_{\mathrm{htlc}, n+1}\right)$ to HTLCSigs
           \State $\mathtt{lastRemoteSigned} \gets \mathtt{HTLCNo}$
           \State mark \texttt{channel} as ``waiting for \textsc{revokeAndAck}''
+          \label{alg:protocol:pay:commit:mark}
           \State send (\textsc{commitmentSigned}, \textit{pchid}, ComSig,
           HTLCSigs) to \textit{pchid} counterparty
         \EndIndent
@@ -764,6 +770,7 @@
           \State ensure there is a $\mathtt{channel} \in \mathtt{channels}$ with
           \bob{} with ID \textit{pchid} marked as ``waiting for
           \textsc{revokeAndAck}''
+          \label{alg:protocol:pay:revokeAndAck:ensure}
           \If{$pk\left(st_{\mathrm{com}, n}\right) \neq pt_{\mathrm{com}, n}$}
           \Comment{wrong $st_{\mathrm{com}, n}$ - closing}
             \State close channel (as in Fig.~\ref{alg:protocol:close})
