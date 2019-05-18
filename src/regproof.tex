@@ -1,9 +1,9 @@
 \begin{figure}[H]
   \begin{systembox}{$\fpaynet{}_{\mathrm{, Reg}}$}
     \begin{algorithmic}[1]
-      \State For messages \textsc{register}, \textsc{registerDone} and
-      \textsc{registered}, act like \fpaynet{}, but skip lines that call
-      \texttt{checkClosed}().
+      \State For messages \textsc{register}, \textsc{registerDone},
+      \textsc{registered} and \textsc{corrupted}, act like \fpaynet{}, but skip
+      lines that call \texttt{checkClosed}().
       \Statex
 
       \State Upon receiving any other message $M$ from \alice:
@@ -46,6 +46,18 @@
         \label{alg:sim:reg:keygen}
         \State send (\textsc{registerDone}, \alice, $pk_{\alice}$) to
         $\fpaynet{}_{\mathrm{, Reg}}$
+      \EndIndent
+      \Statex
+
+      \State Upon receiving (\textsc{corrupt}) on the backdoor tape of \alice's
+      simulated ITI:
+      \Indent
+        \State add \alice{} to \texttt{corrupted}
+        \State for the rest of the execution, upon receiving any message for
+        \alice{}, bypass normal execution and simply forward it to
+        \alice
+        \State send (\textsc{corrupted}, \alice) to $\fpaynet{}_{\mathrm{,
+        Reg}}$
       \EndIndent
     \end{algorithmic}
   \end{simulatorbox}

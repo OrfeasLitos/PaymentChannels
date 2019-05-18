@@ -122,6 +122,9 @@
         \simulator:
         \Indent
           \State add \alice{} to \texttt{corrupted}
+          \State for the rest of the execution, upon receiving any message for
+          \alice{}, bypass normal execution and simply forward it to
+          \simulator
         \EndIndent
       \end{algorithmic}
     \end{systembox}
