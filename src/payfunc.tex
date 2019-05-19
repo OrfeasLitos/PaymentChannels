@@ -205,10 +205,11 @@
             \EndIf
             \State add \texttt{channel} to \texttt{channels}
           \EndIf
-          \State add \texttt{receipt}(\texttt{channel}) to
-          \texttt{newChannels}(\alice)
           \If{\texttt{pendingOpen}(\textit{fchid}) is marked with ``\alice{}
           checked'' and ``\bob{} checked''}
+            \State add \texttt{receipt}(\texttt{channel}) to
+            \texttt{newChannels}(\alice)
+            \label{alg:fpaynet:checkNew:report}
             \State clear \texttt{pendingOpen}(\textit{fchid}) entry
           \EndIf
           \State send (\textsc{channelOpened}, \alice, \textit{fchid}) to

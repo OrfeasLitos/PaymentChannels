@@ -276,10 +276,10 @@
   \end{figure}
 
   \begin{figure}[H]
-    \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{checkNew}}
+    \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{checkNew}} \TODO{continue}
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{checkNew}, \alice, \bob, \textit{tid})
-        from \environment: \Comment{new message: represents lnd polling daemon}
+        from \environment: \Comment{lnd polling daemon}
         \Indent
           \State ensure there is a matching \texttt{channel} in
           \texttt{pendingOpen} with id \textit{pchid}, with a ``broadcast''
@@ -296,15 +296,10 @@
           \label{alg:protocol:checkNew:prand}
           \State $\left(sh_{\mathrm{com}, 2}, ph_{\mathrm{com}, 2}\right) \gets
           \mathrm{KeyShareGen}\left(1^k; \mathrm{prand}_2\right)$
-          \State add TX to \texttt{channel} data \State replace ``broadcast''
-          mark in \texttt{channel} with ``in state''
-          \If{\texttt{channel} is marked as ``in state,
-          \textsc{fundingLocked}''}
-            \State move channel data from \texttt{pendingOpen} to
-            \texttt{channels}
-            \State add receipt of channel to \texttt{newChannels}
-            \label{alg:protocol:checkNew:report}
-          \EndIf
+          \State add TX to \texttt{channel} data
+          \State replace ``broadcast'' mark in \texttt{channel} with ``no
+          \textsc{fundingLocked}''
+          \State mark \texttt{channel} with ``\textsc{fundingLocked} sent''
           \State send (\textsc{fundingLocked}, \textit{pchid},
           $ph_{\mathrm{com}, 2}$) to \bob{}
           \label{alg:protocol:checkNew:send}
@@ -315,17 +310,32 @@
     \label{alg:protocol:checkNew}
   \end{figure}
 
+%          \If{\texttt{channel} is marked as ``in state,
+%          \textsc{fundingLocked}''}
+%            \State move channel data from \texttt{pendingOpen} to
+%            \texttt{channels}
+%            \State add receipt of channel to \texttt{newChannels}
+%            \label{alg:protocol:checkNew:report}
+%          \EndIf
+
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{fundingLocked}}
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{fundingLocked}, \textit{pchid},
-        $pt_{\mathrm{com}, 2}$) from \bob:
+        $pt_{\mathrm{com}, 2}$) from \bob: \TODO{continue}
         \Indent
           \State ensure there is a \texttt{channel} with ID \textit{pchid} with
           \bob{} in \texttt{pendingOpen} with a ``no \textsc{fundingLocked}''
           mark
           \State ensure $pk\left(st_{\mathrm{com}, n}\right) = pt_{\mathrm{com},
           n}$
+          \If{\texttt{channel} is not marked with ``\textsc{fundingLocked}
+          sent''}
+            \State send (\textsc{read}) to \ledger{} and assign reply to
+            $\Sigma_{\alice}$
+            \State ensure $\exists$ unspent TX in $\Sigma_{\alice}$ with ID
+            \textit{pchid} and a $\left(x, ph_F \wedge pt_F\right)$ output
+          \EndIf
           \State replace ``no \textsc{fundingLocked}'' mark in \texttt{channel}
           with ``\textsc{fundingLocked}''
           \State ensure \texttt{channel} has an ``in state'' mark
