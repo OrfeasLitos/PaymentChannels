@@ -83,32 +83,18 @@
       \EndIndent
       \Statex
 
-      \State Upon receiving (\textsc{channelOpened}, \alice, \textit{fchid})
+      \State Upon receiving (\textsc{fundingLocked}, \alice, \textit{fchid})
       from $\fpaynet{}_{\mathrm{, Open}}$:
       \Indent
         \State execute
         lines~\ref{alg:protocol:checkForNew:prand}-\ref{alg:protocol:checkForNew:send}
-        of Fig.~\ref{alg:protocol:checkForNew} with \alice's ITI
+        of Fig.~\ref{alg:protocol:checkForNew} with \alice's ITI, using
+        $\Sigma_{\alice}$ from message
         \If{\bob{} is honest}
           \State expect the delivery of \alice's (\textsc{fundingLocked})
           message from \adversary
-          \State simulate Fig.~\ref{alg:protocol:fundingLocked} with
-          received message in \bob's ITI
-        \EndIf
-      \EndIndent
-      \Statex
-
-      \TODO{maybe remove?}
-      \State Upon receiving (\textsc{checkForNew}, \alice, \bob, \textit{tid})
-      from $\fpaynet{}_{\mathrm{, Open}}$: \Comment{\alice{} should be
-      corrupted}
-      \Indent
-        \State send (\textsc{checkForNew}, \alice, \bob, \textit{tid}) as
-        \environment{} to \adversary
-        \If{\bob{} is honest}
-          \State expect a (\textsc{fundingLocked}) message from \adversary
-          \State simulate Fig.~\ref{alg:protocol:fundingLocked} with
-          received message in \bob's ITI
+          \State simulate Fig.~\ref{alg:protocol:fundingLocked} with received
+          message in \bob's ITI, using $\Sigma_{\bob}$ from message
         \EndIf
       \EndIndent
     \end{algorithmic}
