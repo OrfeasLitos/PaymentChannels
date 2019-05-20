@@ -461,6 +461,7 @@
           \EndIf
           \State move \texttt{channel} from \texttt{channels} to
           \texttt{closedChannels}
+          \label{alg:protocol:poll:remove}
         \EndFor
       \end{algorithmic}
     \end{titlebox}
@@ -934,7 +935,8 @@
           \EndFor
           \State $\mathrm{sig} \gets
           \mathtt{signature}\left(\mathtt{localCom}_n, sh_F\right)$
-          \State remove \texttt{channel} from \texttt{channels}
+          \State move \texttt{channel} from \texttt{channels} to
+          \texttt{closedChannels}
           \label{alg:protocol:close:remove}
           \State send (\textsc{submit}, $\left(\mathrm{sig},
           \mathtt{remoteSig}_n, \mathtt{localCom}_n\right), \mathrm{HTLCs}$) to

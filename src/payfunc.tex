@@ -486,6 +486,16 @@
         \EndIndent
         \Statex
 
+        \State Upon receiving (\textsc{closedChannel}, \texttt{channel}, \alice)
+        from \simulator:
+        \Indent
+          \State add \texttt{channel} to \texttt{closedChannels}(\alice)
+          \Comment{trust \simulator}
+          \label{alg:fpaynet:closedChannel:report}
+          \State send (\textsc{continue}) to \simulator
+        \EndIndent
+        \Statex
+
         \State Upon receiving (\textsc{getNews}) from \alice:
         \label{alg:fpaynet:getnews}
         \Indent

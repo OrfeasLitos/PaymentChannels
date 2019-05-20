@@ -1,6 +1,6 @@
 \begin{figure}[H]
   \begin{simulatorbox}{$\simulator$}
-    Like $\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$. Difference:
+    Like $\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$. Differences:
     \begin{algorithmic}[1]
       \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}, \alice)
       from \fpaynet:
@@ -8,6 +8,16 @@
         \State simulate Fig.~\ref{alg:protocol:close} receiving
         (\textsc{closeChannel}, \texttt{receipt}) with \alice's ITI
       \EndIndent
+      \Statex
+
+      \State every time \texttt{closedChannels} of \alice{} is updated with
+      \texttt{channel} (Fig.~\ref{alg:protocol:close},
+      line~\ref{alg:protocol:close:remove} and
+      Fig.~\ref{alg:protocol:poll:closedch},
+      line~\ref{alg:protocol:poll:remove}), send (\textsc{closedChannel},
+      \texttt{channel}, \alice) to \fpaynet{} and expect (\textsc{continue})
+      from \fpaynet{} to resume simulation
+      \label{alg:sim:close:report}
     \end{algorithmic}
   \end{simulatorbox}
   \caption{}
@@ -80,8 +90,14 @@
   part of the message is identical in the real and the ideal world at every
   moment when \environment{} can send (\textsc{getNews}).
 
-  \TODO{record to report closed channels in ideal:poll, ideal:closeChannel,
-  real:closeChannel}
+  Moving on to \texttt{closedChannels}(\alice), we observe that \fpaynet{} adds
+  \texttt{channel} information when it receives (\textsc{closedChannel},
+  \texttt{channel}, \alice) from \simulator{} (Fig.~\ref{alg:fpaynet:daemon},
+  line~\ref{alg:fpaynet:closedChannel:report}), which in turn happens exactly
+  when the simulated \alice{} ITI adds the \texttt{channel} to her
+  \texttt{closedChannels} (Fig.~\ref{alg:sim:close},
+  line~\ref{alg:sim:close:report}). Therefore the real and ideal
+  \texttt{closedChannels} are always synchronized.
 
   Regarding \texttt{updatesToReport}, in the real world it is populated
   exclusively in line~\ref{alg:protocol:pay:raa:report} of
