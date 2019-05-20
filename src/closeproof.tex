@@ -58,13 +58,13 @@
   lines~\ref{alg:protocol:getnews}-\ref{alg:protocol:getnews:send}).
   \texttt{newChannels}(\alice) is populated whenever a funding transaction for a
   channel is in her state and the last of the two channel counterparties
-  receives \textsc{checkNew} from \environment{} (Fig.~\ref{alg:fpaynet:open},
-  lines~\ref{alg:fpaynet:checkNew:included}-\ref{alg:fpaynet:checkNew:report}).
+  receives \textsc{checkForNew} from \environment{} (Fig.~\ref{alg:fpaynet:open},
+  lines~\ref{alg:fpaynet:checkForNew:included}-\ref{alg:fpaynet:checkForNew:report}).
   Similarly in the real world, \alice{} populates \texttt{newChannels} either
-  when she receives the second (\textsc{checkNew}) and the same funding
-  transaction is in her state (Fig.~\ref{alg:protocol:checkNew},
-  line~\ref{alg:protocol:checkNew:report}), or if her counterparty receives the
-  second (\textsc{checkNew}), which leads to him sending \textsc{fundingLocked}
+  when she receives the second (\textsc{checkForNew}) and the same funding
+  transaction is in her state (Fig.~\ref{alg:protocol:checkForNew},
+  line~\ref{alg:protocol:checkForNew:report}), or if her counterparty receives the
+  second (\textsc{checkForNew}), which leads to him sending \textsc{fundingLocked}
   and the funding transaction is in her state
   (Fig.~\ref{alg:protocol:fundingLocked},
   line~\ref{alg:protocol:fundingLocked}). \TODO{fix case when counterparty is

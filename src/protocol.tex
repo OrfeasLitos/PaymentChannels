@@ -276,24 +276,24 @@
   \end{figure}
 
   \begin{figure}[H]
-    \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{checkNew}} \TODO{continue}
+    \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{checkForNew}}
       \begin{algorithmic}[1]
-        \State Upon receiving (\textsc{checkNew}, \alice, \bob, \textit{tid})
+        \State Upon receiving (\textsc{checkForNew}, \alice, \bob, \textit{tid})
         from \environment: \Comment{lnd polling daemon}
         \Indent
           \State ensure there is a matching \texttt{channel} in
           \texttt{pendingOpen} with id \textit{pchid}, with a ``broadcast''
           mark, funded with $x$ coins
-          \label{alg:protocol:checkNew:valid}
+          \label{alg:protocol:checkForNew:valid}
           \State send (\textsc{read}) to \ledger{} and assign reply to
           $\Sigma_{\alice}$
-          \label{alg:protocol:checkNew:read}
+          \label{alg:protocol:checkForNew:read}
           \State ensure $\exists$ unspent TX in $\Sigma_{\alice}$ with ID
           \textit{pchid} and a $\left(x, ph_F \wedge pt_F\right)$ output
-          \label{alg:protocol:checkNew:included}
+          \label{alg:protocol:checkForNew:included}
           \State $\mathrm{prand}_2 \gets \texttt{PRF}\left(\mathtt{seed},
           2\right)$
-          \label{alg:protocol:checkNew:prand}
+          \label{alg:protocol:checkForNew:prand}
           \State $\left(sh_{\mathrm{com}, 2}, ph_{\mathrm{com}, 2}\right) \gets
           \mathrm{KeyShareGen}\left(1^k; \mathrm{prand}_2\right)$
           \State add TX to \texttt{channel} data
@@ -302,12 +302,12 @@
           \State mark \texttt{channel} with ``\textsc{fundingLocked} sent''
           \State send (\textsc{fundingLocked}, \textit{pchid},
           $ph_{\mathrm{com}, 2}$) to \bob{}
-          \label{alg:protocol:checkNew:send}
+          \label{alg:protocol:checkForNew:send}
         \EndIndent
       \end{algorithmic}
     \end{protocolbox}
     \caption{}
-    \label{alg:protocol:checkNew}
+    \label{alg:protocol:checkForNew}
   \end{figure}
 
 %          \If{\texttt{channel} is marked as ``in state,

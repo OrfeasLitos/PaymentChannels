@@ -3,7 +3,7 @@
     \begin{algorithmic}[1]
       \State For messages \textsc{register}, \textsc{registerDone},
       \textsc{registered}, \textsc{openChannel}, \textsc{channelAnnounced} and
-      \textsc{checkNew}, act like \fpaynet{}, but skip lines that call
+      \textsc{checkForNew}, act like \fpaynet{}, but skip lines that call
       \texttt{checkClosed}().
       \Statex
 
@@ -87,8 +87,8 @@
       from $\fpaynet{}_{\mathrm{, Open}}$:
       \Indent
         \State execute
-        lines~\ref{alg:protocol:checkNew:prand}-\ref{alg:protocol:checkNew:send}
-        of Fig.~\ref{alg:protocol:checkNew} with \alice's ITI
+        lines~\ref{alg:protocol:checkForNew:prand}-\ref{alg:protocol:checkForNew:send}
+        of Fig.~\ref{alg:protocol:checkForNew} with \alice's ITI
         \If{\bob{} is honest}
           \State expect the delivery of \alice's (\textsc{fundingLocked})
           message from \adversary
@@ -99,11 +99,11 @@
       \Statex
 
       \TODO{maybe remove?}
-      \State Upon receiving (\textsc{checkNew}, \alice, \bob, \textit{tid})
+      \State Upon receiving (\textsc{checkForNew}, \alice, \bob, \textit{tid})
       from $\fpaynet{}_{\mathrm{, Open}}$: \Comment{\alice{} should be
       corrupted}
       \Indent
-        \State send (\textsc{checkNew}, \alice, \bob, \textit{tid}) as
+        \State send (\textsc{checkForNew}, \alice, \bob, \textit{tid}) as
         \environment{} to \adversary
         \If{\bob{} is honest}
           \State expect a (\textsc{fundingLocked}) message from \adversary
@@ -148,9 +148,9 @@
   messages to parties other than $\simulator_{\mathrm{LN - Reg - Open}}$, so
   we don't have to simulate those.
 
-  When \environment{} sends (\textsc{checkNew}, \alice, \bob, \textit{tid}) to
-  \alice{} in the real world, line~\ref{alg:protocol:checkNew:valid} of
-  Fig.~\ref{alg:protocol:checkNew} will allow execution to continue if there
+  When \environment{} sends (\textsc{checkForNew}, \alice, \bob, \textit{tid}) to
+  \alice{} in the real world, line~\ref{alg:protocol:checkForNew:valid} of
+  Fig.~\ref{alg:protocol:checkForNew} will allow execution to continue if there
   exists an entry with temporary id \textit{tid} in \texttt{pendingOpen}
   marked as ``broadcast''. Such an entry can be added either in
   Fig.~\ref{alg:protocol:open:env},
@@ -173,8 +173,8 @@
   line~\ref{alg:protocol:open:fundingSigned:mark}) (which also needs a valid
   \alice-\bob{} interaction up to that point \TODO{more in-depth?})
 
-  When \environment{} sends (\textsc{checkNew}, \alice, \bob, \textit{tid}) to
-  \alice{} in the ideal world, line~\ref{alg:fpaynet:checkNew:valid} of
+  When \environment{} sends (\textsc{checkForNew}, \alice, \bob, \textit{tid}) to
+  \alice{} in the ideal world, line~\ref{alg:fpaynet:checkForNew:valid} of
   Fig.~\ref{alg:fpaynet:open} will allow execution to continue if there exists
   an entry with temporary id \textit{tid} and member \alice{} marked as
   ``\alice{} announced'' in \texttt{pendingOpen}(\textit{fchid}) for some
@@ -204,28 +204,28 @@
   \alice{} sends (\textsc{fundingSigned}) to \bob.
 
   The last two points lead us to deduce that
-  line~\ref{alg:fpaynet:checkNew:valid} of Fig.~\ref{alg:fpaynet:open} in the
-  ideal and line~\ref{alg:protocol:checkNew:valid} of
-  Fig.~\ref{alg:protocol:checkNew} in the real world will allow execution to
+  line~\ref{alg:fpaynet:checkForNew:valid} of Fig.~\ref{alg:fpaynet:open} in the
+  ideal and line~\ref{alg:protocol:checkForNew:valid} of
+  Fig.~\ref{alg:protocol:checkForNew} in the real world will allow execution to
   continue in the exact same cases with respect to the messages that
   \environment{} and \adversary{} send. Given that execution continues,
   \alice{} subsequently sends (\textsc{read}) to \ledger{} and performs
   identical checks in both the ideal (Fig.~\ref{alg:fpaynet:open},
-  lines~\ref{alg:fpaynet:checkNew:read}-\ref{alg:fpaynet:checkNew:included})
-  and the real world (Fig.~\ref{alg:protocol:checkNew},
-  lines~\ref{alg:protocol:checkNew:read}-\ref{alg:protocol:checkNew:included}).
+  lines~\ref{alg:fpaynet:checkForNew:read}-\ref{alg:fpaynet:checkForNew:included})
+  and the real world (Fig.~\ref{alg:protocol:checkForNew},
+  lines~\ref{alg:protocol:checkForNew:read}-\ref{alg:protocol:checkForNew:included}).
 
   Moving on, in the real world
-  lines~\ref{alg:protocol:checkNew:prand}-\ref{alg:protocol:checkNew:send} of
-  Fig.~\ref{alg:protocol:checkNew} are executed by \alice{} and, given that
+  lines~\ref{alg:protocol:checkForNew:prand}-\ref{alg:protocol:checkForNew:send} of
+  Fig.~\ref{alg:protocol:checkForNew} are executed by \alice{} and, given that
   \adversary{} allows it, the code of Fig.~\ref{alg:protocol:fundingLocked} is
   executed by \bob. Likewise, in the ideal world, the functionality executes
-  lines~\ref{alg:fpaynet:checkNew:mark}-\ref{alg:fpaynet:checkNew:sim} and as
+  lines~\ref{alg:fpaynet:checkForNew:mark}-\ref{alg:fpaynet:checkForNew:sim} and as
   a result it (always) sends (\textsc{channelOpened}, \alice, \textit{fchid})
   to $\simulator_{\mathrm{LN - Reg - Open}}$. In turn $\simulator_{\mathrm{LN -
   Reg - Open}}$ simulates
-  lines~\ref{alg:protocol:checkNew:prand}-\ref{alg:protocol:checkNew:send} of
-  Fig.~\ref{alg:protocol:checkNew} with \alice's ITI and, if \adversary{}
+  lines~\ref{alg:protocol:checkForNew:prand}-\ref{alg:protocol:checkForNew:send} of
+  Fig.~\ref{alg:protocol:checkForNew} with \alice's ITI and, if \adversary{}
   allows it, $\simulator_{\mathrm{LN - Reg - Open}}$ simulates the code of
   Fig.~\ref{alg:protocol:fundingLocked} with \bob's ITI. Once more we conclude
   that both worlds appear to behave identically to both \environment{} and
