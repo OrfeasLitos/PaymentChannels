@@ -180,28 +180,35 @@
           $\left(x, \left(p_{\mathrm{funder}, F} \wedge p_{\mathrm{fundee},
           F}\right)\right)$ output
           \label{alg:fpaynet:checkForNew:included}
-          \If{\bob{} is not \texttt{corrupted}}
-            \State send (\textsc{read}) to \ledger{} as \bob{} and store reply
-            to $\Sigma_{\bob}$
-            \State \texttt{checkClosed}($\Sigma_{\bob}$)
-            \label{alg:fpaynet:checkForNew:read:bob}
-            \State ensure that there is a TX $F \in \Sigma_{\bob}$ with a
-            $\left(x, \left(p_{\mathrm{funder}, F} \wedge p_{\mathrm{fundee},
-            F}\right)\right)$ output
-            \State add \texttt{receipt}(\texttt{channel}) to
-            \texttt{newChannels}(\bob)
-          \EndIf
           \State mark \texttt{channel} with ``waiting for
+          \textsc{fundingLocked}''
+          \State send (\textsc{fundingLocked}, \alice, $\Sigma_{\alice}$,
+          \textit{fchid}) to \simulator
+          \label{alg:fpaynet:checkForNew:sim}
+        \EndIndent
+        \Statex
+
+
+        \State Upon receiving (\textsc{fundingLocked}, \textit{fchid}) from
+        \simulator:
+        \Indent
+          \State ensure a \texttt{channel} is in
+          \texttt{pendingOpen}(\textit{fchid}), marked with ``waiting for
+          \textsc{fundingLocked}'' and replace mark with ``waiting for
           \textsc{channelOpened}''
-          \If{\bob{} is \texttt{corrupted}}
-            \State send (\textsc{fundingLocked}, \alice, $\Sigma_{\alice}$,
-            \textit{fchid}) to \simulator
-            \label{alg:fpaynet:checkForNew:sim:cor}
-          \Else
-            \State send (\textsc{fundingLocked}, \alice, $\Sigma_{\alice},
-            \Sigma_{\bob}$, \textit{fchid}) to \simulator
-            \label{alg:fpaynet:checkForNew:sim:hon}
-          \EndIf
+          \State send (\textsc{read}) to \ledger{} as \bob{} and store reply
+          to $\Sigma_{\bob}$
+          \State \texttt{checkClosed}($\Sigma_{\bob}$)
+          \label{alg:fpaynet:checkForNew:read:bob}
+          \State ensure that there is a TX $F \in \Sigma_{\bob}$ with a
+          $\left(x, \left(p_{\mathrm{funder}, F} \wedge p_{\mathrm{fundee},
+          F}\right)\right)$ output
+          \State add \texttt{receipt}(\texttt{channel}) to
+          \texttt{newChannels}(\bob)
+          \label{alg:fpaynet:fundingLocked:report}
+          \State send (\textsc{fundingLocked}, \bob, $\Sigma_{\bob}$,
+          \textit{fchid}) to \simulator
+          \label{alg:fpaynet:fundingLocked:sim}
         \EndIndent
         \Statex
 
@@ -221,7 +228,7 @@
           \State add \texttt{channel} to \texttt{channels}
           \State add \texttt{receipt}(\texttt{channel}) to
           \texttt{newChannels}(\alice)
-          \label{alg:fpaynet:checkForNew:report}
+          \label{alg:fpaynet:channelOpened:report}
           \State clear \texttt{pendingOpen}(\textit{fchid}) entry
         \EndIndent
       \end{algorithmic}

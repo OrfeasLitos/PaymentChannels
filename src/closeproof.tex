@@ -56,21 +56,29 @@
   \texttt{closedChannels}, \texttt{updatesToReport}) to \environment{} and
   empties these fields as well (Fig.~\ref{alg:protocol:poll},
   lines~\ref{alg:protocol:getnews}-\ref{alg:protocol:getnews:send}).
-  \texttt{newChannels}(\alice) is populated whenever a funding transaction for a
-  channel is in her state and the last of the two channel counterparties
-  receives \textsc{checkForNew} from \environment{} (Fig.~\ref{alg:fpaynet:open},
-  lines~\ref{alg:fpaynet:checkForNew:included}-\ref{alg:fpaynet:checkForNew:report}).
-  Similarly in the real world, \alice{} populates \texttt{newChannels} either
-  when she receives the second (\textsc{checkForNew}) and the same funding
-  transaction is in her state (Fig.~\ref{alg:protocol:checkForNew},
-  line~\ref{alg:protocol:checkForNew:report}), or if her counterparty receives the
-  second (\textsc{checkForNew}), which leads to him sending \textsc{fundingLocked}
-  and the funding transaction is in her state
-  (Fig.~\ref{alg:protocol:fundingLocked},
-  line~\ref{alg:protocol:fundingLocked}). \TODO{fix case when counterparty is
-  malicious and sends a rogue \textsc{fundingLocked}} Therefore the
-  \texttt{newChannels} part of the message is identical in the real and the
-  ideal world.
+  \texttt{newChannels}(\alice) in the ideal world is populated in two cases:
+  First, when \fpaynet{} receives (\textsc{channelOpened}) after \alice{} has
+  previously received (\textsc{checkForNew}) (Fig.~\ref{alg:fpaynet:open},
+  line~\ref{alg:fpaynet:channelOpened:report}). This happens when the simulated
+  \alice{} ITI handles a \textsc{fundingLocked} message from \bob{}
+  (Fig.~\ref{alg:sim:open}, line~\ref{alg:sim:open:channelOpened}). In the real
+  world \alice{} would have modified her \texttt{newChannels} while handling
+  \bob's \textsc{fundingLocked} (Fig.~\ref{alg:protocol:fundingLocked},
+  line~\ref{alg:protocol:fundingLocked:report}), thus as far as this case is
+  concerned, \texttt{newChannels} has the same contents in the real world as
+  does \texttt{newChannels}(\alice) in the ideal. The other case when
+  \texttt{newChannels}(\alice) is populated is when \fpaynet{} receives
+  (\textsc{fundingLocked}) after \bob{} has previously received
+  (\textsc{checkForNew}) (Fig.~\ref{alg:fpaynet:open},
+  line~\ref{alg:fpaynet:fundingLocked:report}). This (\textsc{fundingLocked})
+  can only be sent by \simulator{} if \alice{} is honest and right before the
+  receiving of (\textsc{fundingLocked}) is simulated with her ITI
+  (Fig.~\ref{alg:sim:open},
+  lines~\ref{alg:sim:fundingLocked:sim:alice}-\ref{alg:sim:fundingLocked:sim:bob}).
+  In the real world, \alice's \texttt{newChannels} would be populated upon
+  handling the same (\textsc{fundingLocked}). Therefore the \texttt{newChannels}
+  part of the message is identical in the real and the ideal world at every
+  moment when \environment{} can send (\textsc{getNews}).
 
   \TODO{record to report closed channels in ideal:poll, ideal:closeChannel,
   real:closeChannel}

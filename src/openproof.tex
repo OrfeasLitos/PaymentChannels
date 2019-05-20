@@ -83,19 +83,37 @@
       \EndIndent
       \Statex
 
-      \State Upon receiving (\textsc{fundingLocked}, \alice, \textit{fchid})
-      from $\fpaynet{}_{\mathrm{, Open}}$:
+      \State Upon receiving (\textsc{fundingLocked}, \alice, $\Sigma_{\alice}$,
+      \textit{fchid}) from $\fpaynet{}_{\mathrm{, Open}}$:
       \Indent
         \State execute
         lines~\ref{alg:protocol:checkForNew:prand}-\ref{alg:protocol:checkForNew:send}
         of Fig.~\ref{alg:protocol:checkForNew} with \alice's ITI, using
         $\Sigma_{\alice}$ from message
+        \label{alg:sim:fundingLocked:sim:alice}
         \If{\bob{} is honest}
           \State expect the delivery of \alice's (\textsc{fundingLocked})
           message from \adversary
-          \State simulate Fig.~\ref{alg:protocol:fundingLocked} with received
-          message in \bob's ITI, using $\Sigma_{\bob}$ from message
+          \State send (\textsc{fundingLocked}, \textit{fchid}) to
+          $\fpaynet{}_{\mathrm{, Open}}$
+          \State upon receiving (\textsc{fundingLocked}, \bob, $\Sigma_{\bob}$,
+          \textit{fchid}) from $\fpaynet{}_{\mathrm{, Open}}$:
+          \State simulate Fig.~\ref{alg:protocol:fundingLocked} with message
+          from \alice{} in \bob's ITI, using $\Sigma_{\bob}$ from
+          $\fpaynet{}_{\mathrm{, Open}}$'s message
+          \label{alg:sim:fundingLocked:sim:bob}
         \EndIf
+      \EndIndent
+      \Statex
+
+      \State Upon receiving the (\textsc{fundingLocked}) message with the
+      simulated \alice{} ITI:
+      \Indent
+        \State simulate Fig.~\ref{alg:protocol:fundingLocked} receiving
+        the message with \alice's ITI
+        \State send (\textsc{channelOpened}, \textit{fchid}) to
+        $\fpaynet{}_{\mathrm{, Open}}$
+        \label{alg:sim:open:channelOpened}
       \EndIndent
     \end{algorithmic}
   \end{simulatorbox}
