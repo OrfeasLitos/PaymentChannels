@@ -283,7 +283,7 @@
         \Indent
           \State ensure there is a matching \texttt{channel} in
           \texttt{pendingOpen} with id \textit{pchid}, with a ``broadcast''
-          mark, funded with $x$ coins
+          and a ``no \textsc{fundingLocked}'' mark, funded with $x$ coins
           \label{alg:protocol:checkForNew:valid}
           \State send (\textsc{read}) to \ledger{} and assign reply to
           $\Sigma_{\alice}$
@@ -297,9 +297,8 @@
           \State $\left(sh_{\mathrm{com}, 2}, ph_{\mathrm{com}, 2}\right) \gets
           \mathrm{KeyShareGen}\left(1^k; \mathrm{prand}_2\right)$
           \State add TX to \texttt{channel} data
-          \State replace ``broadcast'' mark in \texttt{channel} with ``no
-          \textsc{fundingLocked}''
-          \State mark \texttt{channel} with ``\textsc{fundingLocked} sent''
+          \State replace ``broadcast'' mark in \texttt{channel} with
+          ``\textsc{fundingLocked} sent''
           \State send (\textsc{fundingLocked}, \textit{pchid},
           $ph_{\mathrm{com}, 2}$) to \bob{}
           \label{alg:protocol:checkForNew:send}
@@ -310,41 +309,42 @@
     \label{alg:protocol:checkForNew}
   \end{figure}
 
-%          \If{\texttt{channel} is marked as ``in state,
-%          \textsc{fundingLocked}''}
-%            \State move channel data from \texttt{pendingOpen} to
-%            \texttt{channels}
-%            \State add receipt of channel to \texttt{newChannels}
-%            \label{alg:protocol:checkNew:report}
-%          \EndIf
-
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{fundingLocked}}
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{fundingLocked}, \textit{pchid},
-        $pt_{\mathrm{com}, 2}$) from \bob: \TODO{continue}
+        $pt_{\mathrm{com}, 2}$) from \bob:
         \Indent
           \State ensure there is a \texttt{channel} with ID \textit{pchid} with
           \bob{} in \texttt{pendingOpen} with a ``no \textsc{fundingLocked}''
           mark
-          \State ensure $pk\left(st_{\mathrm{com}, n}\right) = pt_{\mathrm{com},
-          n}$
           \If{\texttt{channel} is not marked with ``\textsc{fundingLocked}
-          sent''}
+          sent''} \Comment{i.e. marked with ``broadcast''}
             \State send (\textsc{read}) to \ledger{} and assign reply to
             $\Sigma_{\alice}$
             \State ensure $\exists$ unspent TX in $\Sigma_{\alice}$ with ID
             \textit{pchid} and a $\left(x, ph_F \wedge pt_F\right)$ output
+            \State add TX to \texttt{channel} data
+            \State $\mathrm{prand}_2 \gets \texttt{PRF}\left(\mathtt{seed},
+            2\right)$
+            \label{alg:protocol:fundingLocked:prand}
+            \State $\left(sh_{\mathrm{com}, 2}, ph_{\mathrm{com}, 2}\right) \gets
+            \mathrm{KeyShareGen}\left(1^k; \mathrm{prand}_2\right)$
+            \State generate 2nd remote delayed payment, htlc, payment keys
           \EndIf
           \State replace ``no \textsc{fundingLocked}'' mark in \texttt{channel}
-          with ``\textsc{fundingLocked}''
-          \State ensure \texttt{channel} has an ``in state'' mark
-          \State generate 2nd remote delayed payment, htlc, payment keys
-          \State add TX to \texttt{channel} data
+          with ``\textsc{fundingLocked} received''
           \State move channel data from \texttt{pendingOpen} to
           \texttt{channels}
           \State add receipt of channel to \texttt{newChannels}
-          \label{alg:protocol:fundingLocked}
+          \label{alg:protocol:fundingLocked:report}
+          \If{\texttt{channel} is not marked with ``\textsc{fundingLocked}
+          sent''}
+            \State replace ``broadcast'' mark in \texttt{channel} with
+            ``\textsc{fundingLocked} sent''
+            \State send (\textsc{fundingLocked}, \textit{pchid},
+            $ph_{\mathrm{com}, 2}$) to \bob{}
+          \EndIf
         \EndIndent
       \end{algorithmic}
     \end{protocolbox}
