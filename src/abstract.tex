@@ -1,4 +1,16 @@
 \begin{abstract}
-  We provide a payment network functionality and prove that the Lightning
-  Network~\cite{lightning} UC-realizes it.
+  Blockchains have enabled the decentralized exchange of digital currencies with
+  minimal trust assumptions~\cite{bitcoin,gkl}. Nevertheless, the massive
+  replication of data amongst participating nodes has a detrimental effect on
+  scalability~\cite{scaling}. One approach to addressing the issue is layer-2
+  payment networks, which enable users to perform the vast majority of their
+  transactions without adding them to the
+  blockchain~\cite{lightning,decker,teechan,perun}. The most widely adopted
+  layer-2 solution, which is deployed on top of Bitcoin, is the Lightning
+  Payment Network (LPN)~\cite{lightning}. In this work we prove that LPN is
+  secure in the Universal Composability framework~\cite{uc}. We formally
+  describe the LPN
+  protocol\footnote{\url{https://github.com/lightningnetwork/lightning-rfc/}},
+  abstract its intended purpose in a functionality and prove that the specified
+  protocol UC-realizes it.
 \end{abstract}
