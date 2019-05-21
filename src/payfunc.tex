@@ -275,33 +275,33 @@
         \Comment{after first sending \textsc{pay}, \textsc{pushFulfill},
         \textsc{pushAdd}, \textsc{commit}}
         \Indent
-          \ForAll{$\charlie \text{ keys} \in \texttt{charged}$}
+          \ForAll{$\alice \text{ keys} \in \texttt{charged}$}
             \ForAll{$\left(\dave, \mathit{payid}\right) \in
-            \mathtt{charged}\left(\charlie\right)$}
+            \mathtt{charged}\left(\alice\right)$}
               \State retrieve $\left(\alice, \bob, x,
               \overrightarrow{\mathtt{path}}\right)$ with ID \textit{payid} and
               remove it from \texttt{pendingPay}
               \If{$\dave{} = \bot$}
-                \State \Return
+                \State continue with next loop iteration
               \EndIf
               \State calculate \texttt{IncomingCltvExpiry},
               \texttt{OutgoingCltvExpiry} of \dave{} (as in
               Fig.~\ref{alg:protocol:pay:invoice},
               l.~\ref{alg:protocol:pay:invoice:cltv})
               \If{$\dave{} \neq \alice{} \wedge \dave{} \notin
-              \mathtt{corrupted} \ \wedge ((\Sigma_{\dave}$ contains in block
-              $h_{\mathtt{tx}}$ an old $\mathtt{remoteCom}_m$ that does not
-              contain the HTLC and a tx that spends the delayed output of
-              $\mathtt{remoteCom}_m \ \wedge$ \texttt{polls}(\dave) contains an
-              element in $[h_{\mathtt{tx}} + k, h_{\mathtt{tx}} + k +
-              \mathtt{delay}\left(\dave\right) - 1]) \ \vee$ ($\Sigma_{\dave}$
-              does not contain such a $\mathtt{remoteCom}_m \ \wedge$
-              \texttt{polls}(\dave) contains two elements in
+              \mathtt{corrupted} \ \wedge$ \\ $((\Sigma_{\dave}$ contains in
+              block $h_{\mathtt{tx}}$ an old $\mathtt{remoteCom}_m$ that does
+              not contain the HTLC and a tx that spends the delayed output of
+              $\mathtt{remoteCom}_m \ \wedge$ \\ \texttt{polls}(\dave) contains
+              an element in $[h_{\mathtt{tx}} + k, h_{\mathtt{tx}} + k +
+              \mathtt{delay}\left(\dave\right) - 1]) \ \vee$ \\
+              ($\Sigma_{\dave}$ does not contain such a $\mathtt{remoteCom}_m \
+              \wedge$ \texttt{polls}(\dave) contains two elements in
               $[\mathtt{OutgoingCltvExpiry} + k + \tochain{} + 1,
               \mathtt{IncomingCltvExpiry} - k - \tochain{}]$ that have a
-              difference of at least $k + \tochain{} \ \wedge$
+              difference of at least $k + \tochain{} \ \wedge$ \\
               \texttt{focs}(\dave) contains $\mathtt{IncomingCltvExpiry} - k -
-              \tochain{} \ \wedge$ the element in \texttt{polls}(\dave) was
+              \tochain{} \ \wedge$ \\ the element in \texttt{polls}(\dave) was
               added before the element in \texttt{focs}(\dave)))}
               \label{alg:fpaynet:resolvepay:haltcond}
                 \State halt
@@ -424,10 +424,10 @@
           \label{alg:fpaynet:poll:height}
           \State \texttt{checkClosed}($\Sigma_{\alice}$)
           \label{alg:fpaynet:poll:read}
-          \ForAll{$\mathtt{channel}s \in \Sigma_{\alice}$ that contain alice and
-          are maliciously closed by a remote commitment \texttt{tx} (one with an
-          older channel version than the irrevocably committed one) in block
-          with height $h_{\mathtt{tx}}$}
+          \ForAll{$\mathtt{channel}s \in \Sigma_{\alice}$ that contain \alice{}
+          and are maliciously closed by a remote commitment \texttt{tx} (one
+          with an older channel version than the irrevocably committed one) in
+          block with height $h_{\mathtt{tx}}$}
           \label{alg:fpaynet:poll:malicious}
             \If{the delayed output (of the counterparty) has been spent AND
             \texttt{polls}(\alice) has an element in $\left[h_{\mathtt{tx}} + k,

@@ -213,7 +213,7 @@
 
 \begin{proof}
   When \environment{} sends $\left(\textsc{pay}, \bob, x,
-  \overrightarrow{\mathtt{path}}, \mathtt{receipt}\right)$ to \alice{} in the
+  \overrightarrow{\mathtt{path}}, \mathit{payid}\right)$ to \alice{} in the
   ideal world, $\simulator_{\mathrm{LN - Reg - Open}}$ is always notified
   (Fig.~\ref{alg:fpaynet:pay}, line~\ref{alg:fpaynet:pay:send}) and simulates
   the relevant execution of the real world (Fig.~\ref{alg:sim:pay},
@@ -388,7 +388,7 @@
   (delayed) output ($B$), or if his next counterparty fulfilled (event $F$) and
   his previous counterparty timed out the HTLC (event $G$)
   (Fig.~\ref{alg:sim:resolvepay}, line~\ref{alg:sim:resolvepay:negligent}), --
-  i.e. \dave{} is charged in the evnet $B \vee (F \wedge G)$.
+  i.e. \dave{} is charged in the event $B \vee (F \wedge G)$.
 
   We will now show that $\Pr[A \wedge B] \leq \negl \wedge \Pr[(C \wedge D)
   \wedge (F \wedge G)] \leq \negl$, from which we can deduce that $\Pr[(A \wedge
