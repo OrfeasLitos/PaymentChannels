@@ -58,6 +58,32 @@
   year		= "2015"
 }
 
+@misc{gkl,
+    author = {Juan Garay and Aggelos Kiayias and Nikos Leonardos},
+    title = {The Bitcoin Backbone Protocol: Analysis and Applications},
+    howpublished = {Cryptology ePrint Archive, Report 2014/765},
+    year = {2014},
+    note = {\url{https://eprint.iacr.org/2014/765}},
+}
+
+@inproceedings{scaling,
+  title={On scaling decentralized blockchains},
+  author={Croman, Kyle and Decker, Christian and Eyal, Ittay and Gencer, Adem Efe and Juels, Ari and Kosba, Ahmed and Miller, Andrew and Saxena, Prateek and Shi, Elaine and Sirer, Emin G{\"u}n and others},
+  booktitle={International Conference on Financial Cryptography and Data Security},
+  pages={106--125},
+  year={2016},
+  organization={Springer}
+}
+
+@inproceedings{decker,
+  title={A fast and scalable payment network with bitcoin duplex micropayment channels},
+  author={Decker, Christian and Wattenhofer, Roger},
+  booktitle={Symposium on Self-Stabilizing Systems},
+  pages={3--18},
+  year={2015},
+  organization={Springer}
+}
+
 @inproceedings{wot,
   author	= "Caronni, G.",
   title		= "Walking the web of trust",
@@ -396,12 +422,17 @@
   note		= "\url{http://www.agsm.edu.au/bobm/teaching/SGTM/lect06pr-3.pdf} p. 3"
 }
 
-@conference{perun,
-  author = "Dziembowski, Stefan and Eckey, Lisa and Faust, Sebastian and Malinowski, Daniel",
-  title = "PERUN: Virtual Payment Channels over Cryptographic Currencies",
-  organization = "IACR",
-  publisher = "Cryptology ePrint Archive",
-  year = "2017"
+@article{perun,
+  author    = {Stefan Dziembowski and
+               Lisa Eckey and
+               Sebastian Faust and
+               Daniel Malinowski},
+  title     = {{PERUN:} Virtual Payment Channels over Cryptographic Currencies},
+  journal   = {{IACR} Cryptology ePrint Archive},
+  volume    = {2017},
+  pages     = {635},
+  year      = {2017},
+  url       = {http://eprint.iacr.org/2017/635},
 }
 
 @splncs{lightning,
@@ -411,11 +442,31 @@
   year = "2016"
 }
 
-@splncs{teechan,
-  author = "Lind, Joshua and Eyal, Ittay and Pietzuch, Peter and Sirer, Emin Gün",
-  title = "Teechan: Payment Channels Using Trusted Execution Environments",
-  note = "arXiv preprint arXiv:1612.07766",
-  year = "2016"
+@article{teechan,
+  author    = {Joshua Lind and
+               Ittay Eyal and
+               Peter R. Pietzuch and
+               Emin G{\"{u}}n Sirer},
+  title     = {Teechan: Payment Channels Using Trusted Execution Environments},
+  journal   = {CoRR},
+  volume    = {abs/1612.07766},
+  year      = {2016},
+  url       = {http://arxiv.org/abs/1612.07766},
+  archivePrefix = {arXiv},
+  eprint    = {1612.07766},
+}
+
+@inproceedings{uc,
+  author    = {Ran Canetti},
+  title     = {Universally Composable Security: {A} New Paradigm for Cryptographic
+               Protocols},
+  booktitle = {42nd Annual Symposium on Foundations of Computer Science, {FOCS} 2001,
+               14-17 October 2001, Las Vegas, Nevada, {USA}},
+  pages     = {136--145},
+  year      = {2001},
+  crossref  = {DBLP:conf/focs/2001},
+  url       = {https://eprint.iacr.org/2000/067.pdf},
+  doi       = {10.1109/SFCS.2001.959888},
 }
 
 @splncs{sprites,
