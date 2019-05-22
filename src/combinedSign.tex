@@ -151,23 +151,6 @@
       \EndFunction
     \end{algorithmic}
 
-    % TODO: remove
-    \begin{algorithmic}[0]
-      \State just to remember
-      \State $sh_{\mathrm{rev}, n} \gets shb_{\mathrm{rev}} \cdot
-      \mathcal{H}\left(phb_{\mathrm{rev}} || pt_{\mathrm{com}, n}\right) +
-      st_{\mathrm{com}, n} \cdot \mathcal{H}\left(pt_{\mathrm{com}, n} ||
-      phb_{\mathrm{rev}}\right)$
-      \State $pt_{\mathrm{rev}, n+2} \gets ptb_{\mathrm{rev}} \cdot
-      \mathcal{H}\left(ptb_{\mathrm{rev}} || ph_{\mathrm{com}, n+2}\right) +
-      ph_{\mathrm{com}, n+2} \cdot \mathcal{H}\left(ph_{\mathrm{com}, n+2} ||
-      ptb_{\mathrm{rev}}\right)$
-      \State $ph_{\mathrm{rev}, n+2} \gets phb_{\mathrm{rev}} \cdot
-      \mathcal{H}\left(phb_{\mathrm{rev}} || pt_{\mathrm{com}, n+2}\right) +
-      pt_{\mathrm{com}, n+2} \cdot \mathcal{H}\left(pt_{\mathrm{com}, n+2} ||
-      phb_{\mathrm{rev}}\right)$
-    \end{algorithmic}
-
     \begin{lemma}
       \label{lemma:comb:share}
       The construction above is \textsf{share-EUF}-secure in the Random Oracle
