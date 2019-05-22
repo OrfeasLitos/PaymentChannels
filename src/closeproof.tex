@@ -11,10 +11,10 @@
       \Statex
 
       \State every time \texttt{closedChannels} of \alice{} is updated with
-      \texttt{channel} (Fig.~\ref{alg:protocol:close},
-      line~\ref{alg:protocol:close:remove} and
+      data from a \texttt{channel} (Fig.~\ref{alg:protocol:close},
+      line~\ref{alg:protocol:close:report} and
       Fig.~\ref{alg:protocol:poll:closedch},
-      line~\ref{alg:protocol:poll:remove}), send (\textsc{closedChannel},
+      line~\ref{alg:protocol:poll:report}), send (\textsc{closedChannel},
       \texttt{channel}, \alice) to \fpaynet{} and expect (\textsc{continue})
       from \fpaynet{} to resume simulation
       \label{alg:sim:close:report}

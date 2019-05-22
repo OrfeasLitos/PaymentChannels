@@ -459,8 +459,10 @@
             \texttt{toSubmit}
             \label{alg:protocol:poll:mal:submit}
           \EndIf
-          \State move \texttt{channel} from \texttt{channels} to
+          \State add \texttt{receipt}(\texttt{channel}) to
           \texttt{closedChannels}
+          \label{alg:protocol:poll:report}
+          \State remove \texttt{channel} from \texttt{channels}
           \label{alg:protocol:poll:remove}
         \EndFor
       \end{algorithmic}
@@ -935,8 +937,10 @@
           \EndFor
           \State $\mathrm{sig} \gets
           \mathtt{signature}\left(\mathtt{localCom}_n, sh_F\right)$
-          \State move \texttt{channel} from \texttt{channels} to
+          \State add \texttt{receipt}(\texttt{channel}) to
           \texttt{closedChannels}
+          \label{alg:protocol:close:report}
+          \State remove \texttt{channel} from \texttt{channels}
           \label{alg:protocol:close:remove}
           \State send (\textsc{submit}, $\left(\mathrm{sig},
           \mathtt{remoteSig}_n, \mathtt{localCom}_n\right), \mathrm{HTLCs}$) to

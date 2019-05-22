@@ -363,7 +363,7 @@
         (\textsc{read}), ensures requested closes eventually happen}
         \label{alg:fpaynet:close:func:start}
           \ForAll{entries $(\mathit{fchid}, \mathtt{receipt}, h) \in
-          \mathtt{pendingClose}(\alice)$}
+          \mathtt{pendingClose}(\alice) \cup \mathtt{closedChannels}(\alice)$}
             \If{there is a closing transaction in $\Sigma_{\alice}$ for open
             \texttt{channel} with ID \textit{fchid} with a balance that
             corresponds to \texttt{receipt}}
@@ -489,7 +489,9 @@
         \State Upon receiving (\textsc{closedChannel}, \texttt{channel}, \alice)
         from \simulator:
         \Indent
-          \State add \texttt{channel} to \texttt{closedChannels}(\alice)
+          \State add (\textit{fchid} of channel,
+          \texttt{receipt}(\texttt{channel}), $\bot$) to
+          \texttt{closedChannels}(\alice)
           \Comment{trust \simulator}
           \label{alg:fpaynet:closedChannel:report}
           \State send (\textsc{continue}) to \simulator
@@ -501,7 +503,8 @@
         \Indent
           \State clear \texttt{newChannels}(\alice),
           \texttt{closedChannels}(\alice), \texttt{updatesToReport}(\alice) and
-          send them to \alice{} with message name \textsc{news}
+          send them to \alice{} with message name \textsc{news}, stripping
+          \textit{fchid} and h from \texttt{closedChannels}(\alice)
           \label{alg:fpaynet:getnews:send}
         \EndIndent
       \end{algorithmic}
