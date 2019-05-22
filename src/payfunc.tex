@@ -492,7 +492,7 @@
           \State add (\textit{fchid} of channel,
           \texttt{receipt}(\texttt{channel}), $\bot$) to
           \texttt{closedChannels}(\alice)
-          \Comment{trust \simulator}
+          \Comment{trust \simulator{} here, check on \texttt{checkClosed}()}
           \label{alg:fpaynet:closedChannel:report}
           \State send (\textsc{continue}) to \simulator
         \EndIndent
