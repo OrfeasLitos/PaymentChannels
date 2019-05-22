@@ -439,13 +439,13 @@
   \mathtt{IncomingCltvExpiry} - k - \tochain{}],$ such that $h_2 \geq h_1 + k +
   \tochain{}$. If $\Sigma_{\dave}$ contains the preimage at moment $h_1$ or
   $h_2$, then \dave{} may try to update the previous channel off-chain if he
-  receives a (\texttt{pushFulfill}) for that channel
+  receives a (\textsc{pushFulfill}) for that channel
   (Fig.~\ref{alg:protocol:pay:push},
   lines~\ref{alg:protocol:pushfulfill:start}-\ref{alg:protocol:pushfulfill:submit}),
-  and if the off-chain update is never attempted (because (\texttt{pushFulfill})
-  and (\texttt{commit}) are not received) or fails (because the previous
-  counterparty does not send (\texttt{revokeAndAck})), then the
-  (\texttt{fulfillOnChain}) that he receives according to $D$ will make him
+  and if the off-chain update is never attempted (because (\textsc{pushFulfill})
+  and (\textsc{commit}) are not received) or fails (because the previous
+  counterparty does not send (\textsc{revokeAndAck})), then the
+  (\textsc{fulfillOnChain}) that he receives according to $D$ will make him
   submit \texttt{HTLC-success} (Fig.~\ref{alg:protocol:pay:push},
   lines~\ref{alg:protocol:pay:foc:top}-\ref{alg:protocol:pay:foc:submit}) and
   have it on-chain by block of height \texttt{IncomingCltvExpiry}
