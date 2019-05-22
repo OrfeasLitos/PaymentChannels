@@ -157,6 +157,7 @@
               line successfully timed out the HTLC on-chain (i.e.
               \texttt{HTLC-timeout} is in $\Sigma_{\bob}$)} \Comment{no or bad
               communication with \bob's previous player}
+              \label{alg:sim:resolvepay:corrupted}
                 \State add to \texttt{charged}(\alice) a tuple
                 (\texttt{corrupted}, \textit{payid}) where \texttt{corrupted} is
                 set to one of the corrupted parties between \alice{} and \bob{}
@@ -186,6 +187,7 @@
               player after \alice{} has irrevocably fulfilled the HTLC on-chain
               (i.e. his \texttt{HTLC-success} is in $\Sigma_{\alice}$)}
               \Comment{honest payment completed}
+              \label{alg:sim:resolvepay:honest}
                 \State add (\alice, \textit{payid}) to \texttt{charged}(\alice)
                 \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid})
                 from \texttt{payids}
@@ -367,10 +369,10 @@
   The resolution is then sent to $\fpaynet{}_{\mathrm{, Pay}}$ with the message
   (\textsc{resolvePays}, \texttt{charged}). $\fpaynet{}_{\mathrm{, Pay}}$
   handles this message in Fig.~\ref{alg:fpaynet:resolvepay}, where, if it does
-  not halt (line~\ref{alg:fpaynet:resolvepay:halt}), it updates the state of
-  each affected channel (line~\ref{alg:fpaynet:resolvepay:update}) and does not
-  send any message, thus control returns to \environment. Therefore we have to
-  prove that $\fpaynet{}_{\mathrm{, Pay}}$ halts with at most negligible
+  not halt (line~\ref{alg:fpaynet:resolvepay:dave:halt}), it updates the state
+  of each affected channel (line~\ref{alg:fpaynet:resolvepay:update}) and does
+  not send any message, thus control returns to \environment. Therefore we have
+  to prove that $\fpaynet{}_{\mathrm{, Pay}}$ halts with at most negligible
   probability in order to conclude that the handling of a (\textsc{state})
   message does not introduce opportunity for distinguishability.
 
