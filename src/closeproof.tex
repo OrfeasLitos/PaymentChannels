@@ -152,7 +152,8 @@
 
   \fpaynet{} halts in line~\ref{alg:fpaynet:close:func:idle} of
   Fig.~\ref{alg:fpaynet:close} in case \environment{} has asked for the channel
-  to close, but too much time has passed since. This event cannot happen,
+  to close, but too much time has passed since. This event cannot happen, for
+  two reasons. First, regarding elements in \texttt{pendingClose}(\alice),
   because \fpaynet{} forwards a \textsc{closeChannel} message to \simulator{}
   (Fig.~\ref{alg:fpaynet:close}, line~\ref{alg:fpaynet:close:send}) for every
   element that it adds to \texttt{pendingClose} (Fig~\ref{alg:fpaynet:close},
@@ -165,7 +166,18 @@
   \fpaynet{} halts in this case only if it is sure that the chain has grown by
   \tochain{} blocks, and thus if the closing transaction had been submitted when
   \textsc{closeChannel} was received, it should have been necessarily included
-  (Proposition~\ref{prop:tochain}). Therefore \fpaynet{} cannot halt in
+  (Proposition~\ref{prop:tochain}). Second, every element added to
+  \texttt{closedChannels} (Fig.~\ref{alg:protocol:close},
+  line~\ref{alg:protocol:close:report} and
+  Fig.~\ref{alg:protocol:poll:closedch}, line~\ref{alg:protocol:poll:report})
+  corresponds to a submission of a closing transaction for the same channel
+  (Fig.~\ref{alg:protocol:close}, line~\ref{alg:protocol:close:submit}), or to a
+  channel for which the closing transaction is already in the ledger state
+  (Fig.~\ref{alg:protocol:poll:closedch},
+  line~\ref{alg:protocol:poll:closedch:loop}). In both cases, the transaction
+  has been submitted at least \tochain{} blocks earlier, thus again by
+  Proposition~\ref{prop:tochain} it is impossible for the transaction not to be
+  in the ledger state. Therefore \fpaynet{} cannot halt in
   line~\ref{alg:fpaynet:close:func:idle} of Fig.~\ref{alg:fpaynet:close}. We
   deduce that the execution of \texttt{checkClosed} by \fpaynet{} increases the
   probability of distinguishability only by a negligible amount.

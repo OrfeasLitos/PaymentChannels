@@ -424,6 +424,7 @@
       \begin{algorithmic}[1]
         \ForAll{$\mathtt{remoteCom}_n \in \Sigma_{\alice}$ that spend $F$ of a
         $\mathtt{channel} \in \mathtt{channels}$}
+        \label{alg:protocol:poll:closedch:loop}
           \If{we do not have $sh_{\mathrm{rev}, n}$} \Comment{Honest closure}
             \ForAll{unspent offered HTLC outputs $i$ of
             $\mathtt{remoteCom}_n$}
