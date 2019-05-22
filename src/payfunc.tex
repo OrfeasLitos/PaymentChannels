@@ -307,29 +307,7 @@
                 \State halt
                 \label{alg:fpaynet:resolvepay:dave:halt}
               \EndIf
-              \ForAll{open $\mathtt{channel}\text{s} \in
-              \overrightarrow{\mathtt{path}}$ that are not in any
-              \texttt{closedChannels}, starting from the one where \dave{} pays}
-              \label{alg:fpaynet:resolvepay:updateloop}
-                \State in the first iteration, \texttt{payer} is \dave. In
-                subsequent iterations, \texttt{payer} is the unique player that
-                has received but has not given. The other \texttt{channel} party
-                is \texttt{payee}
-                \If{\texttt{payer} has $x$ or more in \texttt{channel}}
-                  \State update \texttt{channel} to the next version and
-                  transfer $x$ from \texttt{payer} to \texttt{payee}
-                  \label{alg:fpaynet:resolvepay:update}
-                \Else
-                  \State revert all updates done in this loop
-                \EndIf
-              \EndFor
-              \ForAll{updated \texttt{channel}s in the previous loop}
-              \label{alg:fpaynet:resolvepay:haltloop}
-                \State ensure that a corresponding element has been added to
-                the \texttt{updatesToReport} of each honest counterparty,
-                otherwise halt
-                \label{alg:fpaynet:resolvepay:update:halt}
-              \EndFor
+              \State run code of Fig.~\ref{alg:fpaynet:resolvepay:loops}
               \If{$\dave{} \notin \mathtt{corrupted}$}
                 \State $\mathtt{offChainBalance}\left(\dave\right) \gets
                 \mathtt{offChainBalance}\left(\dave\right) - x$
@@ -343,6 +321,39 @@
     \end{systembox}
     \caption{}
     \label{alg:fpaynet:resolvepay}
+  \end{figure}
+
+  \begin{figure}[H]
+    \begin{titlebox}{\normalfont Loop over payment hops for update and
+    check}{roundbox}{normal}
+      \begin{algorithmic}[1]
+        \ForAll{open $\mathtt{channel}\text{s} \in
+        \overrightarrow{\mathtt{path}}$ that are not in any
+        \texttt{closedChannels}, starting from the one where \dave{} pays}
+        \label{alg:fpaynet:resolvepay:loops:update:loop}
+          \State in the first iteration, \texttt{payer} is \dave. In
+          subsequent iterations, \texttt{payer} is the unique player that
+          has received but has not given. The other \texttt{channel} party
+          is \texttt{payee}
+          \If{\texttt{payer} has $x$ or more in \texttt{channel}}
+            \State update \texttt{channel} to the next version and
+            transfer $x$ from \texttt{payer} to \texttt{payee}
+            \label{alg:fpaynet:resolvepay:loops:update:do}
+          \Else
+            \State revert all updates done in this loop
+          \EndIf
+        \EndFor
+        \ForAll{updated \texttt{channel}s in the previous loop}
+        \label{alg:fpaynet:resolvepay:loops:halt:loop}
+          \State ensure that a corresponding element has been added to
+          the \texttt{updatesToReport} of each honest counterparty,
+          otherwise halt
+          \label{alg:fpaynet:resolvepay:loops:halt:do}
+        \EndFor
+      \end{algorithmic}
+    \end{titlebox}
+    \caption{}
+    \label{alg:fpaynet:resolvepay:loops}
   \end{figure}
 
   \begin{figure}[H]

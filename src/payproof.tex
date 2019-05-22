@@ -370,11 +370,12 @@
   (\textsc{resolvePays}, \texttt{charged}). $\fpaynet{}_{\mathrm{, Pay}}$
   handles this message in Fig.~\ref{alg:fpaynet:resolvepay}, where, if it does
   not halt (line~\ref{alg:fpaynet:resolvepay:dave:halt}), it updates the state
-  of each affected channel (line~\ref{alg:fpaynet:resolvepay:update}) and does
-  not send any message, thus control returns to \environment. Therefore we have
-  to prove that $\fpaynet{}_{\mathrm{, Pay}}$ halts with at most negligible
-  probability in order to conclude that the handling of a (\textsc{state})
-  message does not introduce opportunity for distinguishability.
+  of each affected channel (Fig.~\ref{alg:fpaynet:resolvepay:loops},
+  line~\ref{alg:fpaynet:resolvepay:loops:update:do}) and does not send any
+  message, thus control returns to \environment. Therefore we have to prove that
+  $\fpaynet{}_{\mathrm{, Pay}}$ halts with at most negligible probability in
+  order to conclude that the handling of a (\textsc{state}) message does not
+  introduce opportunity for distinguishability.
 
   $\fpaynet{}_{\mathrm{, Pay}}$ halts (Fig.~\ref{alg:fpaynet:resolvepay},
   line~\ref{alg:fpaynet:resolvepay:dave:halt}) if the player \dave{} charged for
@@ -468,8 +469,8 @@
   \wedge D) \wedge (F \wedge G)] \leq \negl$.
 
   It remains to be proven that the halt of
-  line~\ref{alg:fpaynet:resolvepay:update:halt} in
-  Fig.~\ref{alg:fpaynet:resolvepay} does not occur with non-negligible
+  line~\ref{alg:fpaynet:resolvepay:loops:halt:do} in
+  Fig.~\ref{alg:fpaynet:resolvepay:loops} does not occur with non-negligible
   probability. Indeed, \simulator{} only reports the payment as resolved in
   \textsc{resolvePays} if a party has been irrevocably charged for it
   (Fig.~\ref{alg:sim:resolvepay},
@@ -478,18 +479,19 @@
   follow the \texttt{charged} party on the $\overrightarrow{\mathtt{path}}$ have
   either been closed or irrevocably updated to a newer version that includes the
   new balance. Since \fpaynet{} may only halt for a \texttt{channel} that has
-  not been declared or confirmed as closed (Fig.~\ref{alg:fpaynet:resolvepay},
-  lines~\ref{alg:fpaynet:resolvepay:updateloop}
-  and~\ref{alg:fpaynet:resolvepay:haltloop}), all channels that can cause a halt
-  are channels that have the update of this payment irrevocably committed. This
-  only happens when both sides send a \textsc{revokeAndAck} that updates the
-  channel from a version that contains the relevant HTLC to a version that
-  doesn't; and when an honest party receives such a \textsc{revokeAndAck}
-  message, it logs the update in \texttt{updatesToReport}
+  not been declared or confirmed as closed
+  (Fig.~\ref{alg:fpaynet:resolvepay:loops},
+  lines~\ref{alg:fpaynet:resolvepay:loops:update:loop}
+  and~\ref{alg:fpaynet:resolvepay:loops:halt:loop}), all channels that can cause
+  a halt are channels that have the update of this payment irrevocably
+  committed. This only happens when both sides send a \textsc{revokeAndAck} that
+  updates the channel from a version that contains the relevant HTLC to a
+  version that doesn't; and when an honest party receives such a
+  \textsc{revokeAndAck} message, it logs the update in \texttt{updatesToReport}
   (Fig.~\ref{alg:protocol:pay:revokeAndAck},
   line~\ref{alg:protocol:pay:raa:report}) which causes \simulator{} to report
   the update to \fpaynet{} (Fig.~\ref{alg:sim:push},
   line~\ref{alg:sim:push:report}). We therefore conclude that \fpaynet{} never
-  halts on line~\ref{alg:fpaynet:resolvepay:update:halt} of
-  Fig.~\ref{alg:fpaynet:resolvepay}.
+  halts on line~\ref{alg:fpaynet:resolvepay:loops:halt:do} of
+  Fig.~\ref{alg:fpaynet:resolvepay:loops}.
 \end{proof}
