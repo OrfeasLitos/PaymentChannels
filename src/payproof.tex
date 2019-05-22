@@ -256,7 +256,9 @@
   case, there is an algorithm (Fig.~\ref{alg:forge:master}) that wins the
   \textsf{master-EUF-CMA} game of the Combined Signature Scheme with
   non-negligible probability, thus breaking the security assumption of the
-  combined signature used. Therefore we deduce that $\Pr[R] \leq \negl$.
+  combined signature used. Therefore we deduce that $\Pr[R] \leq \negl$. The
+  rest of the proof operates in the world where $\neg P \wedge \neg Q \wedge
+  \neg R$ holds.
   % TODO: specify exact bounds for P, Q, R
 
   We can now move on to treating individual messages sent by \environment{}
@@ -322,9 +324,9 @@
   lead to a bad event (and thus given that the functionality does not halt in
   line~\ref{alg:fpaynet:poll:halt}), a (\textsc{poll}) message is sent to
   $\simulator_{\mathrm{LN - Reg - Open}}$. We will prove later that
-  $\fpaynet{}_{\mathrm{, Pay}}$ halts here only with negligible probability.
-  Upon receiving (\textsc{poll}), $\simulator_{\mathrm{LN - Reg - Open}}$
-  simulates receiving (\textsc{poll}) with \alice's ITI (Fig.~\ref{alg:sim:pay},
+  $\fpaynet{}_{\mathrm{, Pay}}$ does not halt here. Upon receiving
+  (\textsc{poll}), $\simulator_{\mathrm{LN - Reg - Open}}$ simulates receiving
+  (\textsc{poll}) with \alice's ITI (Fig.~\ref{alg:sim:pay},
   line~\ref{alg:sim:poll:run}), but does not \textsc{read} from \ledger{} and
   uses instead the $\Sigma_{\alice}$ provided along with the message. A
   reasoning identical to that found in the previous paragraph shows that this
@@ -338,7 +340,7 @@
   line~\ref{alg:fpaynet:poll:halt} of Fig.~\ref{alg:fpaynet:poll} and halts. We
   will now prove that, during $\textsc{Exec}^{\fpaynet{}_{\mathrm{, Pay}},
   \ledger}_{\simulator_{\mathrm{LN - Reg - Open - Pay}}, \environment}$, it is
-  $\Pr[E] \leq \negl$. The condition of Fig.~\ref{alg:fpaynet:poll},
+  $\Pr[E] = 0$. The condition of Fig.~\ref{alg:fpaynet:poll},
   line~\ref{alg:fpaynet:poll:badevent} is triggered if the delayed output (that
   of the malicious party) of $\mathtt{tx}_1$ has been spent by the transaction
   $\mathtt{tx}_2$ in $\Sigma_{\alice}$ (event $E_1$) and \texttt{polls}(\alice)
@@ -353,10 +355,8 @@
   expires. $E_{1,2}: \mathtt{tx}_2$ spends the delayed output with a signature
   valid by the revocation public key $p_{\alice, \mathrm{rev}}$. Note that $E_1
   = E_{1,1} \vee E_{1,2}$ and $E_{1,1}, E_{1,2}$ are mutually exclusive (since
-  the same output cannot be spent twice). Observe that, since only \alice{}
-  knows the revocation secret key $s_{\alice, \mathrm{rev}}$, forgery of the
-  signature required in $E_{1,2}$ can happen only with negligible probability,
-  i.e. $\Pr\left[E_{1,2}\right] \leq \negl$. We now concetrate on the event
+  the same output cannot be spent twice). Observe that $E_{1,2} \subset R$, thus
+  $\Pr\left[E_{1,2} | \neg R\right] = 0$. We now concetrate on the event
   $E_{1,1}$. Due to the fact that $\mathtt{tx}_2$ spends an output locked with a
   relative timelock of length $\mathtt{delay}\left(\alice\right) + k +
   \tochain$, the commitment transaction $\mathtt{tx}_1$ can reside in a block of
@@ -382,8 +382,9 @@
   E_2\right] = \Pr\left[\left(E_{1,1} \wedge E_2\right) \vee \left(E_{1,2}
   \wedge E_2\right)\right] \leq \Pr\left[E_{1,1} \wedge E_2\right] +
   \Pr\left[E_{1,2} \wedge E_2\right] = \Pr\left[E_{1,2} \wedge E_2\right] \leq
-  \Pr\left[E_{1,2}\right] \leq \negl$. We conclude that \textsc{poll} introduces
-  only a negligible opportunity for distinghuishability.
+  \Pr\left[E_{1,2}\right] = 0$. We conclude that, given $\neg P \wedge \neg Q
+  \wedge \neg R$ \textsc{poll} introduces no opportunity for
+  distinghuishability.
 
   We now treat the effects of the (\textsc{state}, $\Sigma$) message that
   $\fpaynet{}_{\mathrm{, Pay}}$ sends to $\simulator_{\mathrm{LN - Reg - Open}}$
@@ -440,19 +441,21 @@
   (Fig.~\ref{alg:sim:resolvepay}, line~\ref{alg:sim:resolvepay:negligent}), --
   i.e. \dave{} is charged in the event $B \vee (F \wedge G)$.
 
-  We will now show that $\Pr[A \wedge B] \leq \negl \wedge \Pr[(C \wedge D)
-  \wedge (F \wedge G)] \leq \negl$, from which we can deduce that $\Pr[(A \wedge
-  B) \vee ((C \wedge D) \wedge (F \wedge G))] \leq \negl$ and thus $\Pr[((A
-  \wedge B) \vee (\neg B \wedge C \wedge D)) \wedge (B \vee (F \wedge G))] \leq
-  \negl$. This last step holds because $(A \wedge B) \vee ((C \wedge D) \wedge
-  (F \wedge G)) = (A \wedge B) \vee (C \wedge D \wedge F \wedge G)$ and $((A
-  \wedge B) \vee (\neg B \wedge C \wedge D)) \wedge (B \vee (F \wedge G)) = (A
-  \wedge B) \vee (\neg B \wedge C \wedge D \wedge F \wedge G)$ and the latter is
-  a subset of the former.
+  We will now show that $\Pr[A \wedge B | \neg P \wedge \neg Q \wedge \neg R] =
+  0 \wedge \Pr[(C \wedge D) \wedge (F \wedge G) | \neg P \wedge \neg Q \wedge
+  \neg R] = 0$, from which we can deduce that $\Pr[(A \wedge B) \vee ((C \wedge
+  D) \wedge (F \wedge G)) | \neg P \wedge \neg Q \wedge \neg R] = 0$ and thus
+  $\Pr[((A \wedge B) \vee (\neg B \wedge C \wedge D)) \wedge (B \vee (F \wedge
+  G)) | \neg P \wedge \neg Q \wedge \neg R] = 0$. This last step holds because
+  $(A \wedge B) \vee ((C \wedge D) \wedge (F \wedge G)) = (A \wedge B) \vee (C
+  \wedge D \wedge F \wedge G)$ and $((A \wedge B) \vee (\neg B \wedge C \wedge
+  D)) \wedge (B \vee (F \wedge G)) = (A \wedge B) \vee (\neg B \wedge C \wedge D
+  \wedge F \wedge G)$ and the latter is a subset of the former.
 
   The analysis of the event $A \wedge B$ is identical to the one we did
   previously for the events $E_1, E_2$, with $A$ corresponding to $E_2$ and $B$
-  to $E_1$. We thus deduce that $\Pr[A \wedge B] \leq \negl$.
+  to $E_1$. We thus deduce that $\Pr[A \wedge B | \neg P \wedge \neg Q \wedge
+  \neg R] = 0$.
 
   The only way for event $C$ to be true is if \environment{} sends
   (\textsc{poll}) to \dave{} during the prescribed time period
@@ -468,12 +471,10 @@
   line~\ref{alg:fpaynet:support:unreg}) and the element added to
   \texttt{polls}(\dave) at registration is the chain height at that time
   (Fig.~\ref{alg:fpaynet:support}, line~\ref{alg:fpaynet:support:lastpoll}).
-  When \dave{} receives (\textsc{poll}), $\fpaynet{}_{\mathrm{, Pay}}$ sends
-  (\textsc{getClosedFunds}) to $\simulator_{\mathrm{LN - Reg - Open}}$
-  (Fig.~\ref{alg:fpaynet:poll}, line~\ref{alg:fpaynet:poll:send}) with
-  overwhelming probability (since, as we saw earlier, $\fpaynet{}_{\mathrm{,
-  Pay}}$ halts in line~\ref{alg:fpaynet:poll:halt} only with negligible
-  probability).
+  When \dave{} receives (\textsc{poll}), $\fpaynet{}_{\mathrm{, Pay}}$ always
+  sends (\textsc{getClosedFunds}) to $\simulator_{\mathrm{LN - Reg - Open}}$
+  (Fig.~\ref{alg:fpaynet:poll}, line~\ref{alg:fpaynet:poll:send}) (since, as we
+  saw earlier, $\fpaynet{}_{\mathrm{, Pay}}$ never halts).
 
   Event $G$ happens only when the previous counterparty successfully appends
   \texttt{HTLC-timeout} to $\Sigma_{\dave}$, which is a valid transaction only
@@ -481,15 +482,14 @@
   previous counterparty learns the preimage of the HTLC and forges a signature
   valid by \dave's public HTLC key, or if the previous counterparty forges a
   signature valid by \dave's public revocation key; the two latter scenarios can
-  happen only with negligible probability. Thus, given that $F$ happens until a
-  moment when $|\Sigma_{\dave}| \leq \mathtt{IncomingCltvExpiry} - k -
-  \tochain{}$, \dave{} has the time to successfully fulfill the HTLC with
-  overwhelming probability. Given $C$, \dave{} has \textsc{poll}ed at two
-  moments $h_1, h_2 \in [\mathtt{OutgoingCltvExpiry} + k + \tochain{} + 1,
-  \mathtt{IncomingCltvExpiry} - k - \tochain{}],$ such that $h_2 \geq h_1 + k +
-  \tochain{}$. If $\Sigma_{\dave}$ contains the preimage at moment $h_1$ or
-  $h_2$, then \dave{} may try to update the previous channel off-chain if he
-  receives a (\textsc{pushFulfill}) for that channel
+  never happen. Thus, given that $F$ happens until a moment when
+  $|\Sigma_{\dave}| \leq \mathtt{IncomingCltvExpiry} - k - \tochain{}$, \dave{}
+  has the time to successfully fulfill the HTLC. Given $C$, \dave{} has
+  \textsc{poll}ed at two moments $h_1, h_2 \in [\mathtt{OutgoingCltvExpiry} + k
+  + \tochain{} + 1, \mathtt{IncomingCltvExpiry} - k - \tochain{}],$ such that
+  $h_2 \geq h_1 + k + \tochain{}$. If $\Sigma_{\dave}$ contains the preimage at
+  moment $h_1$ or $h_2$, then \dave{} may try to update the previous channel
+  off-chain if he receives a (\textsc{pushFulfill}) for that channel
   (Fig.~\ref{alg:protocol:pay:push},
   lines~\ref{alg:protocol:pushfulfill:start}-\ref{alg:protocol:pushfulfill:submit}),
   and if the off-chain update is never attempted (because (\textsc{pushFulfill})
@@ -511,8 +511,8 @@
   (at block height $h_2$) necessarily reveals the \texttt{HTLC-success} to
   \dave{} and subsequently the (\textsc{fulfillOnChain}) causes \dave{} to
   fulfill the HTLC with the previous counterparty, as argued above. Therefore in
-  all but negligible cases \dave{} is not charged for the payment, i.e. $\Pr[(C
-  \wedge D) \wedge (F \wedge G)] \leq \negl$.
+  no case \dave{} is charged for the payment, i.e. $\Pr[(C \wedge D) \wedge (F
+  \wedge G) | \neg P \wedge \neg Q \wedge \neg R] = 0$.
 
   It remains to be proven that the halt of
   line~\ref{alg:fpaynet:resolvepay:loops:halt:do} in
