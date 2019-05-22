@@ -307,9 +307,9 @@
                 \State halt
                 \label{alg:fpaynet:resolvepay:halt}
               \EndIf
-              \ForAll{$\mathtt{channel}\text{s} \in
-              \overrightarrow{\mathtt{path}}$ starting from the one where
-              \dave{} pays}
+              \ForAll{open $\mathtt{channel}\text{s} \in
+              \overrightarrow{\mathtt{path}}$ that are not in any
+              \texttt{closedChannels}, starting from the one where \dave{} pays}
                 \State in the first iteration, \texttt{payer} is \dave. In
                 subsequent iterations, \texttt{payer} is the unique player that
                 has received but has not given. The other \texttt{channel} party
@@ -321,6 +321,11 @@
                 \Else
                   \State revert all updates done in this loop
                 \EndIf
+              \EndFor
+              \ForAll{updated \texttt{channel}s in the previous loop}
+                \State ensure that a corresponding element has been added to
+                the \texttt{updatesToReport} of each honest counterparty,
+                otherwise halt
               \EndFor
               \If{$\dave{} \notin \mathtt{corrupted}$}
                 \State $\mathtt{offChainBalance}\left(\dave\right) \gets
