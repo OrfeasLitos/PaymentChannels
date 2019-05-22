@@ -155,7 +155,7 @@
   to close, but too much time has passed since. This event cannot happen,
   because \fpaynet{} forwards a \textsc{closeChannel} message to \simulator{}
   (Fig.~\ref{alg:fpaynet:close}, line~\ref{alg:fpaynet:close:send}) for every
-  element that it adds to \texttt{pendingPay} (Fig~\ref{alg:fpaynet:close},
+  element that it adds to \texttt{pendingClose} (Fig~\ref{alg:fpaynet:close},
   line~\ref{alg:fpaynet:close:mark}) and this causes \simulator{} to submit the
   closing transaction to \ledger{} (Fig.~\ref{alg:protocol:close},
   line~\ref{alg:protocol:close:submit}). This transaction is necessarily valid,
