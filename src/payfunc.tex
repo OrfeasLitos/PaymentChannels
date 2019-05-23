@@ -6,7 +6,7 @@
         \item from $\environment$:
         \begin{itemize}
           \item (\textsc{register}, delay, relayDelay)
-          \item (\textsc{registered})
+          \item (\textsc{toppedUp})
           \item (\textsc{openChannel}, \alice, \bob, $x$, \textit{tid})
           \item (\textsc{checkForNew}, \alice, \bob, \textit{tid})
           \item (\textsc{pay}, \bob, $x, \overrightarrow{\mathtt{path}}$,
@@ -99,7 +99,7 @@
         \EndIndent
         \Statex
 
-        \State Upon receiving (\textsc{registered}) from \alice:
+        \State Upon receiving (\textsc{toppedUp}) from \alice:
         \Indent
           \State send (\textsc{read}) to \ledger{} as \alice{} and store reply
           to $\Sigma_{\alice}$

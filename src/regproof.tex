@@ -2,7 +2,7 @@
   \begin{systembox}{$\fpaynet{}_{\mathrm{, Reg}}$}
     \begin{algorithmic}[1]
       \State For messages \textsc{register}, \textsc{registerDone},
-      \textsc{registered} and \textsc{corrupted}, act like \fpaynet{}, but skip
+      \textsc{toppedUp} and \textsc{corrupted}, act like \fpaynet{}, but skip
       lines that call \texttt{checkClosed}().
       \Statex
 
@@ -29,7 +29,7 @@
 \begin{figure}[H]
   \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg}}$}
     Like $\simulator{}_{\mathrm{LN}}$, but it does not accept
-    (\textsc{registered}) from $\fpaynet{}_{\mathrm{, Reg}}$.
+    (\textsc{toppedUp}) from $\fpaynet{}_{\mathrm{, Reg}}$.
     Additional differences:
     \begin{algorithmic}[1]
       \State Upon receiving (\textsc{register}, \alice, delay, relayDelay,
