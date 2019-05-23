@@ -158,7 +158,7 @@
   Fig.~\ref{alg:fpaynet:close} in case \environment{} has asked for the channel
   to close, but too much time has passed since. This event cannot happen, for
   two reasons. First, regarding elements in \texttt{pendingClose}(\alice),
-  because \fpaynet{} forwards a \textsc{closeChannel} message to \simulator{}
+  because \fpaynet{} forwards a (\textsc{closeChannel}) message to \simulator{}
   (Fig.~\ref{alg:fpaynet:close}, line~\ref{alg:fpaynet:close:send}) for every
   element that it adds to \texttt{pendingClose} (Fig~\ref{alg:fpaynet:close},
   line~\ref{alg:fpaynet:close:mark}) and this causes \simulator{} to submit the
@@ -169,7 +169,7 @@
   line~\ref{alg:fpaynet:close:func:ifidle} of Fig.~\ref{alg:fpaynet:close}.
   \fpaynet{} halts in this case only if it is sure that the chain has grown by
   \tochain{} blocks, and thus if the closing transaction had been submitted when
-  \textsc{closeChannel} was received, it should have been necessarily included
+  (\textsc{closeChannel}) was received, it should have been necessarily included
   (Proposition~\ref{prop:tochain}). Second, every element added to
   \texttt{closedChannels} (Fig.~\ref{alg:protocol:close},
   line~\ref{alg:protocol:close:report} and
