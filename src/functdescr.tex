@@ -19,7 +19,7 @@
   In order to provide security guarantees, there are various moments when
   \fpaynet{} verifies whether certain expected events have actually taken place.
   A number of messages prompt \fpaynet{} to read from \ledger{} and perform
-  these checks. In the actual implementations of LPN these checks are done
+  these checks. In the actual implementations of LN these checks are done
   periodically by a polling daemon. Such checks are done by \fpaynet{} in the
   following cases:
   \begin{itemize}
@@ -92,7 +92,7 @@
   Last but not least, \environment{} sends (\textsc{getNews}) to obtain the
   latest changes regarding newly opened or closed channels, along with updates
   to the state of existing ones. Here we make an interesting observation: The
-  most complex part of LPN is arguably the negotiations that happen when a
+  most complex part of LN is arguably the negotiations that happen when a
   multi-hop payment takes place, due to the many channel updates needed; indeed,
   two complete channel updates for each hop are needed for a successful payment
   to go through. The fact that a proposal for an update can happen
