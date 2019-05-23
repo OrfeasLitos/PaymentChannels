@@ -2,11 +2,12 @@
   \begin{simulatorbox}{$\simulator$}
     Like $\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$. Differences:
     \begin{algorithmic}[1]
-      \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}, \alice)
-      from \fpaynet:
+      \State Upon receiving (\textsc{closeChannel}, \texttt{receipt},
+      \textit{tid}, \alice) from \fpaynet:
       \Indent
         \State simulate Fig.~\ref{alg:protocol:close} receiving
-        (\textsc{closeChannel}, \texttt{receipt}) with \alice's ITI
+        (\textsc{closeChannel}, \texttt{receipt}, \textit{tid}) with \alice's
+        ITI
       \EndIndent
       \Statex
 
@@ -35,9 +36,9 @@
   Like in the previous proof, we here also assume that $\neg P \wedge \neg Q
   \wedge \neg R$ holds.
 
-  When \environment{} sends (\textsc{closeChannel}, \texttt{receipt}) to \alice,
-  in the ideal world, if it is not the first closing message to \alice{} the
-  message is ignored (Fig.~\ref{alg:fpaynet:close},
+  When \environment{} sends (\textsc{closeChannel}, \texttt{receipt},
+  \textit{tid}) to \alice, in the ideal world, if it is not the first closing
+  message to \alice{} the message is ignored (Fig.~\ref{alg:fpaynet:close},
   line~\ref{alg:fpaynet:close:noserve}). Similarly in the real world, if there
   has been another such message, \alice{} ignores it
   (Fig.\ref{alg:protocol:close}, lines~\ref{alg:protocol:close:remove}

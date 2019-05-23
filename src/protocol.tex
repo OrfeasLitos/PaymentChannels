@@ -920,11 +920,11 @@
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - close}
       \begin{algorithmic}[1]
-        \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from
-        \environment:
+        \State Upon receiving (\textsc{closeChannel}, \texttt{receipt},
+        \textit{tid}) from \environment:
         \Indent
           \State ensure \texttt{receipt} corresponds to an open
-          $\mathtt{channel} \in \mathtt{channels}$
+          $\mathtt{channel} \in \mathtt{channels}$ with ID \textit{tid}
           \label{alg:protocol:close:ensure}
           \State assign latest \texttt{channel} sequence number to $n$
           \State $\mathrm{HTLCs} \gets \emptyset$

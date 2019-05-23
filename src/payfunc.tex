@@ -11,7 +11,7 @@
           \item (\textsc{checkForNew}, \alice, \bob, \textit{tid})
           \item (\textsc{pay}, \bob, $x, \overrightarrow{\mathtt{path}}$,
           \texttt{receipt})
-          \item (\textsc{closeChannel}, receipt)
+          \item (\textsc{closeChannel}, \texttt{receipt}, \textit{tid})
           \item (\textsc{poll})
           \item (\textsc{pushFulfill}, \textit{pchid})
           \item (\textsc{pushAdd}, \textit{pchid})
@@ -359,11 +359,12 @@
   \begin{figure}[H]
     \begin{systembox}{\fpaynet{} - close}
       \begin{algorithmic}[1]
-        \State Upon receiving (\textsc{closeChannel}, \texttt{receipt}) from
-        \alice
+        \State Upon receiving (\textsc{closeChannel}, \texttt{receipt},
+        \textit{tid}) from \alice
         \Indent
           \State ensure that there is a $\mathtt{channel} \in \mathtt{channels}
           : \mathtt{receipt}\left(\mathtt{channel}\right) = \mathtt{receipt}$
+          with ID \textit{tid}
           \State retrieve \textit{fchid} from \texttt{channel}
           \label{alg:fpaynet:close:retrieve}
           \State add (\textit{fchid}, \texttt{receipt}(\texttt{channel}),
@@ -372,8 +373,8 @@
           \State do not serve any other (\textsc{pay} or \textsc{closeChannel})
           message from \alice{} for this channel
           \label{alg:fpaynet:close:noserve}
-          \State send (\textsc{closeChannel}, \texttt{receipt}, \alice) to
-          \simulator
+          \State send (\textsc{closeChannel}, \texttt{receipt}, \textit{tid},
+          \alice) to \simulator
           \label{alg:fpaynet:close:send}
         \EndIndent
         \Statex
