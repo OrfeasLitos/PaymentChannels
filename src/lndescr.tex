@@ -72,3 +72,9 @@
     funds. The LN specification allows for cooperative channel closure which
     avoids the need to wait for the timelock, but in the current work
     this last type of closure is not considered.
+
+    A possible usability problem that arises is that both parties have to be
+    vigilant to punish their counterparty if the latter broadcasts an old
+    commitment transaction, i.e. parties have to come regularly online to
+    safeguard against theft. LN makes it possible to trustlessly outsource this,
+    but this mechanism is not analyzed in the current work.
