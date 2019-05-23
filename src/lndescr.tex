@@ -1,0 +1,60 @@
+\section{Lightning Network high level overview}
+  The aim of LN is to enable fast and cheap transactions that do not have to be
+  added to the blockchain, without compromising security. This is achieved in
+  the following way: Two parties that have recurring monetary exchanges create
+  one on-chain transaction that locks up some funds, known as the ``funding
+  transaction''. This transaction is funded by one of the two parties and has a
+  2-of-2 multisig output, which needs the signatures of both counterparties in
+  order to be spent. Before actually submitting this transaction though, both
+  parties individually ensure that they hold a transaction that spends the
+  2-of-2 output in a way that gives the funds to the funder, along with its
+  signature from the counterparty. These two transactions (one for each
+  counterparty) are called ``commitment transactions''. Each party can broadcast
+  her ``local'' commitment transaction and has signed the ``remote'' commitment
+  transaction, which is the one held by the counterparty.
+
+  Every time they want to make a payment to each other, they exchange a sequence
+  of messages (that include specially crafted signatures) that have two effects.
+  Firstly, a new pair of commitment transactions, along with their signatures,
+  is exchanged. Each of these transactions ensures that, if broadcast, each
+  party will be able to spend their righteous share from the coins contained in
+  the funding output. Secondly, the two old commitment transactions are revoked.
+  This ensures that no party can close a channel using an old commitment
+  transaction that is more beneficial to her than the latest one. Observe that
+  it is impossible to actually make these commitment transactions invalid
+  without spending the funding output; but spending it would need an on-chain
+  transaction for each update, thus defeating the purpose of LN.
+
+  The following technique is used instead: \alice's old local commitment has an
+  output that carries her old share of the funds. This output can be spent in
+  two ways: either with a signature by \alice's ``delayed payment'' secret key
+  which is a usual ECDSA key, or with a signature by \bob's ``revocation''
+  secret key, which is a new type of key. If \alice{} broadcasts an old
+  commitment transaction, \bob{} will be able to take her funds by spending her
+  output using his ``revocation'' key. At the time of creation of a new
+  commitment, both parties know \bob's ``revocation'' public key, but no party
+  knows its secret part -- it can only be computed by combining one secret that
+  \alice{} knows and one secret that \bob{} knows. \alice{} therefore sends this
+  secret to \bob{} after the new commitment transaction is built and signed, in
+  order to revoke the old commitment. Thus \bob{} cannot abuse this output
+  before an old commitment transaction is revoked. A new cryptographic
+  construction has been designed by the creators of LN in order to enable such
+  ``revocation'' keys, which we define as a new primitive named ``combined
+  signature'' and prove that their construction realizes it.
+
+  The last element needed to make updates secure is the so called ``relative
+  timelock''. If \alice{} broadcasts a commitment transaction, she is not
+  allowed to immediately spend her funds with her ``delayed payment'' key.
+  Instead, she has to wait for the transaction to reach a pre-agreed block depth
+  (the relative timelock, hardcoded in the output script of the commitment
+  transaction) in order to give some time to \bob{} to see the transaction and,
+  if it does not correspond to the latest version of the channel, punish her
+  with his ``revocation'' key. This avoids a scenario in which \alice{}
+  broadcasts an old commitment transaction and immediately spends her output,
+  which would prevent \bob{} from ever proving that this commitment was old.
+
+  If \alice{} wants to unilaterally close a channel, all she has to do is
+  broadcast her latest local commitment transaction and wait for the timelock to
+  expire in order to spend her funds. The LN specification allows for
+  cooperative channel closure which avoids the need to wait for the timelock,
+  but in the current work cooperative closure is not considered.
