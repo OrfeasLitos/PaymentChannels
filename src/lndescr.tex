@@ -78,3 +78,48 @@
     commitment transaction, i.e. parties have to come regularly online to
     safeguard against theft. LN makes it possible to trustlessly outsource this,
     but this mechanism is not analyzed in the current work.
+
+  \subsection{Multi-hop payments}
+    Having funds locked down for exclusive use with a particular counterparty
+    would be a serious limitation. Luckily, LN allows for multi-hop payments. In
+    a situation where \alice{} has a channel with \bob{} and he has another
+    channel with \charlie{}, it is possible for \alice{} to pay \charlie{}
+    off-chain by leveraging \bob's help. Remarkably, this can be achieved
+    without any one party trusting any of the other two. One can think of
+    \alice{} giving some ``marked'' money to \bob{}, who in turn either delivers
+    it to \charlie{} or returns it to \alice{} -- it is impossible for \bob{} to
+    keep the money. It is also impossible for \alice{} and \charlie{} to make
+    \bob{} pay for this transaction out of his pocket.
+
+    We will now give an informal overview of how this counterintuitive dynamic
+    is made possible. \alice{} initiates the payment by asking \charlie{} to
+    create a new hash for a payment of $x$ coins. \charlie{} chooses a random
+    secret, hashes it and sends the hash to \alice. \alice{} promises \bob{} to
+    pay him $x$ in their channel if he shows her the preimage of this particular
+    hash within a specific time frame. \bob{} makes the same promise to
+    \charlie{}: if \charlie{} tells \bob{} the preimage of the same hash within
+    a specific time frame (shorter than the one \bob{} has agreed with
+    \alice{}), \bob{} will pay him $x$ in their common channel. \charlie{} then
+    sends him the preimage (which is the secret he generated initially) and
+    \bob{} agrees to update the channel to a new version where $x$ is moved from
+    him to \charlie. Similarly, \bob{} sends the preimage to \alice{} and once
+    again \alice{} updates their channel to give \bob{} $x$ coins. Therefore $x$
+    coins were transmitted from \alice{} to \charlie{} and \bob{} did not gain
+    or lose anything, he just increased his balance in the channel with \alice{}
+    and reduced his balance by an equal amount in the channel with \charlie.
+
+    This type of promise where a preimage is exchanged for money is called Hash
+    TimeLocked Contract (HTLC). It is enforceable on-chain in case the payer
+    does not cooperatively update upon disclosure of the preimage, thus no trust
+    is needed. Two HTLCs were signed and fulfilled for the payment of the
+    previous example, which happened completely off-chain. Two updates happened
+    in each channel: one to sign the HTLC and one to fulfill it. The time frames
+    were chosen so that every intermediary has had the time to learn the
+    preimage and give it to the previous party on the path.
+
+    LN gives the possibility for intermediaries to charge a fee for their
+    service, but such fees are not incorporated in the current analysis.
+    Furthermore, LN leverages the Sphinx onion packet scheme~\cite{sphinx} to
+    increase the privacy of payments, but we do not formaly analyze the privacy
+    of LN in this work -- we just use it in our protocol description to
+    syntactically match the message format used by LN.
