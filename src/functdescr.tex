@@ -40,9 +40,11 @@
     closure or to learn the preimage from an honest closure, or did not enforce
     the retrieval of her funds by using the preimage to fulfill on chain
     (Fig.~\ref{alg:fpaynet:resolvepay},
-    line~\ref{alg:fpaynet:resolvepay:haltcond}). It also halts if a particular
-    payment resulted in a channel update for which \simulator{} did not inform
-    \fpaynet{} (Fig.~\ref{alg:fpaynet:resolvepay:loops},
+    line~\ref{alg:fpaynet:resolvepay:haltcond}). \orfeas{mention that we
+    probably are the first to formally specify the exact time bounds for
+    intermediaries?} It also halts if a particular payment resulted in a channel
+    update for which \simulator{} did not inform \fpaynet{}
+    (Fig.~\ref{alg:fpaynet:resolvepay:loops},
     line~\ref{alg:fpaynet:resolvepay:loops:halt:do}).
     \item \fpaynet{} executes the function
     \texttt{checkClosed}($\Sigma_{\alice}$) every time it receives
@@ -103,8 +105,9 @@
   such minutiae, we had to allow for minor cases where the updates reported back
   to \environment{} may be wrong (in the case \simulator{} is adversarial).
   Nevertheless, such mistakes are always caught by \fpaynet{} when a channel
-  closes. This is somehow intuitive: Consider a user of the payment network that
-  does not understand its inner workings but can read \ledger{} and count her
-  funds there. In case the payment network is not trustworthy, the only way she
-  can verify that her funds are exactly as the network reports is by closing the
-  relevant channel and checking her state in \ledger.
+  closes. \orfeas{rephrase part after here} This is somehow intuitive: Consider
+  a user of the payment network that does not understand its inner workings but
+  can read \ledger{} and count her funds there. In case the payment network is
+  not trustworthy, the only way she can verify that her funds are exactly as the
+  network reports is by closing the relevant channel and checking her state in
+  \ledger.
