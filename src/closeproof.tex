@@ -63,10 +63,10 @@
 
   When \environment{} sends (\textsc{getNews}) to \alice, in the ideal world
   \fpaynet{} sends (\textsc{news}, \texttt{newChannels}(\alice),
-  \texttt{closedChannels}(\alice), \texttt{updatesToReport}(\alice)) to
-  \environment{} and empties these fields (Fig.~\ref{alg:fpaynet:daemon},
+  \texttt{closedChannels}(\alice), \texttt{updatesToReport}\linebreak(\alice))
+  to \environment{} and empties these fields (Fig.~\ref{alg:fpaynet:daemon},
   lines~\ref{alg:fpaynet:getnews}-\ref{alg:fpaynet:getnews:send}). In the real
-  world, \alice{} sends (\textsc{news}, \texttt{newChannels},
+  world, \alice{} sends the message (\textsc{news}, \texttt{newChannels},
   \texttt{closedChannels}, \texttt{updatesToReport}) to \environment{} and
   empties these fields as well (Fig.~\ref{alg:protocol:poll},
   lines~\ref{alg:protocol:getnews}-\ref{alg:protocol:getnews:send}).
@@ -76,8 +76,9 @@
   line~\ref{alg:fpaynet:channelOpened:report}). This happens when the simulated
   \alice{} ITI handles a \textsc{fundingLocked} message from \bob{}
   (Fig.~\ref{alg:sim:open}, line~\ref{alg:sim:open:channelOpened}). In the real
-  world \alice{} would have modified her \texttt{newChannels} while handling
-  \bob's \textsc{fundingLocked} (Fig.~\ref{alg:protocol:fundingLocked},
+  world \alice{} would have modified her
+  \texttt{new}-\linebreak\texttt{Channels} while handling \bob's
+  \textsc{fundingLocked} (Fig.~\ref{alg:protocol:fundingLocked},
   line~\ref{alg:protocol:fundingLocked:report}), thus as far as this case is
   concerned, \texttt{newChannels} has the same contents in the real world as
   does \texttt{newChannels}(\alice) in the ideal. The other case when

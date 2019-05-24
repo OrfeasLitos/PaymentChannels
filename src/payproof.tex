@@ -296,8 +296,8 @@
   on the other hand, $\fpaynet{}_{\mathrm{, Pay}}$ sends (\textsc{read}) to
   \ledger{} (Fig.~\ref{alg:fpaynet:daemon},
   line~\ref{alg:fpaynet:daemon:foc:read}) as \alice{} and subsequently lets
-  $\simulator_{\mathrm{LN - Reg - Open}}$ simulate \alice{}'s ITI receiving
-  (\textsc{fulfillOnChain}) (Fig.~\ref{alg:sim:pay},
+  $\simulator_{\mathrm{LN - Reg - Open}}$ simulate the receiving of
+  (\textsc{fulfillOnChain}) with \alice{}'s ITI (Fig.~\ref{alg:sim:pay},
   lines~\ref{alg:sim:pay:foc:top}-\ref{alg:sim:pay:foc:run}). Observe that
   during this simulation a second (\textsc{read}) message to \ledger{} (that
   would not match any message in the real world) is avoided because
