@@ -132,10 +132,12 @@
     This type of promise where a preimage is exchanged for money is called Hash
     TimeLocked Contract (HTLC). It is enforceable on-chain in case the payer
     does not cooperatively update upon disclosure of the preimage, thus no trust
-    is needed. In the previous example with \alice{}, \bob{} and \charlie, two HTLCs were signed and fulfilled for the payment to go through and the whole interaction was  completely off-chain. Two updates happened
-    in each channel: one to sign the HTLC and one to fulfill it. The time frames
-    were chosen so that every intermediary has had the time to learn the
-    preimage and give it to the previous party on the path.
+    is needed. In the previous example with \alice{}, \bob{} and \charlie, two
+    HTLCs were signed and fulfilled for the payment to go through and the whole
+    interaction was completely off-chain. Two updates happened in each channel:
+    one to sign the HTLC and one to fulfill it. The time frames were chosen so
+    that every intermediary has had the time to learn the preimage and give it
+    to the previous party on the path.
 
     LN gives the possibility for intermediaries to charge a fee for their
     service, but such fees are not incorporated in the current analysis.
