@@ -216,9 +216,9 @@
 \begin{proof}
   Before focusing on individual messages sent by \environment, we will first
   prove that three particular forgery events happen with negligible probability.
-  Let \alice{} be an honest player. Let $P$ be the event in which at some point
-  during the execution a transaction that has the following two characteristics
-  appears in $\Sigma_{\alice}$: (a) it spends a funding transaction of a channel
+  Let $P$ be the event in which at some point during the execution a transaction
+  that has the following two characteristics appears in $\Sigma_{\alice}$, for
+  any honest player \alice: (a) it spends a funding transaction of a channel
   that contains \alice{} (and thus has a $p_{\alice, F}$ public key), or it
   spends a simple output, delayed output or htlc output tied with a public key
   that was created by \alice{} ($p_{\alice, \mathrm{pay}, n}, p_{\alice,
@@ -230,15 +230,15 @@
   \negl$.
 
   Let $Q$ be the event in which at some point during the execution a transaction
-  that has the following characteristic appears in $\Sigma_{\alice}$: it spends
-  the revocation output of a local (for \alice{}) commitment transaction for a
-  channel that contains \alice{} and \bob{} (and thus has a $p_{\bob,
-  \mathrm{rev}, n}$ key). Observe that, since \alice{} is honest and according
-  to both the real and the ideal execution, if \alice{} submits her local
-  commitment transaction $\mathtt{localCom}_n$ to the ledger, under no
-  circumstances does she subsequently go on to send $s_{\alice, \mathrm{com},
-  n}$ to any party. (This secret information could be used by \bob{} to
-  efficiently compute $s_{\bob, \mathrm{rev}, n}$ with
+  that has the following characteristic appears in $\Sigma_{\alice}$, for any
+  honest player \alice: it spends the revocation output of a local (for
+  \alice{}) commitment transaction for a channel that contains \alice{} and
+  \bob{} (and thus has a $p_{\bob, \mathrm{rev}, n}$ key). Observe that, since
+  \alice{} is honest and according to both the real and the ideal execution, if
+  \alice{} submits her local commitment transaction $\mathtt{localCom}_n$ to the
+  ledger, under no circumstances does she subsequently go on to send $s_{\alice,
+  \mathrm{com}, n}$ to any party. (This secret information could be used by
+  \bob{} to efficiently compute $s_{\bob, \mathrm{rev}, n}$ with
   \textsc{CombineKey}($sb_{\bob, \mathrm{rev}}, pb_{\bob, \mathrm{rev}},
   s_{\alice, \mathrm{com}, n}, p_{\alice, \mathrm{com}, n}$).) If $\Pr[Q] = a >
   \negl$, there is an algorithm (Fig.~\ref{alg:forge:share}) that wins the
@@ -248,14 +248,14 @@
 
   Lastly, let $R$ be the event in which at some point during the execution a
   transaction that has the following two characteristics appears in
-  $\Sigma_{\alice}$: (a) it spends the revocation output of a remote (for
-  \alice{}) commitment transaction for a channel that contains \alice{} (and
-  thus has a $p_{\alice, \mathrm{rev}, n}$ key) and (b) it was never signed by
-  \alice. Observe that, since \alice{} is honest, she has never sent $s_{\alice,
-  \mathrm{rev}, n}$ to any party. Suppose that $\Pr[R] = a > \negl$. In that
-  case, there is an algorithm (Fig.~\ref{alg:forge:master}) that wins the
-  \textsf{master-EUF-CMA} game of the Combined Signature Scheme with
-  non-negligible probability, thus breaking the security assumption of the
+  $\Sigma_{\alice}$, for any honest player \alice: (a) it spends the revocation
+  output of a remote (for \alice{}) commitment transaction for a channel that
+  contains \alice{} (and thus has a $p_{\alice, \mathrm{rev}, n}$ key) and (b)
+  it was never signed by \alice. Observe that, since \alice{} is honest, she has
+  never sent $s_{\alice, \mathrm{rev}, n}$ to any party. Suppose that $\Pr[R] =
+  a > \negl$. In that case, there is an algorithm (Fig.~\ref{alg:forge:master})
+  that wins the \textsf{master-EUF-CMA} game of the Combined Signature Scheme
+  with non-negligible probability, thus breaking the security assumption of the
   combined signature used. Therefore we deduce that $\Pr[R] \leq \negl$. The
   rest of the proof operates in the world where $\neg P \wedge \neg Q \wedge
   \neg R$ holds.
