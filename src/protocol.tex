@@ -23,8 +23,8 @@
           \label{alg:protocol:support:delay}
           \State $\mathtt{relayDelay} \gets \mathrm{relayDelay}$
           \State send (\textsc{read}) to \ledger{} and assign largest block
-          number to \texttt{lastPoll} \TODO{maybe remove lastPoll from real
-          world?}
+          number to \texttt{lastPoll} % TODO maybe remove lastPoll from real
+          % world?
           \label{alg:protocol:support:lastpoll}
           \State $\left(pk_{\alice}, sk_{\alice}\right) \gets
           \textsc{KeyGen}\left(\right)$
