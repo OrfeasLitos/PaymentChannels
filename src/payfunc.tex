@@ -1,7 +1,7 @@
 \section{Payment Network Functionality}
   \begin{figure}[H]
     \begin{systembox}{\fpaynet{} - preamble}
-      Interface: \TODO{check}
+      Interface:
       \begin{itemize}
         \item from $\environment$:
         \begin{itemize}
@@ -220,7 +220,6 @@
           \textsc{channelOpened}'' and remove mark
           \State $\mathrm{offChainBalance}\left(\mathrm{funder}\right) \gets
           \mathrm{offChainBalance}\left(\mathrm{funder}\right) + x$
-          \orfeas{remove on/offChainBalance?}
           \State $\mathrm{onChainBalance}\left(\mathrm{funder}\right) \gets
           \mathrm{offChainBalance}\left(\mathrm{funder}\right) - x$
           \State $\mathtt{channel} \gets \left(\mathrm{funder}, \mathrm{fundee},

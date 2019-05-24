@@ -170,12 +170,11 @@
   added only before \alice{} sends (\textsc{fundingSigned}, \textit{pchid},
   sig) to \bob{} (Fig.~\ref{alg:protocol:open:fundingCreated},
   line~\ref{alg:protocol:open:fundingCreated:mark}) (which needs a valid
-  \alice-\bob{} interaction up to that point \TODO{more in-depth?}), and in
-  the second case the ``broadcast'' mark can be added only before \alice{}
-  sends (\textsc{submit}, (sig, $F$)) to \ledger{}
-  (Fig.~\ref{alg:protocol:open:fundingSigned},
+  \alice-\bob{} interaction up to that point), and in the second case the
+  ``broadcast'' mark can be added only before \alice{} sends (\textsc{submit},
+  (sig, $F$)) to \ledger{} (Fig.~\ref{alg:protocol:open:fundingSigned},
   line~\ref{alg:protocol:open:fundingSigned:mark}) (which also needs a valid
-  \alice-\bob{} interaction up to that point \TODO{more in-depth?})
+  \alice-\bob{} interaction up to that point)
 
   When \environment{} sends (\textsc{checkForNew}, \alice, \bob, \textit{tid}) to
   \alice{} in the ideal world, line~\ref{alg:fpaynet:checkForNew:valid} of
