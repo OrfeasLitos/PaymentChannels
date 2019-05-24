@@ -26,7 +26,7 @@
           world?}
           \label{alg:protocol:support:lastpoll}
           \State $\left(pk_{\alice}, sk_{\alice}\right) \gets
-          \mathrm{KeyGen}\left(\right)$
+          \textsc{KeyGen}\left(\right)$
           \label{alg:protocol:support:keygen}
           \State send (\textsc{register}, \alice, \texttt{delay},
           \texttt{relayDelay}, $pk_{\alice}$) to \environment
@@ -54,18 +54,18 @@
         \Statex
 
         \Function{GetKeys}{}
-          \State $\left(p_F, s_F\right) \gets \mathrm{KeyGen}\left(\right)$
+          \State $\left(p_F, s_F\right) \gets \textsc{KeyGen}\left(\right)$
           \Comment{For $F$ output}
           \State $\left(p_{\mathrm{pay}}, s_{\mathrm{pay}}\right) \gets
-          \mathrm{MKeyGen}\left(\right)$ \Comment{For com output to remote}
+          \textsc{MasterKeyGen}\left(\right)$ \Comment{For com output to remote}
           \State $\left(p_{\mathrm{dpay}}, s_{\mathrm{dpay}}\right) \gets
-          \mathrm{MKeyGen}\left(\right)$ \Comment{For com output to self}
+          \textsc{MasterKeyGen}\left(\right)$ \Comment{For com output to self}
           \State $\left(p_{\mathrm{htlc}}, s_{\mathrm{htlc}}\right) \gets
-          \mathrm{MKeyGen}\left(\right)$ \Comment{For htlc output to self}
+          \textsc{MasterKeyGen}\left(\right)$ \Comment{For htlc output to self}
           \State $\texttt{seed} \overset{\$}{\gets} U(k)$ \Comment{For per com
           point}
           \State $\left(p_{\mathrm{rev}}, s_{\mathrm{rev}}\right) \gets
-          \mathrm{MKeyGen}\left(\right)$ \Comment{For revocation in com}
+          \textsc{MasterKeyGen}\left(\right)$ \Comment{For revocation in com}
           \State \Return $\left(\left(p_F, s_F\right), \left(p_{\mathrm{pay}},
           s_{\mathrm{pay}}\right), \left(p_{\mathrm{dpay}},
           s_{\mathrm{dpay}}\right),\right.$
@@ -96,10 +96,10 @@
           shb_{\mathrm{dpay}}\right),\right.$ $\left.\left(phb_{\mathrm{htlc}},
           shb_{\mathrm{htlc}}\right), \mathtt{seed}, \left(phb_{\mathrm{rev}},
           shb_{\mathrm{rev}}\right)\right) \gets \texttt{GetKeys}\left(\right)$
-          \State $\mathrm{prand}_1 \gets \texttt{PRF}\left(\mathtt{seed},
+          \State $\mathrm{prand}_1 \gets \textsc{PRF}\left(\mathtt{seed},
           1\right)$
           \State $\left(sh_{\mathrm{com}, 1}, ph_{\mathrm{com}, 1}\right) \gets
-          \mathrm{KeyShareGen}\left(1^k; \mathrm{prand}_1\right)$
+          \textsc{KeyShareGen}\left(1^k; \mathrm{prand}_1\right)$
           \State associate keys with \textit{tid}
           \State add $\left(\alice, \bob, x, \mathtt{tid}, \left(ph_F,
           sh_F\right), \left(phb_{\mathrm{pay}}, shb_{\mathrm{pay}}\right),
@@ -133,10 +133,10 @@
           shb_{\mathrm{htlc}}\right), \mathtt{seed},\right.$
           $\left.\left(phb_{\mathrm{rev}}, shb_{\mathrm{rev}}\right)\right)
           \gets \texttt{GetKeys}\left(\right)$
-          \State $\mathrm{prand}_1 \gets \texttt{PRF}\left(\mathtt{seed},
+          \State $\mathrm{prand}_1 \gets \textsc{PRF}\left(\mathtt{seed},
           1\right)$
           \State $\left(sh_{\mathrm{com}, 1}, ph_{\mathrm{com}, 1}\right) \gets
-          \mathrm{KeyShareGen}\left(1^k; \mathrm{prand}_1\right)$
+          \textsc{KeyShareGen}\left(1^k; \mathrm{prand}_1\right)$
           \State associate keys with \textit{tid} and store in
           \texttt{pendingOpen}
           \label{alg:protocol:open:openChannel:pendingOpen}
@@ -173,13 +173,13 @@
           \State add \textit{pchid} to \texttt{pendingOpen} entry with id
           \textit{tid}
           \State $pt_{\mathrm{rev}, 1} \gets
-          \mathtt{CombinePubKey}\left(ptb_{\mathrm{rev}}, ph_{\mathrm{com},
+          \textsc{CombinePubKey}\left(ptb_{\mathrm{rev}}, ph_{\mathrm{com},
           1}\right)$
           \State $ph_{\mathrm{dpay}, 1} \gets
-          \texttt{PubKeyGen}\left(phb_{\mathrm{dpay}}, ph_{\mathrm{com},
+          \textsc{PubKeyDer}\left(phb_{\mathrm{dpay}}, ph_{\mathrm{com},
           1}\right)$
           \State $ph_{\mathrm{pay}, 1} \gets
-          \texttt{PubKeyGen}\left(phb_{\mathrm{pay}}, ph_{\mathrm{com},
+          \textsc{PubKeyDer}\left(phb_{\mathrm{pay}}, ph_{\mathrm{com},
           1}\right)$
           \State $\mathtt{remoteCom} \gets \mathtt{remoteCom}_1 \gets$ TX
           \{input: output 1 of $F$, outputs: $\left(x, ph_{\mathrm{pay},
@@ -213,13 +213,13 @@
           \texttt{pendingOpen} on which we have sent up to
           \textsc{acceptChannel}
           \State $ph_{\mathrm{rev}, 1} \gets
-          \mathtt{CombinePubKey}\left(phb_{\mathrm{rev}} pt_{\mathrm{com},
+          \textsc{CombinePubKey}\left(phb_{\mathrm{rev}} pt_{\mathrm{com},
           1}\right)$
           \State $pt_{\mathrm{dpay}, 1} \gets
-          \texttt{PubKeyGen}\left(ptb_{\mathrm{dpay}}, pt_{\mathrm{com},
+          \textsc{PubKeyDer}\left(ptb_{\mathrm{dpay}}, pt_{\mathrm{com},
           1}\right)$
           \State $pt_{\mathrm{pay}, 1} \gets
-          \texttt{PubKeyGen}\left(ptb_{\mathrm{pay}}, pt_{\mathrm{com},
+          \textsc{PubKeyDer}\left(ptb_{\mathrm{pay}}, pt_{\mathrm{com},
           1}\right)$
           \State $\mathtt{localCom} \gets \mathtt{localCom}_1 \gets$ TX \{input:
           output 1 of $F$, outputs: $\left(x, pt_{\mathrm{pay}, 1}\right),
@@ -291,11 +291,11 @@
           \State ensure $\exists$ unspent TX in $\Sigma_{\alice}$ with ID
           \textit{pchid} and a $\left(x, ph_F \wedge pt_F\right)$ output
           \label{alg:protocol:checkForNew:included}
-          \State $\mathrm{prand}_2 \gets \texttt{PRF}\left(\mathtt{seed},
+          \State $\mathrm{prand}_2 \gets \textsc{PRF}\left(\mathtt{seed},
           2\right)$
           \label{alg:protocol:checkForNew:prand}
           \State $\left(sh_{\mathrm{com}, 2}, ph_{\mathrm{com}, 2}\right) \gets
-          \mathrm{KeyShareGen}\left(1^k; \mathrm{prand}_2\right)$
+          \textsc{KeyShareGen}\left(1^k; \mathrm{prand}_2\right)$
           \State add TX to \texttt{channel} data
           \State replace ``broadcast'' mark in \texttt{channel} with
           ``\textsc{fundingLocked} sent''
@@ -325,11 +325,11 @@
             \State ensure $\exists$ unspent TX in $\Sigma_{\alice}$ with ID
             \textit{pchid} and a $\left(x, ph_F \wedge pt_F\right)$ output
             \State add TX to \texttt{channel} data
-            \State $\mathrm{prand}_2 \gets \texttt{PRF}\left(\mathtt{seed},
+            \State $\mathrm{prand}_2 \gets \textsc{PRF}\left(\mathtt{seed},
             2\right)$
             \label{alg:protocol:fundingLocked:prand}
             \State $\left(sh_{\mathrm{com}, 2}, ph_{\mathrm{com}, 2}\right) \gets
-            \mathrm{KeyShareGen}\left(1^k; \mathrm{prand}_2\right)$
+            \textsc{KeyShareGen}\left(1^k; \mathrm{prand}_2\right)$
             \State generate 2nd remote delayed payment, htlc, payment keys
           \EndIf
           \State replace ``no \textsc{fundingLocked}'' mark in \texttt{channel}
@@ -762,10 +762,10 @@
           \EndFor
           \State $\mathtt{pendingLocalCom} \gets \mathtt{localCom}$
           \State mark $\mathtt{pendingLocalCom}$ as ``irrevocably committed''
-          \State $\mathrm{prand}_{n+2} \gets \texttt{PRF}\left(\mathtt{seed},
+          \State $\mathrm{prand}_{n+2} \gets \textsc{PRF}\left(\mathtt{seed},
           n+2\right)$
           \State $\left(sh_{\mathrm{com}, n+2}, ph_{\mathrm{com}, n+2}\right)
-          \gets \mathrm{KeyShareGen}\left(1^k; \mathrm{prand}_{n+2}\right)$
+          \gets \textsc{KeyShareGen}\left(1^k; \mathrm{prand}_{n+2}\right)$
           \State send (\textsc{revokeAndAck}, \textit{pchid}, $\mathrm{prand}_n,
           ph_{\mathrm{com}, n+2}$) to \bob
         \EndIndent
@@ -797,31 +797,31 @@
           \texttt{updatesToReport}
           \label{alg:protocol:pay:raa:report}
           \State $sh_{\mathrm{rev}, n} \gets
-          \mathtt{CombineKey}\left(shb_{\mathrm{rev}}, phb_{\mathrm{rev}},
+          \textsc{CombineKey}\left(shb_{\mathrm{rev}}, phb_{\mathrm{rev}},
           st_{\mathrm{com} n}, pt_{\mathrm{com}, n}\right)$
           \State $ph_{\mathrm{rev}, n+2} \gets
-          \mathtt{CombinePubKey}\left(phb_{\mathrm{rev}}, pt_{\mathrm{com},
+          \textsc{CombinePubKey}\left(phb_{\mathrm{rev}}, pt_{\mathrm{com},
           n+2}\right)$
           \State $pt_{\mathrm{rev}, n+2} \gets
-          \mathtt{CombinePubKey}\left(ptb_{\mathrm{rev}}, ph_{\mathrm{com},
+          \textsc{CombinePubKey}\left(ptb_{\mathrm{rev}}, ph_{\mathrm{com},
           n+2}\right)$
           \State $ph_{\mathrm{dpay}, n+2} \gets
-          \texttt{PubKeyGen}\left(phb_{\mathrm{dpay}}, ph_{\mathrm{com},
+          \textsc{PubKeyDer}\left(phb_{\mathrm{dpay}}, ph_{\mathrm{com},
           n+2}\right)$
           \State $pt_{\mathrm{dpay}, n+2} \gets
-          \texttt{PubKeyGen}\left(ptb_{\mathrm{dpay}}, pt_{\mathrm{com},
+          \textsc{PubKeyDer}\left(ptb_{\mathrm{dpay}}, pt_{\mathrm{com},
           n+2}\right)$
           \State $ph_{\mathrm{pay}, n+2} \gets
-          \texttt{PubKeyGen}\left(phb_{\mathrm{pay}}, ph_{\mathrm{com},
+          \textsc{PubKeyDer}\left(phb_{\mathrm{pay}}, ph_{\mathrm{com},
           n+2}\right)$
           \State $pt_{\mathrm{pay}, n+2} \gets
-          \texttt{PubKeyGen}\left(ptb_{\mathrm{pay}}, pt_{\mathrm{com},
+          \textsc{PubKeyDer}\left(ptb_{\mathrm{pay}}, pt_{\mathrm{com},
           n+2}\right)$
           \State $ph_{\mathrm{htlc}, n+2} \gets
-          \texttt{PubKeyGen}\left(phb_{\mathrm{htlc}}, ph_{\mathrm{com},
+          \textsc{PubKeyDer}\left(phb_{\mathrm{htlc}}, ph_{\mathrm{com},
           n+2}\right)$
           \State $pt_{\mathrm{htlc}, n+2} \gets
-          \texttt{PubKeyGen}\left(ptb_{\mathrm{htlc}}, pt_{\mathrm{com},
+          \textsc{PubKeyDer}\left(ptb_{\mathrm{htlc}}, pt_{\mathrm{com},
           n+2}\right)$
         \EndIndent
       \end{algorithmic}
