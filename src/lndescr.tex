@@ -1,5 +1,5 @@
 \section{Lightning Network high level overview}
-  \subsection{Simple channels}
+  \subsection{Two-party  channels}
     The aim of LN is to enable fast and cheap transactions that do not have to
     be added to the blockchain, without compromising security. Specifically no
     additional trust between counterparties is assumed. This is achieved in the
@@ -101,7 +101,8 @@
   \subsection{Multi-hop payments}
   
     Having funds locked down for exclusive use with a particular counterparty
-    would be a serious limitation. Luckily, LN allows for multi-hop payments. In
+    would be a serious limitation. LN goes beyond that by 
+    allowing multi-hop payments. In
     a situation where \alice{} has a channel with \bob{} and he has another
     channel with \charlie{}, it is possible for \alice{} to pay \charlie{}
     off-chain by leveraging \bob's help. Remarkably, this can be achieved
@@ -131,8 +132,7 @@
     This type of promise where a preimage is exchanged for money is called Hash
     TimeLocked Contract (HTLC). It is enforceable on-chain in case the payer
     does not cooperatively update upon disclosure of the preimage, thus no trust
-    is needed. Two HTLCs were signed and fulfilled for the payment of the
-    previous example, which happened completely off-chain. Two updates happened
+    is needed. In the previous example with \alice{}, \bob{} and \charlie, two HTLCs were signed and fulfilled for the payment to go through and the whole interaction was  completely off-chain. Two updates happened
     in each channel: one to sign the HTLC and one to fulfill it. The time frames
     were chosen so that every intermediary has had the time to learn the
     preimage and give it to the previous party on the path.
