@@ -1,5 +1,124 @@
 \section{Overview of our Lightning Protocol $\Pi_{\mathrm{LN}}$}
-  \TODO{TODO}
+  In order to prove that software adhering to the LN specification is secure
+  with respect to the guarantees given by \fpaynet, it is necessary to define a
+  concrete protocol that implements LN in the UC model. To that end we define
+  the formal protocol $\Pi_{\mathrm{LN}}$, an overview of which is given here.
+  The full definition can be found in Appendix~\ref{appendix:protocol}.
+
+  For the rest of this section, we will assume that \alice, \bob{} and
+  \charlie{} ITIs honestly execute $\Pi_{\mathrm{LN}}$. Similarly to the ideal
+  world, the main functions of $\Pi_{\mathrm{LN}}$ are triggered when it
+  receives (\textsc{openChannel}), (\textsc{pay}) and (\textsc{closeChannel})
+  from \environment{}. These three messages along with (\textsc{getNews})
+  informally correspond to actions that a ``human user'' would instruct the
+  system to perform. (\textsc{register}) and (\textsc{toppedUp}) are sent by
+  \environment{} for player intialization. The rest of the messages sent from
+  \environment{} prompt $\Pi_{\mathrm{LN}}$ to perform actions that a software
+  implementation would spontaneously perform periodically. All messages sent
+  between \alice, \bob{} and \charlie{} correspond to messages specified by LN.
+  For clarity of exposition, we avoid mentioning the exact name and contents of
+  every message. We refer the reader to the formal definition of
+  $\Pi_{\mathrm{LN}}$ for further details.
+
+  \subsection{Registration}
+    Before \alice{} can use the network, \environment{} first has to send her a
+    (\textsc{register}, delay, relayDelay) message. She generates her
+    persistent key and sends it back to \environment{}. The latter may choose to
+    add some funds to this key and then send (\textsc{toppedUp}) to \alice, who
+    checks her state in \ledger{} and records her on-chain balance.
+
+  \subsection{Channel opening}
+    When she receives (\textsc{openChannel}, \alice, \bob, $x$, \textit{tid})
+    from \environment, \alice{} initiates the message sequence needed to open a
+    channel with \bob, funded by her with $x$ coins. She first generates and
+    sends to \bob{} some keys and her timelock delay, who also generates some
+    keys and sends them back along with his timelock delay. \alice{} then builds
+    the funding transaction using \bob's keys and sends its signature back to
+    \bob. He again mirrors \alice's steps, sending back his signature. Both
+    parties can now unilaterally spend the funding transaction, so \alice{}
+    submits it to \ledger.
+
+    At a later point \environment{} may send (\textsc{checkForNew}, \alice,
+    \bob, \textit{tid}) to \alice. She then checks if her state in \ledger{}
+    contains the funding transaction with the temporary ID \textit{tid} and in
+    that case she generates a new ``commitment'' key for the next update and
+    sends it to \bob. \bob{} also confirms that his state contains the funding
+    transaction, generates his next commitment key and sends it back to \alice.
+    The channel is now open. Both parties keep a note to give \environment{}
+    a receipt of the new channel the next time they receive (\textsc{getNews}).
+
+  \subsection{Channel closing}
+    When she receives (\textsc{closeChannel}, \texttt{receipt}, \textit{tid})
+    from \environment, \alice{} checks that \texttt{receipt} corresponds to the
+    latest state of the channel and submits to \ledger{} the latest commitment
+    transaction, along with all the relevant HTLC transactions. It also takes a
+    note to give \environment{} a receipt of the closed channel the next time
+    she receives (\textsc{getNews}).
+
+  \subsection{Performing Payments}
+    When she receives (\textsc{pay}, \charlie, $x$,
+    $\overrightarrow{\mathtt{path}}$) from \environment, \alice{} attempts to
+    pay \charlie{} $x$ coins, using the provided
+    $\overrightarrow{\mathtt{path}}$. Let us assume that the path is \alice{} --
+    \bob{} -- \charlie. \alice{} asks \charlie{} for an invoice with the HTLC
+    hash, to which \charlie{} reacts by choosing a random preimage and sending
+    back to \alice{} its hash. \alice{} then prepares a Sphinx~\cite{sphinx}
+    onion packet with the relevant information for each party on the
+    $\overrightarrow{\mathtt{path}}$ and sends it to \bob{} along with the hash.
+    \bob{} peels his layer of the onion and, after performing sanity checks, he
+    takes a note of this pending HTLC. He does not yet forward the onion to
+    \charlie, because \alice{} is not yet committed to paying \bob. The latter
+    happens if \alice{} subsequently receives (\textsc{commit},
+    $\mathit{pchid}_1$) from \environment, where $\mathit{pchid}_1$ is the ID of
+    the \alice{} -- \bob{} channel. She then sends \bob{} all the signatures
+    needed to make the new commitment transaction spendable, who replies with
+    the secret commitment key of the old commitment transaction (thus revoking
+    it), along with the public commitment key of the future commitment
+    transaction (to allow \alice{} to prepare the next update, when that
+    happens). LN demands that before \bob{} forwards the onion, he also should
+    commit to the new channel version (that includes the HTLC) to \alice. This
+    happens if he receives a (\textsc{commit}) message from \environment, which
+    causes a similar exchange as above, but with the roles swapped. Now that
+    both parties have the HTLC in their commitment transaction and all past
+    commitment transactions are revoked, they consider this HTLC ``irrevocably
+    committed''.
+
+    \bob{} may then receive (\textsc{pushAdd}, $\mathit{pchid}_1$) from
+    \environment. Given that the HTLC is irrevocably committed, \bob{} sends the
+    onion to \charlie, who in turn peels it, recognizes that the payment is for
+    him and that indeed he knows the preimage (since he generated it himself)
+    and waits for the HTLC between him and \bob{} to be irrevocably committed.
+    After both \bob{} and \charlie{} receive (\textsc{commit}), \charlie{}
+    awaits for a (\textsc{pushFulfill}, \textit{pchid}) message from
+    \environment. If it arrives, \charlie{} sends the preimage to \bob, who
+    sends it back to \alice. Once more every party has to receive a
+    (\textsc{commit}) message for each of the channels it participates in order
+    to remove the HTLC and update the definitive balance of each player to the
+    righteous value after the payment is complete. After this last update, each
+    party keeps a note to inform \environment{} about the new balance when it
+    receives (\textsc{getNews}).
+
+    Observe that while locked up in an HTLC, funds do not belong to either
+    player; they are rather in a temporary, transitive state. If one party
+    learns the preimage, the funds become theirs, whereas if it does not learn
+    the preimage after some time, the other party is entitled to the funds. Also
+    observe that within the UC framework the necessary messages \textsc{commit},
+    \textsc{pushFulfill} and \textsc{pushAdd} may never arrive, but in a
+    correct software implementation the corresponding actions happen
+    automatically, without waiting for a prompt by the user.
+
+  \subsection{Polling}
+    Lastly, \environment{} may send (\textsc{poll}) to \alice. She then reads
+    her state in \ledger{} and checks for closed channels. If she finds
+    maliciously closed channels (closed using old commitments), she punishes the
+    counterparty and takes all the funds in the channel. If she finds in an
+    honestly closed channel a preimage of an HTLC that she has previously
+    signed and for which she is an intermediary, she records it and prepares to
+    send it when she receives (\textsc{pushFulfill}). Finally, if she finds an
+    honestly closed channel with an HTLC output for which she knows the
+    preimage, she spends it immediately. For every closed channel she finds, she
+    keeps a note to report it to \environment{} the next time she receives
+    (\textsc{getNews}).
 
   \begin{remark}[Differences between LN and $\Pi_{\mathrm{LN}}$]
 
