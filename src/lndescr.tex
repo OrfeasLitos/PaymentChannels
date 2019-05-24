@@ -1,5 +1,5 @@
 \section{Lightning Network high level overview}
-  \subsection{Two-party  channels}
+  \subsection{Two-party channels}
     The aim of LN is to enable fast and cheap transactions that do not have to
     be added to the blockchain, without compromising security. Specifically no
     additional trust between counterparties is assumed. This is achieved in the
@@ -7,69 +7,66 @@
     exchanges create one on-chain transaction that locks up some funds, known as
     the ``funding transaction''. This transaction is funded by one of the two
     parties and has a 2-of-2 multisig output, which needs the signatures of both
-    counterparties by their ``funding'' secret keys in order to be spent.
-    Before actually submitting this transaction though, both parties
-    individually ensure that they hold a transaction that spends the 2-of-2
-    funding output in a way that gives the funds to the funder, along with the
-    signature of this transaction with the counterparty's funding key. These two
-    transactions (one for each counterparty) are called ``commitment
-    transactions''. Each party can broadcast her ``local'' commitment
-    transaction and has signed the ``remote'' commitment transaction, which is
-    the one held by the counterparty.
+    counterparties by their ``funding'' secret keys in order to be spent. Before
+    actually submitting this transaction though, both parties individually
+    ensure that they hold a transaction that spends the 2-of-2 funding output in
+    a way that gives the funds to the funder, along with the signature of this
+    transaction with the counterparty's funding key. These two transactions (one
+    for each counterparty) are called ``commitment transactions''. Each party
+    can broadcast her ``local'' commitment transaction and has signed the
+    ``remote'' commitment transaction, which is the one held by the
+    counterparty.
 
     Every time they want to make a payment to each other, they exchange a
     sequence of messages (that include specially crafted signatures) that have
     two effects.  Firstly, a new pair of commitment transactions, along with
     their signatures by the funding keys, is created. Each of these transactions
-    ensures that, if broadcast, each party will be able to spend the appropriate 
+    ensures that, if broadcast, each party will be able to spend the appropriate
     share from the coins contained in the funding output.  Secondly, the two old
     commitment transactions are revoked.  This ensures that no party can close a
-    channel using an old commitment transaction which may be
-    more beneficial to her than the latest one.
+    channel using an old commitment transaction which may be more beneficial to
+    her than the latest one.
 
-    Invalidating past commitment transactions requires some care. The reason is that
-    it is impossible to actually make past commitment transactions
-    invalid without spending the funding output; however, spending it would need an
-    on-chain transaction for each channel 
-    update, thus essentially defeating the purpose of LN. The
-    following idea is leveraged instead: If \alice{} broadcasts an old
-    commitment and \bob{} sees it, he can punish \alice{} by taking all the
-    money in the channel. Therefore \alice{} is technically able to broadcast an
-    old commitment transaction, but has no financial benefit in doing so. 
-    At the same time this imposes the requirement that parties are vigilant about
-    observing the blockchain --- see below when we talk about time-locks and how 
-    they facilitate a  time window within which  parties should react.
-    
-    The punishing mechanism operates as follows. Suppose \alice{}
-    considers posting her
-    old local commitment transaction which  has an output that carries her old share of the funds. This output can be spent in two ways: either with a signature by \alice's ``delayed payment'' secret key which is a usual ECDSA key, or with a
-    signature by \bob's ``revocation'' secret key, which is also an ECDSA key,
-    but with an additional characteristic that we will explain soon. Thus, if \alice{}
-    broadcasts an old commitment transaction, \bob{} will be able to obtain her
-    funds by spending her output using his ``revocation'' key. This privilege 
-    of course 
-    opens the possibility for \bob{} to abuse it
-    (in particular, when a channel is closed --- see below --- \bob{} may steal
-    \alice's funds by using such revocation key)
-    and hence this side effect 
-    should also 
-    be carefully mitigated. The mitigation has the following form. At the time of
-    creation of a new commitment, both parties will know \bob's ``revocation'' public
-    key, but no party knows its corresponding secret -- the key
-    can only be computed by
-    combining one secret value that \alice{} knows and one secret value 
-    that \bob{} knows.
-    \alice{} therefore can prevent \bob{} from using his revocation key until
-    she  sends  this secret value to him. 
-    As a result, \alice{} will send the secret value to \bob{} only after the new commitment transaction is built and signed.
+    Invalidating past commitment transactions requires some care. The reason is
+    that it is impossible to actually make past commitment transactions invalid
+    without spending the funding output; however, spending it would need an
+    on-chain transaction for each channel update, thus essentially defeating the
+    purpose of LN. The following idea is leveraged instead: If \alice{}
+    broadcasts an old commitment and \bob{} sees it, he can punish \alice{} by
+    taking all the money in the channel. Therefore \alice{} is technically able
+    to broadcast an old commitment transaction, but has no financial benefit in
+    doing so. At the same time this imposes the requirement that parties are
+    vigilant about observing the blockchain --- see below when we talk about
+    time-locks and how they facilitate a  time window within which  parties
+    should react.
+
+    The punishing mechanism operates as follows. Suppose \alice{} considers
+    posting her old local commitment transaction which  has an output that
+    carries her old share of the funds. This output can be spent in two ways:
+    either with a signature by \alice's ``delayed payment'' secret key which is
+    a usual ECDSA key, or with a signature by \bob's ``revocation'' secret key,
+    which is also an ECDSA key, but with an additional characteristic that we
+    will explain soon. Thus, if \alice{} broadcasts an old commitment
+    transaction, \bob{} will be able to obtain her funds by spending her output
+    using his ``revocation'' key. This privilege of course opens the possibility
+    for \bob{} to abuse it (in particular, when a channel is closed --- see
+    below --- \bob{} may steal \alice's funds by using such revocation key) and
+    hence this side effect should also be carefully mitigated. The mitigation
+    has the following form. At the time of creation of a new commitment, both
+    parties will know \bob's ``revocation'' public key, but no party knows its
+    corresponding secret -- the key can only be computed by combining one secret
+    value that \alice{} knows and one secret value that \bob{} knows. \alice{}
+    therefore can prevent \bob{} from using his revocation key until she  sends
+    this secret value to him. As a result, \alice{} will send the secret value
+    to \bob{} only after the new commitment transaction is built and signed.
     Thus \bob{} cannot abuse his ability to use the revocation key on a
-    commitment transaction before this transaction is revoked. 
-    We note that the underlying cryptographic mechanism  
-    that enables such ``revocation keys''  is not straightforward 
-    and, as part of our contributions, we formalise it as a new two-party 
-    cryptographic primitive. We call the primitive ``combined signature'' and we 
-    prove that the construction hidden in the LN implementation realizes it in the random oracle model under
-    the assumption that the underlying digital signature scheme is secure.
+    commitment transaction before this transaction is revoked. We note that the
+    underlying cryptographic mechanism  that enables such ``revocation keys''
+    is not straightforward and, as part of our contributions, we formalise it as
+    a new two-party cryptographic primitive. We call the primitive ``combined
+    signature'' and we prove that the construction hidden in the LN
+    implementation realizes it in the random oracle model under the assumption
+    that the underlying digital signature scheme is secure.
 
     The last element needed to make updates secure is the so called ``relative
     timelock''. If \alice{} broadcasts a commitment transaction, she is not
@@ -87,30 +84,28 @@
     is broadcast her latest local commitment transaction (the only one that is
     not revoked) and wait for the timelock to expire in order to spend her
     funds. The LN specification allows for cooperative channel closure which
-    avoids the need to wait for the timelock, but in the current work
-    this last type of closure is not considered.
+    avoids the need to wait for the timelock, but in the current work this last
+    type of closure is not considered.
 
-    As mentioned time locks provide specific time windows within which 
-    both parties have to be
-    vigilant in order to punish a misbehaving  counterparty who  broadcasts an old
-    commitment transaction. This means that 
-    parties have to be regularly online to
-    safeguard against theft. LN makes it possible to trustlessly outsource this,
-    but this mechanism is not analyzed in the current work.
+    As mentioned time locks provide specific time windows within which both
+    parties have to be vigilant in order to punish a misbehaving  counterparty
+    who  broadcasts an old commitment transaction. This means that parties have
+    to be regularly online to safeguard against theft. LN makes it possible to
+    trustlessly outsource this, but this mechanism is not analyzed in the
+    current work.
 
   \subsection{Multi-hop payments}
-  
+
     Having funds locked down for exclusive use with a particular counterparty
-    would be a serious limitation. LN goes beyond that by 
-    allowing multi-hop payments. In
-    a situation where \alice{} has a channel with \bob{} and he has another
-    channel with \charlie{}, it is possible for \alice{} to pay \charlie{}
-    off-chain by leveraging \bob's help. Remarkably, this can be achieved
-    without any one party trusting any of the other two. One can think of
-    \alice{} giving some ``marked'' money to \bob{}, who in turn either delivers
-    it to \charlie{} or returns it to \alice{} -- it is impossible for \bob{} to
-    keep the money. It is also impossible for \alice{} and \charlie{} to make
-    \bob{} pay for this transaction out of his pocket.
+    would be a serious limitation. LN goes beyond that by allowing multi-hop
+    payments. In a situation where \alice{} has a channel with \bob{} and he has
+    another channel with \charlie{}, it is possible for \alice{} to pay
+    \charlie{} off-chain by leveraging \bob's help. Remarkably, this can be
+    achieved without any one party trusting any of the other two. One can think
+    of \alice{} giving some ``marked'' money to \bob{}, who in turn either
+    delivers it to \charlie{} or returns it to \alice{} -- it is impossible for
+    \bob{} to keep the money. It is also impossible for \alice{} and \charlie{}
+    to make \bob{} pay for this transaction out of his pocket.
 
     We will now give an informal overview of how this counterintuitive dynamic
     is made possible. \alice{} initiates the payment by asking \charlie{} to
