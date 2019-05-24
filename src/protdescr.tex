@@ -1,0 +1,25 @@
+\section{Our Lightning Protocol $\Pi_{\mathrm{LN}}$ high level overview}
+  \TODO{TODO}
+
+  \begin{remark}[Differences between LN and current work]
+
+    In LN, a new construction for generating a new secret during each channel
+    update is used. It reduces the amount of space needed to maintain a channel
+    from $O(n)$ to $O(\log n)$ in the number of updates. As far as we know, its
+    security has not been formally analyzed. In the current paper we use instead
+    a PRF (and do not take advantage of this space optimisation).
+
+    Furthermore
+    \begin{itemize}
+      \item To generate several public keys from one piece of info, they use the
+      basepoint and the per commitment point and take advantage of EC homomorphic
+      properties. We use an Identity Based Signature scheme.
+      \item They also provide a way to cooperatively close a channel.
+      \item In LND there are more messages that cover errors in transmission etc.
+      There are also rules that govern message retransmission upon connection
+      failure.
+      \item We don't use the concept of ``dust transactions/outputs''.
+      \item In our case, the \texttt{delay} of a player is set once, at her
+      registration. In contrast to LN, it can't be changed later.
+    \end{itemize}
+  \end{remark}
