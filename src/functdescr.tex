@@ -1,12 +1,13 @@
 \section{Overview of \fpaynet{}}
   One of our contributions is the specification of \fpaynet
-  (Appendix~\ref{appendix:payfunc}) \TODO{ensure this works}, a functionality
-  that describes the functional and security guarantees given by an ideal
-  payment network. The central aim of \fpaynet{} is opening payment channels on
-  the ledger, keeping track of their state, updating them according to requested
-  payments and closing them, as requested by honest players, all in a secure
-  manner. In particular, the three main messages it can receive from \alice{}
-  are (\textsc{openChannel}), (\textsc{pay}) and (\textsc{closeChannel}).
+  (Appendix~\ref{appendix:payfunc}) \TODO{ensure all Appendix refs work}, a
+  functionality that describes the functional and security guarantees given by
+  an ideal payment network. The central aim of \fpaynet{} is opening payment
+  channels on the ledger, keeping track of their state, updating them according
+  to requested payments and closing them, as requested by honest players, all in
+  a secure manner. In particular, the three main messages it can receive from
+  \alice{} are (\textsc{openChannel}), (\textsc{pay}) and
+  (\textsc{closeChannel}).
 
   When \fpaynet{} receives (\textsc{openChannel}, \alice, \bob, $x$,
   \textit{tid}) from \alice, it asks \simulator{} to attempt to create a channel
