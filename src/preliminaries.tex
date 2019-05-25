@@ -94,4 +94,27 @@
     values of the outputs connected to its inputs. We refer the reader to
     Appendix~\ref{appendix:txstructure} for a complete overview.
 
-  \subsection{IBS}
+  \subsection{Identity Based Signatures}
+    In the Lightning Network specification, a custom scheme for deriving keys is
+    used. Its syntax and security aims closely match those of previously studied
+    Identity Based Signature schemes~\cite{ibsshamir,ibspaterson}, thus we use
+    the latter to abstract away the complexity of the construction and highlight
+    the security requirements it satisfies. We slightly modify previous IBS
+    schemes by adding an algorithm that, on input of the public parameters $mpk$
+    and a label $l$, returns the verification key $pk_l$. Such an IBS scheme
+    provides 5 algorithms:
+    \begin{itemize}
+      \item $\textsc{Setup}(1^k) \rightarrow (msk, mpk)$: master keypair
+      generation
+      \item $\textsc{KeyDer}(msk, mpk, l) \rightarrow (sk_l, pk_l)$: keypair
+      derivation with label $l$
+      \item $\textsc{PubKeyDer}(mpk, l) \rightarrow pk_l$: verification key
+      derivation with label $l$
+      \item $\textsc{Sign}(m, sk_l, pk_l, mpk) \rightarrow \sigma$: signature
+      generation with signing key $sk_l$
+      \item $\textsc{Verify}(\sigma, m, pk_l, mpk) \rightarrow \{0, 1\}$:
+      signature verification
+    \end{itemize}
+    We refer the reader to~\cite{ibspaterson} for more details. \orfeas{Anything
+    missing? Correctness? Security game? mention that we believe their
+    construction realizes IBS, but we don't prove it?}
