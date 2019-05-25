@@ -41,6 +41,40 @@
     compose protocols. In this work we choose to use the UC framework in order
     to leverage previous results on the security of blockchains.
 
+  \subsection{Hybrid functionalities used}
+    Both our main protocol and the corresponding functionality use
+    \ledger~\cite{BMTZ17,genesis} as a hybrid. \ledger{} formalizes an ideal
+    distributed append-only data structure akin to a blockchain. Any
+    participating party can read from \ledger, which returns an ordered list
+    of transactions. Furthermore parties can submit new transactions which, if
+    valid, will be added to the ledger at the discretion of the adversary, but
+    necessarily within a predefined time window. This property is called
+    liveness. Once a transaction is added to the ledger, it becomes visible to
+    all parties at the discretion of the adversary, but within another
+    predefined time window, and cannot be removed or reordered. This is called
+    persistence. The exact definition can be found in
+    Appendix~\ref{appendix:ledger}.
+
+    Furthermore, \ledger{} needs two more functionalities: \Fclock and
+    $\FnetworkEd^\Delta$. \Fclock models the notion of time. Every participating
+    party can request to read the current time (which is initialized to 0) and
+    inform \Fclock that her round is over. \Fclock increments the time by one
+    once all parties have declared the end of their round. $\FnetworkEd^\Delta$
+    provides an abstraction of the network. A party can send
+    $\FnetworkEd^\Delta$ a message to be multicast to all other participants of
+    the network. A party can also fetch its new messages from
+    $\FnetworkEd^\Delta$. $\FnetworkEd^\Delta$ makes a message available to be
+    fetched immediately after its arrival, but the adversary may delay the
+    arrival for up to $\Delta$ rounds. \adversary{} can choose different delays
+    for different players and reorder messages. Additionally, he has the power
+    to send his own messages to selected subsets of players.
+
+    The protocol and functionality defined in the current work do not make
+    direct use of \Fclock or $\FnetworkEd^\Delta$. We therefore omit these two
+    in the statements of Lemmas~\ref{lemma:dummy}-\ref{lemma:close} and
+    Theorem~\ref{theorem:simulation} for simplicity of notation; they should
+    normally appear as hybrids along with \ledger. Their exact definition can be
+    found in Appendix~\TODO{TODO}.
+
   \subsection{valid tx}
-  \subsection{hybrids}
   \subsection{IBS}
