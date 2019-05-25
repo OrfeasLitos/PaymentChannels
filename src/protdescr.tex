@@ -128,15 +128,14 @@
     security has not been formally analyzed. In the current paper we use instead
     a PRF.
 
-    Furthermore, in order to generate any number of keypairs by combining a
-    single ``basepoint'' with different ``labels'', LN uses a custom
-    construction that takes advantage of elliptic curve homomorphic properties.
-    The properties provided by this construction are also provided by previously
-    studied Identity Based Signature schemes~\cite{ibsshamir,ibspaterson}, so we
-    instead use the abstract IBS primitive in this work. \orfeas{mention that we
-    suspect their construction realizes IBS, but we don't prove it?}
+    As mentioned earlier, LN uses a custom construction that takes advantage of
+    elliptic curve homomorphic properties in order to derive any number of
+    keypairs by combining a single ``basepoint'' with different ``labels''. We
+    instead use the Identity Based Signature
+    primitive~\cite{ibsshamir,ibspaterson} in this work to abstract the
+    properties provided by the construction.
 
-    Additionally, we have chosen to simplify the protocol in a number of ways in
+    additionally, we have chosen to simplify the protocol in a number of ways in
     order to keep the analysis tractable. In particular LN defines several
     additional messages that signal various types of errors in transmission. It
     also specifies exactly how message retransmission should happen upon
