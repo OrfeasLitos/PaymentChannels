@@ -1,51 +1,30 @@
 \section{Transaction Structure}
   \label{appendix:txstructure}
-  A well-formed transaction contains:
-  \begin{itemize}
-    \item A list of inputs
-    \item A list of outputs
-    \item An arbitrary payload (optional)
-  \end{itemize}
-  Each input must be connected to a single valid, previously unconnected
-  (unspent) output in the state.
+  A well-formed transaction consists of a list of inputs and a list of outputs.
+  For the transaction to be valid, each input must be connected to a single
+  valid, previously unconnected (unspent) output of another transaction in
+  \ledger.
 
-  We assume a one-way, collision-free hash function $\mathcal{H}$ that creates
-  the id of each transaction.
-
-  A well-formed output contains:
-  \begin{itemize}
-    \item A value in coins
-    \item A list of spending methods. An input that spends this output must
-    specify exactly one of the available spending methods.
-  \end{itemize}
-
-  A well-formed spending method contains any combination of the following:
+  A well-formed output consists of a value in coins and a list of ``spending
+  methods''. A well-formed input consists of a reference to a previously
+  unconnected output and a reference to a single of the latter's spending
+  methods, along with the data needed to satisfy that method. A well-formed
+  spending method contains any combination of the following:
   \begin{itemize}
     \item Public keys in disjunctive normal form. An input that spends using
-    this spending method must contain signatures made with the private keys that
-    correspond to the public keys of one of the conjunctions. If empty, no
-    signatures are needed.
-    \item Absolute locktime in block height, transaction height or time. The
-    output can be spent by an input to a transaction that is added to the state
-    after the specified block height, transaction height or time.
-    \item Relative locktime in block height, transaction height or time. The
-    output can be spent by an input that is added to the state after the current
-    output has been part of the state for the specified number of blocks,
-    transactions or time.
+    this spending method must contain signatures valid by the public keys of one
+    of the conjunctions. If no public keys are specified in the output, no
+    signatures are needed in the input.
+    \item Absolute locktime $d_a$, in block height or time. An input that spends
+    this output can only be in block of height at least $d_a$ if $d_a$ is a
+    block height, or enter the ledger on or after time $d_a$ otherwise. Zero
+    means no absolute locktime.
+    \item Relative locktime $d_r$, in block height or time. The distance of an
+    input that spends this output must be at least $d_r$, counted in block
+    height or time. Zero means no relative locktime.
     \item Hashlock value. The output can be spent by an input that contains a
-    preimage that hashes to the hashlock value. If empty, the input does not
-    need to specify a preimage.
-  \end{itemize}
-  If both the absolute and the relative locktime are empty, output can be spent
-  immediately after being added to the state.
-
-  A well-formed input contains:
-  \begin{itemize}
-    \item A reference to the output and the spending method it spends
-    \item A set of signatures that correspond to one of the conjunctions of
-    public keys in the referred spending method (if needed)
-    \item A preimage that hashes to the hashlock value of the referred spending
-    method (if needed)
+    preimage that hashes to the hashlock value. If no hashlock value is
+    specified in the output, no preimage is needed in the spending input.
   \end{itemize}
 
   Lastly, the sum of coins of the outputs referenced by the inputs of the
