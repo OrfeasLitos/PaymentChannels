@@ -1,45 +1,47 @@
-\section{State of a channel} \TODO{turn into figure in "our protocol description"}
-  Consider a channel between \alice{} and \bob. Each party holds some data
-  locally that are enough to ensure ownership of some funds in the channel. This
-  is the data \alice{} holds:
-
-  \begin{itemize}
-    \item keys:
+\section{Channel data}
+  \begin{figure}
+  \begin{mdframed}
     \begin{itemize}
-      \item local funding secret key ($s_{\alice, F}$)
-      \item remote funding public key ($p_{\bob, F}$)
-      \item local payment ($sb_{\alice, \mathrm{pay}}$), htlc ($sb_{\alice,
-      \mathrm{htlc}}$), delayed payment ($sb_{\alice, \mathrm{dpay}}$),
-      revocation ($sb_{\alice, \mathrm{rev}}$) basepoint secrets
-      \item remote payment ($pb_{\bob, \mathrm{pay}}$), htlc ($pb_{\bob,
-      \mathrm{htlc}}$), delayed payment ($pb_{\bob, \mathrm{dpay}}$), revocation
-      ($pb_{\bob, \mathrm{rev}}$) basepoints
-      \item seed (for deriving local per commitment keypairs ($s_{\alice,
-      \mathrm{com}, n}, p_{\alice, \mathrm{com}, n}$))
-      \item one remote per commitment secret ($\forall i \in [1, \dots, n],
-      s_{\bob, \mathrm{com}, i}$) for each \textsc{commitmentSigned} received
-      \item the current and the next remote per commitment points ($p_{\bob,
-      \mathrm{com}, n}$ and $p_{\bob, \mathrm{com}, n + 1}$)
-    \end{itemize}
-    \item \alice's coins (integer)
-    \item \bob's coins (integer)
-    \item every HTLC that is included in the latest irrevocably committed (local
-    or remote) commitment:
+      \item \alice's secret keys:
       \begin{itemize}
-        \item direction ($\alice \rightarrow \bob$ or $\bob \rightarrow \alice$)
-        \item hash
-        \item preimage (or $\bot$ if still unresolved)
-        \item coins (integer)
-        \item Is it included in latest $\mathtt{localCom}_n$? (boolean)
-        \item HTLC number
+        \item $s_{\alice, F}$: funding
+        \item $sb_{\alice, \mathrm{pay}}$: payment basepoint
+        \item $sb_{\alice, \mathrm{dpay}}$: delayed payment basepoint
+        \item $sb_{\alice, \mathrm{htlc}}$: htlc basepoint
+        \item $sb_{\alice, \mathrm{rev}}$: revocation basepoint
       \end{itemize}
-    \item signatures:
-    \begin{itemize}
-      \item $\forall i \in [1, \dots, n],$ signature of $\mathtt{localCom}_i$
-      generated with $s_{\bob, F}$
-      \item for every HTLC included in $\mathtt{localCom}_i$, if HTLC is
-      outgoing, a signature for \texttt{HTLC-timeout}, else a signature for
-      \texttt{HTLC-success} with $s_{\bob, \mathrm{htlc}, i}$
+      \item \bob's public keys: public counterparts to 5 keys above
+      \item \texttt{seed}: for deriving \alice's per commitment keys $s_{\alice,
+      \mathrm{com}, i}$ with PRF
+      \item \bob's per commitment points:
+      \begin{itemize}
+        \item $\forall i \in [1, \dots, n], s_{\bob, \mathrm{com}, i}$: one
+        secret per \textsc{revokeAndAck} received
+        \item $p_{\bob, \mathrm{com}, n+1}$ and $p_{\bob, \mathrm{com}, n+2}$:
+        current and next points
+      \end{itemize}
+      \item \alice's coins
+      \item \bob's coins
+      \item for every HTLC that is included in the latest irrevocably committed
+      (local or remote) commitment:
+        \begin{itemize}
+          \item direction ($\alice \rightarrow \bob$ or $\bob \rightarrow \alice$)
+          \item hash
+          \item preimage (if known)
+          \item coins
+          \item Is it included in latest $\mathtt{localCom}_n$? (boolean)
+          \item HTLC number
+        \end{itemize}
+      \item signatures:
+      \begin{itemize}
+        \item signature resulting from \textsc{Sign}$(\mathtt{localCom}_{n+1},
+        s_{\bob, F})$
+        \item for every HTLC included in $\mathtt{localCom}_{n+1}$, if HTLC is
+        outgoing, a signature for \texttt{HTLC-timeout}, else a signature for
+        \texttt{HTLC-success} with $s_{\bob, \mathrm{htlc}, n+1}$
+      \end{itemize}
     \end{itemize}
-  \end{itemize}
-  Every other piece of data used in the protocol can be derived by the above.
+  \end{mdframed}
+  \caption{Data \alice{} holds in an \alice{} -- \bob{} channel with $n$
+  updates}
+  \end{figure}
