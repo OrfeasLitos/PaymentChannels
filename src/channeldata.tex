@@ -4,11 +4,15 @@
     \begin{itemize}
       \item \alice's secret keys:
       \begin{itemize}
-        \item $s_{\alice, F}$: funding
+        \item $s_{\alice}$: key for on-chain funds (DS)\footnote{basic Digital
+        Signature}
+        \item $s_{\alice, F}$: funding (DS)
         \item $sb_{\alice, \mathrm{pay}}$: payment basepoint
-        \item $sb_{\alice, \mathrm{dpay}}$: delayed payment basepoint
-        \item $sb_{\alice, \mathrm{htlc}}$: htlc basepoint
+        (IBS)\footnote{Identity Based Signature}
+        \item $sb_{\alice, \mathrm{dpay}}$: delayed payment basepoint (IBS)
+        \item $sb_{\alice, \mathrm{htlc}}$: htlc basepoint (IBS)
         \item $sb_{\alice, \mathrm{rev}}$: revocation basepoint
+        (CS\footnote{Combined Signature} -- master)
       \end{itemize}
       \item \bob's public keys: public counterparts to 5 keys above
       \item \texttt{seed}: for deriving \alice's per commitment keys $s_{\alice,
@@ -16,9 +20,9 @@
       \item \bob's per commitment points:
       \begin{itemize}
         \item $\forall i \in [1, \dots, n], s_{\bob, \mathrm{com}, i}$: one
-        secret per \textsc{revokeAndAck} received
+        secret per \textsc{revokeAndAck} received (CS -- share)
         \item $p_{\bob, \mathrm{com}, n+1}$ and $p_{\bob, \mathrm{com}, n+2}$:
-        current and next points
+        current and next points (CS -- share)
       \end{itemize}
       \item \alice's coins
       \item \bob's coins
@@ -35,10 +39,10 @@
       \item signatures:
       \begin{itemize}
         \item signature resulting from \textsc{Sign}$(\mathtt{localCom}_{n+1},
-        s_{\bob, F})$
+        s_{\bob, F})$ (DS)
         \item for every HTLC included in $\mathtt{localCom}_{n+1}$, if HTLC is
         outgoing, a signature for \texttt{HTLC-timeout}, else a signature for
-        \texttt{HTLC-success} with $s_{\bob, \mathrm{htlc}, n+1}$
+        \texttt{HTLC-success} with $s_{\bob, \mathrm{htlc}, n+1}$ (IBS)
       \end{itemize}
     \end{itemize}
   \end{mdframed}
