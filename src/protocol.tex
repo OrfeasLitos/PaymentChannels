@@ -58,11 +58,11 @@
           \State $\left(p_F, s_F\right) \gets \textsc{KeyGen}\left(\right)$
           \Comment{For $F$ output}
           \State $\left(p_{\mathrm{pay}}, s_{\mathrm{pay}}\right) \gets
-          \textsc{MasterKeyGen}\left(\right)$ \Comment{For com output to remote}
+          \textsc{Setup}\left(\right)$ \Comment{For com output to remote}
           \State $\left(p_{\mathrm{dpay}}, s_{\mathrm{dpay}}\right) \gets
-          \textsc{MasterKeyGen}\left(\right)$ \Comment{For com output to self}
+          \textsc{Setup}\left(\right)$ \Comment{For com output to self}
           \State $\left(p_{\mathrm{htlc}}, s_{\mathrm{htlc}}\right) \gets
-          \textsc{MasterKeyGen}\left(\right)$ \Comment{For htlc output to self}
+          \textsc{Setup}\left(\right)$ \Comment{For htlc output to self}
           \State $\texttt{seed} \overset{\$}{\gets} U(k)$ \Comment{For per com
           point}
           \State $\left(p_{\mathrm{rev}}, s_{\mathrm{rev}}\right) \gets
@@ -168,7 +168,7 @@
           $\Sigma_{\alice}$ that is currently exclusively spendable by \alice{}
           and has value $y \geq x$
           \State $F \gets$ TX \{input spends \texttt{prevout} with a
-          \texttt{signature}(TX, $sk_{\alice}$), output 0 pays $y - x$ to
+          \textsc{Sign}(TX, $sk_{\alice}$), output 0 pays $y - x$ to
           $pk_{\alice}$, output 1 pays $x$ to $\mathit{tid}.ph_F \wedge pt_F$\}
           \State $\mathit{pchid} \gets \mathcal{H}\left(F\right)$
           \State add \textit{pchid} to \texttt{pendingOpen} entry with id
@@ -192,8 +192,8 @@
           pt_{\mathrm{pay}, 1}\right)$\}
           \State add $\mathtt{remoteCom}$ and $\mathtt{localCom}$ to channel
           entry in \texttt{pendingOpen}
-          \State $\mathrm{sig} \gets
-          \mathtt{signature}\left(\mathtt{remoteCom}_1, sh_F\right)$
+          \State $\mathrm{sig} \gets \textsc{Sign}\left(\mathtt{remoteCom}_1,
+          sh_F\right)$
           \State $\mathtt{lastRemoteSigned} \gets 0$
           \State send (\textsc{fundingCreated}, \textit{tid},
           \textit{pchid}, sig) to \bob{}
@@ -226,16 +226,16 @@
           output 1 of $F$, outputs: $\left(x, pt_{\mathrm{pay}, 1}\right),
           \left(0, pt_{\mathrm{rev}, 1} \vee \left(ph_{\mathrm{dpay}, 1},
           \mathtt{remoteDelay} \text{ relative}\right)\right)$\}
-          \State ensure $\mathtt{verify}\left(\mathtt{localCom}_1,
-          \mathtt{BobSig}_1, pt_F\right) = \mathtt{True}$
+          \State ensure $\textsc{Verify}\left(\mathtt{BobSig}_1,
+          \mathtt{localCom}_1, pt_F\right) = \mathtt{True}$
           \State $\mathtt{remoteCom} \gets \mathtt{remoteCom}_1 \gets$ TX
           \{input: output 1 of $F$, outputs: $\left(x, ph_{\mathrm{rev}, 1} \vee
           \left(pt_{\mathrm{dpay}, 1}, \mathtt{delay} + k + \tochain{} \text{
           relative}\right)\right), \left(0, ph_{\mathrm{pay}, 1}\right)\}$
           \State add $\mathtt{BobSig}_1, \mathtt{remoteCom}_1$ and
           $\mathtt{localCom}_1$ to channel entry in \texttt{pendingOpen}
-          \State $\mathrm{sig} \gets
-          \mathtt{signature}\left(\mathrm{remoteCom}_1, sh_F\right)$
+          \State $\mathrm{sig} \gets \textsc{Sign}\left(\mathrm{remoteCom}_1,
+          sh_F\right)$
           \State mark channel as ``broadcast, no \textsc{fundingLocked}''
           \label{alg:protocol:open:fundingCreated:mark}
           \State $\mathtt{lastRemoteSigned}, \mathtt{lastLocalSigned} \gets 0$
@@ -256,13 +256,13 @@
           \State ensure there is a channel ID \textit{pchid} with \bob{} in
           \texttt{pendingOpen} on which we have sent up to
           \textsc{fundingCreated}
-          \State ensure $\mathtt{verify}\left(\mathtt{localCom},
-          \mathtt{BobSig}_1, pb_F\right) = \mathtt{True}$
+          \State ensure $\textsc{Verify}\left(\mathtt{BobSig}_1,
+          \mathtt{localCom}, pb_F\right) = \mathtt{True}$
           \State $\mathtt{localCom}_1 \gets \mathtt{localCom}$
           \State $\mathtt{lastLocalSigned} \gets 0$
           \State add $\mathtt{BobSig}_1$ to channel entry in
           \texttt{pendingOpen}
-          \State $\mathrm{sig} \gets \mathtt{signature}\left(F,
+          \State $\mathrm{sig} \gets \textsc{Sign}\left(F,
           sk_{\mathit{Alice}}\right)$
           \State mark \textit{pchid} in \texttt{pendingOpen} as ``broadcast, no
           \textsc{fundingLocked}''
@@ -391,7 +391,7 @@
                 \State $\mathrm{TX} \gets$ \{input: $i$ HTLC output of
                 $\mathtt{remoteCom}_n$ with $\left(ph_{\mathrm{htlc}, n},
                 R\right)$ as method, output: $pk_{\alice}$\}
-                \State $\mathrm{sig} \gets \mathtt{signature}\left(TX,
+                \State $\mathrm{sig} \gets \textsc{Sign}\left(TX,
                 sh_{\mathrm{htlc}, n}\right)$
                 \State add (sig, TX) to \texttt{toSubmit}
                 \State remove entry from
@@ -432,7 +432,7 @@
               \State $\mathrm{TX} \gets$ \{input: $i$ HTLC output of
               $\mathtt{remoteCom}_n$ with $ph_{\mathrm{htlc}, n}$ as method,
               output: $pk_{\alice}$\}
-              \State $\mathrm{sig} \gets \mathtt{signature}\left(TX,
+              \State $\mathrm{sig} \gets \textsc{Sign}\left(TX,
               sh_{\mathrm{htlc}, n}\right)$
               \If{timelock has not expired}
                 \State add (sig, TX) to \texttt{unclaimedOfferedHTLCs}
@@ -455,7 +455,7 @@
             $\mathtt{remoteCom}_n$ outputs, choosing $ph_{\mathrm{rev}, n}$
             method, output: $pk_{\mathit{Alice}}$\}
             \label{alg:protocol:poll:mal:tx}
-            \State $\mathrm{sig} \gets \mathtt{signature}\left(\mathrm{rev},
+            \State $\mathrm{sig} \gets \textsc{Sign}\left(\mathrm{rev},
             sh_{\mathrm{rev}, n}\right)$
             \State add $\left(\mathrm{sig}, \mathrm{rev}\right)$ to
             \texttt{toSubmit}
@@ -667,7 +667,7 @@
               \State $\mathrm{TX} \gets$ \{input: ($\mathtt{remoteCom}'$ HTLC
               output with number $\mathtt{HTLCNo}', R$), output:
               $pk_{\alice}$\}
-              \State $\mathrm{sig} \gets \mathtt{signature}\left(\mathrm{TX},
+              \State $\mathrm{sig} \gets \textsc{Sign}\left(\mathrm{TX},
               sh_{\mathrm{htlc}, n}\right)$
               \State send (\textsc{submit}, (sig, TX)) to \ledger{}
               \Comment{shouldn't be already spent by remote
@@ -705,17 +705,17 @@
           \label{alg:protocol:pay:commit:nomark}
           \State $\mathtt{remoteCom}_{n+1} \gets \mathtt{remoteCom}$
           \State $\mathrm{ComSig} \gets
-          \mathtt{signature}\left(\mathtt{remoteCom}_{n+1}, sh_F\right)$
+          \textsc{Sign}\left(\mathtt{remoteCom}_{n+1}, sh_F\right)$
           \State $\mathrm{HTLCSigs} \gets \emptyset$
           \For{$i$ from \texttt{lastRemoteSigned} to \texttt{HTLCNo}}
             \State $\mathtt{remoteHTLC}_{n+1, i} \gets$ TX \{input: HTLC output
             $i$ of $\mathtt{remoteCom}_{n+1}$, output: $\left(c_{\mathrm{htlc,
             i}}, ph_{\mathrm{rev}, n+1} \vee \left(pt_{\mathrm{dpay}, n+1},
             \mathtt{delay} + k + \tochain{} \text{ relative}\right)\right)$\}
-            \State add $\mathtt{signature}\left(\mathtt{remoteHTLC}_{n+1, i},
+            \State add $\textsc{Sign}\left(\mathtt{remoteHTLC}_{n+1, i},
             sh_{\mathrm{htlc}, n+1}\right)$ to HTLCSigs
           \EndFor
-          \State add $\mathtt{signature}\left(\mathtt{remoteHTLC}_{n+1, m+1},
+          \State add $\textsc{Sign}\left(\mathtt{remoteHTLC}_{n+1, m+1},
           sh_{\mathrm{htlc}, n+1}\right)$ to HTLCSigs
           \State $\mathtt{lastRemoteSigned} \gets \mathtt{HTLCNo}$
           \State mark \texttt{channel} as ``waiting for \textsc{revokeAndAck}''
@@ -742,10 +742,9 @@
           \State ensure $\mathtt{localCom} \neq \mathtt{localCom}_n$ and
           $\mathtt{localCom} \neq \mathtt{pendingLocalCom}$
           \Comment{there are uncommitted updates}
-          \If{$\mathtt{verify}\left(\mathtt{localCom},
-          \mathtt{comSig}_{n+1}, pt_F\right) = \mathtt{false} \vee
-          |\mathtt{HTLCSigs}_{n+1}| \neq \mathtt{HTLCNo} -
-          \mathtt{lastLocalSigned} + 1$}
+          \If{$\textsc{Verify}\left(\mathtt{comSig}_{n+1}, \mathtt{localCom},
+          pt_F\right) = \mathtt{false} \vee |\mathtt{HTLCSigs}_{n+1}| \neq
+          \mathtt{HTLCNo} - \mathtt{lastLocalSigned} + 1$}
             \State close channel (as in Fig.~\ref{alg:protocol:close})
             \State \Return
           \EndIf
@@ -754,8 +753,8 @@
             $i$ of $\mathtt{localCom}$, output: $\left(c_{\mathrm{htlc, i}},
             ph_{\mathrm{rev}, n+1} \vee \left(pt_{\mathrm{dpay}, n+1},
             \mathtt{remoteDelay} \text{ relative}\right)\right)$\}
-            \If{$\mathtt{verify}\left(\mathtt{localHTLC}_{n+1, i},
-            \mathtt{HTLCSigs}_{n+1, i}, pt_{\mathrm{htlc}, n+1}\right) =
+            \If{$\textsc{Verify}\left(\mathtt{HTLCSigs}_{n+1, i},
+            \mathtt{localHTLC}_{n+1, i}, pt_{\mathrm{htlc}, n+1}\right) =
             \mathtt{false}$}
               \State close channel (as in Fig.~\ref{alg:protocol:close})
               \State \Return
@@ -856,7 +855,7 @@
             \State $\mathrm{TX} \gets$ \{input: ($\mathtt{remoteCom}_n$ HTLC
             output with number $\mathtt{HTLCNo}, R$), output:
             $pk_{\alice}$\}
-            \State $\mathrm{sig} \gets \mathtt{signature}\left(\mathrm{TX},
+            \State $\mathrm{sig} \gets \textsc{Sign}\left(\mathrm{TX},
             sh_{\mathrm{htlc}, n}\right)$
             \State send (\textsc{submit}, (sig, TX)) to \ledger{}
             \Comment{shouldn't be already spent by remote \texttt{HTLCTimeout}}
@@ -931,14 +930,13 @@
           \State $\mathrm{HTLCs} \gets \emptyset$
           \For{every $\text{HTLC output } \in \mathtt{localCom}_n$ with number
           $i$}
-            \State $\mathrm{sig} \gets
-            \mathtt{signature}\left(\mathtt{localHTLC}_{n, i},
-            sh_{\mathrm{htlc}, n}\right)$
+            \State $\mathrm{sig} \gets \textsc{Sign}\left(\mathtt{localHTLC}_{n,
+            i}, sh_{\mathrm{htlc}, n}\right)$
             \State add $\left(\mathrm{sig}, \mathtt{HTLCSigs}_{n, i},
             \mathtt{localHTLC}_{n, i}\right)$ to HTLCs
           \EndFor
-          \State $\mathrm{sig} \gets
-          \mathtt{signature}\left(\mathtt{localCom}_n, sh_F\right)$
+          \State $\mathrm{sig} \gets \textsc{Sign}\left(\mathtt{localCom}_n,
+          sh_F\right)$
           \State add \texttt{receipt}(\texttt{channel}) to
           \texttt{closedChannels}
           \label{alg:protocol:close:report}

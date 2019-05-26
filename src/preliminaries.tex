@@ -104,16 +104,16 @@
     and a label $l$, returns the verification key $pk_l$. Such an IBS scheme
     provides 5 algorithms:
     \begin{itemize}
-      \item $\textsc{Setup}(1^k) \rightarrow (msk, mpk)$: master keypair
+      \item $(msk, mpk) \leftarrow \textsc{Setup}(1^k)$: master keypair
       generation
-      \item $\textsc{KeyDer}(msk, mpk, l) \rightarrow (sk_l, pk_l)$: keypair
+      \item $(sk_l, pk_l) \leftarrow \textsc{KeyDer}(msk, mpk, l)$: keypair
       derivation with label $l$
-      \item $\textsc{PubKeyDer}(mpk, l) \rightarrow pk_l$: verification key
+      \item $pk_l \leftarrow \textsc{PubKeyDer}(mpk, l)$: verification key
       derivation with label $l$
-      \item $\textsc{Sign}(m, sk_l, pk_l, mpk) \rightarrow \sigma$: signature
-      generation with signing key $sk_l$
-      \item $\textsc{Verify}(\sigma, m, pk_l, mpk) \rightarrow \{0, 1\}$:
-      signature verification
+      \item $\sigma \leftarrow \textsc{Sign}(m, sk_l)$: signature generation
+      with signing key $sk_l$
+      \item $\{0, 1\} \leftarrow \textsc{Verify}(\sigma, m, pk_l)$: signature
+      verification
     \end{itemize}
     We refer the reader to~\cite{ibspaterson} for more details. \orfeas{Anything
     missing? Correctness? Security game? mention that we believe their

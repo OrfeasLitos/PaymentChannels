@@ -6,9 +6,9 @@
       \item $\left(cpk_l, csk_l\right) \gets \textsc{CombineKey}\left(msk,
       mpk, sk, pk\right)$
       \item $cpk_l \gets \textsc{CombinePubKey}\left(mpk, pk\right)$
-      \item $\sigma \gets \textsc{Sign}\left(csk, m\right)$
-      \item $\left\{0, 1\right\} \gets \textsc{Verify}\left(cpk, m,
-      \sigma\right)$
+      \item $\sigma \gets \textsc{Sign}\left(m, csk\right)$
+      \item $\left\{0, 1\right\} \gets \textsc{Verify}\left(\sigma, m,
+      cpk\right)$
     \end{itemize}
 
   \subsection{Correctness}
@@ -145,41 +145,47 @@
 
     Parameters: $\mathcal{H}, G$
     \begin{algorithmic}[0]
-      \Function{MasterKeyGen}{$1^k$, rand}
-        \State Return (rand, $G \cdot \mathrm{rand}$)
-      \EndFunction
+      \State \textsc{MasterKeyGen}($1^k$, rand):
+      \Indent
+        \State \Return (rand, $G \cdot \mathrm{rand}$)
+      \EndIndent
     \end{algorithmic}
 
     \begin{algorithmic}[0]
-      \Function{KeyShareGen}{$1^k$, rand}
-        \State Return (rand, $G \cdot \mathrm{rand}$)
-      \EndFunction
+      \State \textsc{KeyShareGen}($1^k$, rand):
+      \Indent
+        \State \Return (rand, $G \cdot \mathrm{rand}$)
+      \EndIndent
     \end{algorithmic}
 
     \begin{algorithmic}[0]
-      \Function{CombineKey}{$msk, mpk, sk, pk$}
+      \State \textsc{CombineKey}($msk, mpk, sk, pk$):
+      \Indent
         \State \Return $msk \cdot \mathcal{H}\left(mpk \concat pk\right) + sk
         \cdot \mathcal{H}\left(pk \concat mpk\right)$
-      \EndFunction
+      \EndIndent
     \end{algorithmic}
 
     \begin{algorithmic}[0]
-      \Function{CombinePubKey}{$mpk, pk$}
+      \State \textsc{CombinePubKey}($mpk, pk$):
+      \Indent
         \State \Return $mpk \cdot \mathcal{H}\left(mpk \concat pk\right) + pk
         \cdot \mathcal{H}\left(pk \concat mpk\right)$
-      \EndFunction
+      \EndIndent
     \end{algorithmic}
 
     \begin{algorithmic}[0]
-      \Function{Sign}{$csk, m$}
+      \State \textsc{Sign}($csk, m$):
+      \Indent
         \State like standard sign
-      \EndFunction
+      \EndIndent
     \end{algorithmic}
 
     \begin{algorithmic}[0]
-      \Function{Verify}{$cpk, m, \sigma$}
+      \State \textsc{Verify}($cpk, m, \sigma$):
+      \Indent
         \State like standard verify
-      \EndFunction
+      \EndIndent
     \end{algorithmic}
 
     \begin{lemma}
