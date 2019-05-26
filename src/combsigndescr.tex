@@ -1,2 +1,25 @@
-\section{Overview of our Combined Signature primitive}
-  
+\section{Overview of our Combined Signature primitive} \TODO{drop this section,
+combine with LN overview}
+  As previously mentioned, we define in this work a new primitive for combining
+  keys and generating signatures that is leveraged in the revocation and
+  punishment mechanism of channel updates. Furthermore, we prove that the
+  construction designed by the creators of LN realizes this primitive. We here
+  provide the intuition behind it and refer the reader to
+  Appendix~\ref{appendix:combinedsign} for the exact syntax, correctness and
+  security definitions, concrete construction and proof of security.
+
+  The central aim of the primitive is to enable derivation of a verification key
+  using public information of \alice{} and \bob, without any party knowing the
+  corresponding signing key. Only if \alice{} shares her secret information with
+  \bob{} will he be able to construct the signing key.
+
+  Let us now describe how this primitive is used. \alice{} derives a ``share
+  keypair'' and \bob{} derives a ``master keypair''. They share the public part
+  of their keypairs with each other and both can derive the ``combined''
+  verification key. A signature valid by this verification key is enough to
+  spend \alice's funds from her local commitment transaction. When the channel
+  is updated and \alice{} wants to revoke this transaction, she sends her secret
+  share to \bob. He then checks that \alice's public share is indeed derived
+  from this secret and he can now compute the combined signature key. If
+  \alice{} broadcasts the revoked commitment transaction, \bob{} can punish her
+  by spending her output.
