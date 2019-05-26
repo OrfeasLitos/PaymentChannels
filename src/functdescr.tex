@@ -42,12 +42,9 @@
     closure or to learn the preimage from an honest closure, or did not enforce
     the retrieval of her funds by using the preimage to fulfill on chain
     (Fig.~\ref{alg:fpaynet:resolvepay},
-    line~\ref{alg:fpaynet:resolvepay:haltcond}). \orfeas{mention that we
-    probably are the first to formally specify the exact time bounds for
-    intermediaries?} \aggelos{yes it would be in the intro} 
-    It also halts if a particular payment resulted in a channel
-    update for which \simulator{} did not inform \fpaynet{}
-    (Fig.~\ref{alg:fpaynet:resolvepay:loops},
+    line~\ref{alg:fpaynet:resolvepay:haltcond}). It also halts if a particular
+    payment resulted in a channel update for which \simulator{} did not inform
+    \fpaynet{} (Fig.~\ref{alg:fpaynet:resolvepay:loops},
     line~\ref{alg:fpaynet:resolvepay:loops:halt:do}).
     \item \fpaynet{} executes the function
     \texttt{checkClosed}($\Sigma_{\alice}$) every time it receives
