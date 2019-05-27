@@ -800,8 +800,8 @@
           \texttt{updatesToReport}
           \label{alg:protocol:pay:raa:report}
           \State $sh_{\mathrm{rev}, n} \gets
-          \textsc{CombineKey}\left(shb_{\mathrm{rev}}, phb_{\mathrm{rev}},
-          st_{\mathrm{com} n}, pt_{\mathrm{com}, n}\right)$
+          \textsc{CombineKey}\left(phb_{\mathrm{rev}}, shb_{\mathrm{rev}},
+          pt_{\mathrm{com} n}, st_{\mathrm{com}, n}\right)$
           \State $ph_{\mathrm{rev}, n+2} \gets
           \textsc{CombinePubKey}\left(phb_{\mathrm{rev}}, pt_{\mathrm{com},
           n+2}\right)$

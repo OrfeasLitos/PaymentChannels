@@ -239,8 +239,8 @@
   ledger, under no circumstances does she subsequently go on to send $s_{\alice,
   \mathrm{com}, n}$ to any party. (This secret information could be used by
   \bob{} to efficiently compute $s_{\bob, \mathrm{rev}, n}$ with
-  \textsc{CombineKey}($sb_{\bob, \mathrm{rev}}, pb_{\bob, \mathrm{rev}},
-  s_{\alice, \mathrm{com}, n}, p_{\alice, \mathrm{com}, n}$).) If $\Pr[Q] = a >
+  \textsc{CombineKey}($pb_{\bob, \mathrm{rev}}, sb_{\bob, \mathrm{rev}},
+  p_{\alice, \mathrm{com}, n}, s_{\alice, \mathrm{com}, n}$).) If $\Pr[Q] = a >
   \negl$, there is an algorithm (Fig.~\ref{alg:forge:share}) that wins the
   \textsf{share-EUF} game of the Combined Signature Scheme with non-negligible
   probability, thus breaking the security assumption of the combined signature
