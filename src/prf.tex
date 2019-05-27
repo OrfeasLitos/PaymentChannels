@@ -1,2 +1,32 @@
 \section{PRF}
-  \TODO{TODO}
+  A ``pseudorandom function''~\cite{katzlindell} $F$ is informally a function
+  with two inputs: a secret seed and a bitstring. Given that the seed is
+  randomly selected, no PPT algorithm can distinguish $F$ from a randomly
+  selected function.
+
+  In the current work a PRF is used in $\Pi_{\mathrm{LN}}$ to generate the
+  randomness used for \textsc{KeyShareGen}(), which returns the per commitment
+  keypairs $(s_{\alice, \mathrm{com}, n}, p_{\alice, \mathrm{com}, n})$
+  (Fig.~\ref{alg:protocol:open:env}, line~\ref{alg:protocol:open:env:prf},
+  Fig.~\ref{alg:protocol:open:openChannel},
+  line~\ref{alg:protocol:open:peer:prf}, Fig.~\ref{alg:protocol:checkForNew},
+  line~\ref{alg:protocol:checkForNew:prand},
+  Fig.~\ref{alg:protocol:fundingLocked},
+  line~\ref{alg:protocol:fundingLocked:prand} and
+  Fig.~\ref{alg:protocol:pay:commitmentSigned},
+  line~\ref{alg:protocol:pay:commitmentSigned:prf}).
+
+  \begin{definition}
+    Let $k \in \mathbb{N}$. Let $\mathsf{Func}_k$ the set of all functions
+    mapping $k$-bitstrings to $k$-bitstrings. We say that function $F: \{0,
+    1\}^k \times \{0, 1\}^k \rightarrow \{0, 1\}^k$ is pseudorandom if $\forall
+    \text{ PPT } D$,
+    \begin{equation*}
+      |\underset{\substack{s \in \{0, 1\}^k \\ D\text{'s
+      coins}}}{\Pr}[D^{F(s, \cdot)}(1^k) = 1] - \underset{\substack{f \in
+      \mathsf{Func}_k \\ D\text{'s coins}}}{\Pr}[D^{f(\cdot)}(1^k) = 1]|
+      \leq \negl(k) \enspace,
+    \end{equation*}
+    where $D$ is given oracle access to $F(s, \cdot)$ and $f(\cdot)$ in each of
+    the probability expressions above respectively.
+  \end{definition}
