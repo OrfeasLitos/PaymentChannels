@@ -428,9 +428,9 @@
   a payment is an honest intermediary of that payment, (has \textsc{poll}ed in
   time to catch a malicious closure (event $A$) but a malicious closure
   succeeded (event $B$)) or (no malicious closure succeeded ($\neg B$) and
-  \dave{} has \textsc{poll}ed in time to to learn the preimage of the HTLC early
-  enough (event $C$) and has attempted to fulfill on chain at the right moment
-  (event $D$)) (Fig.~\ref{alg:fpaynet:resolvepay},
+  \dave{} has \textsc{poll}ed in time twice to learn the preimage of the HTLC
+  early enough (event $C$) and has attempted to fulfill on chain at the right
+  moment (event $D$)) (Fig.~\ref{alg:fpaynet:resolvepay},
   line~\ref{alg:fpaynet:resolvepay:haltcond}) -- i.e. halts in the event $(A
   \wedge B) \vee (\neg B \wedge C \wedge D)$. $\simulator_{\mathrm{LN - Reg -
   Open}}$ decides that \dave{} is charged if his previous counterparty did a
