@@ -482,13 +482,13 @@
   valid by \dave's public HTLC key, or if the previous counterparty forges a
   signature valid by \dave's public revocation key; the two latter scenarios can
   never happen. Thus, given that $F$ happens until a moment when
-  $|\Sigma_{\dave}| \leq \mathtt{IncomingCltvExpiry} - k - \tochain{}$, \dave{}
-  has the time to successfully fulfill the HTLC. Given $C$, \dave{} has
-  \textsc{poll}ed at two moments $h_1, h_2 \in [\mathtt{OutgoingCltvExpiry} + k
-  + \tochain{} + 1, \mathtt{IncomingCltvExpiry} - k - \tochain{}],$ such that
-  $h_2 \geq h_1 + k + \tochain{}$. If $\Sigma_{\dave}$ contains the preimage at
-  moment $h_1$ or $h_2$, then \dave{} may try to update the previous channel
-  off-chain if he receives a (\textsc{pushFulfill}) for that channel
+  $|\Sigma_{\dave}| \leq \mathtt{IncomingCltvExpiry} - \tochain{}$, \dave{} has
+  the time to successfully fulfill the HTLC. Given $C$, \dave{} has
+  \textsc{poll}ed at two moments $h_1, h_2 \in [\mathtt{OutgoingCltvExpiry},
+  \mathtt{IncomingCltvExpiry} - \tochain{}],$ such that $h_2 \geq h_1 +
+  \tochain{}$. If $\Sigma_{\dave}$ contains the preimage at moment $h_1$ or
+  $h_2$, then \dave{} may try to update the previous channel off-chain if he
+  receives a (\textsc{pushFulfill}) for that channel
   (Fig.~\ref{alg:protocol:pay:push},
   lines~\ref{alg:protocol:pushfulfill:start}-\ref{alg:protocol:pushfulfill:submit}),
   and if the off-chain update is never attempted (because (\textsc{pushFulfill})

@@ -268,6 +268,7 @@
   \end{figure}
 
   \begin{figure}[H]
+  % TODO: missing relayDelay enforcement
     \begin{systembox}{\fpaynet{} - resolve payments}
       \begin{algorithmic}[1]
         \State Upon receiving $\left(\textsc{resolvePays},
@@ -297,10 +298,10 @@
               \mathtt{delay}\left(\dave\right) - 1]) \ \vee$ \\
               ($\Sigma_{\dave}$ does not contain an old $\mathtt{remoteCom}_m \
               \wedge$ \texttt{polls}(\dave) contains two elements in
-              $[\mathtt{OutgoingCltvExpiry} + k + \tochain{} + 1,
-              \mathtt{IncomingCltvExpiry} - k - \tochain{}]$ that have a
-              difference of at least $k + \tochain{} \ \wedge$ \\
-              \texttt{focs}(\dave) contains $\mathtt{IncomingCltvExpiry} - k -
+              $[\mathtt{OutgoingCltvExpiry}, \mathtt{IncomingCltvExpiry} -
+              \tochain{}]$ that have a difference of at least $\tochain{} \
+              \wedge$ \\
+              \texttt{focs}(\dave) contains $\mathtt{IncomingCltvExpiry} -
               \tochain{} \ \wedge$ \\ the element in \texttt{polls}(\dave) was
               added before the element in \texttt{focs}(\dave)))}
               \label{alg:fpaynet:resolvepay:haltcond}

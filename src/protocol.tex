@@ -483,7 +483,7 @@
         \Indent
           \State ensure that $\overrightarrow{\mathtt{path}}$ consists of
           syntactically valid (\textit{pchid}, \texttt{CltvExpiryDelta}) pair
-          \Comment{Payment completes only if $\forall i \in
+          \Comment{Payment completes only if $\forall \text{ honest } i \in
           \overrightarrow{\mathtt{path}}, \mathtt{CltvExpiryDelta}_i \geq 3k +
           \mathtt{RelayDelay}_i$}
           \label{alg:protocol:pay:validpath}
@@ -508,46 +508,50 @@
           \State choose random, unique preimage $R$
           \State add (\bob, $R$, \textit{payid}) to \texttt{pendingGetPaid}
           \State send $\left(\textsc{invoice}, \mathcal{H}\left(R\right),
-          \mathtt{relayDelay} + 3k + 2\tochain{} - 1, \mathit{payid}\right)$ to
+          \mathtt{relayDelay} + \tochain{}, \mathit{payid}\right)$ to
           \bob{}
         \EndIndent
         \Statex
 
-        \State Upon receiving (\textsc{invoice}, $h$, \textit{payid}) from \bob:
+        \State Upon receiving (\textsc{invoice}, $h$,
+        \texttt{minFinalCltvExpiry}, \textit{payid}) from \bob:
         \Indent
           \State ensure there is a (\bob, $x$, $\overrightarrow{\mathtt{path}}$,
           \textit{payid}, ``waiting for invoice'') entry in \texttt{pendingPay}
           \State ensure $h$ is valid (in the range of $\mathcal{H}$)
-          \State remove entry from \texttt{pendingPay}
+          \State retrieve \texttt{CltvExpiryDelta}s from
+          $\overrightarrow{\mathtt{path}}$ and remove entry from
+          \texttt{pendingPay}
           \State send (\textsc{read}) to \ledger{} and assign largest block
           number to $t$
           \State $l \gets |\left(\overrightarrow{\mathtt{path}}\right)|$
-          \State $m \gets$ the concatenation of $l \left(x,
-          \mathtt{OutgoingCltvExpiry}\right)$ pairs, where
-          $\mathtt{OutgoingCltvExpiry}_l \gets t, \forall i \in \{1, \dots, l -
-          1\}, \mathtt{OutgoingCltvExpiry}_{l - i} \gets
-          \mathtt{OutgoingCltvExpiry}_{l - i + 1} + \mathtt{CltvExpiryDelta}_{l
-          - i + 1}$
+          \State $\mathtt{CltvExpiry}_l \gets t + \mathtt{minFinalCltvExpiry}$
+          \State $\forall i \in \{1, \dots, l - 1\}, \mathtt{CltvExpiry}_{l - i}
+          \gets \mathtt{CltvExpiry}_{l - i + 1} + \mathtt{CltvExpiryDelta}_{l -
+          i + 1}$
           \label{alg:protocol:pay:invoice:cltv}
+          \State ensure $\mathtt{CltvExpiry}_1 \geq \mathtt{CltvExpiry}_2 +
+          \mathtt{relayDelay} + \tochain$
+          \State $m \gets$ the concatenation of $l \left(x,
+          \mathtt{CltvExpiry}\right)$
           \State $\left(\mu_0, \delta_0\right) \gets
           \mathtt{SphinxCreate}\left(m, \text{ public keys of }
           \overrightarrow{\mathtt{path}} \text{ parties}\right)$
           \State let $\mathtt{remoteCom}_n$ the latest signed remote commitment
           tx
-          \State $\mathtt{CltvExpiry} \gets \mathtt{OutgoingCltvExpiry}_1 +
-          \mathtt{relayDelay} + 2k + \tochain{} - 1$
           \State reduce simple payment output in \texttt{remoteCom} by $x$
           \State add an additional $\left(x, ph_{\mathrm{rev}, n+1} \vee
           \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc}, n+1}, \text{
           on preimage}\right.\right.$ $\left.\left.\text{of } h\right) \vee
-          ph_{\mathrm{htlc}, n+1}, \mathtt{CltvExpiry} \text{ absolute}\right)$
+          ph_{\mathrm{htlc}, n+1}, \mathtt{CltvExpiry}_1 \text{
+          absolute}\right)$
           output (all with $n+1$ keys) to \texttt{remoteCom}, marked with
           \texttt{HTLCNo}
           \State reduce delayed payment output in \texttt{localCom} by $x$
           \State add an additional $\left(x, pt_{\mathrm{rev}, n+1} \vee
           \left(pt_{\mathrm{htlc}, n+1}, \text{ on preimage}\right.\right.$
           $\left.\left.\text{of } h\right) \vee \left(ph_{\mathrm{htlc}, n+1}
-          \wedge pt_{\mathrm{htlc}, n+1}, \mathtt{CltvExpiry} \text{
+          \wedge pt_{\mathrm{htlc}, n+1}, \mathtt{CltvExpiry}_1 \text{
           absolute}\right)\right)$ output (all with $n+1$ keys) to
           \texttt{localCom}, marked with \texttt{HTLCNo}
           \State increment $\mathtt{HTLCNo}_{\mathit{pchid}}$ by one and
@@ -555,7 +559,7 @@
           \State mark \texttt{HTLCNo} as ``sender''
           \State send (\textsc{updateAddHtlc}, first \textit{pchid} of
           $\overrightarrow{\mathtt{path}}, \mathtt{HTLCNo}_{\mathit{pchid}}, x,
-          h, \mathtt{CltvExpiry}, \left(\mu_0, \delta_0\right)$) to
+          h, \mathtt{CltvExpiry}_1, \left(\mu_0, \delta_0\right)$) to
           \textit{pchid} channel counterparty
         \EndIndent
       \end{algorithmic}
@@ -568,21 +572,24 @@
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{updateAddHtlc}}
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{updateAddHtlc}, \textit{pchid},
-        $\mathtt{HTLCNo}, x, h, \mathtt{CltvExpiry}, M$) from \bob:
+        $\mathtt{HTLCNo}, x, h, \mathtt{IncomingCltvExpiry}, M$) from \bob:
         \Indent
           \State ensure \textit{pchid} corresponds to an open \texttt{channel}
           in \texttt{channels} where \bob{} has at least $x$
           \State ensure $\mathtt{HTLCNo} = \mathtt{HTLCNo}_{\mathit{pchid}} + 1$
-          \State $\left(\mathit{pchid}', x', \mathtt{CltvExpiry}',
+          \State $\left(\mathit{pchid}', x', \mathtt{OutgoingCltvExpiry},
           \delta\right) \gets \mathtt{SphinxPeel}\left(sk_{\alice}, M\right)$
+          \State send (\textsc{read}) to \ledger{} and assign largest block
+          number to $t$
           \If{$\delta = \mathtt{receiver}$}
-            \State ensure $\mathit{pchid}' = \bot, x = x', \mathtt{CltvExpiry}
-            \geq \mathtt{CltvExpiry}' + \mathtt{relayDelay} + 2k + \tochain{} -
-            1$
+            \State ensure $\mathit{pchid}' = \bot, x = x',
+            \mathtt{IncomingCltvExpiry} \geq \mathtt{OutgoingCltvExpiry} =
+            \mathtt{minFinalCltvExpiry}$
             \State mark \texttt{HTLCNo} as ``receiver''
           \Else \ \Comment{We are an intermediary}
-            \State ensure $x = x', \mathtt{CltvExpiry} \geq \mathtt{CltvExpiry}'
-            + \mathtt{relayDelay} + 3k + 2\tochain{} - 1$
+            \State ensure $x = x', \mathtt{IncomingCltvExpiry} \geq
+            \max\{\mathtt{OutgoingCltvExpiry}, t\} + \mathtt{relayDelay} +
+            2\tochain{}$
             \State ensure $\mathtt{pchid}'$ corresponds to an open channel in
             \texttt{channels} where we have at least $x$
             \State mark \texttt{HTLCNo} as ``intermediary''
@@ -593,13 +600,13 @@
           \State reduce delayed payment output in \texttt{remoteCom} by $x$
           \State add an $\left(x, ph_{\mathrm{rev}, n+1} \vee
           \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc}, n+1},
-          \mathtt{CltvExpiry} \text{ absolute}\right) \vee\right.$
+          \mathtt{IncomingCltvExpiry} \text{ absolute}\right) \vee\right.$
           $\left.ph_{\mathrm{htlc}, n+1}, \text{ on preimage of } h\right)$ htlc
           output (all with $n+1$ keys) to \texttt{remoteCom}, marked with
           \texttt{HTLCNo}
           \State reduce simple payment output in \texttt{localCom} by $x$
           \State add an $\left(x, pt_{\mathrm{rev}, n+1} \vee pt_{\mathrm{htlc},
-          n+1}, \mathtt{CltvExpiry} \text{ absolute}\right) \vee$
+          n+1}, \mathtt{IncomingCltvExpiry} \text{ absolute}\right) \vee$
           $\left(\left(pt_{\mathrm{htlc}, n+1} \wedge ph_{\mathrm{htlc}, n+1},
           \text{ on preimage of } h\right)\right)$ htlc output (all with $n+1$
           keys) to \texttt{remoteCom}, marked with \texttt{HTLCNo}
@@ -617,21 +624,22 @@
             \State add an additional $\left(x, ph_{\mathrm{rev}, n+1} \vee
             \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc}, n+1}, \text{
             on preimage}\right.\right.$ $\left.\left.\text{of } h\right) \vee
-            ph_{\mathrm{htlc}, n+1}\mathtt{CltvExpiry}' \text{ absolute}\right)$
-            output (all with $n+1$ keys) to $\mathtt{remoteCom}'$, marked with
-            $\texttt{HTLCNo}'$
+            ph_{\mathrm{htlc}, n+1}\mathtt{OutgoingCltvExpiry} \text{
+            absolute}\right)$ output (all with $n+1$ keys) to
+            $\mathtt{remoteCom}'$, marked with $\texttt{HTLCNo}'$
             \State reduce delayed payment output in $\mathtt{localCom}'$ by $x$
             \State add an additional $\left(x, pt_{\mathrm{rev}, n+1} \vee
             \left(pt_{\mathrm{htlc}, n+1}, \text{ on preimage}\right.\right.$
             $\left.\left.\text{of } h\right) \vee \left(pt_{\mathrm{htlc}, n+1}
-            \wedge ph_{\mathrm{htlc}, n+1}\mathtt{CltvExpiry}' \text{
+            \wedge ph_{\mathrm{htlc}, n+1}\mathtt{OutgoingCltvExpiry} \text{
             absolute}\right)\right)$ output (all with $n+1$ keys) to
             $\mathtt{remoteCom}'$, marked with $\texttt{HTLCNo}'$
             \State increment $\texttt{HTLCNo}'$ by 1
             \State $M' \gets \mathtt{SphinxPrepare}\left(M, \delta,
             sk_{\mathit{Alice}}\right)$
-            \State add $\left(\mathtt{HTLCNo}', x, h, \mathtt{CltvExpiry}',
-            M'\right)$ to $\mathtt{pendingAdds}_{\mathit{pchid}'}$
+            \State add $\left(\mathtt{HTLCNo}', x, h,
+            \mathtt{OutgoingCltvExpiry}, M'\right)$ to
+            $\mathtt{pendingAdds}_{\mathit{pchid}'}$
           \EndIf
         \EndIndent
       \end{algorithmic}
@@ -906,7 +914,7 @@
             we have sent both \textsc{updateFulfillHtlc} and
             \textsc{commitmentSigned} to a transaction without that HTLC to
             counterparty, but have not received the corresponding
-            \textsc{revokeAndAck} AND the HTLC expires within $\left[t, t + k +
+            \textsc{revokeAndAck} AND the HTLC expires within $\left[t, t +
             \tochain{}\right]$}
               \State add $\mathtt{localCom}_n$ of the channel and all
               corresponding valid \texttt{HTLC-success}es and
