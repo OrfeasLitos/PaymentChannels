@@ -111,7 +111,7 @@
           $\left.\left(phb_{\mathrm{rev}}, shb_{\mathrm{rev}}\right),
           \mathit{tid}\right)$ to \texttt{pendingOpen}
           \label{alg:protocol:open:env:pendingOpen}
-          \State send (\textsc{openChannel}, $x, \mathtt{delay} + k + \tochain,
+          \State send (\textsc{openChannel}, $x, \mathtt{delay} + \tochain,
           ph_F, phb_{\mathrm{pay}}, phb_{\mathrm{dpay}}, phb_{\mathrm{htlc}},$
           $ph_{\mathrm{com}, 1}, phb_{\mathrm{rev}}$, \textit{tid}) to \bob{}
         \EndIndent
@@ -143,7 +143,7 @@
           \State associate keys with \textit{tid} and store in
           \texttt{pendingOpen}
           \label{alg:protocol:open:openChannel:pendingOpen}
-          \State send (\textsc{acceptChannel}, $\mathtt{delay} + k + \tochain,
+          \State send (\textsc{acceptChannel}, $\mathtt{delay}  + \tochain,
           ph_F, phb_{\mathrm{pay}}, phb_{\mathrm{dpay}}, phb_{\mathrm{htlc}},$
           $ph_{\mathrm{com}, 1}, phb_{\mathrm{rev}}$, \textit{tid}) to \bob{}
         \EndIndent
@@ -187,7 +187,7 @@
           \State $\mathtt{remoteCom} \gets \mathtt{remoteCom}_1 \gets$ TX
           \{input: output 1 of $F$, outputs: $\left(x, ph_{\mathrm{pay},
           1}\right), \left(0, ph_{\mathrm{rev}, 1} \vee \left(pt_{\mathrm{dpay},
-          1}, \mathtt{delay} + k + \tochain{} \text{ relative}\right)\right)$\}
+          1}, \mathtt{delay} + \tochain{} \text{ relative}\right)\right)$\}
           \State $\mathtt{localCom} \gets$ TX \{input: output 1 of $F$, outputs:
           $\left(x, pt_{\mathrm{rev}, 1} \vee \left(ph_{\mathrm{dpay}, 1},
           \mathtt{remoteDelay} \text{ relative}\right)\right), \left(0,
@@ -232,7 +232,7 @@
           \mathtt{localCom}_1, pt_F\right) = \mathtt{True}$
           \State $\mathtt{remoteCom} \gets \mathtt{remoteCom}_1 \gets$ TX
           \{input: output 1 of $F$, outputs: $\left(x, ph_{\mathrm{rev}, 1} \vee
-          \left(pt_{\mathrm{dpay}, 1}, \mathtt{delay} + k + \tochain{} \text{
+          \left(pt_{\mathrm{dpay}, 1}, \mathtt{delay} + \tochain{} \text{
           relative}\right)\right), \left(0, ph_{\mathrm{pay}, 1}\right)\}$
           \State add $\mathtt{BobSig}_1, \mathtt{remoteCom}_1$ and
           $\mathtt{localCom}_1$ to channel entry in \texttt{pendingOpen}
@@ -713,7 +713,7 @@
             \State $\mathtt{remoteHTLC}_{n+1, i} \gets$ TX \{input: HTLC output
             $i$ of $\mathtt{remoteCom}_{n+1}$, output: $\left(c_{\mathrm{htlc,
             i}}, ph_{\mathrm{rev}, n+1} \vee \left(pt_{\mathrm{dpay}, n+1},
-            \mathtt{delay} + k + \tochain{} \text{ relative}\right)\right)$\}
+            \mathtt{delay} + \tochain{} \text{ relative}\right)\right)$\}
             \State add $\textsc{SignIBS}\left(\mathtt{remoteHTLC}_{n+1, i},
             sh_{\mathrm{htlc}, n+1}\right)$ to HTLCSigs
           \EndFor

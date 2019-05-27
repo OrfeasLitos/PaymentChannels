@@ -293,7 +293,7 @@
               block $h_{\mathtt{tx}}$ an old $\mathtt{remoteCom}_m$ that does
               not contain the HTLC and a tx that spends the delayed output of
               $\mathtt{remoteCom}_m \ \wedge$ \\ \texttt{polls}(\dave) contains
-              an element in $[h_{\mathtt{tx}} + k, h_{\mathtt{tx}} + k +
+              an element in $[h_{\mathtt{tx}}, h_{\mathtt{tx}} +
               \mathtt{delay}\left(\dave\right) - 1]) \ \vee$ \\
               ($\Sigma_{\dave}$ does not contain an old $\mathtt{remoteCom}_m \
               \wedge$ \texttt{polls}(\dave) contains two elements in
@@ -407,7 +407,7 @@
             $\Sigma_{\alice}$ for open \texttt{channel} with ID \textit{fchid}
             with a balance that does not correspond to the \texttt{receipt} and
             the delayed output has been spent by the counterparty}
-              \If{\texttt{polls}(\alice) contains an entry in $[h + k, h + k +
+              \If{\texttt{polls}(\alice) contains an entry in $[h, h +
               \mathtt{delay}(\alice) - 1]$}
               \label{alg:fpaynet:close:func:ifmalicious}
                 \State halt
@@ -450,8 +450,8 @@
           block with height $h_{\mathtt{tx}}$}
           \label{alg:fpaynet:poll:malicious}
             \If{the delayed output (of the counterparty) has been spent AND
-            \texttt{polls}(\alice) has an element in $\left[h_{\mathtt{tx}} + k,
-            h_{\mathtt{tx}} + k + \mathtt{delay}\left(\alice\right) - 1\right]$}
+            \texttt{polls}(\alice) has an element in $\left[h_{\mathtt{tx}},
+            h_{\mathtt{tx}} + \mathtt{delay}\left(\alice\right) - 1\right]$}
             \label{alg:fpaynet:poll:badevent}
               \State halt \Comment{\alice{} wasn't negligent but couldn't punish
               \label{alg:fpaynet:poll:halt}
