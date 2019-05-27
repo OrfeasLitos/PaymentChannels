@@ -99,7 +99,7 @@
           shb_{\mathrm{rev}}\right)\right) \gets \texttt{GetKeys}\left(\right)$
           \State $\mathrm{prand}_1 \gets \textsc{PRF}\left(\mathtt{seed},
           1\right)$
-          \State $\left(sh_{\mathrm{com}, 1}, ph_{\mathrm{com}, 1}\right) \gets
+          \State $\left(ph_{\mathrm{com}, 1}, sh_{\mathrm{com}, 1}\right) \gets
           \textsc{KeyShareGen}\left(1^k; \mathrm{prand}_1\right)$
           \State associate keys with \textit{tid}
           \State add $\left(\alice, \bob, x, \mathtt{tid}, \left(ph_F,
@@ -136,7 +136,7 @@
           \gets \texttt{GetKeys}\left(\right)$
           \State $\mathrm{prand}_1 \gets \textsc{PRF}\left(\mathtt{seed},
           1\right)$
-          \State $\left(sh_{\mathrm{com}, 1}, ph_{\mathrm{com}, 1}\right) \gets
+          \State $\left(ph_{\mathrm{com}, 1}, sh_{\mathrm{com}, 1}\right) \gets
           \textsc{KeyShareGen}\left(1^k; \mathrm{prand}_1\right)$
           \State associate keys with \textit{tid} and store in
           \texttt{pendingOpen}
@@ -295,7 +295,7 @@
           \State $\mathrm{prand}_2 \gets \textsc{PRF}\left(\mathtt{seed},
           2\right)$
           \label{alg:protocol:checkForNew:prand}
-          \State $\left(sh_{\mathrm{com}, 2}, ph_{\mathrm{com}, 2}\right) \gets
+          \State $\left(ph_{\mathrm{com}, 2}, sh_{\mathrm{com}, 2}\right) \gets
           \textsc{KeyShareGen}\left(1^k; \mathrm{prand}_2\right)$
           \State add TX to \texttt{channel} data
           \State replace ``broadcast'' mark in \texttt{channel} with
@@ -329,7 +329,7 @@
             \State $\mathrm{prand}_2 \gets \textsc{PRF}\left(\mathtt{seed},
             2\right)$
             \label{alg:protocol:fundingLocked:prand}
-            \State $\left(sh_{\mathrm{com}, 2}, ph_{\mathrm{com}, 2}\right) \gets
+            \State $\left(ph_{\mathrm{com}, 2}, sh_{\mathrm{com}, 2}\right) \gets
             \textsc{KeyShareGen}\left(1^k; \mathrm{prand}_2\right)$
             \State generate 2nd remote delayed payment, htlc, payment keys
           \EndIf
@@ -764,7 +764,7 @@
           \State mark $\mathtt{pendingLocalCom}$ as ``irrevocably committed''
           \State $\mathrm{prand}_{n+2} \gets \textsc{PRF}\left(\mathtt{seed},
           n+2\right)$
-          \State $\left(sh_{\mathrm{com}, n+2}, ph_{\mathrm{com}, n+2}\right)
+          \State $\left(ph_{\mathrm{com}, n+2}, sh_{\mathrm{com}, n+2}\right)
           \gets \textsc{KeyShareGen}\left(1^k; \mathrm{prand}_{n+2}\right)$
           \State send (\textsc{revokeAndAck}, \textit{pchid}, $\mathrm{prand}_n,
           ph_{\mathrm{com}, n+2}$) to \bob
