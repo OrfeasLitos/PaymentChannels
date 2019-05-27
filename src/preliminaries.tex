@@ -104,9 +104,9 @@
     and a label $l$, returns the verification key $pk_l$. Such an IBS scheme
     provides 5 algorithms:
     \begin{itemize}
-      \item $(msk, mpk) \leftarrow \textsc{Setup}(1^k)$: master keypair
+      \item $(mpk, msk) \leftarrow \textsc{Setup}(1^k)$: master keypair
       generation
-      \item $(sk_l, pk_l) \leftarrow \textsc{KeyDer}(msk, mpk, l)$: keypair
+      \item $(pk_l, sk_l) \leftarrow \textsc{KeyDer}(mpk, msk, l)$: keypair
       derivation with label $l$
       \item $pk_l \leftarrow \textsc{PubKeyDer}(mpk, l)$: verification key
       derivation with label $l$
