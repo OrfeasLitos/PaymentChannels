@@ -705,6 +705,11 @@
           \State ensure \texttt{channel} is not marked as ``waiting for
           \textsc{revokeAndAck}''
           \label{alg:protocol:pay:commit:nomark}
+          \State send (\textsc{read}) to \ledger{} and assign largest block
+          number to $t$
+          \State undo adding all outgoing HTLCs in \texttt{remoteCom} for which
+          we are intermediary and $\mathtt{IncomingCltvExpiry} < t +
+          \mathtt{relayDelay} + \tochain$
           \State $\mathtt{remoteCom}_{n+1} \gets \mathtt{remoteCom}$
           \State $\mathrm{ComSig} \gets
           \textsc{SignDS}\left(\mathtt{remoteCom}_{n+1}, sh_F\right)$
