@@ -32,7 +32,7 @@
       $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$ \\
       $\left(cpk, csk\right) \gets \textsc{CombineKey}\left(mpk, msk, pk,
       sk\right),$ \\
-      $\textsc{Verify}(cpk, m, \textsc{SignCS}(csk, m)) = 1] = 1$
+      $\textsc{VerifyCS}(\textsc{SignCS}(m, csk), m, cpk) = 1] = 1$
     \end{itemize}
 
   \subsection{Security}
@@ -50,7 +50,7 @@
           \adversary\left(\textsc{keys}, \mathtt{aux}, pk_1, \dots, pk_n\right)$
           \If{$pk^* \in \left\{pk_1, \dots, pk_n\right\} \wedge$
           $cpk^* = \textsc{CombinePubKey}\left(mpk, pk^*\right) \wedge$
-          $\textsc{Verify}\left(cpk^*, m^*, \sigma^*\right) = 1$}
+          $\textsc{VerifyCS}\left(\sigma^*, m^*, cpk^*\right) = 1$}
             \State \Return 1
           \Else
             \State \Return 0
@@ -98,7 +98,7 @@
             \State store $pk, sk, m$ as $pk_i, sk_i, m_i$
             \State $\left(cpk_i, csk_i\right) \gets
             \textsc{CombineKey}\left(mpk, msk, pk_i, sk_i\right)$
-            \State $\sigma_i \gets \textsc{SignCS}\left(csk_i, m_i\right)$
+            \State $\sigma_i \gets \textsc{SignCS}\left(m_i, csk_i\right)$
             \State $\left(\mathtt{aux}_i, \mathrm{response}\right) \gets
             \adversary\left(\textsc{signature}, \mathtt{aux}_{i-1},
             \sigma_i\right)$
@@ -106,7 +106,7 @@
           \State parse response as $\left(cpk^*, pk^*, m^*, \sigma^*\right)$
           \If{$m^* \notin \left\{m_1, \dots, m_i\right\} \wedge$
           $cpk^* = \textsc{CombinePubKey}\left(mpk, pk^*\right) \wedge$
-          $\textsc{Verify}\left(cpk^*, m^*, \sigma^*\right) = 1$}
+          $\textsc{VerifyCS}\left(\sigma^*, m^*, cpk^*\right) = 1$}
             \State \Return 1
           \Else
             \State \Return 0
@@ -179,16 +179,16 @@
     \end{algorithmic}
 
     \begin{algorithmic}[0]
-      \State \textsc{SignCS}($csk, m$):
+      \State \textsc{SignCS}($m, csk$):
       \Indent
-        \State \Return \textsc{SignDS}($csk, m$)
+        \State \Return \textsc{SignDS}($m, csk$)
       \EndIndent
     \end{algorithmic}
 
     \begin{algorithmic}[0]
-      \State \textsc{VerifyCS}($cpk, m, \sigma$):
+      \State \textsc{VerifyCS}($\sigma, m, cpk$):
       \Indent
-        \State \Return \textsc{VerifyDS}($cpk, m, \sigma$)
+        \State \Return \textsc{VerifyDS}($\sigma, m, cpk$)
       \EndIndent
     \end{algorithmic}
 
@@ -337,13 +337,13 @@
       $\mathcal{H}\left(mpk \concat pk^*\right)$ or $\mathcal{H}\left(pk^*
       \concat mpk\right)$. In either case
       (Fig.~\ref{proof:comb:share:distinguisher},
-      lines~\ref{proof:comb:share:ro:start}-\ref{proof:comb:share:ro:end}),
-      it is $cpk^* = vk$. This means that $\textsc{Verify}\left(vk, m^*,
-      \sigma^*\right) = 1$. We conclude that in the event $\left(F \wedge
-      \mathcal{B} \text{ wins} \wedge \neg E\right)$, \adversary{} wins the
-      \textsf{EUF-CMA} game. A final observation is that the probability that
-      the events $\left(\mathcal{B} \text{ wins} \wedge \neg E\right)$ and $F$
-      are almost independent, thus
+      lines~\ref{proof:comb:share:ro:start}-\ref{proof:comb:share:ro:end}), it
+      is $cpk^* = vk$. This means that $\textsc{VerifyCS}\left(\sigma^*, m^*,
+      vk\right) = 1$. We conclude that in the event $\left(F \wedge \mathcal{B}
+      \text{ wins} \wedge \neg E\right)$, \adversary{} wins the \textsf{EUF-CMA}
+      game. A final observation is that the probability that the events
+      $\left(\mathcal{B} \text{ wins} \wedge \neg E\right)$ and $F$ are almost
+      independent, thus
       \begin{gather*}
         \Pr\left[F \wedge \mathcal{B} \text{ wins} \wedge \neg E\right] =
         \Pr\left[F\right] \Pr\left[\mathcal{B} \text{ wins} \wedge \neg E\right]
@@ -423,7 +423,7 @@
               \State store $pk, sk, m$ as $pk_i, sk_i, m_i$
               \State $\left(cpk_i, csk_i\right) \gets
               \textsc{CombineKey}\left(mpk, msk, pk_i, sk_i\right)$
-              \State $\sigma_i \gets \textsc{Sign}\left(csk_i, m_i\right)$
+              \State $\sigma_i \gets \textsc{SignCS}\left(m_i, csk_i\right)$
               \State $\left(\mathtt{aux}_i, \mathrm{response}\right) \gets
               \mathcal{B}\left(\textsc{signature}, \mathtt{aux}_{i-1},
               \sigma_i\right)$
