@@ -1,2 +1,64 @@
 \section{Digital Signatures}
-  \TODO{TODO}
+  Digital signatures~\cite{katzlindell} enable a party to authenticate messages
+  to other parties. A signature on a message is created by the signing party
+  using the secret ``signing key''; other parties can later verify that the
+  signature was indeed made on the message using the public ``verification
+  key''. Transactions in Bitcoin~\cite{bitcoin} are signed using digital
+  signatures and are considered valid only if signatures verify correctly, thus
+  ensuring that only parties entitled to particular funds can spend them.
+  Bitcoin uses ECDSA signatures over the secp256k1
+  curve\footnote{\url{https://en.bitcoin.it/wiki/Secp256k1}}.
+
+  To ensure compatibility, LN uses ECDSA over the same curve as its basic
+  signature scheme. In this work, we abstract the particular construction away
+  and use instead the established primitive that a secure construction must
+  realize.
+
+  \subsection{Algorithms}
+    \begin{itemize}
+      \item $(pk, sk) \gets \textsc{KeyGen}(1^k)$
+      \item $\sigma \gets \textsc{SignDS}(m, sk)$
+      \item $\{0, 1\} \gets \textsc{VerifyDS}(\sigma, m, pk)$
+    \end{itemize}
+
+  \subsection{Correctness}
+    $\forall k \in \mathbb{N}, m \in \mathcal{M},$ \\
+    $\Pr[(pk, sk) \gets \textsc{KeyGen}(1^k),$ \\
+    $\textsc{VerifyDS}(\textsc{SignDS}(m, sk), m, pk) = 1] = 1$
+
+  \subsection{Security}
+    \begin{figure}[H]
+      \begin{gamebox}{$\mathsf{EUF \mhyphen CMA}^{\adversary}\left(1^k\right)$}
+        \begin{algorithmic}[1]
+          \State $(pk, sk) \gets \textsc{KeyGen}(1^k)$
+          \State $i \gets 0$
+          \State $(\mathtt{aux}_i, \mathrm{response}) \gets
+          \adversary(\textsc{init}, pk)$
+          \While{response can be parsed as $m$}
+            \State $i \gets i + 1$
+            \State store $m$ as $m_i$
+            \State $\sigma_i \gets \textsc{SignDS}(m, sk)$
+            \State $(\mathtt{aux}_i, \mathrm{response}) \gets
+            \adversary(\textsc{signature}, \mathtt{aux}_{i-1}, \sigma_i)$
+          \EndWhile
+          \State parse response as $(m^*, \sigma^*)$
+          \If{$m^* \notin \{m_1, \dots, m_i\} \wedge \textsc{VerifyDS}(\sigma^*,
+          m^*, pk) = 1$}
+            \State \Return 1
+          \Else
+            \State \Return 0
+          \EndIf
+        \end{algorithmic}
+      \end{gamebox}
+      \caption{}
+      \label{game:ds}
+    \end{figure}
+    \begin{definition}
+      \label{def:ds:secure}
+      A Digital Signatures scheme is \emph{\textsf{EUF-CMA}-secure} if
+      \begin{equation*}
+        \forall k \in \mathbb{N}, \forall \adversary \in \mathtt{PPT},
+        \Pr\left[\mathsf{EUF \mhyphen CMA}^{\adversary}\left(1^k\right) =
+        1\right] < \mathit{negl}\left(k\right) \enspace.
+      \end{equation*}
+    \end{definition}
