@@ -295,6 +295,7 @@
                 funding tx for an open \texttt{channel} that contains \dave{}}
                 \label{alg:fpaynet:resolvepay:haltcond:ds}
                   \State halt \Comment{DS forgery}
+                  % TODO: decide how to determine forgeries on pubKey(Alice)
                   \label{alg:fpaynet:resolvepay:halt:ds}
                 \ElsIf{$\Sigma_{\dave}$ contains in block $h_{\mathtt{tx}}$ an
                 old $\mathtt{remoteCom}_m$ that does not contain the HTLC and a
