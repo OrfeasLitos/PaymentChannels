@@ -232,11 +232,13 @@
   some honest player \alice: it spends a simple output, delayed output or htlc
   output tied with a public key that was created by \alice{} ($p_{\alice,
   \mathrm{pay}, n}, p_{\alice, \mathrm{dpay}, n}, p_{\alice, \mathrm{htlc}, n}$
-  respectively) and it was never signed by \alice. Suppose that $\Pr[Q] = a >
-  \negl$. In that case, there is an algorithm (Fig.~\ref{alg:forge:ibs}) that
-  breaks the Identity Based Signatures scheme with non-negligible probability
-  (Fig.~\ref{game:ibs}), thus breaking the security assumption of the IBS scheme
-  used. Therefore we deduce that $\Pr[Q] \leq \negl$.
+  respectively) and it was never signed by \alice. Suppose that $p$ is the
+  maximum total number of opens and updates that a player can perform and that
+  $\Pr[Q] = b > \negl$. In that case, there is an algorithm
+  (Fig.~\ref{alg:forge:ibs}) that breaks the Identity Based Signatures scheme
+  with probability $\frac{b}{3np}$ (Fig.~\ref{game:ibs}), thus breaking the
+  security assumption of the IBS scheme used. Therefore we deduce that $\Pr[Q]
+  \leq \negl$.
 
   Let $R$ be the event in which at some point during the execution a transaction
   that has the following characteristic appears in $\Sigma_{\alice}$, for some
