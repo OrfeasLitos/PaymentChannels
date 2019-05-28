@@ -29,21 +29,23 @@
     happened. In particular, \fpaynet{} halts if any of \alice's channels has
     been closed maliciously and, even though \alice{} has been \textsc{poll}ing
     regularly, she didn't manage to punish the counterparty. Refer to
-    line~\ref{alg:fpaynet:poll:badevent} of Fig.~\ref{alg:fpaynet:poll} for the
-    exact halting condition. If \fpaynet{} doesn't halt, it asks \simulator{} to
-    take action against malicious closures and multi-hop payments that have gone
-    awry.
+    lines~\ref{alg:fpaynet:poll:ifdsforgery}
+    and~\ref{alg:fpaynet:poll:haspolled} of Fig.~\ref{alg:fpaynet:poll} for the
+    exact halting conditions. If \fpaynet{} doesn't halt, it asks \simulator{}
+    to take action against malicious closures and multi-hop payments that have
+    gone awry.
     \item \fpaynet{} expects \simulator{} to send a (\textsc{resolvePays},
     \texttt{charged}) message that gives details on the outcome of one or more
     multi-hop payments. \fpaynet{} checks that for each payment the charged
     party was (a) the one that initiated the payment, (b) a malicious party or
     (c) a party that either did not \textsc{poll} in time to catch a malicious
-    closure or to learn the preimage from an honest closure, or did not enforce
-    the retrieval of her funds by using the preimage to fulfill on chain
-    (Fig.~\ref{alg:fpaynet:resolvepay},
-    line~\ref{alg:fpaynet:resolvepay:haltcond}). It also halts if a particular
-    payment resulted in a channel update for which \simulator{} did not inform
-    \fpaynet{} (Fig.~\ref{alg:fpaynet:resolvepay:loops},
+    closure (Fig.~\ref{alg:fpaynet:resolvepay},
+    line~\ref{alg:fpaynet:resolvepay:haltcond:rel}) or to learn the preimage
+    from an honest closure, or did not enforce the retrieval of her funds by
+    using the preimage to fulfill on chain (Fig.~\ref{alg:fpaynet:resolvepay},
+    line~\ref{alg:fpaynet:resolvepay:haltcond:abs}). It also halts if a
+    particular payment resulted in a channel update for which \simulator{} did
+    not inform \fpaynet{} (Fig.~\ref{alg:fpaynet:resolvepay:loops},
     line~\ref{alg:fpaynet:resolvepay:loops:halt:do}).
     \item \fpaynet{} executes the function
     \texttt{checkClosed}($\Sigma_{\alice}$) every time it receives
