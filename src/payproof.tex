@@ -220,11 +220,12 @@
   that has the following two characteristics appears in $\Sigma_{\alice}$, for
   some honest player \alice: it spends a funding transaction of a channel that
   contains \alice{} (and thus has a $p_{\alice, F}$ public key) and it was never
-  signed by \alice. Suppose that $\Pr[P] = a > \negl$. In that case, there is an
-  algorithm (Fig.~\ref{alg:forge:ds}) that wins the \textsf{EUF-CMA} game
-  (Fig.~\ref{game:ds}) with non-negligible probability, thus breaking the
-  security assumption of the Digital Signatures scheme used. Therefore we deduce
-  that $\Pr[P] \leq \negl$.
+  signed by \alice. Suppose that $m$ is the maximum number of channels that a
+  player can open and $\Pr[P] = a > \negl$. In that case, there is an algorithm
+  (Fig.~\ref{alg:forge:ds}) that wins the \textsf{EUF-CMA} game
+  (Fig.~\ref{game:ds}) with probability $\frac{a}{nm} > \negl$ where $n$ is the
+  number of players, thus breaking the security assumption of the Digital
+  Signatures scheme used. Therefore we deduce that $\Pr[P] \leq \negl$.
 
   Let $Q$ be the event in which at some point during the execution a transaction
   that has the following two characteristics appears in $\Sigma_{\alice}$, for
