@@ -31,8 +31,8 @@
         \item When \alice{} opens her $i$-th channel, replace $p_F$ of
         \textsc{KeyGen}() in Fig.~\ref{alg:protocol:support},
         line~\ref{alg:protocol:support:gen:fund} with $pk$
-        \item Whenever \textsc{SignDS}($m, s_F$) is called, ask challenger for
-        the signature $\sigma$ with (unknown) $sk$ on $m$ and use that instead
+        \item Whenever \textsc{SignDS}($M, s_F$) is called, ask challenger for
+        the signature $\sigma$ with (unknown) $sk$ on $M$ and use that instead
         \item If event $P$ takes place, retrieve forged signature $\sigma^*$ and
         the corresponding transaction $m^*$ and output $(m^*, \sigma^*)$
         \item If the simulated execution completes and \alice{} has opened less
