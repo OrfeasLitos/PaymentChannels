@@ -179,12 +179,12 @@
           \State $pt_{\mathrm{rev}, 1} \gets
           \textsc{CombinePubKey}\left(ptb_{\mathrm{rev}}, ph_{\mathrm{com},
           1}\right)$
-          \State $ph_{\mathrm{dpay}, 1} \gets
-          \textsc{PubKeyDer}\left(phb_{\mathrm{dpay}}, ph_{\mathrm{com},
-          1}\right)$
-          \State $ph_{\mathrm{pay}, 1} \gets
-          \textsc{PubKeyDer}\left(phb_{\mathrm{pay}}, ph_{\mathrm{com},
-          1}\right)$
+          \State $(ph_{\mathrm{dpay}, 1}, sh_{\mathrm{dpay}, 1}) \gets
+          \textsc{KeyDer}\left(phb_{\mathrm{dpay}}, shb_{\mathrm{dpay}},
+          ph_{\mathrm{com}, 1}\right)$
+          \State $(ph_{\mathrm{pay}, 1}, sh_{\mathrm{pay}, 1}) \gets
+          \textsc{KeyDer}\left(phb_{\mathrm{pay}}, shb_{\mathrm{pay}},
+          ph_{\mathrm{com}, 1}\right)$
           \State $\mathtt{remoteCom} \gets \mathtt{remoteCom}_1 \gets$ TX
           \{input: output 1 of $F$, outputs: $\left(x, ph_{\mathrm{pay},
           1}\right), \left(0, ph_{\mathrm{rev}, 1} \vee \left(pt_{\mathrm{dpay},
@@ -822,21 +822,21 @@
           \State $pt_{\mathrm{rev}, n+2} \gets
           \textsc{CombinePubKey}\left(ptb_{\mathrm{rev}}, ph_{\mathrm{com},
           n+2}\right)$
-          \State $ph_{\mathrm{dpay}, n+2} \gets
-          \textsc{PubKeyDer}\left(phb_{\mathrm{dpay}}, ph_{\mathrm{com},
-          n+2}\right)$
+          \State $(ph_{\mathrm{dpay}, n+2}, sh_{\mathrm{dpay}, n+2}) \gets
+          \textsc{KeyDer}\left(phb_{\mathrm{dpay}}, shb_{\mathrm{dpay}},
+          ph_{\mathrm{com}, n+2}\right)$
           \State $pt_{\mathrm{dpay}, n+2} \gets
           \textsc{PubKeyDer}\left(ptb_{\mathrm{dpay}}, pt_{\mathrm{com},
           n+2}\right)$
-          \State $ph_{\mathrm{pay}, n+2} \gets
-          \textsc{PubKeyDer}\left(phb_{\mathrm{pay}}, ph_{\mathrm{com},
-          n+2}\right)$
+          \State $(ph_{\mathrm{pay}, n+2}, sh_{\mathrm{pay}, n+2}) \gets
+          \textsc{KeyDer}\left(phb_{\mathrm{pay}}, shb_{\mathrm{pay}},
+          ph_{\mathrm{com}, n+2}\right)$
           \State $pt_{\mathrm{pay}, n+2} \gets
           \textsc{PubKeyDer}\left(ptb_{\mathrm{pay}}, pt_{\mathrm{com},
           n+2}\right)$
-          \State $ph_{\mathrm{htlc}, n+2} \gets
-          \textsc{PubKeyDer}\left(phb_{\mathrm{htlc}}, ph_{\mathrm{com},
-          n+2}\right)$
+          \State $(ph_{\mathrm{htlc}, n+2}, sh_{\mathrm{htlc}, n+2}) \gets
+          \textsc{KeyDer}\left(phb_{\mathrm{htlc}}, shb_{\mathrm{htlc}},
+          ph_{\mathrm{com}, n+2}\right)$
           \State $pt_{\mathrm{htlc}, n+2} \gets
           \textsc{PubKeyDer}\left(ptb_{\mathrm{htlc}}, pt_{\mathrm{com},
           n+2}\right)$
