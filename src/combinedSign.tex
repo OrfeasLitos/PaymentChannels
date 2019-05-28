@@ -62,7 +62,7 @@
     \end{figure}
     \begin{definition}
       \label{def:share:secure}
-      A Combined Sign scheme is \emph{\textsf{share-EUF}-secure} if
+      A Combined Signatures scheme is \emph{\textsf{share-EUF}-secure} if
       \begin{equation*}
         \forall k \in \mathbb{N}, \forall \adversary \in \mathtt{PPT},
         \Pr\left[\mathsf{share \mhyphen EUF}^{\adversary}\left(1^k\right) =
@@ -77,7 +77,7 @@
 
     \begin{definition}
       \label{def:share:secure:sup}
-      A Combined Sign scheme is \emph{\textsf{share-EUF}-secure} if
+      A Combined Signatures scheme is \emph{\textsf{share-EUF}-secure} if
       \begin{equation*}
         \forall k \in \mathbb{N}, \mathrm{E \mhyphen share}(k) <
         \mathit{negl}\left(k\right) \enspace.
@@ -118,7 +118,7 @@
     \end{figure}
     \begin{definition}
       \label{def:master:secure}
-      A Combined Sign scheme is \emph{\textsf{master-EUF-CMA}-secure} if
+      A Combined Signatures scheme is \emph{\textsf{master-EUF-CMA}-secure} if
       \begin{equation*}
         \forall k \in \mathbb{N}, \forall \adversary \in \mathtt{PPT},
         \Pr\left[\mathsf{master \mhyphen EUF \mhyphen
@@ -134,7 +134,7 @@
 
     \begin{definition}
       \label{def:master:secure:sup}
-      A Combined Sign scheme is \emph{\textsf{master-EUF-CMA}-secure} if
+      A Combined Signatures scheme is \emph{\textsf{master-EUF-CMA}-secure} if
       \begin{equation*}
         \forall k \in \mathbb{N}, \mathrm{E \mhyphen master}(k) <
         \mathit{negl}\left(k\right) \enspace.
@@ -142,8 +142,8 @@
     \end{definition}
 
     \begin{definition}
-      A Combined Sign scheme is \emph{\textsf{combine-EUF}-secure} if it is both
-      \textsf{share-EUF}-secure and \textsf{master-EUF-CMA}-secure.
+      A Combined Signatures scheme is \emph{\textsf{combine-EUF}-secure} if it
+      is both \textsf{share-EUF}-secure and \textsf{master-EUF-CMA}-secure.
     \end{definition}
 
   \subsection{Construction}
