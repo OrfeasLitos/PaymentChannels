@@ -33,8 +33,9 @@
         line~\ref{alg:protocol:support:gen:fund} with $pk$
         \item Whenever \textsc{SignDS}($M, s_F$) is called, ask challenger for
         the signature $\sigma$ with (unknown) $sk$ on $M$ and use that instead
-        \item If event $P$ takes place, retrieve forged signature $\sigma^*$ and
-        the corresponding transaction $m^*$ and output $(m^*, \sigma^*)$
+        \item If event $P$ takes place and the forged signature is valid by
+        $pk$, retrieve forged signature $\sigma^*$ and the corresponding
+        transaction $m^*$ and output $(m^*, \sigma^*)$
         \item If the simulated execution completes and \alice{} has opened less
         than $i$ channels, or if no forgery happened, or if a forgery for
         another player/channel happened, return \textsc{fail}
@@ -90,14 +91,14 @@
         \environment}$
         \item When \alice{} performs her $i$-th opening or update, replace the
         $ph_{j, n}$ output of \textsc{KeyDer}$(phb_j, shb_j, ph_{\mathrm{com},
-        n})$ with \textsc{PubKeyDer}$(mpk, ph_{\mathrm{com}, n})$
+        n})$ with $pk \gets \textsc{PubKeyDer}(mpk, ph_{\mathrm{com}, n})$
         \item Whenever \textsc{SignIBS}($M, sh_{j, n}$) is called, ask
         challenger for the signature $\sigma$ with (unknown) $sk \gets
         \textsc{KeyDer}(mpk, msk, ph_{\mathrm{com}, n})$ on $M$ and use that
         instead
-        \item If event $Q$ takes place, retrieve forged signature $\sigma^*$ and
-        the corresponding transaction $m^*$ and output $(m^*, ph_{\mathrm{com},
-        n},\sigma^*)$
+        \item If event $Q$ takes place and the forged signature is valid by
+        $pk$, retrieve forged signature $\sigma^*$ and the corresponding
+        transaction $m^*$ and output $(m^*, ph_{\mathrm{com}, n},\sigma^*)$
         \item If the simulated execution completes and \alice{} has updated or
         opened a channel less than $i$ times, or if no forgery happened, or if a
         forgery for another player/opening/update happened, return \textsc{fail}
