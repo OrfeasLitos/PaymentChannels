@@ -27,7 +27,7 @@
         \item Choose uniformly at random $i$ from $\{1, \dots, m\}$
         \item Simulate internally
         $\textsc{Exec}^{\ledger}_{\Pi_{\mathrm{LN}}, \adversary_{\mathrm{d}},
-        \environment}$
+        \environment}$ with $\environment_P$
         \item When \alice{} opens her $i$-th channel, replace $p_F$ of
         \textsc{KeyGen}() in Fig.~\ref{alg:protocol:support},
         line~\ref{alg:protocol:support:gen:fund} with $pk$
@@ -47,8 +47,8 @@
 
   \begin{proposition}
   \label{prop:forgery:ds}
-    If $\Pr[P] = a$, then $\Pr[\adversary_{\mathrm{ds}} \text{ wins }
-    \mathsf{EUF \mhyphen CMA}] = \frac{a}{nm}$
+    If $\Pr[P] \geq a$, then $\Pr[\adversary_{\mathrm{ds}} \text{ wins }
+    \mathsf{EUF \mhyphen CMA}] \geq \frac{a}{nm}$
   \end{proposition}
 
   \begin{proof}
@@ -60,7 +60,7 @@
     distribution is identical. The second is to replace signatures done by $s_F$
     with signatures done by the challenger with $sk$. Both signatures are
     generated with \textsc{SignDS}() and thus their distribution is identical.
-    We deduce that, within the simulated execution, $\Pr[P] = a$.
+    We deduce that, within the simulated execution, $\Pr[P] \geq a$.
 
     At the beginning of an execution, \alice{} and $i$ are chosen uniformly at
     random, therefore given $P$, by Proposition~\ref{prop:distrib} we have that
@@ -70,7 +70,7 @@
     \end{equation*}
     Since the selection happens independently from the forgery, we deduce that
     \begin{equation*}
-      \Pr[\adversary_{\mathrm{ds}} \text{ wins } \mathsf{EUF \mhyphen CMA}] =
+      \Pr[\adversary_{\mathrm{ds}} \text{ wins } \mathsf{EUF \mhyphen CMA}] \geq
       \frac{a}{nm}
     \end{equation*}
   \end{proof}
@@ -88,7 +88,7 @@
         \mathrm{dpay}, \mathrm{htlc}\}$
         \item Simulate internally
         $\textsc{Exec}^{\ledger}_{\Pi_{\mathrm{LN}}, \adversary_{\mathrm{d}},
-        \environment}$
+        \environment}$ with $\environment_Q$
         \item When \alice{} performs her $i$-th opening or update, replace the
         $ph_{j, n}$ output of \textsc{KeyDer}$(phb_j, shb_j, ph_{\mathrm{com},
         n})$ with $pk \gets \textsc{PubKeyDer}(mpk, ph_{\mathrm{com}, n})$
@@ -110,8 +110,8 @@
 
   \begin{proposition}
   \label{prop:forgery:ibs}
-    If $\Pr[Q] = b$, then $\Pr[\adversary_{\mathrm{ibs}} \text{ wins }
-    \mathsf{IBS \mhyphen EUF \mhyphen CMA}] = \frac{b}{3np}$
+    If $\Pr[Q] \geq b$, then $\Pr[\adversary_{\mathrm{ibs}} \text{ wins }
+    \mathsf{IBS \mhyphen EUF \mhyphen CMA}] \geq \frac{b}{3np}$
   \end{proposition}
 
   \begin{proof}
@@ -125,7 +125,8 @@
     replace signatures done by $sh_{j, n}$ with signatures done by the
     challenger with $sk \gets \textsc{KeyDer}(mpk, msk, ph_{j, n}$. Both
     signatures are generated with \textsc{SignIBS}() and thus their distribution
-    is identical. We deduce that, within the simulated execution, $\Pr[Q] = b$.
+    is identical. We deduce that, within the simulated execution, $\Pr[Q] \geq
+    b$.
 
     At the beginning of an execution, \alice, $i$ and $j$ are chosen uniformly
     at random, therefore given $Q$, by Proposition~\ref{prop:distrib} we have
@@ -137,7 +138,7 @@
     Since the selection happens independently from the forgery, we deduce that
     \begin{equation*}
       \Pr[\adversary_{\mathrm{ibs}} \text{ wins } \mathsf{IBS \mhyphen EUF
-      \mhyphen CMA}] = \frac{b}{3np}
+      \mhyphen CMA}] \geq \frac{b}{3np}
     \end{equation*}
   \end{proof}
 

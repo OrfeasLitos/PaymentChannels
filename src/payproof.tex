@@ -221,11 +221,12 @@
   some honest player \alice: it spends a funding transaction of a channel that
   contains \alice{} (and thus has a $p_{\alice, F}$ public key) and it was never
   signed by \alice. Suppose that $m$ is the maximum number of channels that a
-  player can open and $\Pr[P] = a > \negl$. In that case, there is an algorithm
-  (Fig.~\ref{alg:forge:ds}) that wins the \textsf{EUF-CMA} game
-  (Fig.~\ref{game:ds}) with probability $\frac{a}{nm} > \negl$ where $n$ is the
-  number of players, thus breaking the security assumption of the Digital
-  Signatures scheme used. Therefore we deduce that $\Pr[P] \leq \negl$.
+  player can open and $\exists \text{ PPT } \environment_P: \Pr[P] \geq a >
+  \negl$. In that case, there is an algorithm (Fig.~\ref{alg:forge:ds}) that
+  wins the \textsf{EUF-CMA} game (Fig.~\ref{game:ds}) with probability at least
+  $\frac{a}{nm} > \negl$ where $n$ is the number of players, thus breaking the
+  security assumption of the Digital Signatures scheme used. Therefore we deduce
+  that $\Pr[P] \leq \negl$.
 
   Let $Q$ be the event in which at some point during the execution a transaction
   that has the following two characteristics appears in $\Sigma_{\alice}$, for
@@ -234,11 +235,11 @@
   \mathrm{pay}, n}, p_{\alice, \mathrm{dpay}, n}, p_{\alice, \mathrm{htlc}, n}$
   respectively) and it was never signed by \alice. Suppose that $p$ is the
   maximum total number of opens and updates that a player can perform and that
-  $\Pr[Q] = b > \negl$. In that case, there is an algorithm
-  (Fig.~\ref{alg:forge:ibs}) that breaks the Identity Based Signatures scheme
-  with probability $\frac{b}{3np}$ (Fig.~\ref{game:ibs}), thus breaking the
-  security assumption of the IBS scheme used. Therefore we deduce that $\Pr[Q]
-  \leq \negl$.
+  $\exists \text{ PPT } \environment_Q: \Pr[Q] \geq b > \negl$. In that case,
+  there is an algorithm (Fig.~\ref{alg:forge:ibs}) that breaks the Identity
+  Based Signatures scheme with probability at least $\frac{b}{3np}$
+  (Fig.~\ref{game:ibs}), thus breaking the security assumption of the IBS scheme
+  used. Therefore we deduce that $\Pr[Q] \leq \negl$.
 
   Let $R$ be the event in which at some point during the execution a transaction
   that has the following characteristic appears in $\Sigma_{\alice}$, for some
