@@ -1,34 +1,40 @@
 \section{Forgery algorithms}
-  Algorithm for forging an IBS signature when $\Pr[P] = a > \negl$
   \begin{figure}[H]
-    \begin{algobox}{IBS forgery}
+    \begin{algobox}{\textsf{EUF-CMA} forgery}
       \begin{algorithmic}[1]
         \State bla
       \end{algorithmic}
     \end{algobox}
-    \caption{}
+    \caption{wins \textsf{EUF-CMA} game when $\Pr[P] = a$}
+    \label{alg:forge:ds}
+  \end{figure}
+
+  \begin{figure}[H]
+    \begin{algobox}{\textsf{IBS-EUF-CMA} forgery}
+      \begin{algorithmic}[1]
+        \State bla
+      \end{algorithmic}
+    \end{algobox}
+    \caption{wins \textsf{IBS-EUF-CMA} game when $\Pr[Q] = a$}
     \label{alg:forge:ibs}
   \end{figure}
 
-  Algorithm for winning the \textsf{share-EUF} game when $\Pr[R] = a > \negl$
   \begin{figure}[H]
     \begin{algobox}{\textsf{share-EUF} forgery}
       \begin{algorithmic}[1]
         \State bla
       \end{algorithmic}
     \end{algobox}
-    \caption{}
+    \caption{wins \textsf{share-EUF} game when $\Pr[R] = a$}
     \label{alg:forge:share}
   \end{figure}
 
-  Algorithm for winning the \textsf{master-EUF-CMA} game when $\Pr[Q] = a >
-  \negl$
   \begin{figure}[H]
     \begin{algobox}{\textsf{master-EUF-CMA} forgery}
       \begin{algorithmic}[1]
         \State bla
       \end{algorithmic}
     \end{algobox}
-    \caption{}
+    \caption{wins \textsf{master-EUF-CMA} game when $\Pr[S] = a$}
     \label{alg:forge:master}
   \end{figure}
