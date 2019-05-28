@@ -461,6 +461,7 @@
               \EndIf
             \EndFor
           \Else \ \Comment{malicious closure}
+          \label{alg:protocol:poll:mal}
             \State $\mathrm{rev} \gets$ TX \{inputs: all
             $\mathtt{remoteCom}_n$ outputs, choosing $ph_{\mathrm{rev}, n}$
             method, output: $pk_{\mathit{Alice}}$\}

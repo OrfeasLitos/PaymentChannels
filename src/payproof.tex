@@ -267,13 +267,15 @@
   output of a remote (for \alice{}) commitment transaction for a channel that
   contains \alice{} (and thus has a $p_{\alice, \mathrm{rev}, n}$ key) and (b)
   it was never signed by \alice. Observe that, since \alice{} is honest, she has
-  never sent $s_{\alice, \mathrm{rev}, n}$ to any party. Suppose that $\Pr[S] =
-  a > \negl$. In that case, there is an algorithm (Fig.~\ref{alg:forge:master})
-  that wins the \textsf{master-EUF-CMA} game of the Combined Signature Scheme
-  with non-negligible probability, thus breaking the security assumption of the
-  Combined Signatures scheme used. Therefore we deduce that $\Pr[S] \leq \negl$.
-  The rest of the proof operates in the world where $\neg P \wedge \neg Q \wedge
-  \neg R \wedge \neg S$ holds.
+  never sent $s_{\alice, \mathrm{rev}, n}$ to any party. Suppose that $m$ is the
+  maximum total number of opens and updates that a player can perform and that
+  $\exists \text{ PPT } \environment_S: \Pr[S] \geq d > \negl$. In that case,
+  there is an algorithm (Fig.~\ref{alg:forge:master}) that wins the
+  \textsf{master-EUF-CMA} game of the Combined Signature Scheme with probability
+  at least $\frac{d}{nm}$, thus breaking the security assumption of the Combined
+  Signatures scheme used. Therefore we deduce that $\Pr[S] \leq \negl$. The rest
+  of the proof operates in the world where $\neg P \wedge \neg Q \wedge \neg R
+  \wedge \neg S$ holds.
   % TODO: specify exact bounds for P, Q, R, S
 
   We can now move on to treating individual messages sent by \environment{}
