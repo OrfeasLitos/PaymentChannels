@@ -34,7 +34,7 @@
 
 \begin{proof}
   Like in the previous proof, we here also assume that $\neg P \wedge \neg Q
-  \wedge \neg R$ holds.
+  \wedge \neg R \wedge \neg S$ holds.
 
   When \environment{} sends (\textsc{closeChannel}, \texttt{receipt},
   \textit{tid}) to \alice, in the ideal world, if it is not the first closing
@@ -139,12 +139,18 @@
   generate new messages, but may cause the \fpaynet{} to halt. We will now prove
   that this never happens.
 
-  \fpaynet{} halts in line~\ref{alg:fpaynet:close:func:malicious} in case a
-  malicious closure by the counterparty was successful, in spite of the fact
-  that \alice{} polled in time to apply the punishment. A (\textsc{poll})
-  message to \alice{} within the prescribed time frame
-  (line~\ref{alg:fpaynet:close:func:ifmalicious}) would cause \fpaynet{} to
-  alert \simulator{} (Fig.~\ref{alg:fpaynet:poll},
+  \fpaynet{} halts in line~\ref{alg:fpaynet:close:func:dsforgery} of
+  Fig.~\ref{alg:fpaynet:close} in case a channel is closed without using a
+  commitment transaction. Similarly to event $E$ in the proof of
+  Lemma~\ref{lemma:pay}, this event is a subset of $P$ and thus is impossible to
+  happen given that we assume $\neg P$.
+
+  \fpaynet{} halts in line~\ref{alg:fpaynet:close:func:malicious} of
+  Fig.~\ref{alg:fpaynet:close} in case a malicious closure by the counterparty
+  was successful, in spite of the fact that \alice{} polled in time to apply the
+  punishment. A (\textsc{poll}) message to \alice{} within the prescribed time
+  frame (line~\ref{alg:fpaynet:close:func:ifmalicious}) would cause \fpaynet{}
+  to alert \simulator{} (Fig.~\ref{alg:fpaynet:poll},
   line~\ref{alg:fpaynet:poll:send}), who in turn would submit the punishment
   transaction in time to prevent the counterparty from spending the delayed
   payment (Fig.~\ref{alg:protocol:poll:closedch},

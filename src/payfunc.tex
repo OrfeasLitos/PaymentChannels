@@ -284,38 +284,53 @@
               \overrightarrow{\mathtt{path}}\right)$ with ID \textit{payid} and
               remove it from \texttt{pendingPay}
               \If{$\dave{} = \bot$}
-                \State continue with next loop iteration
-              \EndIf
-              \State calculate \texttt{IncomingCltvExpiry},
-              \texttt{OutgoingCltvExpiry} of \dave{} (as in
-              Fig.~\ref{alg:protocol:pay:invoice},
-              l.~\ref{alg:protocol:pay:invoice:cltv})
-              \If{$\dave{} \neq \alice{} \wedge \dave{} \notin
-              \mathtt{corrupted} \ \wedge$ \\ $((\Sigma_{\dave}$ contains in
-              block $h_{\mathtt{tx}}$ an old $\mathtt{remoteCom}_m$ that does
-              not contain the HTLC and a tx that spends the delayed output of
-              $\mathtt{remoteCom}_m \ \wedge$ \\ \texttt{polls}(\dave) contains
-              an element in $[h_{\mathtt{tx}}, h_{\mathtt{tx}} +
-              \mathtt{delay}\left(\dave\right) - 1]) \ \vee$ \\
-              ($\Sigma_{\dave}$ does not contain an old $\mathtt{remoteCom}_m \
-              \wedge$ \texttt{polls}(\dave) contains two elements in
-              $[\mathtt{OutgoingCltvExpiry}, \mathtt{IncomingCltvExpiry} -
-              \tochain{}]$ that have a difference of at least $\tochain{} \
-              \wedge$ \\
-              \texttt{focs}(\dave) contains $\mathtt{IncomingCltvExpiry} -
-              \tochain{} \ \wedge$ \\ the element in \texttt{polls}(\dave) was
-              added before the element in \texttt{focs}(\dave)))}
-              \label{alg:fpaynet:resolvepay:haltcond}
-                \State halt
-                \label{alg:fpaynet:resolvepay:dave:halt}
-              \EndIf
-              \State run code of Fig.~\ref{alg:fpaynet:resolvepay:loops}
-              \If{$\dave{} \notin \mathtt{corrupted}$}
+                \State continue with next iteration of inner loop
+              \ElsIf{$\dave{} \in \mathtt{corrupted}$}
+                \State run code of Fig.~\ref{alg:fpaynet:resolvepay:loops}
+                \State $\mathtt{offChainBalance}\left(\bob\right) \gets
+                \mathtt{offChainBalance}\left(\bob\right) + x$
+              \Else \ \Comment{\dave{} honest}
+                \If{$\Sigma_{\dave}$ contains a tx that is not a
+                $\mathtt{localCom}_n$ or a $\mathtt{remoteCom}_n$ and spends a
+                funding tx for an open \texttt{channel} that contains \dave{}}
+                \label{alg:fpaynet:resolvepay:haltcond:ds}
+                  \State halt \Comment{DS forgery}
+                  \label{alg:fpaynet:resolvepay:halt:ds}
+                \ElsIf{$\Sigma_{\dave}$ contains in block $h_{\mathtt{tx}}$ an
+                old $\mathtt{remoteCom}_m$ that does not contain the HTLC and a
+                tx that spends the delayed output of $\mathtt{remoteCom}_m \
+                \wedge$ \\ \texttt{polls}(\dave) contains an element in
+                $[h_{\mathtt{tx}}, h_{\mathtt{tx}} +
+                \mathtt{delay}\left(\dave\right) - 1]$}
+                \label{alg:fpaynet:resolvepay:haltcond:rel}
+                  \State halt \Comment{\dave{} \textsc{poll}ed, but malicious
+                  closure}
+                  \label{alg:fpaynet:resolvepay:halt:rel}
+                \ElsIf{$\dave{} \neq \alice$}
+                  \State calculate \texttt{IncomingCltvExpiry},
+                  \texttt{OutgoingCltvExpiry} of \dave{} (as in
+                  Fig.~\ref{alg:protocol:pay:invoice},
+                  l.~\ref{alg:protocol:pay:invoice:cltv})
+                  \If{$\Sigma_{\dave}$ does not contain an old
+                  $\mathtt{remoteCom}_m \ \wedge$ \texttt{polls}(\dave) contains
+                  two elements in $[\mathtt{OutgoingCltvExpiry},
+                  \mathtt{IncomingCltvExpiry} - \tochain{}]$ that have a
+                  difference of at least $\tochain{} \ \wedge$ \\
+                  \texttt{focs}(\dave) contains $\mathtt{IncomingCltvExpiry} -
+                  \tochain{} \ \wedge$ \\ the element in \texttt{polls}(\dave)
+                  was added before the element in \texttt{focs}(\dave)}
+                  \label{alg:fpaynet:resolvepay:haltcond:abs}
+                    \State halt \Comment{\dave{} \textsc{poll}ed and fulfilled,
+                    but charged}
+                    \label{alg:fpaynet:resolvepay:halt:abs}
+                  \EndIf
+                \EndIf
+                \State run code of Fig.~\ref{alg:fpaynet:resolvepay:loops}
                 \State $\mathtt{offChainBalance}\left(\dave\right) \gets
                 \mathtt{offChainBalance}\left(\dave\right) - x$
+                \State $\mathtt{offChainBalance}\left(\bob\right) \gets
+                \mathtt{offChainBalance}\left(\bob\right) + x$
               \EndIf
-              \State $\mathtt{offChainBalance}\left(\bob\right) \gets
-              \mathtt{offChainBalance}\left(\bob\right) + x$
             \EndFor
           \EndFor
         \EndIndent
@@ -386,8 +401,8 @@
         \label{alg:fpaynet:close:func:start}
           \ForAll{entries $(\mathit{fchid}, \mathtt{receipt}, h) \in
           \mathtt{pendingClose}(\alice) \cup \mathtt{closedChannels}(\alice)$}
-            \If{there is a closing transaction in $\Sigma_{\alice}$ for open
-            \texttt{channel} with ID \textit{fchid} with a balance that
+            \If{there is a closing commitment transaction in $\Sigma_{\alice}$
+            for open \texttt{channel} with ID \textit{fchid} with a balance that
             corresponds to \texttt{receipt}}
               \State let $x, y$ the balances of \alice{} and the
               \texttt{channel} counterparty \bob{} respectively
@@ -405,16 +420,21 @@
               \texttt{pendingClose}(\bob)}
                 \State remove it from \texttt{pendingClose}(\bob)
               \EndIf
-            \ElsIf{there is a closing transaction in block of height $h$ in
-            $\Sigma_{\alice}$ for open \texttt{channel} with ID \textit{fchid}
-            with a balance that does not correspond to the \texttt{receipt} and
-            the delayed output has been spent by the counterparty}
-              \If{\texttt{polls}(\alice) contains an entry in $[h, h +
-              \mathtt{delay}(\alice) - 1]$}
-              \label{alg:fpaynet:close:func:ifmalicious}
-                \State halt
-                \label{alg:fpaynet:close:func:malicious}
-              \EndIf
+            \ElsIf{there is a tx in $\Sigma_{\alice}$ that is not a commitment
+            tx and spends the funding tx of the \texttt{channel} with ID
+            \textit{fchid}}
+            \label{alg:fpaynet:close:func:ifdsforgery}
+              \State halt \Comment{DS forgery}
+              \label{alg:fpaynet:close:func:dsforgery}
+            \ElsIf{there is a closing commitment transaction in block of height
+            $h$ in $\Sigma_{\alice}$ for open \texttt{channel} with ID
+            \textit{fchid} with a balance that does not correspond to the
+            \texttt{receipt} and the delayed output has been spent by the
+            counterparty and \texttt{polls}(\alice) contains an entry in $[h, h
+            + \mathtt{delay}(\alice) - 1]$}
+            \label{alg:fpaynet:close:func:ifmalicious}
+              \State halt
+              \label{alg:fpaynet:close:func:malicious}
             \ElsIf{there is no such closing transaction $\wedge \ h = \bot$}
               \State assign largest block number of $\Sigma_{\alice}$ to $h$ of
               entry
@@ -446,6 +466,12 @@
           \label{alg:fpaynet:poll:height}
           \State \texttt{checkClosed}($\Sigma_{\alice}$)
           \label{alg:fpaynet:poll:read}
+          \If{$\exists \mathtt{channel} \in \Sigma_{\alice}$ that contains
+          \alice{} and is closed by a tx that is not a commitment transaction}
+          \label{alg:fpaynet:poll:ifdsforgery}
+            \State halt \Comment{DS forgery}
+            \label{alg:fpaynet:poll:dsforgery}
+          \EndIf
           \ForAll{$\mathtt{channel}s \in \Sigma_{\alice}$ that contain \alice{}
           and are maliciously closed by a remote commitment \texttt{tx} (one
           with an older channel version than the irrevocably committed one) in
@@ -454,10 +480,10 @@
             \If{the delayed output (of the counterparty) has been spent AND
             \texttt{polls}(\alice) has an element in $\left[h_{\mathtt{tx}},
             h_{\mathtt{tx}} + \mathtt{delay}\left(\alice\right) - 1\right]$}
-            \label{alg:fpaynet:poll:badevent}
-              \State halt \Comment{\alice{} wasn't negligent but couldn't punish
-              \label{alg:fpaynet:poll:halt}
-              - bad event}
+            \label{alg:fpaynet:poll:haspolled}
+              \State halt \Comment{\alice{} wasn't negligent but couldn't
+              punish}
+              \label{alg:fpaynet:poll:haspolled:halt}
             \EndIf
           \EndFor
           \State send (\textsc{poll}, $\Sigma_{\alice}$, \alice) to \simulator

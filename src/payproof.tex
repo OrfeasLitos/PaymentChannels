@@ -215,22 +215,29 @@
 
 \begin{proof}
   Before focusing on individual messages sent by \environment, we will first
-  prove that three particular forgery events happen with negligible probability.
+  prove that four particular forgery events happen with negligible probability.
   Let $P$ be the event in which at some point during the execution a transaction
   that has the following two characteristics appears in $\Sigma_{\alice}$, for
-  any honest player \alice: (a) it spends a funding transaction of a channel
-  that contains \alice{} (and thus has a $p_{\alice, F}$ public key), or it
-  spends a simple output, delayed output or htlc output tied with a public key
-  that was created by \alice{} ($p_{\alice, \mathrm{pay}, n}, p_{\alice,
-  \mathrm{dpay}, n}, p_{\alice, \mathrm{htlc}, n}$ respectively) and (b) it was
-  never signed by \alice. Suppose that $\Pr[P] = a > \negl$. In that case, there
-  is an algorithm (Fig.~\ref{alg:forge:ibs}) that breaks the Identity Based
-  Signature Scheme with non-negligible probability, thus breaking the security
-  assumption of the IBS scheme used. Therefore we deduce that $\Pr[P] \leq
-  \negl$.
+  some honest player \alice: it spends a funding transaction of a channel that
+  contains \alice{} (and thus has a $p_{\alice, F}$ public key) and it was never
+  signed by \alice. Suppose that $\Pr[P] = a > \negl$. In that case, there is an
+  algorithm (Fig.~\ref{alg:forge:ibs}) that breaks the Digital Signature Scheme
+  with non-negligible probability, thus breaking the security assumption of the
+  IBS scheme used. Therefore we deduce that $\Pr[P] \leq \negl$.
 
   Let $Q$ be the event in which at some point during the execution a transaction
-  that has the following characteristic appears in $\Sigma_{\alice}$, for any
+  that has the following two characteristics appears in $\Sigma_{\alice}$, for
+  some honest player \alice: it spends a simple output, delayed output or htlc
+  output tied with a public key that was created by \alice{} ($p_{\alice,
+  \mathrm{pay}, n}, p_{\alice, \mathrm{dpay}, n}, p_{\alice, \mathrm{htlc}, n}$
+  respectively) and it was never signed by \alice. Suppose that $\Pr[Q] = a >
+  \negl$. In that case, there is an algorithm (Fig.~\ref{alg:forge:ibs}) that
+  breaks the Digital Signature Scheme with non-negligible probability, thus
+  breaking the security assumption of the IBS scheme used. Therefore we deduce
+  that $\Pr[Q] \leq \negl$.
+
+  Let $R$ be the event in which at some point during the execution a transaction
+  that has the following characteristic appears in $\Sigma_{\alice}$, for some
   honest player \alice: it spends the revocation output of a local (for
   \alice{}) commitment transaction for a channel that contains \alice{} and
   \bob{} (and thus has a $p_{\bob, \mathrm{rev}, n}$ key). Observe that, since
@@ -240,26 +247,26 @@
   \mathrm{com}, n}$ to any party. (This secret information could be used by
   \bob{} to efficiently compute $s_{\bob, \mathrm{rev}, n}$ with
   \textsc{CombineKey}($pb_{\bob, \mathrm{rev}}, sb_{\bob, \mathrm{rev}},
-  p_{\alice, \mathrm{com}, n}, s_{\alice, \mathrm{com}, n}$).) If $\Pr[Q] = a >
+  p_{\alice, \mathrm{com}, n}, s_{\alice, \mathrm{com}, n}$).) If $\Pr[R] = a >
   \negl$, there is an algorithm (Fig.~\ref{alg:forge:share}) that wins the
   \textsf{share-EUF} game of the Combined Signature Scheme with non-negligible
   probability, thus breaking the security assumption of the combined signature
-  used. Therefore we deduce that $\Pr[Q] \leq \negl$.
+  used. Therefore we deduce that $\Pr[R] \leq \negl$.
 
-  Lastly, let $R$ be the event in which at some point during the execution a
+  Lastly, let $S$ be the event in which at some point during the execution a
   transaction that has the following two characteristics appears in
-  $\Sigma_{\alice}$, for any honest player \alice: (a) it spends the revocation
+  $\Sigma_{\alice}$, for some honest player \alice: (a) it spends the revocation
   output of a remote (for \alice{}) commitment transaction for a channel that
   contains \alice{} (and thus has a $p_{\alice, \mathrm{rev}, n}$ key) and (b)
   it was never signed by \alice. Observe that, since \alice{} is honest, she has
-  never sent $s_{\alice, \mathrm{rev}, n}$ to any party. Suppose that $\Pr[R] =
+  never sent $s_{\alice, \mathrm{rev}, n}$ to any party. Suppose that $\Pr[S] =
   a > \negl$. In that case, there is an algorithm (Fig.~\ref{alg:forge:master})
   that wins the \textsf{master-EUF-CMA} game of the Combined Signature Scheme
   with non-negligible probability, thus breaking the security assumption of the
-  combined signature used. Therefore we deduce that $\Pr[R] \leq \negl$. The
+  combined signature used. Therefore we deduce that $\Pr[S] \leq \negl$. The
   rest of the proof operates in the world where $\neg P \wedge \neg Q \wedge
-  \neg R$ holds.
-  % TODO: specify exact bounds for P, Q, R
+  \neg R \wedge \neg S$ holds.
+  % TODO: specify exact bounds for P, Q, R, S
 
   We can now move on to treating individual messages sent by \environment{}
   during the execution. When \environment{} sends $\left(\textsc{pay}, \bob, x,
@@ -320,9 +327,11 @@
   Subsequently, in the real world
   lines~\ref{alg:protocol:poll:afterread}-\ref{alg:protocol:poll:submit} of
   Fig.~\ref{alg:protocol:poll} are executed by \alice, whereas in the ideal
-  world, given that the check of line~\ref{alg:fpaynet:poll:badevent} does not
-  lead to a bad event (and thus given that the functionality does not halt in
-  line~\ref{alg:fpaynet:poll:halt}), a (\textsc{poll}) message is sent to
+  world, given that the checks of lines~\ref{alg:fpaynet:poll:haspolled}
+  and~\ref{alg:fpaynet:poll:ifdsforgery} do not lead to a bad event (and thus
+  given that the functionality does not halt in
+  lines~\ref{alg:fpaynet:poll:haspolled:halt}
+  or~\ref{alg:fpaynet:poll:dsforgery}), a (\textsc{poll}) message is sent to
   $\simulator_{\mathrm{LN - Reg - Open}}$. We will prove later that
   $\fpaynet{}_{\mathrm{, Pay}}$ does not halt here. Upon receiving
   (\textsc{poll}), $\simulator_{\mathrm{LN - Reg - Open}}$ simulates receiving
@@ -336,29 +345,38 @@
   identical to what would happen in the same case in the real world, up to and
   including line~\ref{alg:protocol:poll:submit} of Fig.~\ref{alg:protocol:poll}.
 
-  Let $E$ the ``bad'' event in which $\fpaynet{}_{\mathrm{, Pay}}$ executes
-  line~\ref{alg:fpaynet:poll:halt} of Fig.~\ref{alg:fpaynet:poll} and halts. We
-  will now prove that, during $\textsc{Exec}^{\fpaynet{}_{\mathrm{, Pay}},
-  \ledger}_{\simulator_{\mathrm{LN - Reg - Open - Pay}}, \environment}$, it is
-  $\Pr[E] = 0$. The condition of Fig.~\ref{alg:fpaynet:poll},
-  line~\ref{alg:fpaynet:poll:badevent} is triggered if the delayed output (that
+  The event $E$ in which $\fpaynet{}_{\mathrm{, Pay}}$ executes
+  line~\ref{alg:fpaynet:poll:dsforgery} of Fig.~\ref{alg:fpaynet:poll} and
+  halts can only happen if there is a non-commitment transaction that contains a
+  valid signature by the $p_{\alice, F}$ key that is needed to spend the funding
+  transaction of an open channel. According to $\Pi_{LN}$, \alice{} signs with
+  her $s_{\alice, F}$ key only commitment transactions. Therefore $E \subset P
+  \Rightarrow \Pr[E | \neg P] = 0$.
+
+  Let $E'$ the ``bad'' event in which $\fpaynet{}_{\mathrm{, Pay}}$ executes
+  line~\ref{alg:fpaynet:poll:haspolled:halt} of Fig.~\ref{alg:fpaynet:poll} and
+  halts. We will now prove that, during $\textsc{Exec}^{\fpaynet{}_{\mathrm{,
+  Pay}}, \ledger}_{\simulator_{\mathrm{LN - Reg - Open - Pay}}, \environment}$,
+  it is $\Pr[E | \neg P \wedge \neg Q \wedge \neg R \wedge \neg S] = 0$. The
+  condition of Fig.~\ref{alg:fpaynet:poll},
+  line~\ref{alg:fpaynet:poll:haspolled} is triggered if the delayed output (that
   of the malicious party) of $\mathtt{tx}_1$ has been spent by the transaction
-  $\mathtt{tx}_2$ in $\Sigma_{\alice}$ (event $E_1$) and \texttt{polls}(\alice)
+  $\mathtt{tx}_2$ in $\Sigma_{\alice}$ (event $E'_1$) and \texttt{polls}(\alice)
   contains an element in $\left[h_1, h_1 + \mathtt{delay}\left(\alice\right) -
   1\right]$, where $h_1$ is the block height where $\mathtt{tx}_1$ is (event
-  $E_2$). Observe that $E = E_1 \wedge E_2$. We note that the elements in
+  $E'_2$). Observe that $E' = E'_1 \wedge E'_2$. We note that the elements in
   \texttt{polls}(\alice) correspond to the block heights of $\Sigma_{\alice}$ at
   the moments when \alice{} \textsc{poll}s (Fig.~\ref{alg:fpaynet:poll},
   line~\ref{alg:fpaynet:poll:height}). Consider the following two events:
-  $E_{1,1}: \mathtt{tx}_2$ spends the delayed output with a signature valid by
-  the delayed payment public key after the locktime expires. $E_{1,2}:
+  $E'_{1,1}: \mathtt{tx}_2$ spends the delayed output with a signature valid by
+  the delayed payment public key after the locktime expires. $E'_{1,2}:
   \mathtt{tx}_2$ spends the delayed output with a signature valid by the
-  revocation public key $p_{\alice, \mathrm{rev}}$. Note that $E_1 = E_{1,1}
-  \vee E_{1,2}$ and $E_{1,1}, E_{1,2}$ are mutually exclusive (since the same
-  output cannot be spent twice). Observe that $E_{1,2} \subset R$, thus
-  $\Pr\left[E_{1,2} | \neg R\right] = 0$. We now concetrate on the event
-  $E_{1,1}$. Due to the fact that $\mathtt{tx}_2$ spends an output locked with a
-  relative timelock of length $\mathtt{delay}\left(\alice\right) + \tochain$,
+  revocation public key $p_{\alice, \mathrm{rev}}$. Note that $E'_1 = E'_{1,1}
+  \vee E'_{1,2}$ and $E'_{1,1}, E'_{1,2}$ are mutually exclusive (since the same
+  output cannot be spent twice). Observe that $E'_{1,2} \subset S$, thus
+  $\Pr\left[E'_{1,2} | \neg S\right] = 0$. We now concetrate on the event
+  $E'_{1,1}$. Due to the fact that $\mathtt{tx}_2$ spends an output locked with
+  a relative timelock of length $\mathtt{delay}\left(\alice\right) + \tochain$,
   the commitment transaction $\mathtt{tx}_1$ can reside in a block of maximum
   height $h_1 \leq h_2 - \mathtt{delay}\left(\alice\right) - \tochain$, where
   $h_2$ is the block height where $\mathtt{tx}_2$ is. If \alice{} \textsc{poll}s
@@ -371,23 +389,24 @@
   the punishment transaction) (Fig.~\ref{alg:protocol:poll:closedch},
   lines~\ref{alg:protocol:poll:mal:tx}-\ref{alg:protocol:poll:mal:submit}).
   Given that $\mathtt{tx}_3$ is broadcast when $|\Sigma_{\alice}| \leq h_2 -
-  \tochain{} - 1$, it is guaranteed to be on-chain in a block $h_3 \leq h_2 - 1$
+  \tochain{}$, it is guaranteed to be on-chain in a block $h_3 \leq h_2$
   (according to Proposition~\ref{prop:tochain}). Since $\mathtt{tx}_3$ spends
   the same funds as $\mathtt{tx}_2$, the two cannot be part of the chain
-  simultaneously. Since $E_{1,1} \Rightarrow \Sigma_{\alice}$ contains
-  $\mathtt{tx}_2$ and $E_2 \Rightarrow \Sigma_{\alice}$ contains
-  $\mathtt{tx}_3$, $E_{1,1}$ and $E_2$ are mutually exclusive. Therefore
-  $\Pr\left[E\right] = \Pr\left[\left(E_{1,1} \vee E_{1,2}\right) \wedge
-  E_2\right] = \Pr\left[\left(E_{1,1} \wedge E_2\right) \vee \left(E_{1,2}
-  \wedge E_2\right)\right] \leq \Pr\left[E_{1,1} \wedge E_2\right] +
-  \Pr\left[E_{1,2} \wedge E_2\right] = \Pr\left[E_{1,2} \wedge E_2\right] \leq
-  \Pr\left[E_{1,2}\right] = 0$. We conclude that, given $\neg P \wedge \neg Q
-  \wedge \neg R$ \textsc{poll} introduces no opportunity for
-  distinghuishability.
+  simultaneously. Since $E'_{1,1} \Rightarrow \Sigma_{\alice}$ contains
+  $\mathtt{tx}_2$ and $E'_2 \Rightarrow \Sigma_{\alice}$ contains
+  $\mathtt{tx}_3$, $E'_{1,1}$ and $E'_2$ are mutually exclusive. Therefore,
+  assuming $\neg P \wedge \neg Q \wedge \neg R \wedge \neg S$, it is
+  $\Pr\left[E'\right] = \Pr\left[\left(E'_{1,1} \vee E'_{1,2}\right) \wedge
+  E'_2\right] = \Pr\left[\left(E'_{1,1} \wedge E'_2\right) \vee \left(E'_{1,2}
+  \wedge E'_2\right)\right] \leq \Pr\left[E'_{1,1} \wedge E'_2\right] +
+  \Pr\left[E'_{1,2} \wedge E'_2\right] = \Pr$ $\left[ E'_{1,2} \wedge
+  E'_2\right] \leq \Pr\left[E'_{1,2}\right] = 0$. We conclude that, given $\neg
+  P \wedge \neg Q \wedge \neg R \wedge \neg S$ \textsc{poll} introduces no
+  opportunity for distinghuishability.
 
   We now treat the effects of the (\textsc{state}, $\Sigma$) message that
-  $\fpaynet{}_{\mathrm{, Pay}}$ sends to $\simulator_{\mathrm{LN - Reg - Open}}$
-  as a concatenation to \textsc{pay}, \textsc{pushFulfill}, \textsc{pushAdd} and
+  $\fpaynet{}_{\mathrm{, Pay}}$ sends to $\simulator_{\mathrm{LN - Reg -
+  Open}}$, appended to \textsc{pay}, \textsc{pushFulfill}, \textsc{pushAdd} and
   \textsc{commit} messages. We first observe that the (\textsc{state}) message
   is handled after handling the first message (which is of one of the four
   aforementioned types) (Fig.~\ref{alg:sim:resolvepay},
@@ -414,47 +433,62 @@
   lines~\ref{alg:sim:resolvepay:everystate}-\ref{alg:sim:resolvepay:loopend}).
   The resolution is then sent to $\fpaynet{}_{\mathrm{, Pay}}$ with the message
   (\textsc{resolvePays}, \texttt{charged}). $\fpaynet{}_{\mathrm{, Pay}}$
-  handles this message in Fig.~\ref{alg:fpaynet:resolvepay}, where, if it does
-  not halt (line~\ref{alg:fpaynet:resolvepay:dave:halt}), it updates the state
-  of each affected channel (Fig.~\ref{alg:fpaynet:resolvepay:loops},
+  handles this message in Fig.~\ref{alg:fpaynet:resolvepay}
+  and~\ref{alg:fpaynet:resolvepay:loops}, where, if it does not halt
+  (Fig.~\ref{alg:fpaynet:resolvepay},
+  lines~\ref{alg:fpaynet:resolvepay:halt:ds},~\ref{alg:fpaynet:resolvepay:halt:rel}
+  and~\ref{alg:fpaynet:resolvepay:halt:abs} and
+  Fig.~\ref{alg:fpaynet:resolvepay:loops},
+  line~\ref{alg:fpaynet:resolvepay:loops:halt:do}), it updates the state of each
+  affected channel (Fig.~\ref{alg:fpaynet:resolvepay:loops},
   line~\ref{alg:fpaynet:resolvepay:loops:update:do}) and does not send any
-  message, thus control returns to \environment. Therefore we have to prove that
-  $\fpaynet{}_{\mathrm{, Pay}}$ halts with at most negligible probability in
-  order to conclude that the handling of a (\textsc{state}) message does not
-  introduce opportunity for distinguishability.
+  message, thus control returns to \environment. We will prove that, under $\neg
+  P \wedge \neg Q \wedge \neg R \wedge \neg S$, $\fpaynet{}_{\mathrm{, Pay}}$
+  does not halt and thus conclude that the handling of a (\textsc{state})
+  message does not introduce opportunity for distinguishability.
 
-  $\fpaynet{}_{\mathrm{, Pay}}$ halts (Fig.~\ref{alg:fpaynet:resolvepay},
-  line~\ref{alg:fpaynet:resolvepay:dave:halt}) if the player \dave{} charged for
-  a payment is an honest intermediary of that payment, (has \textsc{poll}ed in
-  time to catch a malicious closure (event $A$) but a malicious closure
-  succeeded (event $B$)) or (no malicious closure succeeded ($\neg B$) and
-  \dave{} has \textsc{poll}ed in time twice to learn the preimage of the HTLC
-  early enough (event $C$) and has attempted to fulfill on chain at the right
-  moment (event $D$)) (Fig.~\ref{alg:fpaynet:resolvepay},
-  line~\ref{alg:fpaynet:resolvepay:haltcond}) -- i.e. halts in the event $(A
-  \wedge B) \vee (\neg B \wedge C \wedge D)$. $\simulator_{\mathrm{LN - Reg -
-  Open}}$ decides that \dave{} is charged if his previous counterparty did a
+  $\fpaynet{}_{\mathrm{, Pay}}$ halts in
+  line~\ref{alg:fpaynet:resolvepay:halt:ds} of
+  Fig.~\ref{alg:fpaynet:resolvepay} if the honest player \dave{} was charged for
+  a payment over a channel that was closed without using a commitment
+  transaction. Like $E$, this event is a subset of $P$, thus cannot happen given
+  $\neg P$.
+
+  $\fpaynet{}_{\mathrm{, Pay}}$ halts in
+  line~\ref{alg:fpaynet:resolvepay:halt:rel} of
+  Fig.~\ref{alg:fpaynet:resolvepay} if the player \dave{} charged is an honest
+  member of the payment path, has \textsc{poll}ed in time to catch a malicious
+  closure (event $A$) but a malicious closure succeeded (event $B$).
+  $\fpaynet{}_{\mathrm{, Pay}}$ halts in
+  line~\ref{alg:fpaynet:resolvepay:halt:abs} of
+  Fig.~\ref{alg:fpaynet:resolvepay} if \dave{} is not the payer, no malicious
+  closure succeeded ($\neg B$) and \dave{} has \textsc{poll}ed in time twice to
+  learn the preimage of the HTLC early enough (event $C$) and has attempted to
+  fulfill on chain at the right moment (event $D$) -- i.e. halts in the event
+  $(A \wedge B) \vee (\neg B \wedge C \wedge D)$. $\simulator_{\mathrm{LN - Reg
+  - Open}}$ decides that \dave{} is charged if his previous counterparty did a
   malicious closure to a channel version without the HTLC and spent their
   (delayed) output ($B$), or if his next counterparty fulfilled (event $F$) and
   his previous counterparty timed out the HTLC (event $G$)
   (Fig.~\ref{alg:sim:resolvepay}, line~\ref{alg:sim:resolvepay:negligent}), --
   i.e. \dave{} is charged in the event $B \vee (F \wedge G)$.
 
-  We will now show that $\Pr[A \wedge B | \neg P \wedge \neg Q \wedge \neg R] =
-  0 \wedge \Pr[(C \wedge D) \wedge (F \wedge G) | \neg P \wedge \neg Q \wedge
-  \neg R] = 0$, from which we can deduce that $\Pr[(A \wedge B) \vee ((C \wedge
-  D) \wedge (F \wedge G)) | \neg P \wedge \neg Q \wedge \neg R] = 0$ and thus
-  $\Pr[((A \wedge B) \vee (\neg B \wedge C \wedge D)) \wedge (B \vee (F \wedge
-  G)) | \neg P \wedge \neg Q \wedge \neg R] = 0$. This last step holds because
-  $(A \wedge B) \vee ((C \wedge D) \wedge (F \wedge G)) = (A \wedge B) \vee (C
-  \wedge D \wedge F \wedge G)$ and $((A \wedge B) \vee (\neg B \wedge C \wedge
-  D)) \wedge (B \vee (F \wedge G)) = (A \wedge B) \vee (\neg B \wedge C \wedge D
-  \wedge F \wedge G)$ and the latter is a subset of the former.
+  We will now show that $\Pr[A \wedge B | \neg P \wedge \neg Q \wedge \neg R
+  \wedge \neg S] = 0 \wedge \Pr[(C \wedge D) \wedge (F \wedge G) | \neg P \wedge
+  \neg Q \wedge \neg R \wedge \neg S] = 0$, from which we can deduce that
+  $\Pr[(A \wedge B) \vee ((C \wedge D) \wedge (F \wedge G)) | \neg P \wedge \neg
+  Q \wedge \neg R \wedge \neg S] = 0$ and thus $\Pr[((A \wedge B) \vee (\neg B
+  \wedge C \wedge D)) \wedge (B \vee (F \wedge G)) | \neg P \wedge \neg Q \wedge
+  \neg R \wedge \neg S] = 0$. This last step holds because $(A \wedge B) \vee
+  ((C \wedge D) \wedge (F \wedge G)) = (A \wedge B) \vee (C \wedge D \wedge F
+  \wedge G)$ and $((A \wedge B) \vee (\neg B \wedge C \wedge D)) \wedge (B \vee
+  (F \wedge G)) = (A \wedge B) \vee (\neg B \wedge C \wedge D \wedge F \wedge
+  G)$ and the latter is a subset of the former.
 
   The analysis of the event $A \wedge B$ is identical to the one we did
-  previously for the events $E_1, E_2$, with $A$ corresponding to $E_2$ and $B$
-  to $E_1$. We thus deduce that $\Pr[A \wedge B | \neg P \wedge \neg Q \wedge
-  \neg R] = 0$.
+  previously for the events $E'_1, E'_2$, with $A$ corresponding to $E'_2$ and
+  $B$ to $E'_1$. We thus deduce that $\Pr[A \wedge B | \neg P \wedge \neg Q
+  \wedge \neg R \wedge \neg S] = 0$.
 
   The only way for event $C$ to be true is if \environment{} sends
   (\textsc{poll}) to \dave{} during the prescribed time period
@@ -511,7 +545,7 @@
   \dave{} and subsequently the (\textsc{fulfillOnChain}) causes \dave{} to
   fulfill the HTLC with the previous counterparty, as argued above. Therefore in
   no case \dave{} is charged for the payment, i.e. $\Pr[(C \wedge D) \wedge (F
-  \wedge G) | \neg P \wedge \neg Q \wedge \neg R] = 0$.
+  \wedge G) | \neg P \wedge \neg Q \wedge \neg R \wedge \neg S] = 0$.
 
   It remains to be proven that the halt of
   line~\ref{alg:fpaynet:resolvepay:loops:halt:do} in
