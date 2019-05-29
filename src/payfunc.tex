@@ -222,8 +222,10 @@
           \textsc{channelOpened}'' and remove mark
           \State $\mathrm{offChainBalance}\left(\mathrm{funder}\right) \gets
           \mathrm{offChainBalance}\left(\mathrm{funder}\right) + x$
+          \label{alg:fpaynet:channelOpened:offchain}
           \State $\mathrm{onChainBalance}\left(\mathrm{funder}\right) \gets
           \mathrm{onChainBalance}\left(\mathrm{funder}\right) - x$
+          \label{alg:fpaynet:channelOpened:onchain}
           \State $\mathtt{channel} \gets \left(\mathrm{funder}, \mathrm{fundee},
           x, 0, 0, \mathit{fchid}, \mathit{pchid}\right)$
           \State add \texttt{channel} to \texttt{channels}
@@ -289,6 +291,7 @@
                 \State run code of Fig.~\ref{alg:fpaynet:resolvepay:loops}
                 \State $\mathtt{offChainBalance}\left(\bob\right) \gets
                 \mathtt{offChainBalance}\left(\bob\right) + x$
+                \label{alg:fpaynet:resolvepay:corr:credit}
               \Else \ \Comment{\dave{} honest}
                 \If{$\Sigma_{\dave}$ contains a tx that is not a
                 $\mathtt{localCom}_n$ or a $\mathtt{remoteCom}_n$ and spends a
@@ -329,8 +332,10 @@
                 \State run code of Fig.~\ref{alg:fpaynet:resolvepay:loops}
                 \State $\mathtt{offChainBalance}\left(\dave\right) \gets
                 \mathtt{offChainBalance}\left(\dave\right) - x$
+                \label{alg:fpaynet:resolvepay:debit}
                 \State $\mathtt{offChainBalance}\left(\bob\right) \gets
                 \mathtt{offChainBalance}\left(\bob\right) + x$
+                \label{alg:fpaynet:resolvepay:credit}
               \EndIf
             \EndFor
           \EndFor
@@ -418,10 +423,12 @@
               \mathrm{offChainBalance}\left(\alice\right) - x$
               \State $\mathrm{onChainBalance}\left(\alice\right) \gets
               \mathrm{onChainBalance}\left(\alice\right) + x$
+              \label{alg:fpaynet:close:func:alice:credit}
               \State $\mathrm{offChainBalance}\left(\bob\right) \gets
               \mathrm{offChainBalance}\left(\bob\right) - y$
               \State $\mathrm{onChainBalance}\left(\bob\right) \gets
               \mathrm{onChainBalance}\left(\bob\right) + y$
+              \label{alg:fpaynet:close:func:bob:credit}
               \State remove \texttt{channel} from \texttt{channels}
               \State remove entry from \texttt{pendingClose}(\alice)
               \If{there is an (\textit{fchid}, \_, \_) entry in
@@ -466,6 +473,7 @@
             onChainBalance(\alice) is not equal to the total funds exclusively
             spendable by \alice{} in $\Sigma_{\alice}$}
               \State halt
+              \label{alg:fpaynet:close:func:balance}
             \EndIf
           \EndIf
         \EndFunction

@@ -205,6 +205,31 @@
   \ledger}_{\simulator_{\mathrm{LN - Reg - Open - Pay}}, \environment} =
   \textsc{Exec}^{\fpaynet, \ledger}_{\simulator, \environment}$.
 
+  \fpaynet{} halts in line~\ref{alg:fpaynet:close:func:balance} of
+  Fig.~\ref{alg:fpaynet:close:func} in case all \alice's channels are closed
+  on-chain and either \alice's off-chain balance is not equal to zero, or if her
+  on-chain balance is not the expected one, as reported by \simulator. This
+  event can never happen for the following reasons. Firstly, as we have seen,
+  \simulator{} reports all updates with an (\textsc{update}) message
+  (Fig.~\ref{alg:sim:push}, line~\ref{alg:sim:push:report}) and a
+  (\textsc{resolvePays}) message; upon receiving the latter and given that it
+  doesn't halt, \fpaynet{} updates offChainBalance(\alice) if she is the payer
+  or payee of one of the resolved payments (Fig.~\ref{alg:fpaynet:resolvepay},
+  lines~\ref{alg:fpaynet:resolvepay:corr:credit},~\ref{alg:fpaynet:resolvepay:debit}
+  and~\ref{alg:fpaynet:resolvepay:credit}). Secondly, upon closure of each
+  channel, \fpaynet{} would have halted if the closing balance were not the
+  expected one (Fig.~\ref{alg:fpaynet:close:func},
+  line~\ref{alg:fpaynet:close:func:ifmalicious}), an event that cannot happen as
+  we have already proven. Lastly, upon each channel opening and closing,
+  \fpaynet{} updates offChainBalance(\alice) and onChainBalance(\alice) to
+  reflect the event (Fig.~\ref{alg:fpaynet:open},
+  lines~\ref{alg:fpaynet:channelOpened:offchain}
+  and~\ref{alg:fpaynet:channelOpened:onchain} and
+  Fig.~\ref{alg:fpaynet:close:func},
+  lines~\ref{alg:fpaynet:close:func:alice:credit}
+  or~\ref{alg:fpaynet:close:func:bob:credit} respectively). Therefore, it is
+  impossible for \fpaynet{} to halt here.
+
   Similarly to the previous proof, if we allow for forgeries again, i.e. if we
   allow the event $P \vee Q \vee R \vee S$, we observe that $\Pr[P \vee Q \vee R
   \vee S] \leq nm \cdot \mathrm{E \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen
