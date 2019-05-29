@@ -220,9 +220,11 @@
   that has the following two characteristics appears in $\Sigma_{\alice}$, for
   some honest player \alice: it spends a funding transaction of a channel that
   contains \alice{} (and thus has a $p_{\alice, F}$ public key) and it was never
-  signed by \alice. Suppose that $\Pr[P] = a > \negl$. In that case, there is an
-  algorithm (Fig.~\ref{alg:forge:ds}) that wins the \textsf{EUF-CMA} game
-  (Fig.~\ref{game:ds}) with non-negligible probability, thus breaking the
+  signed by \alice. Suppose that $m$ is the maximum number of channels that a
+  player can open and $\exists \text{ PPT } \environment_P: \Pr[P] \geq a >
+  \negl$. In that case, there is an algorithm (Fig.~\ref{alg:forge:ds}) that
+  wins the \textsf{EUF-CMA} game (Fig.~\ref{game:ds}) with probability at least
+  $\frac{a}{nm} > \negl$ where $n$ is the number of players, thus breaking the
   security assumption of the Digital Signatures scheme used. Therefore we deduce
   that $\Pr[P] \leq \negl$.
 
@@ -231,9 +233,11 @@
   some honest player \alice: it spends a simple output, delayed output or htlc
   output tied with a public key that was created by \alice{} ($p_{\alice,
   \mathrm{pay}, n}, p_{\alice, \mathrm{dpay}, n}, p_{\alice, \mathrm{htlc}, n}$
-  respectively) and it was never signed by \alice. Suppose that $\Pr[Q] = a >
-  \negl$. In that case, there is an algorithm (Fig.~\ref{alg:forge:ibs}) that
-  breaks the Identity Based Signatures scheme with non-negligible probability
+  respectively) and it was never signed by \alice. Suppose that $p$ is the
+  maximum total number of opens and updates that a player can perform and that
+  $\exists \text{ PPT } \environment_Q: \Pr[Q] \geq b > \negl$. In that case,
+  there is an algorithm (Fig.~\ref{alg:forge:ibs}) that breaks the Identity
+  Based Signatures scheme with probability at least $\frac{b}{3np}$
   (Fig.~\ref{game:ibs}), thus breaking the security assumption of the IBS scheme
   used. Therefore we deduce that $\Pr[Q] \leq \negl$.
 
@@ -248,11 +252,14 @@
   \mathrm{com}, n}$ to any party. (This secret information could be used by
   \bob{} to efficiently compute $s_{\bob, \mathrm{rev}, n}$ with
   \textsc{CombineKey}($pb_{\bob, \mathrm{rev}}, sb_{\bob, \mathrm{rev}},
-  p_{\alice, \mathrm{com}, n}, s_{\alice, \mathrm{com}, n}$).) If $\Pr[R] = a >
-  \negl$, there is an algorithm (Fig.~\ref{alg:forge:share}) that wins the
-  \textsf{share-EUF} game of the Combined Signature Scheme with non-negligible
-  probability, thus breaking the security assumption of the Combined Signatures
-  scheme used. Therefore we deduce that $\Pr[R] \leq \negl$.
+  p_{\alice, \mathrm{com}, n}, s_{\alice, \mathrm{com}, n}$).) If $p$ is the
+  maximum total number of opens and updates that a player can perform, $m$ is
+  the maximum number of opens a player can perform and $\exists \text{ PPT }
+  \environment_R: Pr[R] \geq c > \negl$, there is an algorithm
+  (Fig.~\ref{alg:forge:share}) that wins the \textsf{share-EUF} game of the
+  Combined Signature Scheme with probability at least $\frac{c -
+  \epsilon_{\mathrm{PRF}}}{nmp}$, thus breaking the security assumption of the
+  Combined Signatures scheme used. Therefore we deduce that $\Pr[R] \leq \negl$.
 
   Lastly, let $S$ be the event in which at some point during the execution a
   transaction that has the following two characteristics appears in
@@ -260,13 +267,15 @@
   output of a remote (for \alice{}) commitment transaction for a channel that
   contains \alice{} (and thus has a $p_{\alice, \mathrm{rev}, n}$ key) and (b)
   it was never signed by \alice. Observe that, since \alice{} is honest, she has
-  never sent $s_{\alice, \mathrm{rev}, n}$ to any party. Suppose that $\Pr[S] =
-  a > \negl$. In that case, there is an algorithm (Fig.~\ref{alg:forge:master})
-  that wins the \textsf{master-EUF-CMA} game of the Combined Signature Scheme
-  with non-negligible probability, thus breaking the security assumption of the
-  Combined Signatures scheme used. Therefore we deduce that $\Pr[S] \leq \negl$.
-  The rest of the proof operates in the world where $\neg P \wedge \neg Q \wedge
-  \neg R \wedge \neg S$ holds.
+  never sent $s_{\alice, \mathrm{rev}, n}$ to any party. Suppose that $m$ is the
+  maximum total number of opens and updates that a player can perform and that
+  $\exists \text{ PPT } \environment_S: \Pr[S] \geq d > \negl$. In that case,
+  there is an algorithm (Fig.~\ref{alg:forge:master}) that wins the
+  \textsf{master-EUF-CMA} game of the Combined Signature Scheme with probability
+  at least $\frac{d}{nm}$, thus breaking the security assumption of the Combined
+  Signatures scheme used. Therefore we deduce that $\Pr[S] \leq \negl$. The rest
+  of the proof operates in the world where $\neg P \wedge \neg Q \wedge \neg R
+  \wedge \neg S$ holds.
   % TODO: specify exact bounds for P, Q, R, S
 
   We can now move on to treating individual messages sent by \environment{}

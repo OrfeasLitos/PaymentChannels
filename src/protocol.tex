@@ -57,6 +57,7 @@
         \Function{GetKeys}{}
           \State $\left(p_F, s_F\right) \gets \textsc{KeyGen}\left(\right)$
           \Comment{For $F$ output}
+          \label{alg:protocol:support:gen:fund}
           \State $\left(p_{\mathrm{pay}}, s_{\mathrm{pay}}\right) \gets
           \textsc{Setup}\left(\right)$ \Comment{For com output to remote}
           \State $\left(p_{\mathrm{dpay}}, s_{\mathrm{dpay}}\right) \gets
@@ -67,6 +68,7 @@
           point}
           \State $\left(p_{\mathrm{rev}}, s_{\mathrm{rev}}\right) \gets
           \textsc{MasterKeyGen}\left(\right)$ \Comment{For revocation in com}
+          \label{alg:protocol:support:gen:rev}
           \State \Return $\left(\left(p_F, s_F\right), \left(p_{\mathrm{pay}},
           s_{\mathrm{pay}}\right), \left(p_{\mathrm{dpay}},
           s_{\mathrm{dpay}}\right),\right.$
@@ -178,12 +180,15 @@
           \State $pt_{\mathrm{rev}, 1} \gets
           \textsc{CombinePubKey}\left(ptb_{\mathrm{rev}}, ph_{\mathrm{com},
           1}\right)$
-          \State $ph_{\mathrm{dpay}, 1} \gets
-          \textsc{PubKeyDer}\left(phb_{\mathrm{dpay}}, ph_{\mathrm{com},
-          1}\right)$
-          \State $ph_{\mathrm{pay}, 1} \gets
-          \textsc{PubKeyDer}\left(phb_{\mathrm{pay}}, ph_{\mathrm{com},
-          1}\right)$
+          \State $(ph_{\mathrm{dpay}, 1}, sh_{\mathrm{dpay}, 1}) \gets
+          \textsc{KeyDer}\left(phb_{\mathrm{dpay}}, shb_{\mathrm{dpay}},
+          ph_{\mathrm{com}, 1}\right)$
+          \State $(ph_{\mathrm{pay}, 1}, sh_{\mathrm{pay}, 1}) \gets
+          \textsc{KeyDer}\left(phb_{\mathrm{pay}}, shb_{\mathrm{pay}},
+          ph_{\mathrm{com}, 1}\right)$
+          \State $(ph_{\mathrm{htlc}, 1}, sh_{\mathrm{htlc}, 1}) \gets
+          \textsc{KeyDer}\left(phb_{\mathrm{htlc}}, shb_{\mathrm{htlc}},
+          ph_{\mathrm{com}, 1}\right)$
           \State $\mathtt{remoteCom} \gets \mathtt{remoteCom}_1 \gets$ TX
           \{input: output 1 of $F$, outputs: $\left(x, ph_{\mathrm{pay},
           1}\right), \left(0, ph_{\mathrm{rev}, 1} \vee \left(pt_{\mathrm{dpay},
@@ -223,6 +228,9 @@
           1}\right)$
           \State $pt_{\mathrm{pay}, 1} \gets
           \textsc{PubKeyDer}\left(ptb_{\mathrm{pay}}, pt_{\mathrm{com},
+          1}\right)$
+          \State $pt_{\mathrm{htlc}, 1} \gets
+          \textsc{PubKeyDer}\left(ptb_{\mathrm{htlc}}, pt_{\mathrm{com},
           1}\right)$
           \State $\mathtt{localCom} \gets \mathtt{localCom}_1 \gets$ TX \{input:
           output 1 of $F$, outputs: $\left(x, pt_{\mathrm{pay}, 1}\right),
@@ -453,6 +461,7 @@
               \EndIf
             \EndFor
           \Else \ \Comment{malicious closure}
+          \label{alg:protocol:poll:mal}
             \State $\mathrm{rev} \gets$ TX \{inputs: all
             $\mathtt{remoteCom}_n$ outputs, choosing $ph_{\mathrm{rev}, n}$
             method, output: $pk_{\mathit{Alice}}$\}
@@ -821,21 +830,21 @@
           \State $pt_{\mathrm{rev}, n+2} \gets
           \textsc{CombinePubKey}\left(ptb_{\mathrm{rev}}, ph_{\mathrm{com},
           n+2}\right)$
-          \State $ph_{\mathrm{dpay}, n+2} \gets
-          \textsc{PubKeyDer}\left(phb_{\mathrm{dpay}}, ph_{\mathrm{com},
-          n+2}\right)$
+          \State $(ph_{\mathrm{dpay}, n+2}, sh_{\mathrm{dpay}, n+2}) \gets
+          \textsc{KeyDer}\left(phb_{\mathrm{dpay}}, shb_{\mathrm{dpay}},
+          ph_{\mathrm{com}, n+2}\right)$
           \State $pt_{\mathrm{dpay}, n+2} \gets
           \textsc{PubKeyDer}\left(ptb_{\mathrm{dpay}}, pt_{\mathrm{com},
           n+2}\right)$
-          \State $ph_{\mathrm{pay}, n+2} \gets
-          \textsc{PubKeyDer}\left(phb_{\mathrm{pay}}, ph_{\mathrm{com},
-          n+2}\right)$
+          \State $(ph_{\mathrm{pay}, n+2}, sh_{\mathrm{pay}, n+2}) \gets
+          \textsc{KeyDer}\left(phb_{\mathrm{pay}}, shb_{\mathrm{pay}},
+          ph_{\mathrm{com}, n+2}\right)$
           \State $pt_{\mathrm{pay}, n+2} \gets
           \textsc{PubKeyDer}\left(ptb_{\mathrm{pay}}, pt_{\mathrm{com},
           n+2}\right)$
-          \State $ph_{\mathrm{htlc}, n+2} \gets
-          \textsc{PubKeyDer}\left(phb_{\mathrm{htlc}}, ph_{\mathrm{com},
-          n+2}\right)$
+          \State $(ph_{\mathrm{htlc}, n+2}, sh_{\mathrm{htlc}, n+2}) \gets
+          \textsc{KeyDer}\left(phb_{\mathrm{htlc}}, shb_{\mathrm{htlc}},
+          ph_{\mathrm{com}, n+2}\right)$
           \State $pt_{\mathrm{htlc}, n+2} \gets
           \textsc{PubKeyDer}\left(ptb_{\mathrm{htlc}}, pt_{\mathrm{com},
           n+2}\right)$
