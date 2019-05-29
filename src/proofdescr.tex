@@ -12,12 +12,14 @@ combined digital signature and PRF. Specifically,
       \environment} = 1] - \Pr[\textsc{Exec}^{\fpaynet, \ledger}_{\simulator,
       \environment} = 1]| \leq \\
       2nm  \mathrm{E \mhyphen ds}(k)  + 6np  \mathrm{E \mhyphen ids}(k) +
-      2nmp  \mathrm{E \mhyphen share}(k) + 2 \mathrm{E \mhyphen
-      prf}(k) + 2nm \mathrm{E \mhyphen master}(k) \enspace.
+      2nmp  \mathrm{E \mhyphen share}(k) + 2nm \mathrm{E \mhyphen master}(k)+  2 \mathrm{E \mhyphen
+      prf}(k)  \enspace.
     \end{gather*}
-    where $n$ is the maximum number of registered users, 
-    $m$ is the maximum number of channels that a user is involved in,
-    $p$ is the maximum number of times that a channel is updated. 
+    where $n$ is the max number of registered users, 
+    $m$ is the max number of channels that a user is involved in,
+    $p$ is the max number of times that a channel is updated
+    and the ``E-'' terms correspond to the insecurity bounds of the
+    primitives. 
   \end{theorem}
 
   \begin{proofsketch}
