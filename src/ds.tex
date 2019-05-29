@@ -14,65 +14,65 @@
   and use instead the established primitive that a secure construction must
   realize.
 
-  \subsection{Algorithms}
-    \begin{itemize}
-      \item $(pk, sk) \gets \textsc{KeyGen}(1^k)$
-      \item $\sigma \gets \textsc{SignDS}(m, sk)$
-      \item $\{0, 1\} \gets \textsc{VerifyDS}(\sigma, m, pk)$
-    \end{itemize}
+  The three algorithms used by a Digital Signatures scheme are:
+  \begin{itemize}
+    \item $(pk, sk) \gets \textsc{KeyGen}(1^k)$
+    \item $\sigma \gets \textsc{SignDS}(m, sk)$
+    \item $\{0, 1\} \gets \textsc{VerifyDS}(\sigma, m, pk)$
+  \end{itemize}
 
-  \subsection{Correctness}
-    $\forall k \in \mathbb{N}, m \in \mathcal{M},$ \\
-    $\Pr[(pk, sk) \gets \textsc{KeyGen}(1^k),$ \\
-    $\textsc{VerifyDS}(\textsc{SignDS}(m, sk), m, pk) = 1] = 1$
+  We demand that the following holds for a scheme to have correctness:
 
-  \subsection{Security}
-    \begin{figure}[H]
-      \begin{gamebox}{$\mathsf{EUF \mhyphen CMA}^{\adversary}\left(1^k\right)$}
-        \begin{algorithmic}[1]
-          \State $(pk, sk) \gets \textsc{KeyGen}(1^k)$
-          \State $i \gets 0$
+  $\forall k \in \mathbb{N}, m \in \mathcal{M},$ \\
+  $\Pr[(pk, sk) \gets \textsc{KeyGen}(1^k),$ \\
+  $\textsc{VerifyDS}(\textsc{SignDS}(m, sk), m, pk) = 1] = 1$
+
+  \begin{figure}[!htbp]
+    \begin{gamebox}{$\mathsf{EUF \mhyphen CMA}^{\adversary}\left(1^k\right)$}
+      \begin{algorithmic}[1]
+        \State $(pk, sk) \gets \textsc{KeyGen}(1^k)$
+        \State $i \gets 0$
+        \State $(\mathtt{aux}_i, \mathrm{response}) \gets
+        \adversary(\textsc{init}, pk)$
+        \While{response can be parsed as $m$}
+          \State $i \gets i + 1$
+          \State store $m$ as $m_i$
+          \State $\sigma_i \gets \textsc{SignDS}(m, sk)$
           \State $(\mathtt{aux}_i, \mathrm{response}) \gets
-          \adversary(\textsc{init}, pk)$
-          \While{response can be parsed as $m$}
-            \State $i \gets i + 1$
-            \State store $m$ as $m_i$
-            \State $\sigma_i \gets \textsc{SignDS}(m, sk)$
-            \State $(\mathtt{aux}_i, \mathrm{response}) \gets
-            \adversary(\textsc{signature}, \mathtt{aux}_{i-1}, \sigma_i)$
-          \EndWhile
-          \State parse response as $(m^*, \sigma^*)$
-          \If{$m^* \notin \{m_1, \dots, m_i\} \wedge \textsc{VerifyDS}(\sigma^*,
-          m^*, pk) = 1$}
-            \State \Return 1
-          \Else
-            \State \Return 0
-          \EndIf
-        \end{algorithmic}
-      \end{gamebox}
-      \caption{}
-      \label{game:ds}
-    \end{figure}
-    \begin{definition}
-      \label{def:ds:secure}
-      A Digital Signatures scheme is \emph{strongly \textsf{EUF-CMA}-secure} if
-      \begin{equation*}
-        \forall k \in \mathbb{N}, \forall \adversary \in \mathtt{PPT},
-        \Pr\left[\mathsf{EUF \mhyphen CMA}^{\adversary}\left(1^k\right) =
-        1\right] = \mathit{negl}\left(k\right) \enspace.
-      \end{equation*}
-    \end{definition}
+          \adversary(\textsc{signature}, \mathtt{aux}_{i-1}, \sigma_i)$
+        \EndWhile
+        \State parse response as $(m^*, \sigma^*)$
+        \If{$m^* \notin \{m_1, \dots, m_i\} \wedge \textsc{VerifyDS}(\sigma^*,
+        m^*, pk) = 1$}
+          \State \Return 1
+        \Else
+          \State \Return 0
+        \EndIf
+      \end{algorithmic}
+    \end{gamebox}
+    \caption{}
+    \label{game:ds}
+  \end{figure}
+  \begin{definition}
+    \label{def:ds:secure}
+    A Digital Signatures scheme is \emph{strongly \textsf{EUF-CMA}-secure} if
+    \begin{equation*}
+      \forall k \in \mathbb{N}, \forall \adversary \in \mathtt{PPT},
+      \Pr\left[\mathsf{EUF \mhyphen CMA}^{\adversary}\left(1^k\right) =
+      1\right] = \mathit{negl}\left(k\right) \enspace.
+    \end{equation*}
+  \end{definition}
 
-    Let $\mathrm{E \mhyphen ds}(k) = \underset{\adversary \in
-    \mathtt{PPT}}{\sup}\{\Pr[\mathsf{EUF \mhyphen
-    CMA}^{\adversary}\left(1^k\right) = 1]\}$. Then
-    Definition~\ref{def:ds:secure} is equivalent to the following:
+  Let $\mathrm{E \mhyphen ds}(k) = \underset{\adversary \in
+  \mathtt{PPT}}{\sup}\{\Pr[\mathsf{EUF \mhyphen
+  CMA}^{\adversary}\left(1^k\right) = 1]\}$. Then
+  Definition~\ref{def:ds:secure} is equivalent to the following:
 
-    \begin{definition}
-      \label{def:ds:secure:sup}
-      A Digital Signatures scheme is \emph{\textsf{EUF-CMA}-secure} if
-      \begin{equation*}
-        \forall k \in \mathbb{N}, \mathrm{E \mhyphen ds}(k) =
-        \mathit{negl}\left(k\right) \enspace.
-      \end{equation*}
-    \end{definition}
+  \begin{definition}
+    \label{def:ds:secure:sup}
+    A Digital Signatures scheme is \emph{\textsf{EUF-CMA}-secure} if
+    \begin{equation*}
+      \forall k \in \mathbb{N}, \mathrm{E \mhyphen ds}(k) =
+      \mathit{negl}\left(k\right) \enspace.
+    \end{equation*}
+  \end{definition}

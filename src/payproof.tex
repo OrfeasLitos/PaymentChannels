@@ -1,4 +1,4 @@
-\begin{figure}[H]
+\begin{figure}[!htbp]
   \begin{systembox}{$\fpaynet{}_{\mathrm{, Pay}}$}
     \begin{algorithmic}[1]
       \State For messages \textsc{register}, \textsc{registerDone},
@@ -28,7 +28,7 @@
   \label{alg:proof:fpaynet:pay}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
   \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$ - pay}
     Like $\simulator{}_{\mathrm{LN - Reg - Open}}$. Differences:
     \begin{algorithmic}[1]
@@ -79,7 +79,7 @@
   \label{alg:sim:pay}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
   \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$ - push}
     \begin{algorithmic}[1]
       \State Upon receiving (\textsc{pushFulfill}, \textit{pchid}, \alice) from

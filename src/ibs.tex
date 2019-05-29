@@ -9,100 +9,102 @@
   prove that the custom construction used in LN realizes the primitive.
   \TODO{TODO last bit}
 
-  \subsection{Algorithms}
-    \begin{itemize}
-      \item $(mpk, msk) \leftarrow \textsc{Setup}(1^k)$
-      \item $(pk_l, sk_l) \leftarrow \textsc{KeyDer}(mpk, msk, l)$
-      \item $pk_l \leftarrow \textsc{PubKeyDer}(mpk, l)$
-      \item $\sigma \leftarrow \textsc{SignIBS}(m, sk_l)$
-      \item $\{0, 1\} \leftarrow \textsc{VerifyIBS}(\sigma, m, pk_l)$
-    \end{itemize}
-    Observe that $mpk$ is not part of the input to \textsc{SignIBS} and
-    \textsc{VerifyIBS}. In our case, this input is not needed. In fact, because
-    of the underlying similarity of these two algorithms with their
-    counterparts from standard Digital Signatures, such an input would rather
-    complicate the exposition.
+  The five algorithms used by an Identity Based Signatures scheme (with our
+  modification) are:
+  \begin{itemize}
+    \item $(mpk, msk) \leftarrow \textsc{Setup}(1^k)$
+    \item $(pk_l, sk_l) \leftarrow \textsc{KeyDer}(mpk, msk, l)$
+    \item $pk_l \leftarrow \textsc{PubKeyDer}(mpk, l)$
+    \item $\sigma \leftarrow \textsc{SignIBS}(m, sk_l)$
+    \item $\{0, 1\} \leftarrow \textsc{VerifyIBS}(\sigma, m, pk_l)$
+  \end{itemize}
+  Observe that $mpk$ is not part of the input to \textsc{SignIBS} and
+  \textsc{VerifyIBS}. In our case, this input is not needed. In fact, because
+  of the underlying similarity of these two algorithms with their
+  counterparts from standard Digital Signatures, such an input would rather
+  complicate the exposition.
 
-  \subsection{Correctness}
-    \begin{itemize}
-      \item $\forall k \in \mathbb{N}, l \in \mathcal{L},$ \\
-      $\Pr[(mpk, msk) \gets \textsc{Setup}(1^k),$ \\
-      $(pk_1, sk_1) \gets \textsc{KeyDer}\left(mpk, msk, l\right),$ \\
-      $pk_2 \gets \textsc{PubKeyDer}\left(mpk, l\right),$ \\
-      $pk_1 = pk_2] = 1$
+  We demand that the following holds for a scheme to have correctness:
+  \begin{itemize}
+    \item $\forall k \in \mathbb{N}, l \in \mathcal{L},$ \\
+    $\Pr[(mpk, msk) \gets \textsc{Setup}(1^k),$ \\
+    $(pk_1, sk_1) \gets \textsc{KeyDer}\left(mpk, msk, l\right),$ \\
+    $pk_2 \gets \textsc{PubKeyDer}\left(mpk, l\right),$ \\
+    $pk_1 = pk_2] = 1$
 
-      \item $\forall k \in \mathbb{N}, m \in \mathcal{M},$ \\
-      $\Pr[(mpk, msk) \gets \textsc{Setup}(1^k),$ \\
-      $(pk, sk) \gets \textsc{KeyDer}\left(mpk, msk, l\right),$ \\
-      $\textsc{VerifyIBS}(\textsc{SignIBS}(m, sk), m, pk) = 1] = 1$
-    \end{itemize}
+    \item $\forall k \in \mathbb{N}, m \in \mathcal{M},$ \\
+    $\Pr[(mpk, msk) \gets \textsc{Setup}(1^k),$ \\
+    $(pk, sk) \gets \textsc{KeyDer}\left(mpk, msk, l\right),$ \\
+    $\textsc{VerifyIBS}(\textsc{SignIBS}(m, sk), m, pk) = 1] = 1$
+  \end{itemize}
 
-  \subsection{Security}
-    \begin{figure}[H]
-      \begin{gamebox}{$\mathsf{IBS \mhyphen EUF \mhyphen
-      CMA}^{\adversary}\left(1^k\right)$}
-        \begin{algorithmic}[1]
-          \State $(mpk, msk) \gets \textsc{Setup}(1^k)$
-          \State $i, j \gets 0$
-          \State $(\mathtt{aux}_0, \mathrm{response}) \gets
-          \adversary(\textsc{init}, mpk)$
-          \While{response can be parsed as $(m, l)$ or $l$}
-            \If{response can be parsed as $(m, l)$}
-              \State $i \gets i + 1$
-              \State store $(m, l)$ as $(m, l)_i$
-              \State $(pk, sk) \gets \textsc{KeyDer}(mpk, msk, l)$
-              \State $\sigma \gets \textsc{SignIBS}(m, sk)$
-              \State $(\mathtt{aux}_{i+j}, \mathrm{response}) \gets
-              \adversary(\textsc{signature}, \mathtt{aux}_{i+j-1}, \sigma)$
-            \Else \ \Comment{response can be parsed as $l$}
-              \State $j \gets j + 1$
-              \State store $l$ as $l_j$
-              \State $(pk, sk) \gets \textsc{KeyDer}(mpk, msk, l)$
-              \State $(\mathtt{aux}_{i+j}, \mathrm{response}) \gets
-              \adversary(\textsc{keypair}, \mathtt{aux}_{i+j-1}, (pk, sk))$
-            \EndIf
-          \EndWhile
-          \State parse response as $(m^*, l^*, \sigma^*)$
-          \If{$(m^*, l^*) \notin \{(m, l)_1, \dots, (m, l)_i\} \wedge l^* \notin
-          \{l_1, \dots, l_j\} \wedge \textsc{VerifyIBS}(\sigma^*, m^*,
-          \textsc{PubKeyDer}(mpk, l^*)) = 1$}
-            \State \Return 1
-          \Else
-            \State \Return 0
+  \begin{figure}[!htbp]
+    \begin{gamebox}{$\mathsf{IBS \mhyphen EUF \mhyphen
+    CMA}^{\adversary}\left(1^k\right)$}
+      \begin{algorithmic}[1]
+        \State $(mpk, msk) \gets \textsc{Setup}(1^k)$
+        \State $i, j \gets 0$
+        \State $(\mathtt{aux}_0, \mathrm{response}) \gets
+        \adversary(\textsc{init}, mpk)$
+        \While{response can be parsed as $(m, l)$ or $l$}
+          \If{response can be parsed as $(m, l)$}
+            \State $i \gets i + 1$
+            \State store $(m, l)$ as $(m, l)_i$
+            \State $(pk, sk) \gets \textsc{KeyDer}(mpk, msk, l)$
+            \State $\sigma \gets \textsc{SignIBS}(m, sk)$
+            \State $(\mathtt{aux}_{i+j}, \mathrm{response}) \gets
+            \adversary(\textsc{signature}, \mathtt{aux}_{i+j-1}, \sigma)$
+          \Else \ \Comment{response can be parsed as $l$}
+            \State $j \gets j + 1$
+            \State store $l$ as $l_j$
+            \State $(pk, sk) \gets \textsc{KeyDer}(mpk, msk, l)$
+            \State $(\mathtt{aux}_{i+j}, \mathrm{response}) \gets
+            \adversary(\textsc{keypair}, \mathtt{aux}_{i+j-1}, (pk, sk))$
           \EndIf
-        \end{algorithmic}
-      \end{gamebox}
-      \caption{}
-      \label{game:ibs}
-    \end{figure}
-    \begin{definition}
-      \label{def:ibs:secure}
-      An Identity Based Signatures scheme is \emph{\textsf{IBS-EUF-CMA}-secure}
-      if
-      \begin{equation*}
-        \forall k \in \mathbb{N}, \forall \adversary \in \mathtt{PPT},
-        \Pr\left[\mathsf{IBS \mhyphen EUF \mhyphen
-        CMA}^{\adversary}\left(1^k\right) = 1\right] =
-        \mathit{negl}\left(k\right) \enspace.
-      \end{equation*}
-    \end{definition}
+        \EndWhile
+        \State parse response as $(m^*, l^*, \sigma^*)$
+        \If{$(m^*, l^*) \notin \{(m, l)_1, \dots, (m, l)_i\} \wedge l^* \notin
+        \{l_1, \dots, l_j\} \wedge \textsc{VerifyIBS}(\sigma^*, m^*,
+        \textsc{PubKeyDer}(mpk, l^*)) = 1$}
+          \State \Return 1
+        \Else
+          \State \Return 0
+        \EndIf
+      \end{algorithmic}
+    \end{gamebox}
+    \caption{}
+    \label{game:ibs}
+  \end{figure}
+  \begin{definition}
+    \label{def:ibs:secure}
+    An Identity Based Signatures scheme is \emph{\textsf{IBS-EUF-CMA}-secure}
+    if
+    \begin{equation*}
+      \forall k \in \mathbb{N}, \forall \adversary \in \mathtt{PPT},
+      \Pr\left[\mathsf{IBS \mhyphen EUF \mhyphen
+      CMA}^{\adversary}\left(1^k\right) = 1\right] =
+      \mathit{negl}\left(k\right) \enspace.
+    \end{equation*}
+  \end{definition}
 
-    Let $\mathrm{E \mhyphen ibs}(k) = \underset{\adversary \in
-    \mathtt{PPT}}{\sup}\{\Pr[\mathsf{IBS \mhyphen EUF \mhyphen
-    CMA}^{\adversary}\left(1^k\right) = 1]\}$. Then
-    Definition~\ref{def:ibs:secure} is equivalent to the following:
+  Let $\mathrm{E \mhyphen ibs}(k) = \underset{\adversary \in
+  \mathtt{PPT}}{\sup}\{\Pr[\mathsf{IBS \mhyphen EUF \mhyphen
+  CMA}^{\adversary}\left(1^k\right) = 1]\}$. Then
+  Definition~\ref{def:ibs:secure} is equivalent to the following:
 
-    \begin{definition}
-      \label{def:ibs:secure:sup}
-      An Identity Based Signatures scheme is \emph{\textsf{IBS-EUF-CMA}-secure}
-      if
-      \begin{equation*}
-        \forall k \in \mathbb{N}, \mathrm{E \mhyphen ibs}(k) =
-        \mathit{negl}\left(k\right) \enspace.
-      \end{equation*}
-    \end{definition}
+  \begin{definition}
+    \label{def:ibs:secure:sup}
+    An Identity Based Signatures scheme is \emph{\textsf{IBS-EUF-CMA}-secure}
+    if
+    \begin{equation*}
+      \forall k \in \mathbb{N}, \mathrm{E \mhyphen ibs}(k) =
+      \mathit{negl}\left(k\right) \enspace.
+    \end{equation*}
+  \end{definition}
 
   \subsection{Construction}
+    We here define the particular construction for Identity Based Signatures
+    used in LN and prove its security.
     Parameters: $\mathcal{H}, G$
     \begin{algorithmic}[0]
       \State \textsc{Setup}($1^k$, rand):
