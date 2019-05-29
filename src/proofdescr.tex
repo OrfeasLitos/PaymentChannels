@@ -1,16 +1,22 @@
 \section{Security proof overview}
   \begin{theorem}[Lightning Payment Network Security]
+The protocol $\Pi_{\mathrm{LN}}$ realises $\fpaynet$
+given a global functionality $\ledger$
+assuming the security of the underlying digital signature, 
+combined digital signature and PRF. Specifically, 
     \label{theorem:simulation}
     \begin{gather*}
-      \forall k \in \mathbb{N}, \text{ PPT } \environment, \\
+      \forall k \in \mathbb{N}, \text{ PPT } \environment, 
       |\Pr[\textsc{Exec}^{\ledger}_{\Pi_{\mathrm{LN}}, \adversary_{\mathrm{d}},
       \environment} = 1] - \Pr[\textsc{Exec}^{\fpaynet, \ledger}_{\simulator,
       \environment} = 1]| \leq \\
-      2nm \cdot \mathrm{E \mhyphen ds}(k) + 6np \cdot \mathrm{E \mhyphen ds}(k) +
-      \\
+      (2nm + 6np) \cdot \mathrm{E \mhyphen ds}(k) +
       2nmp \cdot \mathrm{E \mhyphen share}(k) + 2 \cdot \mathrm{E \mhyphen
       prf}(k) + 2nm \cdot \mathrm{E \mhyphen master}(k) \enspace.
     \end{gather*}
+    where $n$ is the maximum number of registered users, 
+    $m$ is the maximum number of channels that a user is involved in,
+    $p$ is the maximum number of times that a channel is updated. 
   \end{theorem}
 
   \begin{proofsketch}
@@ -31,7 +37,7 @@
     previous one.
 
     Lemma~\ref{lemma:reg} lets $\mathcal{F}$ handle registration messages,
-    along with the corruption message from \simulator. In Lemma~\ref{lemma:open}
+    along with the corruption messages from \simulator. In Lemma~\ref{lemma:open}
     the functionality additionally handles messages related to channel opening. It
     behaves like \fpaynet, but does not execute \texttt{checkClosed}().
     Lemma~\ref{lemma:pay} has the functionality handle all messages sent during
@@ -40,7 +46,7 @@
     executing \texttt{checkClosed}() normally and handing the message that returns
     to \environment{} the receipts for newly opened, updated and closed
     channels. The last two steps introduce a probability of failure in case
-    signatures are forged. We analyze these cases separately and argue that, if
+    the various types of signatures used in  $\Pi_{\mathrm{LN}}$ are forged. We analyze these cases separately and argue that, if
     such forgeries do not happen, the emulation is perfect. Therefore we can
     calculate the concrete security bounds shown in the theorem.
   \end{proofsketch}
