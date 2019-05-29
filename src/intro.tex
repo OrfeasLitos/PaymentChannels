@@ -1,4 +1,111 @@
 
+\section{Introduction}
+\label{sec:intro}
+
+Improving the latency of blockchain protocols, 
+in the sense of the time it takes for a transaction to be ``finalised'',  
+is perhaps the single most crucial 
+open question in the area of permissionless distributed ledgers
+and remains one of the  fundamental barriers for their wider adoption in applications that  require reasonably expedient transaction processing.
+The Bitcoin blockchain protocol, introduced by Nakamoto \cite{bitcoin}, 
+provides settlement with probability of error that drops exponentially
+in the number of blocks $k$ that accumulate over a transaction of interest. 
+This has been informally argued in the original white paper, 
+and further formally demonstrated in \cite{gkl}, 
+from where it can be inferred that the total delay in actual time 
+for a transaction to settle
+is linear in $k$ in the worst case. These results were subsequently
+generalised to the setting of partial synchrony \cite{PSS16} and 
+variable difficulty \cite{DBLP:conf/crypto/GarayKL17}. 
+Interestingly, this latency ``deficiency'' is 
+intrinsic to the blockchain approach (see below), i.e., 
+latency's  dependency on $k$ is not a side-effect of the security analysis
+but rather a characteristic of the underlying protocol and the threat model it operates. 
+
+Given the above state of affairs, one has to either
+change the underlying settlement protocol or devise some other mechanism that, 
+in conjunction with the blockchain protocol, can provide low latency. 
+A number of works proceeded with the first direction, e.g., hybrid consensus
+\cite{DBLP:conf/wdag/PassS17} or Algorand \cite{DBLP:journals/corr/Micali16}. A downside of this approach is that the resulting protocols fundamentally change the threat model within which Bitcoin is supposed to operate, e.g., 
+by changing the threshold required for security or the underlying cryptographic assumptions and setup that is needed. 
+The additional side-effect of such solutions is that they are fundamentally incompatible with the Bitcoin blockchain, which is arguably  the currently most successful deployed instance  of the  blockchain protocol. 
+
+The alternative approach is to build an {\em overlay} protocol that utilises the blockchain protocol as a ``fall back'' layer, while facilitating ``off-chain'' settlement under certain additional assumptions. We note that in light of the impossibility result regarding protocol ``responsiveness''  from \cite{DBLP:conf/wdag/PassS17} that states that no protocol can provide settlement in time proportional to actual network delay and provide a security threshold over $1/3$, we know that some additional assumption would be required for the overlay protocol to work.  
+
+The first instance of this approach and by far the most widely known and
+utilised so far, 
+came with the {\em lightning network } 
+\cite{lightning}\footnote{The specification available online is a more descriptive reference for the inner workings of the protocol, see \url{https://github.com/lightningnetwork/lightning-rfc/blob/master/02-peer-protocol.md}} that provided an overlay mechanism over the Bitcoin blockchain that introduces and takes advantage of the concept of a bilateral payment channel. The latency for a transaction becomes linear to actual network delay and another factor that equals the number of bilateral payment channel hops in the path that  connects the two end-points of the transaction. If a payment  transaction is confirmed by the lightning network then  it is guaranteed that {\em eventually} the ledger will record ``gross'' settlement transactions between the parties in the path of the payment transaction that are consistent with it. Deviations from this guarantee are cryptographically feasible but deincentivised via on-chain penalties.   
+Note that no record of a  specific payment transaction need ever appear on-chain. 
+
+The lightning network has been very influential in the space and spun a number of follow research and implementations
+that dealt with either improving it by utilising more 
+expressive blockchains such as Ethereum \cite{sprites,perun} 
+or extending its functionality beyond payments, to smart contracts, 
+\cite{DBLP:conf/systor/LindNEKPS18} (\todo{more references}).
+We note that the lightning network is not the only option for building an overlay over a blockchain, see e.g.,  \cite{DBLP:conf/eurocrypt/PassS18} for an alternative approach where it is shown that if the assumption is raised to a security threshold of $3/4$ plus the honesty of an additional special player it is possible to obtain optimal latency. Nevertheless, the lightning network is currently the only option that readily interoperates with the Bitcoin blockchain. 
+
+Despite the importance of the lightning network for low latency payments over Bitcoin there is still no work so far providing a thorough formal security analysis. 
+This is a dire state of affairs given the fact that the protocol is actually currently operational\footnote{For current deployment statistics see e.g.,  \url{https://1ml.com/statistics}.}
+and its complexity makes it difficulty to extract precise statements regarding the level fo security it offers. 
+
+\noindent {\bf Our Results.}
+We present the first, to our knowledge, complete  security analysis of the lightning network in the universal composition (UC) setting. 
+We model the payment overlay that the lightning network provides as an ideal functionality and we demonstrate how it can be implemented in a hybrid world which assumes a global ledger functionality. Our treatment is general and does not assume any specific implementation for the underlying ledger functionality. The ``paynet''  functionality that we introduce abstracts all the salient security features achieved by the lightning network. We subsequently describe the whole lightning protocol in this setting and we prove that it realises our paynet functionality under standard cryptographic assumptions; the security guarantees of the functionality reflect specific environmental conditions regarding the availability of the honest parties to poll the status of the network. In more details our results are as follows. 
+
+\begin{enumerate}
+\item We present the $\fpaynet{}$ functionality which abstracts the syntax and
+security properties that are provided by the lightning network. 
+Using  $\fpaynet{}$, parties can open and close channels, forward
+payments along channel paths in the network as well as poll its status. 
+Importantly, the functionality keeps track of all the off-chain and on-chain
+balances
+of the  parties registered  and ensures that when a channel closes
+the on-chain balances are in line with the off-chain balances.
+In order to handle adversarial deviations in multi-hop payments, 
+the functionality
+permits the adversary to determine the outcome of each payment
+by choosing either one of the following options (i) let it go through
+as requested, (ii) charge it to an adversarial party along the path, 
+(iii) charge it to {\em negligent } honest party along the path. 
+This last outcome is a crucial  characteristic of the security
+that is provided by the lightning network to its participants: 
+honest parties are expected to poll the functionality at a certain 
+specific rhythm that corresponds to their level of involvement in the network
+and the properties of the underlying ledger. If a party misses that requirement
+it is identified as negligent by the functionality and may lose funds. 
+
+\item We identify for the first time 
+the exact polling requirements that are imposed by the lightning
+network to the honest parties that are participating so that they do not lose 
+funds as a function of the underlying parameters of the ledger functionality
+over which the lightning network is overlaid. 
+We describe our  $\fpaynet{}$ given the global ledger functionality defined in 
+\cite{BMTZ17}, and further refined in \cite{genesis}, for which we know already that is realised by the Bitcoin blockchain. The functionality provides explicit security guarantees with respect to consistency and liveness which in turn impact 
+the guarantees provided by $\fpaynet{}$. The polling requirements for each party 
+are  two-fold: (i) the first type of polling refers to monitoring for closures of channels that the party is one of the end-points and is specified by the 
+user chosen parameter $\mathrm{delay}$, 
+(ii) the second type of polling refers to monitoring for specific 
+events related to payment relaying; in particular for each payment that a party acts as an intermediary,  polling should happen twice within the window of time when the chain in the view of the party advances  from blockheight  $h-1$
+to blockheight $h'-a-1$, where $h,h'$ are two blockheight parameters specified  
+in the particular payment path, and $a$ is a ledger parameter 
+which is an upper bound to 
+the number of blocks  that may be finalised in the ledger 
+from the time a certain transaction is emitted to the time it becomes finalised
+(i.e. it is included in a block in the ``stable''  part of the ledger). 
+Moreover, the two pollings should be separated by a time window that allows
+the chain to grow by at least $a$ blocks. 
+
+\item We provide a complete pseudocode description  of the lightning network protocol $\Pi_{\mathrm{LN}}$
+and we prove that indeed it 
+realises  $\fpaynet{}$ under a specific set of cryptographic 
+assumptions. In order to express $\Pi_{\mathrm{LN}}$ in a way that is succinct we identify a number of underlying cryptographic primitives that have been used in the specification of the lightning network in a non-black-box fashion and without reference.  Interestingly, while some of these cryptographic primitives are standard (they include a PRF, a Digital Signature scheme and an Identity Based Signature scheme) there is one additional primitive that is slightly less standard and we call  {\em combined digital signature}. A combined digital signature is a special case of an asymmetric  two-party digital signature primitive (e.g., see \cite{DBLP:conf/ndss/NicolosiKDM03} and references therein) with the characteristic that one of the two parties, the shareholder, generates and stores a share of the signing key, while the public-key of the combined signature is determined non-interactively based on public-key information produced by both two parties.  Issuing signatures requires the availability of the share which is verifiable given the public information provided by the shareholder.   We formalise the combined digital signature primitive and show that the construction lying within the specification of lightning is realising it under standard cryptographic assumptions. In summary, the realisation of  $\fpaynet{}$ is achieved assuming the security of the underlying primitives that are based on EC-DLOG and the Random Oracle model. 
+\end{enumerate}
+
+\noindent {\bf Organisation.} In section~\ref{}. etc. 
+
+
+\ignore{%%%  
 1. lightning network, objectives, when it was proposed, problem it solves, and current status. scalability as a general objectives. layered approach off/chain, on-chain. room example.
 
 ...both on the throughput (measured in transactions/sec) and the time that each
@@ -17,7 +124,8 @@ What do we learn.
  * Highlight the underlying cryptographic primitives that are relevant,
  PRFs  and combined signatures.
 
-Add LN spec as footnote somewhere: \url{https://github.com/lightningnetwork/lightning-rfc/blob/master/02-peer-protocol.md}
+Add LN spec as footnote somewhere: 
 
 ``we probably are the first to formally specify the exact time bounds for
 intermediaries''
+}%%%%%% 
