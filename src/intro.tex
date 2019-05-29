@@ -4,9 +4,10 @@
 
 Improving the latency of blockchain protocols, 
 in the sense of the time it takes for a transaction to be ``finalised'',  
-is perhaps the single most crucial 
-open question in the area of permissionless distributed ledgers
-and remains one of the  fundamental barriers for their wider adoption in applications that  require reasonably expedient transaction processing.
+as well as their throughput, in the sense of the number of transactions they can handle per unit of time, 
+are perhaps the two most crucial 
+open questions in the area of permissionless distributed ledgers
+and remain one of the fundamental barriers for their wider adoption in applications that  require large scale  and reasonably expedient transaction processing.
 The Bitcoin blockchain protocol, introduced by Nakamoto \cite{bitcoin}, 
 provides settlement with probability of error that drops exponentially
 in the number of blocks $k$ that accumulate over a transaction of interest. 
@@ -24,7 +25,7 @@ but rather a characteristic of the underlying protocol and the threat model it o
 
 Given the above state of affairs, one has to either
 change the underlying settlement protocol or devise some other mechanism that, 
-in conjunction with the blockchain protocol, can provide low latency. 
+in conjunction with the blockchain protocol.
 A number of works proceeded with the first direction, e.g., hybrid consensus
 \cite{DBLP:conf/wdag/PassS17} or Algorand \cite{DBLP:journals/corr/Micali16}. A downside of this approach is that the resulting protocols fundamentally change the threat model within which Bitcoin is supposed to operate, e.g., 
 by changing the threshold required for security or the underlying cryptographic assumptions and setup that is needed. 
@@ -36,7 +37,8 @@ The first instance of this approach and by far the most widely known and
 utilised so far, 
 came with the {\em lightning network } 
 \cite{lightning}\footnote{The specification available online is a more descriptive reference for the inner workings of the protocol, see \url{https://github.com/lightningnetwork/lightning-rfc/blob/master/02-peer-protocol.md}} that provided an overlay mechanism over the Bitcoin blockchain that introduces and takes advantage of the concept of a bilateral payment channel. The latency for a transaction becomes linear to actual network delay and another factor that equals the number of bilateral payment channel hops in the path that  connects the two end-points of the transaction. If a payment  transaction is confirmed by the lightning network then  it is guaranteed that {\em eventually} the ledger will record ``gross'' settlement transactions between the parties in the path of the payment transaction that are consistent with it. Deviations from this guarantee are cryptographically feasible but deincentivised via on-chain penalties.   
-Note that no record of a  specific payment transaction need ever appear on-chain. 
+Moreover, note that no record of a  specific payment transaction need ever appear on-chain 
+thus the number of lightning transactions that can be  exchanged can reach the maximum capacity the network allows between the parties, without being impeded by any  restrictions of the underlying blockchain protocol. 
 
 The lightning network has been very influential in the space and spun a number of follow research and implementations
 that dealt with either improving it by utilising more 
