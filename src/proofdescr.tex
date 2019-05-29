@@ -30,18 +30,19 @@
     that the new ideal execution is computationally indistinguishable from the
     previous one.
 
-    Lemma~\ref{lemma:reg} lets $\mathcal{F}$ handle registration messages,
-    along with the corruption message from \simulator. In Lemma~\ref{lemma:open}
-    the functionality additionally handles messages related to channel opening. It
-    behaves like \fpaynet, but does not execute \texttt{checkClosed}().
-    Lemma~\ref{lemma:pay} has the functionality handle all messages sent during
-    channel updates. Lastly, Lemma~\ref{lemma:close} has the entire \fpaynet{} as
-    its functionality, by incorporating the message for closing a channel,
-    executing \texttt{checkClosed}() normally and handing the message that returns
-    to \environment{} the receipts for newly opened, updated and closed
-    channels. The last two steps introduce a probability of failure in case
-    signatures are forged. We analyze these cases separately and argue that, if
-    such forgeries do not happen, the emulation is perfect. Therefore we can
-    calculate the concrete security bounds shown in the theorem.
+    Lemma~\ref{lemma:reg} lets $\mathcal{F}$ handle registration messages, along
+    with the corruption message from \simulator. In Lemma~\ref{lemma:open} the
+    functionality additionally handles messages related to channel opening. It
+    behaves like \fpaynet, but does not execute the function
+    \texttt{checkClosed}(). Lemma~\ref{lemma:pay} has the functionality handle
+    all messages sent during channel updates. Lastly, Lemma~\ref{lemma:close}
+    has the entire \fpaynet{} as its functionality, by incorporating the message
+    for closing a channel, executing \texttt{checkClosed}() normally and handing
+    the message that returns to \environment{} the receipts for newly opened,
+    updated and closed channels. The last two steps introduce a probability of
+    failure in case signatures are forged. We analyze these cases separately and
+    argue that, if such forgeries do not happen, the emulation is perfect.
+    Therefore we can calculate the concrete security bounds shown in the
+    theorem.
   \end{proofsketch}
   For the formal proof, we refer the reader to Appendix~\ref{appendix:secproof}.
