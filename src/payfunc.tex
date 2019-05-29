@@ -302,31 +302,38 @@
                   \label{alg:fpaynet:resolvepay:halt:ds}
                 \ElsIf{$\Sigma_{\dave}$ contains in block $h_{\mathtt{tx}}$ an
                 old $\mathtt{remoteCom}_m$ that does not contain the HTLC and a
-                tx that spends the delayed output of $\mathtt{remoteCom}_m \
-                \wedge$ \\ \texttt{polls}(\dave) contains an element in
-                $[h_{\mathtt{tx}}, h_{\mathtt{tx}} +
-                \mathtt{delay}\left(\dave\right) - 1]$}
-                \label{alg:fpaynet:resolvepay:haltcond:rel}
-                  \State halt \Comment{\dave{} \textsc{poll}ed, but malicious
-                  closure}
-                  \label{alg:fpaynet:resolvepay:halt:rel}
+                tx that spends the delayed output of $\mathtt{remoteCom}_m$}
+                  \If{\texttt{polls}(\dave) contains an element in
+                  $[h_{\mathtt{tx}}, h_{\mathtt{tx}} +
+                  \mathtt{delay}\left(\dave\right) - 1]$}
+                  \label{alg:fpaynet:resolvepay:haltcond:rel}
+                    \State halt \Comment{\dave{} \textsc{poll}ed, but malicious
+                    closure}
+                    \label{alg:fpaynet:resolvepay:halt:rel}
+                  \Else
+                    \State $\mathtt{negligent}(\alice) \gets \true$
+                  \EndIf
                 \ElsIf{$\dave{} \neq \alice$}
                   \State calculate \texttt{IncomingCltvExpiry},
                   \texttt{OutgoingCltvExpiry} of \dave{} (as in
                   Fig.~\ref{alg:protocol:pay:invoice},
                   l.~\ref{alg:protocol:pay:invoice:cltv})
                   \If{$\Sigma_{\dave}$ does not contain an old
-                  $\mathtt{remoteCom}_m \ \wedge$ \texttt{polls}(\dave) contains
-                  two elements in $[\mathtt{OutgoingCltvExpiry},
-                  \mathtt{IncomingCltvExpiry} - \tochain{}]$ that have a
-                  difference of at least $\tochain{} \ \wedge$ \\
-                  \texttt{focs}(\dave) contains $\mathtt{IncomingCltvExpiry} -
-                  \tochain{} \ \wedge$ \\ the element in \texttt{polls}(\dave)
-                  was added before the element in \texttt{focs}(\dave)}
-                  \label{alg:fpaynet:resolvepay:haltcond:abs}
-                    \State halt \Comment{\dave{} \textsc{poll}ed and fulfilled,
-                    but charged}
-                    \label{alg:fpaynet:resolvepay:halt:abs}
+                  $\mathtt{remoteCom}_m$}
+                    \If{\texttt{polls}(\dave) contains two elements in
+                    $[\mathtt{OutgoingCltvExpiry}, \mathtt{IncomingCltvExpiry} -
+                    \tochain{}]$ that have a difference of at least \tochain{} \
+                    $\wedge$ \texttt{focs}(\dave) contains
+                    $\mathtt{IncomingCltvExpiry} - \tochain{} \ \wedge$ \\ the
+                    element in \texttt{polls}(\dave) was added before the
+                    element in \texttt{focs}(\dave)}
+                    \label{alg:fpaynet:resolvepay:haltcond:abs}
+                      \State halt \Comment{\dave{} \textsc{poll}ed and fulfilled,
+                      but charged}
+                      \label{alg:fpaynet:resolvepay:halt:abs}
+                    \Else
+                      \State $\mathtt{negligent}(\alice) \gets \true$
+                    \EndIf
                   \EndIf
                 \EndIf
                 \State run code of Fig.~\ref{alg:fpaynet:resolvepay:loops}
@@ -445,15 +452,15 @@
             $h$ in $\Sigma_{\alice}$ for open \texttt{channel} with ID
             \textit{fchid} with a balance that does not correspond to the
             \texttt{receipt} and the delayed output has been spent by the
-            counterparty } 
-            \If{  \texttt{polls}(\alice) contains an entry in $[h, h
-            + \mathtt{delay}(\alice) - 1]$} 
-            \label{alg:fpaynet:close:func:ifmalicious}
-              \State halt
-              \label{alg:fpaynet:close:func:malicious}
-            \Else  
-            \State \texttt{negligent}(\alice)=\true 
-            \EndIf
+            counterparty}
+              \If{\texttt{polls}(\alice) contains an entry in $[h, h
+              + \mathtt{delay}(\alice) - 1]$}
+              \label{alg:fpaynet:close:func:ifmalicious}
+                \State halt
+                \label{alg:fpaynet:close:func:malicious}
+              \Else
+                \State $\mathtt{negligent}(\alice) \gets \true$
+              \EndIf
             \ElsIf{there is no such closing transaction $\wedge \ h = \bot$}
               \State assign largest block number of $\Sigma_{\alice}$ to $h$ of
               entry
@@ -465,14 +472,8 @@
               \label{alg:fpaynet:close:func:idle}
             \EndIf
           \EndFor
-          \If{\alice{} has no open channels in $\Sigma_{\alice}$ AND \alice{}
-          has always \textsc{poll}ed according to the needs of
-          Fig.~\ref{alg:fpaynet:close:func},
-          line~\ref{alg:fpaynet:close:func:ifmalicious},
-          Fig.~\ref{alg:fpaynet:poll}, line~\ref{alg:fpaynet:poll:malicious} and
-          Fig.~\ref{alg:fpaynet:resolvepay},
-          lines~\ref{alg:fpaynet:resolvepay:haltcond:rel}
-          and~\ref{alg:fpaynet:resolvepay:haltcond:abs}}
+          \If{\alice{} has no open channels in $\Sigma_{\alice}$ AND
+          $\mathtt{negligent}(\alice) = \false$}
             \If{$\mathrm{offChainBalance}(\alice) \neq 0$ OR
             onChainBalance(\alice) is not equal to the total funds exclusively
             spendable by \alice{} in $\Sigma_{\alice}$}
@@ -511,13 +512,17 @@
           with an older channel version than the irrevocably committed one) in
           block with height $h_{\mathtt{tx}}$}
           \label{alg:fpaynet:poll:malicious}
-            \If{the delayed output (of the counterparty) has been spent AND
-            \texttt{polls}(\alice) has an element in $\left[h_{\mathtt{tx}},
-            h_{\mathtt{tx}} + \mathtt{delay}\left(\alice\right) - 1\right]$}
-            \label{alg:fpaynet:poll:haspolled}
-              \State halt \Comment{\alice{} wasn't negligent but couldn't
-              punish}
-              \label{alg:fpaynet:poll:haspolled:halt}
+            \If{the delayed output (of the counterparty) has been spent}
+              \If{\texttt{polls}(\alice) has an element in
+              $\left[h_{\mathtt{tx}}, h_{\mathtt{tx}} +
+              \mathtt{delay}\left(\alice\right) - 1\right]$}
+              \label{alg:fpaynet:poll:haspolled}
+                \State halt \Comment{\alice{} wasn't negligent but couldn't
+                punish}
+                \label{alg:fpaynet:poll:haspolled:halt}
+              \Else
+                \State $\mathtt{negligent}(\alice) \gets \true$
+              \EndIf
             \EndIf
           \EndFor
           \State send (\textsc{poll}, $\Sigma_{\alice}$, \alice) to \simulator
