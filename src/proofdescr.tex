@@ -2,7 +2,7 @@
   \begin{theorem}[Lightning Payment Network Security]
 The protocol $\Pi_{\mathrm{LN}}$ realises $\fpaynet$
 given a global functionality $\ledger$
-assuming the security of the underlying digital signature, 
+assuming the security of the underlying digital signature, identity-based signature, 
 combined digital signature and PRF. Specifically, 
     \label{theorem:simulation}
     \begin{gather*}
@@ -10,9 +10,9 @@ combined digital signature and PRF. Specifically,
       |\Pr[\textsc{Exec}^{\ledger}_{\Pi_{\mathrm{LN}}, \adversary_{\mathrm{d}},
       \environment} = 1] - \Pr[\textsc{Exec}^{\fpaynet, \ledger}_{\simulator,
       \environment} = 1]| \leq \\
-      (2nm + 6np) \cdot \mathrm{E \mhyphen ds}(k) +
-      2nmp \cdot \mathrm{E \mhyphen share}(k) + 2 \cdot \mathrm{E \mhyphen
-      prf}(k) + 2nm \cdot \mathrm{E \mhyphen master}(k) \enspace.
+      2nm  \mathrm{E \mhyphen ds}(k)  + 6np  \mathrm{E \mhyphen ids}(k) +
+      2nmp  \mathrm{E \mhyphen share}(k) + 2 \mathrm{E \mhyphen
+      prf}(k) + 2nm \mathrm{E \mhyphen master}(k) \enspace.
     \end{gather*}
     where $n$ is the maximum number of registered users, 
     $m$ is the maximum number of channels that a user is involved in,

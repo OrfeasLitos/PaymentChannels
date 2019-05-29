@@ -36,15 +36,11 @@ The alternative approach is to build an {\em overlay} protocol that utilises the
 The first instance of this approach and by far the most widely known and
 utilised so far, 
 came with the {\em lightning network } 
-\cite{lightning}\footnote{The specification available online is a more descriptive reference for the inner workings of the protocol, see \url{https://github.com/lightningnetwork/lightning-rfc/blob/master/02-peer-protocol.md}} that provided an overlay mechanism over the Bitcoin blockchain that introduces and takes advantage of the concept of a bilateral payment channel. The latency for a transaction becomes linear to actual network delay and another factor that equals the number of bilateral payment channel hops in the path that  connects the two end-points of the transaction. If a payment  transaction is confirmed by the lightning network then  it is guaranteed that {\em eventually} the ledger will record ``gross'' settlement transactions between the parties in the path of the payment transaction that are consistent with it. Deviations from this guarantee are cryptographically feasible but deincentivised via on-chain penalties.   
+\cite{lightning}\footnote{The specification available online is a more descriptive reference for the inner workings of the protocol, see \url{https://github.com/lightningnetwork/lightning-rfc/blob/master/02-peer-protocol.md}. See also the raiden network that implements Lightning over Ethereum, \url{https://raiden.network}.} that provided an overlay mechanism over the Bitcoin blockchain that introduces and takes advantage of the concept of a bilateral payment channel. The latency for a transaction becomes linear to actual network delay and another factor that equals the number of bilateral payment channel hops in the path that  connects the two end-points of the transaction. If a payment  transaction is confirmed by the lightning network then  it is guaranteed that {\em eventually} the ledger will record ``gross'' settlement transactions between the parties in the path of the payment transaction that are consistent with it. Deviations from this guarantee are cryptographically feasible but deincentivised via on-chain penalties.   
 Moreover, note that no record of a  specific payment transaction need ever appear on-chain 
 thus the number of lightning transactions that can be  exchanged can reach the maximum capacity the network allows between the parties, without being impeded by any  restrictions of the underlying blockchain protocol. 
 
-The lightning network has been very influential in the space and spun a number of follow research and implementations
-that dealt with either improving it by utilising more 
-expressive blockchains such as Ethereum \cite{sprites,perun} 
-or extending its functionality beyond payments, to smart contracts, 
-\cite{DBLP:conf/systor/LindNEKPS18} (\todo{more references}).
+The lightning network has been very influential in the space and spun a number of follow research and implementations (see below for references).
 We note that the lightning network is not the only option for building an overlay over a blockchain, see e.g.,  \cite{DBLP:conf/eurocrypt/PassS18} for an alternative approach where it is shown that if the assumption is raised to a security threshold of $3/4$ plus the honesty of an additional special player it is possible to obtain optimal latency. Nevertheless, the lightning network is currently the only option that readily interoperates with the Bitcoin blockchain. 
 
 Despite the importance of the lightning network for low latency payments over Bitcoin there is still no work so far providing a thorough formal security analysis. 
@@ -103,6 +99,28 @@ and we prove that indeed it
 realises  $\fpaynet{}$ under a specific set of cryptographic 
 assumptions. In order to express $\Pi_{\mathrm{LN}}$ in a way that is succinct we identify a number of underlying cryptographic primitives that have been used in the specification of the lightning network in a non-black-box fashion and without reference.  Interestingly, while some of these cryptographic primitives are standard (they include a PRF, a Digital Signature scheme and an Identity Based Signature scheme) there is one additional primitive that is slightly less standard and we call  {\em combined digital signature}. A combined digital signature is a special case of an asymmetric  two-party digital signature primitive (e.g., see \cite{DBLP:conf/ndss/NicolosiKDM03} and references therein) with the characteristic that one of the two parties, the shareholder, generates and stores a share of the signing key, while the public-key of the combined signature is determined non-interactively based on public-key information produced by both two parties.  Issuing signatures requires the availability of the share which is verifiable given the public information provided by the shareholder.   We formalise the combined digital signature primitive and show that the construction lying within the specification of lightning is realising it under standard cryptographic assumptions. In summary, the realisation of  $\fpaynet{}$ is achieved assuming the security of the underlying primitives that are based on EC-DLOG and the Random Oracle model. 
 \end{enumerate}
+
+\noindent {\bf Related Work.} A first suggestion for building 
+a unidirectional payment channel
+appeared in \cite{spilman}. Bidirectional payment channels were developed in 
+\cite{DBLP:conf/sss/DeckerW15} and, of course as part of the lightning network  \cite{lightning}. Subsequent work on the topic 
+dealt  with either improving the payment networks  by utilising more 
+expressive blockchains such as Ethereum \cite{perun} or  hardward assumptions, see e.g., \cite{DBLP:conf/systor/LindNEKPS18}, 
+or extending its functionality beyond payments, to smart contracts, 
+\cite{sprites} or finally  enhancing its privacy, see e.g., 
+\cite{Malavolta:2017:CPP:3133956.3134096,DBLP:conf/ccs/0001M17,DBLP:conf/ndss/HeilmanABSG17}. Additional work looked into developing supporting protocols
+for the payment networks such as rebalancing 
+\cite{DBLP:conf/ccs/KhalilG17} or finding routes in a decentralised fashion
+\cite{flare}. 
+With respect to idealising the payment network functionality in the UC setting, 
+a number of previous papers \cite{Malavolta:2017:CPP:3133956.3134096,sprites,perun} presented
+ideal functionalities abstracting the concept. The fundamental advantage of our approach however
+here is  that, for the first time, we present a payment network functionality
+that interoperates with a global ledger functionality for which we
+know, in light of the results of \cite{BMTZ17}, 
+that is realisable by the Bitcoin blockchain
+and hence also reflects the actual parameters that can be enforced by the implementation 
+(in contrast, previous work utilised simplified ledger functionalities for which it is unknown whether they can be realised). 
 
 \noindent {\bf Organisation.} In section~\ref{}. etc. 
 
