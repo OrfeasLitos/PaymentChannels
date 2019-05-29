@@ -432,9 +432,6 @@
               \sigma_i\right)$
             \EndWhile
             \State parse response as $\left(cpk^*, pk^*, m^*, \sigma^*\right)$
-            \State $\left(cpk^*, pk^*, m^*, \sigma^*\right) \gets
-            \mathcal{B}\left(\textsc{keys}, \mathtt{aux}, pk_1, \dots,
-            pk_n\right)$
             \If{$vk = cpk^* \wedge \mathcal{B}$ wins the \textsf{master-EUF-CMA}
             game} \Comment{\adversary{} won the \textsf{EUF-CMA} game}
             \label{proof:comb:master:distinguisher:won}
