@@ -214,7 +214,7 @@
     \Pr[\textsc{Exec}^{\fpaynet{}_{\mathrm{, Pay}},
     \ledger}_{\simulator_{\mathrm{LN - Reg - Open - Pay}}, \environment} = 1]|
     \leq \\
-    nm \cdot \mathrm{E \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen ds}(k) +
+    nm \cdot \mathrm{E \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen ibs}(k) +
     \\
     nmp \cdot \mathrm{E \mhyphen share}(k) + \mathrm{E \mhyphen prf}(k) + nm
     \cdot \mathrm{E \mhyphen master}(k) \enspace.
@@ -309,8 +309,8 @@
   of Fig.~\ref{alg:protocol:pay:push} are executed by \alice. In the ideal world
   on the other hand, $\fpaynet{}_{\mathrm{, Pay}}$ sends (\textsc{read}) to
   \ledger{} (Fig.~\ref{alg:fpaynet:daemon},
-  line~\ref{alg:fpaynet:daemon:foc:read}) as \alice{} and subsequently lets
-  $\simulator_{\mathrm{LN - Reg - Open}}$ simulate the receiving of
+  line~\ref{alg:fpaynet:daemon:foc:read}) as \alice{} and subsequently instructs
+  $\simulator_{\mathrm{LN - Reg - Open}}$ to simulate the receiving of
   (\textsc{fulfillOnChain}) with \alice{}'s ITI (Fig.~\ref{alg:sim:pay},
   lines~\ref{alg:sim:pay:foc:top}-\ref{alg:sim:pay:foc:run}). Observe that
   during this simulation a second (\textsc{read}) message to \ledger{} (that
@@ -525,11 +525,11 @@
   never happen. Thus, given that $F$ happens until a moment when
   $|\Sigma_{\dave}| \leq \mathtt{IncomingCltvExpiry} - \tochain{}$, \dave{} has
   the time to successfully fulfill the HTLC. Given $C$, \dave{} has
-  \textsc{poll}ed at two moments $h_1, h_2 \in [\mathtt{OutgoingCltvExpiry},
-  \mathtt{IncomingCltvExpiry} - \tochain{}],$ such that $h_2 \geq h_1 +
-  \tochain{}$. If $\Sigma_{\dave}$ contains the preimage at moment $h_1$ or
-  $h_2$, then \dave{} may try to update the previous channel off-chain if he
-  receives a (\textsc{pushFulfill}) for that channel
+  \textsc{poll}ed at two moments $h_1, h_2 \in$ [\texttt{OutgoingCltvExpiry},
+  \texttt{IncomingCltvExpiry} - (2 + $r$)\texttt{windowSize}], such that $h_2
+  \geq h_1 + \tochain{}$. If $\Sigma_{\dave}$ contains the preimage at moment
+  $h_1$ or $h_2$, then \dave{} may try to update the previous channel off-chain
+  if he receives a (\textsc{pushFulfill}) for that channel
   (Fig.~\ref{alg:protocol:pay:push},
   lines~\ref{alg:protocol:pushfulfill:start}-\ref{alg:protocol:pushfulfill:submit}),
   and if the off-chain update is never attempted (because (\textsc{pushFulfill})
@@ -587,7 +587,7 @@
   \ledger}_{\simulator_{\mathrm{LN - Reg - Open - Pay}}, \environment}$. If we
   allow for forgeries again, i.e. if we allow the event $P \vee Q \vee R \vee
   S$, we observe that $\Pr[P \vee Q \vee R \vee S] \leq nm \cdot \mathrm{E
-  \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen ds}(k) + nmp \cdot \mathrm{E
+  \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen ibs}(k) + nmp \cdot \mathrm{E
   \mhyphen share}(k) + \mathrm{E \mhyphen prf}(k) + nm \cdot \mathrm{E \mhyphen
   master}(k)$, where $n$ is the number of players, $m$ is the maximum channels a
   player can open and $p$ is the maximum number of updates a player can perform.
@@ -599,7 +599,7 @@
     \Pr[\textsc{Exec}^{\fpaynet{}_{\mathrm{, Pay}},
     \ledger}_{\simulator_{\mathrm{LN - Reg - Open - Pay}}, \environment} = 1]|
     \leq \\
-    nm \cdot \mathrm{E \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen ds}(k) +
+    nm \cdot \mathrm{E \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen ibs}(k) +
     \\
     nmp \cdot \mathrm{E \mhyphen share}(k) + \mathrm{E \mhyphen prf}(k) + nm
     \cdot \mathrm{E \mhyphen master}(k) \enspace.

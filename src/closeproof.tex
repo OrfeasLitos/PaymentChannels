@@ -33,7 +33,7 @@
     \ledger}_{\simulator_{\mathrm{LN - Reg - Open - Pay}}, \environment} = 1] -
     \Pr[\textsc{Exec}^{\fpaynet, \ledger}_{\simulator, \environment} = 1]| \leq
     \\
-    nm \cdot \mathrm{E \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen ds}(k) +
+    nm \cdot \mathrm{E \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen ibs}(k) +
     \\
     nmp \cdot \mathrm{E \mhyphen share}(k) + \mathrm{E \mhyphen prf}(k) + nm
     \cdot \mathrm{E \mhyphen master}(k) \enspace.
@@ -74,7 +74,7 @@
   \texttt{closedChannels}(\alice), \texttt{updatesToReport}\linebreak(\alice))
   to \environment{} and empties these fields (Fig.~\ref{alg:fpaynet:daemon},
   lines~\ref{alg:fpaynet:getnews}-\ref{alg:fpaynet:getnews:send}). In the real
-  world, \alice{} sends the message (\textsc{news}, \texttt{newChannels},
+  world, \alice{} sends (\textsc{news}, \texttt{newChannels},
   \texttt{closedChannels}, \texttt{updatesToReport}) to \environment{} and
   empties these fields as well (Fig.~\ref{alg:protocol:poll},
   lines~\ref{alg:protocol:getnews}-\ref{alg:protocol:getnews:send}).
@@ -141,24 +141,22 @@
 
   Lastly, in the ideal world, whenever (\textsc{read}) is sent to \ledger{} and
   a reply is received, the function \texttt{checkClosed}
-  (Fig.\ref{alg:fpaynet:close},
-  lines~\ref{alg:fpaynet:close:func:start}-\ref{alg:fpaynet:close:func:end}) is
-  called with the reply of the \ledger{} as argument. This function does not
-  generate new messages, but may cause the \fpaynet{} to halt. We will now prove
-  that this never happens.
+  (Fig.\ref{alg:fpaynet:close:func}) is called with the reply of the \ledger{}
+  as argument. This function does not generate new messages, but may cause the
+  \fpaynet{} to halt. We will now prove that this never happens.
 
   \fpaynet{} halts in line~\ref{alg:fpaynet:close:func:dsforgery} of
-  Fig.~\ref{alg:fpaynet:close} in case a channel is closed without using a
+  Fig.~\ref{alg:fpaynet:close:func} in case a channel is closed without using a
   commitment transaction. Similarly to event $E$ in the proof of
   Lemma~\ref{lemma:pay}, this event is a subset of $P$ and thus is impossible to
   happen given that we assume $\neg P$.
 
   \fpaynet{} halts in line~\ref{alg:fpaynet:close:func:malicious} of
-  Fig.~\ref{alg:fpaynet:close} in case a malicious closure by the counterparty
-  was successful, in spite of the fact that \alice{} polled in time to apply the
-  punishment. A (\textsc{poll}) message to \alice{} within the prescribed time
-  frame (line~\ref{alg:fpaynet:close:func:ifmalicious}) would cause \fpaynet{}
-  to alert \simulator{} (Fig.~\ref{alg:fpaynet:poll},
+  Fig.~\ref{alg:fpaynet:close:func} in case a malicious closure by the
+  counterparty was successful, in spite of the fact that \alice{} polled in time
+  to apply the punishment. A (\textsc{poll}) message to \alice{} within the
+  prescribed time frame (line~\ref{alg:fpaynet:close:func:ifmalicious}) would
+  cause \fpaynet{} to alert \simulator{} (Fig.~\ref{alg:fpaynet:poll},
   line~\ref{alg:fpaynet:poll:send}), who in turn would submit the punishment
   transaction in time to prevent the counterparty from spending the delayed
   payment (Fig.~\ref{alg:protocol:poll:closedch},
@@ -171,18 +169,19 @@
   $\Sigma_{\alice}$ (i.e. \alice{} closed the channel).
 
   \fpaynet{} halts in line~\ref{alg:fpaynet:close:func:idle} of
-  Fig.~\ref{alg:fpaynet:close} in case \environment{} has asked for the channel
-  to close, but too much time has passed since. This event cannot happen, for
-  two reasons. First, regarding elements in \texttt{pendingClose}(\alice),
-  because \fpaynet{} forwards a (\textsc{closeChannel}) message to \simulator{}
-  (Fig.~\ref{alg:fpaynet:close}, line~\ref{alg:fpaynet:close:send}) for every
-  element that it adds to \texttt{pendingClose} (Fig~\ref{alg:fpaynet:close},
+  Fig.~\ref{alg:fpaynet:close:func} in case \environment{} has asked for the
+  channel to close, but too much time has passed since. This event cannot
+  happen, for two reasons. First, regarding elements in
+  \texttt{pendingClose}(\alice), because \fpaynet{} forwards a
+  (\textsc{closeChannel}) message to \simulator{} (Fig.~\ref{alg:fpaynet:close},
+  line~\ref{alg:fpaynet:close:send}) for every element that it adds to
+  \texttt{pendingClose} (Fig~\ref{alg:fpaynet:close},
   line~\ref{alg:fpaynet:close:mark}) and this causes \simulator{} to submit the
   closing transaction to \ledger{} (Fig.~\ref{alg:protocol:close},
   line~\ref{alg:protocol:close:submit}). This transaction is necessarily valid,
   because there is no other transaction that spends the funding transaction of
   the channel, according to the first check of
-  line~\ref{alg:fpaynet:close:func:ifidle} of Fig.~\ref{alg:fpaynet:close}.
+  line~\ref{alg:fpaynet:close:func:ifidle} of Fig.~\ref{alg:fpaynet:close:func}.
   \fpaynet{} halts in this case only if it is sure that the chain has grown by
   \tochain{} blocks, and thus if the closing transaction had been submitted when
   (\textsc{closeChannel}) was received, it should have been necessarily included
@@ -198,19 +197,44 @@
   has been submitted at least \tochain{} blocks earlier, thus again by
   Proposition~\ref{prop:tochain} it is impossible for the transaction not to be
   in the ledger state. Therefore \fpaynet{} cannot halt in
-  line~\ref{alg:fpaynet:close:func:idle} of Fig.~\ref{alg:fpaynet:close}. We
-  deduce that, given $\neg P \wedge \neg Q \wedge \neg R$, the execution of
+  line~\ref{alg:fpaynet:close:func:idle} of Fig.~\ref{alg:fpaynet:close:func}.
+  We deduce that, given $\neg P \wedge \neg Q \wedge \neg R$, the execution of
   \texttt{checkClosed} by \fpaynet{} does not contribute any increase to the
   probability of distinguishability. Put otherwise, given $\neg P \wedge \neg Q
   \wedge \neg R$, it is $\textsc{Exec}^{\fpaynet{}_{\mathrm{, Pay}},
   \ledger}_{\simulator_{\mathrm{LN - Reg - Open - Pay}}, \environment} =
   \textsc{Exec}^{\fpaynet, \ledger}_{\simulator, \environment}$.
 
+  \fpaynet{} halts in line~\ref{alg:fpaynet:close:func:balance} of
+  Fig.~\ref{alg:fpaynet:close:func} in case all \alice's channels are closed
+  on-chain and either \alice's off-chain balance is not equal to zero, or if her
+  on-chain balance is not the expected one, as reported by \simulator. This
+  event can never happen for the following reasons. Firstly, as we have seen,
+  \simulator{} reports all updates with an (\textsc{update}) message
+  (Fig.~\ref{alg:sim:push}, line~\ref{alg:sim:push:report}) and a
+  (\textsc{resolvePays}) message; upon receiving the latter and given that it
+  doesn't halt, \fpaynet{} updates offChainBalance(\alice) if she is the payer
+  or payee of one of the resolved payments (Fig.~\ref{alg:fpaynet:resolvepay},
+  lines~\ref{alg:fpaynet:resolvepay:corr:credit},~\ref{alg:fpaynet:resolvepay:debit}
+  and~\ref{alg:fpaynet:resolvepay:credit}). Secondly, upon closure of each
+  channel, \fpaynet{} would have halted if the closing balance were not the
+  expected one (Fig.~\ref{alg:fpaynet:close:func},
+  line~\ref{alg:fpaynet:close:func:ifmalicious}), an event that cannot happen as
+  we have already proven. Lastly, upon each channel opening and closing,
+  \fpaynet{} updates offChainBalance(\alice) and onChainBalance(\alice) to
+  reflect the event (Fig.~\ref{alg:fpaynet:open},
+  lines~\ref{alg:fpaynet:channelOpened:offchain}
+  and~\ref{alg:fpaynet:channelOpened:onchain} and
+  Fig.~\ref{alg:fpaynet:close:func},
+  lines~\ref{alg:fpaynet:close:func:alice:credit}
+  or~\ref{alg:fpaynet:close:func:bob:credit} respectively). Therefore, it is
+  impossible for \fpaynet{} to halt here.
+
   Similarly to the previous proof, if we allow for forgeries again, i.e. if we
   allow the event $P \vee Q \vee R \vee S$, we observe that $\Pr[P \vee Q \vee R
   \vee S] \leq nm \cdot \mathrm{E \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen
-  ds}(k) + nmp \cdot \mathrm{E \mhyphen share}(k) + \mathrm{E \mhyphen prf}(k) +
-  nm \cdot \mathrm{E \mhyphen master}(k)$, where $n$ is the number of players,
+  ibs}(k) + nmp \cdot \mathrm{E \mhyphen share}(k) + \mathrm{E \mhyphen prf}(k)
+  + nm \cdot \mathrm{E \mhyphen master}(k)$, where $n$ is the number of players,
   $m$ is the maximum channels a player can open and $p$ is the maximum number of
   updates a player can perform. We thus deduce that
   \begin{gather*}
@@ -219,7 +243,7 @@
     \ledger}_{\simulator_{\mathrm{LN - Reg - Open - Pay}}, \environment} = 1] -
     \Pr[\textsc{Exec}^{\fpaynet, \ledger}_{\simulator, \environment} = 1]| \leq
     \\
-    nm \cdot \mathrm{E \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen ds}(k) +
+    nm \cdot \mathrm{E \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen ibs}(k) +
     \\
     nmp \cdot \mathrm{E \mhyphen share}(k) + \mathrm{E \mhyphen prf}(k) + nm
     \cdot \mathrm{E \mhyphen master}(k) \enspace.

@@ -176,22 +176,22 @@
   line~\ref{alg:protocol:open:fundingSigned:mark}) (which also needs a valid
   \alice-\bob{} interaction up to that point)
 
-  When \environment{} sends (\textsc{checkForNew}, \alice, \bob, \textit{tid}) to
-  \alice{} in the ideal world, line~\ref{alg:fpaynet:checkForNew:valid} of
+  When \environment{} sends (\textsc{checkForNew}, \alice, \bob, \textit{tid})
+  to \alice{} in the ideal world, line~\ref{alg:fpaynet:checkForNew:valid} of
   Fig.~\ref{alg:fpaynet:open} will allow execution to continue if there exists
-  an entry with temporary id \textit{tid} and member \alice{} marked as
+  an entry with temporary ID \textit{tid} and one member \alice, marked as
   ``\alice{} announced'' in \texttt{pendingOpen}(\textit{fchid}) for some
   \textit{fchid}. This can only happen if line~\ref{alg:fpaynet:announced:add}
   of Fig.~\ref{alg:fpaynet:open} is executed, where
   \texttt{pendingOpen}(\textit{fchid}) contains \textit{tid} as the temporary
   ID. This line in turn can only be executed if $\fpaynet{}_{\mathrm{, Open}}$
-  received $\left(\textsc{channelAnnounced}, \alice, p_{\alice, F}, p_{\bob, F},
-  \mathit{fchid}, \mathit{pchid}, \mathit{tid}\right)$ from
-  $\simulator_{\mathrm{LN - Reg - Open}}$ such that
-  \texttt{pendingOpen}(\textit{fchid}) exists and has temporary id \textit{tid},
-  as mandated by line~\ref{alg:fpaynet:announced:valid} of
-  Fig.~\ref{alg:fpaynet:open}. Such a message is sent by $\simulator_{\mathrm{LN
-  - Reg - Open}}$ of Fig.~\ref{alg:sim:open} either in
+  received (\textsc{channelAnnounced}, \alice, $p_{\alice, F}, p_{\bob, F},
+  \mathit{fchid}, \mathit{pchid}, \mathit{tid}$) from $\simulator_{\mathrm{LN -
+  Reg - Open}}$ such that the entry \texttt{pendingOpen}(\textit{fchid}) exists
+  and has temporary ID \textit{tid}, as mandated by
+  line~\ref{alg:fpaynet:announced:valid} of Fig.~\ref{alg:fpaynet:open}. Such a
+  message is sent by $\simulator_{\mathrm{LN - Reg - Open}}$ of
+  Fig.~\ref{alg:sim:open} either in
   lines~\ref{alg:sim:open:announced:alice:bothhonest}/\ref{alg:sim:open:announced:alice:alicehonest},
   or in
   lines~\ref{alg:sim:open:announced:bob:bothhonest}/\ref{alg:sim:open:announced:bob:bobhonest}.
