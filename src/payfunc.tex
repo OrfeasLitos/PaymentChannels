@@ -454,7 +454,14 @@
               \label{alg:fpaynet:close:func:idle}
             \EndIf
           \EndFor
-          \If{\alice{} has no open channels in $\Sigma_{\alice}$}
+          \If{\alice{} has no open channels in $\Sigma_{\alice}$ AND \alice{}
+          has always \textsc{poll}ed according to the needs of
+          Fig.~\ref{alg:fpaynet:close:func},
+          line~\ref{alg:fpaynet:close:func:ifmalicious},
+          Fig.~\ref{alg:fpaynet:poll}, line~\ref{alg:fpaynet:poll:malicious} and
+          Fig.~\ref{alg:fpaynet:resolvepay},
+          lines~\ref{alg:fpaynet:resolvepay:haltcond:rel}
+          and~\ref{alg:fpaynet:resolvepay:haltcond:abs}}
             \If{$\mathrm{offChainBalance}(\alice) \neq 0$ OR
             onChainBalance(\alice) is not equal to the total funds exclusively
             spendable by \alice{} in $\Sigma_{\alice}$}
