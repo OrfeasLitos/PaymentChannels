@@ -1,36 +1,47 @@
 \section{Security proof overview}
-  The main target of the security proof is to prove
-  Theorem~\ref{theorem:simulation}, which in other words states that there
-  exists a simulator \simulator{} such that a real-world execution of the
-  protocol $\Pi_{\mathrm{LN}}$ with a dummy adversary
-  $\adversary_{\mathrm{d}}$~\cite{uc} and an ideal-world execution of the
-  functionality \fpaynet{} with \simulator{} make any PPT environment
-  \environment{} with binary output return on expectation the same value with
-  high probability.
+  \begin{theorem}[Lightning Payment Network Security]
+    \label{theorem:simulation}
+    \begin{gather*}
+      \forall k \in \mathbb{N}, \text{ PPT } \environment, \\
+      |\Pr[\textsc{Exec}^{\ledger}_{\Pi_{\mathrm{LN}}, \adversary_{\mathrm{d}},
+      \environment} = 1] - \Pr[\textsc{Exec}^{\fpaynet, \ledger}_{\simulator,
+      \environment} = 1]| \leq \\
+      2nm \cdot \mathrm{E \mhyphen ds}(k) + 6np \cdot \mathrm{E \mhyphen ds}(k) +
+      \\
+      2nmp \cdot \mathrm{E \mhyphen share}(k) + 2 \cdot \mathrm{E \mhyphen
+      prf}(k) + 2nm \cdot \mathrm{E \mhyphen master}(k) \enspace.
+    \end{gather*}
+  \end{theorem}
 
-  To achieve this, we break the proof into 5 steps. In Lemma~\ref{lemma:dummy}
-  we define a simulator $\simulator_{\mathrm{LN}}$ that internally simulates a
-  full-blown execution of $\Pi_{\mathrm{LN}}$ for each player, and a ``dummy''
-  functionality that acts as a simple relay between \environment{} and
-  $\simulator_{\mathrm{LN}}$. We argue that this version of the ideal world
-  trivially produces the exact same messages for \environment{} as the real
-  world.
+  \begin{proofsketch}
+    The proof is done in 5 steps. In Lemma~\ref{lemma:dummy} we define a
+    simulator $\simulator_{\mathrm{LN}}$ that internally simulates a full
+    execution of $\Pi_{\mathrm{LN}}$ for each player, and a ``dummy''
+    functionality that acts as a simple relay between \environment{} and
+    $\simulator_{\mathrm{LN}}$. We argue that this version of the ideal world
+    trivially produces the exact same messages for \environment{} as the real
+    world.
 
-  In each subsequent step, we incrementally move responsibilities from the
-  simulator to the functionality. Each step defines a different functionality
-  that handles some additional messages from \environment{} exactly like
-  \fpaynet, until the last step (Lemma~\ref{lemma:close}) where we use
-  \fpaynet{} itself. Correspondingly, the simulator of each step is adapted so
-  that the new ideal execution is computationally indistinguishable from the
-  previous one.
+    In each subsequent step, we incrementally move responsibilities from the
+    simulator to the functionality. Each step defines a different functionality
+    that handles some additional messages from \environment{} exactly like
+    \fpaynet, until the last step (Lemma~\ref{lemma:close}) where we use
+    \fpaynet{} itself. Correspondingly, the simulator of each step is adapted so
+    that the new ideal execution is computationally indistinguishable from the
+    previous one.
 
-  Lemma~\ref{lemma:reg} lets the functionality handle the registration messages,
-  along with the corruption message from \simulator. In Lemma~\ref{lemma:open}
-  the functionality additionally handles messages related to channel opening. It
-  behaves like \fpaynet, but does not execute \texttt{checkClosed}().
-  Lemma~\ref{lemma:pay} has the functionality handle all messages sent during
-  channel updates. Lastly, Lemma~\ref{lemma:close} has the entire \fpaynet{} as
-  its functionality, by incorporating the message for closing a channel,
-  executing \texttt{checkClosed}() normally and handing the message that returns
-  to \environment{} the receipts for newly opened, updated and closed channels.
+    Lemma~\ref{lemma:reg} lets $\mathcal{F}$ handle registration messages,
+    along with the corruption message from \simulator. In Lemma~\ref{lemma:open}
+    the functionality additionally handles messages related to channel opening. It
+    behaves like \fpaynet, but does not execute \texttt{checkClosed}().
+    Lemma~\ref{lemma:pay} has the functionality handle all messages sent during
+    channel updates. Lastly, Lemma~\ref{lemma:close} has the entire \fpaynet{} as
+    its functionality, by incorporating the message for closing a channel,
+    executing \texttt{checkClosed}() normally and handing the message that returns
+    to \environment{} the receipts for newly opened, updated and closed
+    channels. The last two steps introduce a probability of failure in case
+    signatures are forged. We analyze these cases separately and argue that, if
+    such forgeries do not happen, the emulation is perfect. Therefore we can
+    calculate the concrete security bounds shown in the theorem.
+  \end{proofsketch}
   For the formal proof, we refer the reader to Appendix~\ref{appendix:secproof}.

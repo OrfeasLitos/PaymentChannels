@@ -6,21 +6,7 @@
   \subimport{./}{payproof.tex}
   \subimport{./}{closeproof.tex}
 
-  \begin{theorem}[Lightning Payment Network Security]
-    \label{theorem:simulation}
-    \begin{gather*}
-      \forall k \in \mathbb{N}, \text{ PPT } \environment, \\
-      |\Pr[\textsc{Exec}^{\ledger}_{\Pi_{\mathrm{LN}}, \adversary_{\mathrm{d}},
-      \environment} = 1] - \Pr[\textsc{Exec}^{\fpaynet, \ledger}_{\simulator,
-      \environment} = 1]| \leq \\
-      2nm \cdot \mathrm{E \mhyphen ds}(k) + 6np \cdot \mathrm{E \mhyphen ds}(k) +
-      \\
-      2nmp \cdot \mathrm{E \mhyphen share}(k) + 2 \cdot \mathrm{E \mhyphen
-      prf}(k) + 2nm \cdot \mathrm{E \mhyphen master}(k) \enspace.
-    \end{gather*}
-  \end{theorem}
-
-  \begin{proof}
+  \begin{proof}[Proof of Theorem~\ref{theorem:simulation}]
     The theorem is a direct result of
     Lemmas~\ref{lemma:dummy}-\ref{lemma:close}.
   \end{proof}
