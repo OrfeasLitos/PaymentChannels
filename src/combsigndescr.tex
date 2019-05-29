@@ -1,4 +1,4 @@
-\section{Overview of our Combined Signature primitive}  
+\section{Overview of our Combined Signature primitive}
   As previously mentioned, we define in this work a new primitive for combining
   keys and generating signatures that is leveraged in the revocation and
   punishment mechanism of channel updates. Furthermore, we prove that the
@@ -7,9 +7,21 @@
   Appendix~\ref{appendix:combinedsign} for the exact syntax, correctness and
   security definitions, concrete construction and proof of security.
 
-  A combined signature is a two-party primitive, say \alice{} and \bob{} with \bob{} playing the role of the signer and \alice{} the holder of a share of the secret-key that is essential for issuing signatures verifiable with the ``combined'' verification key. The  derivation of the verification key
-is achieved  using public information drawn from  \alice{} and \bob and is feasible without any party knowing the
-  corresponding signing key. Only if \alice{} shares her secret information with
-  \bob{} will he be able to construct the signing key. 
-  Beyond correctness, combined signatures have two security properties expressed as follows. Share-EUF security expresses security from the point of view of \alice{}, and establishes that \bob{} is incapable of issuing a valid combined signature if he does not possess the corresponding secret share. On the other hand, master-EUF-CMA security is modeled very similarly to standard EUF-CMA security, with the difference that \bob{} (the signer) combines malicious shares into his public-key and issues signatures with respect to such combined keys that still provide no advantage to the adversary in terms of producing a forged message for a combined key of its choice. 
+  A combined signature is a two-party primitive, say \alice{} and \bob{} with
+  \bob{} playing the role of the signer and \alice{} the holder of a share of
+  the secret-key that is essential for issuing signatures verifiable with the
+  ``combined'' verification key. The  derivation of the verification key is
+  achieved  using public information drawn from  \alice{} and \bob and is
+  feasible without any party knowing the corresponding signing key. Only if
+  \alice{} shares her secret information with \bob{} will he be able to
+  construct the signing key.
+  Beyond correctness, combined signatures have two security properties expressed
+  as follows. Share-EUF security expresses security from the point of view of
+  \alice{}, and establishes that \bob{} is incapable of issuing a valid combined
+  signature if he does not possess the corresponding secret share. On the other
+  hand, master-EUF-CMA security is modeled very similarly to standard EUF-CMA
+  security, with the difference that \bob{} (the signer) combines malicious
+  shares into his public-key and issues signatures with respect to such combined
+  keys that still provide no advantage to the adversary in terms of producing a
+  forged message for a combined key of its choice.
 
