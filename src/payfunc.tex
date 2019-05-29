@@ -445,11 +445,15 @@
             $h$ in $\Sigma_{\alice}$ for open \texttt{channel} with ID
             \textit{fchid} with a balance that does not correspond to the
             \texttt{receipt} and the delayed output has been spent by the
-            counterparty and \texttt{polls}(\alice) contains an entry in $[h, h
-            + \mathtt{delay}(\alice) - 1]$}
+            counterparty } 
+            \If{  \texttt{polls}(\alice) contains an entry in $[h, h
+            + \mathtt{delay}(\alice) - 1]$} 
             \label{alg:fpaynet:close:func:ifmalicious}
               \State halt
               \label{alg:fpaynet:close:func:malicious}
+            \Else  
+            \State \texttt{negligent}(\alice)=\true 
+            \EndIf
             \ElsIf{there is no such closing transaction $\wedge \ h = \bot$}
               \State assign largest block number of $\Sigma_{\alice}$ to $h$ of
               entry
