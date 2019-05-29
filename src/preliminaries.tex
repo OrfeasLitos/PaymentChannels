@@ -1,45 +1,39 @@
 \section{Preliminaries}
+\label{sec:preliminaries}
   In this section we will give a brief overview of the tools and frameworks that
   we use in this work.
 
   \noindent {\bf Universal Composability framework.}
-    Simulation-based security~\cite{howtosimulateit} is a paradigm that enables
-    us to prove a protocol $\Pi$ secure in the presence of an ``adversary''
-    \adversary, who may corrupt some parties and make them act arbitrarily.
-    \orfeas{Simulation-based security~\cite{howtosimulateit} is a paradigm that
-    allows for the expression of formal guarantees regarding the security of a
-    protocol in the presence of an adversary.} More concretely, we define an
-    ideal ``functionality'' $\mathcal{F}$, a trusted third party that gets the
-    inputs of all parties and returns the outputs they would get in the real
-    world, by running the protocol. This functionality expresses the intended
-    purpose of the protocol. Then we prove that, no matter what the adversary
-    does, we can define a ``simulator'' \simulator{} (that is the interface
-    between the functionality and the adversary) such that an external observer
-    cannot distinguish between the real world and the ideal world. We then say
-    that the protocol ``realizes'' the functionality.
-
+In simulation-based security, cryptographic tasks are defined via an
+    ideal ``functionality'' $\mathcal{F}$, which can be thought of as 
+    a trusted third party that gets the
+    inputs of all parties and returns the outputs they expect while also interacting with the adversary. In this way, the functionality expresses the essence of a cryptographic task and its security features. A protocol $\Pi$ realises the functionality $\mathcal{F}$ if for any  real world adversary
+  we can define a ``simulator'' \simulator{}, acting as an ideal world adversary, 
+  such that any environment 
+    cannot distinguish between the real world and the ideal world executions.
     Albeit a powerful tool, simulation-based security only works when a single
     instance of the protocol is run in isolation. However, real-world systems
     almost always run several programs concurrently, which furthermore may run
-    different instances of the same protocol. Universal Composability~\cite{uc}
-    provides a formal framework to overcome this issue. In particular it
-    replaces $\mathcal{F}$, $\Pi$, \adversary{}, \simulator{} and the external
-    observer with Interactive Turing Machines (ITMs). The external observer is
-    now called ``environment'' \environment{} and can interactively communicate
-    with $\Pi$ or $\mathcal{F}$, as opposed to simply providing inputs and
-    expecting outputs. \environment{} is allowed to act arbitrarily, thus
-    encapsulating anything that may happen in the system in parallel with the
-    protocol. The central result in UC allows us to prove that $\Pi$
-    ``UC-realizes'' $\mathcal{F}$, which is enough to ensure that security holds
-    no matter what \environment{} executes. More importantly, $\Pi$ may
-    internally use another functionality $\mathcal{G}$ (called a ``hybrid''). If
-    protocol $\Pi'$ has been proven to UC-realize $\mathcal{G}$, then the
-    Universal Composition theorem guarantees that \environment{} cannot
-    distinguish between an interaction with $\Pi$ using $\Pi'$ and one with
-    $\Pi$ using $\mathcal{G}$. We thus avoid proving again the security of
-    $\Pi'$ in the context of $\Pi$. Put differently, we have the power to
-    compose protocols. In this work we choose to use the UC framework in order
-    to leverage previous results on the security of blockchains.
+    different instances of the same protocol. To facilitate this in the Universal Composability~\cite{uc}
+  framework it is possible to analyse a single instance of the protocol and then take advantage of a generic composition theorem to infer the security of the protocol more broadly. This is achieved by allowing arbitrary interactions between the environment and the real-world adversary. 
+%In particular it
+%    replaces $\mathcal{F}$, $\Pi$, \adversary{}, \simulator{} and the external
+%    observer with Interactive Turing Machines (ITMs). The external observer is
+%    now called ``environment'' \environment{} and can interactively communicate
+%    with $\Pi$ or $\mathcal{F}$, as opposed to simply providing inputs and
+%    expecting outputs. \environment{} is allowed to act arbitrarily, thus
+%    encapsulating anything that may happen in the system in parallel with the
+%    protocol. The central result in UC allows us to prove that $\Pi$
+%    ``UC-realizes'' $\mathcal{F}$, which is enough to ensure that security holds
+%    no matter what \environment{} executes. More importantly, $\Pi$ may
+%    internally use another functionality $\mathcal{G}$ (called a ``hybrid''). If
+%    protocol $\Pi'$ has been proven to UC-realize $\mathcal{G}$, then the
+%    Universal Composition theorem guarantees that \environment{} cannot
+%    distinguish between an interaction with $\Pi$ using $\Pi'$ and one with
+%    $\Pi$ using $\mathcal{G}$. We thus avoid proving again the security of
+%    $\Pi'$ in the context of $\Pi$. Put differently, we have the power to
+%    compose protocols. In this work we choose to use the UC framework in order
+%    to leverage previous results on the security of blockchains.
 
   \noindent {\bf Hybrid functionalities used.}
     Both our main protocol and the corresponding functionality use
@@ -97,7 +91,7 @@
     values of the outputs connected to its inputs. We refer the reader to
     Appendix~\ref{appendix:txstructure} for a complete overview.
 
-  \noindent {\bf Identity Based Signatures.}
+  \noindent {\bf Cryptographic Primitives.}
     In the Lightning Network specification, a custom scheme for deriving keys is
     used. Its syntax and security aims closely match those of previously studied
     Identity Based Signature schemes~\cite{ibsshamir,ibspaterson}, thus we use
@@ -118,4 +112,5 @@
       \item $\{0, 1\} \leftarrow \textsc{VerifyIBS}(\sigma, m, pk_l)$: signature
       verification
     \end{itemize}
-    We refer the reader to~\cite{ibspaterson} for more details.
+    We refer the reader to~\cite{ibspaterson} for more details. 
+    Other cryptographic primitives used are digital signatures and pseudorandom functions, see Sections~\ref{sec:ds}, \ref{sec:ibs}, \ref{sec:prf}. Finally, a less common  two-party cryptographic primitive is employed that we formalise as {\em  combined digital signatures}, see Section~\ref{sec:ov-combined-ds}. 

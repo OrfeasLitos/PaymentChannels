@@ -120,10 +120,13 @@ that interoperates with a global ledger functionality for which we
 know, in light of the results of \cite{BMTZ17}, 
 that is realisable by the Bitcoin blockchain
 and hence also reflects the actual parameters that can be enforced by the implementation 
-(in contrast, previous work utilised simplified ledger functionalities for which it is unknown whether they can be realised). 
+(in contrast, previous work utilised ``too idealised'' ledger functionalities for which it is unknown whether they can be realised). 
 
-\noindent {\bf Organisation.} In section~\ref{}. etc. 
-
+\noindent {\bf Organisation.} In section~\ref{sec:preliminaries} we present  preliminaries for the model we employ  and the relevant cryptographic primitives. 
+In Section~\ref{sec:ov-lightning} we present an overview of the lightning network. 
+Our payment network functionality is given an overview description in Section~\ref{sec:ov-paynet}. Our abstraction of the core lightning protocol
+is provided in Section~\ref{sec:ov-lightning}. We give more details about the combined digital signature primitive in Section~\ref{sec:ov-combined-ds}. Finally, in Section~\ref{sec:ov-security-proof}  we provide an overview of the security proof. 
+In the appendix, first we give more details on the preliminary primitives, specifically in Sections~\ref{sec:ds,sec:ibs,sec:prf} we discuss digital signatures, identity based signatures and pseudorandom functions. Subsequently in Section~\ref{appendix:combinedsign} we go into more details about combined digital signatures. The transaction structure that is assumed to be provided by the underlying distributed ledger is discussed in Section~\ref{appendix:txstructure}. The paynet functionality is presented in detail in Section~\ref{appendix:payfunc}. The complete description of protocol $\Pi_{\mathrm{LN}}$ is presented in Section~\ref{appendix:protocol}. 
 
 \ignore{%%%  
 1. lightning network, objectives, when it was proposed, problem it solves, and current status. scalability as a general objectives. layered approach off/chain, on-chain. room example.
