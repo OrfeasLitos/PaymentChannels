@@ -141,24 +141,22 @@
 
   Lastly, in the ideal world, whenever (\textsc{read}) is sent to \ledger{} and
   a reply is received, the function \texttt{checkClosed}
-  (Fig.\ref{alg:fpaynet:close},
-  lines~\ref{alg:fpaynet:close:func:start}-\ref{alg:fpaynet:close:func:end}) is
-  called with the reply of the \ledger{} as argument. This function does not
-  generate new messages, but may cause the \fpaynet{} to halt. We will now prove
-  that this never happens.
+  (Fig.\ref{alg:fpaynet:close:func}) is called with the reply of the \ledger{}
+  as argument. This function does not generate new messages, but may cause the
+  \fpaynet{} to halt. We will now prove that this never happens.
 
   \fpaynet{} halts in line~\ref{alg:fpaynet:close:func:dsforgery} of
-  Fig.~\ref{alg:fpaynet:close} in case a channel is closed without using a
+  Fig.~\ref{alg:fpaynet:close:func} in case a channel is closed without using a
   commitment transaction. Similarly to event $E$ in the proof of
   Lemma~\ref{lemma:pay}, this event is a subset of $P$ and thus is impossible to
   happen given that we assume $\neg P$.
 
   \fpaynet{} halts in line~\ref{alg:fpaynet:close:func:malicious} of
-  Fig.~\ref{alg:fpaynet:close} in case a malicious closure by the counterparty
-  was successful, in spite of the fact that \alice{} polled in time to apply the
-  punishment. A (\textsc{poll}) message to \alice{} within the prescribed time
-  frame (line~\ref{alg:fpaynet:close:func:ifmalicious}) would cause \fpaynet{}
-  to alert \simulator{} (Fig.~\ref{alg:fpaynet:poll},
+  Fig.~\ref{alg:fpaynet:close:func} in case a malicious closure by the
+  counterparty was successful, in spite of the fact that \alice{} polled in time
+  to apply the punishment. A (\textsc{poll}) message to \alice{} within the
+  prescribed time frame (line~\ref{alg:fpaynet:close:func:ifmalicious}) would
+  cause \fpaynet{} to alert \simulator{} (Fig.~\ref{alg:fpaynet:poll},
   line~\ref{alg:fpaynet:poll:send}), who in turn would submit the punishment
   transaction in time to prevent the counterparty from spending the delayed
   payment (Fig.~\ref{alg:protocol:poll:closedch},
@@ -171,18 +169,19 @@
   $\Sigma_{\alice}$ (i.e. \alice{} closed the channel).
 
   \fpaynet{} halts in line~\ref{alg:fpaynet:close:func:idle} of
-  Fig.~\ref{alg:fpaynet:close} in case \environment{} has asked for the channel
-  to close, but too much time has passed since. This event cannot happen, for
-  two reasons. First, regarding elements in \texttt{pendingClose}(\alice),
-  because \fpaynet{} forwards a (\textsc{closeChannel}) message to \simulator{}
-  (Fig.~\ref{alg:fpaynet:close}, line~\ref{alg:fpaynet:close:send}) for every
-  element that it adds to \texttt{pendingClose} (Fig~\ref{alg:fpaynet:close},
+  Fig.~\ref{alg:fpaynet:close:func} in case \environment{} has asked for the
+  channel to close, but too much time has passed since. This event cannot
+  happen, for two reasons. First, regarding elements in
+  \texttt{pendingClose}(\alice), because \fpaynet{} forwards a
+  (\textsc{closeChannel}) message to \simulator{} (Fig.~\ref{alg:fpaynet:close},
+  line~\ref{alg:fpaynet:close:send}) for every element that it adds to
+  \texttt{pendingClose} (Fig~\ref{alg:fpaynet:close},
   line~\ref{alg:fpaynet:close:mark}) and this causes \simulator{} to submit the
   closing transaction to \ledger{} (Fig.~\ref{alg:protocol:close},
   line~\ref{alg:protocol:close:submit}). This transaction is necessarily valid,
   because there is no other transaction that spends the funding transaction of
   the channel, according to the first check of
-  line~\ref{alg:fpaynet:close:func:ifidle} of Fig.~\ref{alg:fpaynet:close}.
+  line~\ref{alg:fpaynet:close:func:ifidle} of Fig.~\ref{alg:fpaynet:close:func}.
   \fpaynet{} halts in this case only if it is sure that the chain has grown by
   \tochain{} blocks, and thus if the closing transaction had been submitted when
   (\textsc{closeChannel}) was received, it should have been necessarily included
@@ -198,8 +197,8 @@
   has been submitted at least \tochain{} blocks earlier, thus again by
   Proposition~\ref{prop:tochain} it is impossible for the transaction not to be
   in the ledger state. Therefore \fpaynet{} cannot halt in
-  line~\ref{alg:fpaynet:close:func:idle} of Fig.~\ref{alg:fpaynet:close}. We
-  deduce that, given $\neg P \wedge \neg Q \wedge \neg R$, the execution of
+  line~\ref{alg:fpaynet:close:func:idle} of Fig.~\ref{alg:fpaynet:close:func}.
+  We deduce that, given $\neg P \wedge \neg Q \wedge \neg R$, the execution of
   \texttt{checkClosed} by \fpaynet{} does not contribute any increase to the
   probability of distinguishability. Put otherwise, given $\neg P \wedge \neg Q
   \wedge \neg R$, it is $\textsc{Exec}^{\fpaynet{}_{\mathrm{, Pay}},

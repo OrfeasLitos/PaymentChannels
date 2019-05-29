@@ -395,8 +395,15 @@
           \alice) to \simulator
           \label{alg:fpaynet:close:send}
         \EndIndent
-        \Statex
+      \end{algorithmic}
+    \end{systembox}
+    \caption{}
+    \label{alg:fpaynet:close}
+  \end{figure}
 
+  \begin{figure}[H]
+    \begin{systembox}{\fpaynet{} - \texttt{checkClosed}()}
+      \begin{algorithmic}[1]
         \Function{checkClosed}{$\Sigma_{\alice}$} \Comment{Called after every
         (\textsc{read}), ensures requested closes eventually happen}
         \label{alg:fpaynet:close:func:start}
@@ -459,7 +466,7 @@
       \end{algorithmic}
     \end{systembox}
     \caption{}
-    \label{alg:fpaynet:close}
+    \label{alg:fpaynet:close:func}
   \end{figure}
 
   \begin{figure}[H]
