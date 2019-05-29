@@ -1,9 +1,9 @@
 \section{Overview of \fpaynet{}}
 \label{sec:ov-paynet}
-  One of our contributions is the specification of \fpaynet
+  One of our contributions is the specification of \fpaynet{}
   (Appendix~\ref{appendix:payfunc}) a functionality that describes the
   functional and security guarantees given by an ideal payment network. The
-  central aim of \fpaynet{} is opening payment channels on the ledger, keeping
+  central aim of \fpaynet{} is opening payment channels, keeping
   track of their state, updating them according to requested payments and
   closing them, as requested by honest players, all in a secure manner. In
   particular, the three main messages it can receive from \alice{} are
@@ -29,17 +29,16 @@
     \alice's latest $\Sigma_{\alice}$ and verifies that no bad events have
     happened. In particular, \fpaynet{} halts if any of \alice's channels has
     been closed maliciously and, even though \alice{} has been \textsc{poll}ing
-    regularly, she didn't manage to punish the counterparty. Refer to
+    regularly, she did not manage to punish the counterparty. Refer to
     lines~\ref{alg:fpaynet:poll:ifdsforgery}
     and~\ref{alg:fpaynet:poll:haspolled} of Fig.~\ref{alg:fpaynet:poll} for the
-    exact halting conditions. If \fpaynet{} doesn't halt, it asks \simulator{}
-    to take action against malicious closures and multi-hop payments that have
-    gone awry.
+    exact halting conditions. If \fpaynet{} does not halt, it leaks 
+    \simulator{} the polling details (including the identity of the poller and the state of the ledger in their view). 
     \item \fpaynet{} expects \simulator{} to send a (\textsc{resolvePays},
     \texttt{charged}) message that gives details on the outcome of one or more
     multi-hop payments. \fpaynet{} checks that for each payment the charged
     party was (a) the one that initiated the payment, (b) a malicious party or
-    (c) a party that either did not \textsc{poll} in time to catch a malicious
+    (c) a honest party that is negligent. The latter case happens when the honest party  either did not \textsc{poll} in time to catch a malicious
     closure (Fig.~\ref{alg:fpaynet:resolvepay},
     line~\ref{alg:fpaynet:resolvepay:haltcond:rel}) or to learn the preimage
     from an honest closure, or did not enforce the retrieval of her funds by
@@ -52,7 +51,7 @@
     \texttt{checkClosed}($\Sigma_{\alice}$) every time it receives
     $\Sigma_{\alice}$ from \ledger{} (Fig.~\ref{alg:fpaynet:close:func},
     lines~\ref{alg:fpaynet:close:func:start}-\ref{alg:fpaynet:close:func:end}).
-    It here checks that every channel that \environment{} has asked to be closed
+    In this case, it checks that every channel that \environment{} has asked to be closed
     or \simulator{} designated as closed indeed has a closing transaction that
     corresponds to its latest state in $\Sigma_{\alice}$. Enough time is given
     for that transaction to settle in $\Sigma_{\alice}$, but if that time passes
@@ -60,8 +59,7 @@
     opportunity for punishment was given, \fpaynet{} halts.
   \end{itemize}
 
-  A number of messages that support the protocol execution are handled by
-  \fpaynet:
+  A number of  messages that support the protocol progress are also handled:
   \begin{itemize}
     \item Every player has to send (\textsc{register}, delay, relayDelay) before
     participating in the network. This informs \fpaynet{} how often the player
@@ -72,11 +70,11 @@
     from the next and reveal it to the previous node. Subsequently \fpaynet{}
     asks \simulator{} to create and send a public key that will hold the
     player's funds. This public key is subsequently sent back to the player.
-    \item To complete her registration, \alice has to send the
+    \item To complete her registration, \alice{} has to send the
     (\textsc{toppedUp}) message. It lets \fpaynet{} know that the desired amount
     of initial funds have been transferred to \alice's public key. \fpaynet{}
     reads \alice's state on \ledger{} to retrieve this number and subsequently
-    allows \alice{} to participate in the payment network.
+    allows \alice{} to participate in the payment network after it updates her  \texttt{onChainBalance}.
     \item When \fpaynet{} receives (\textsc{checkForNew}, \alice, \bob,
     \textit{tid}) from \alice, it asks \ledger{} for \alice's latest state
     $\Sigma_{\alice}$ and looks for a funding transaction $F$ in it. If one is
@@ -86,11 +84,11 @@
     all nudge \simulator{} to carry on with the protocol that updates the state
     of a specific channel. \fpaynet{} simply forwards these messages to
     \simulator.
-    \item (\textsc{fulfillOnChain}) asks \simulator{} to close channels in which
+    \item (\textsc{fulfillOnChain}) prompts \simulator{} to close channels in which
     the counterparty is not willing to pay, even though they have promised to do
-    so upon disclosure of a particular preimage. This message is forwarded to
-    \simulator{}, but also \fpaynet{} takes a note that such a message was
-    received.
+    so upon disclosure of a particular preimage. This message is simply forwarded to
+    \simulator{}, but \fpaynet{} takes a note that such a message was
+    received and the current blockheight in the view of the calling party.
   \end{itemize}
 
   Last but not least, \environment{} sends (\textsc{getNews}) to obtain the
@@ -104,12 +102,15 @@
   single commitment may commit to many indiviual update proposals only adds to
   the complexity. It is therefore only natural to want \fpaynet{} to be unaware
   of these details. In order to disentangle the abstraction of \fpaynet{} from
-  such minutiae, we had to allow for minor cases where the updates reported back
-  to \environment{} may be wrong (in the case \simulator{} is adversarial).
-  Nevertheless, such mistakes are always caught by \fpaynet{} when a channel
-  closes. \orfeas{rephrase part after here} This is somehow intuitive: Consider
+  such minutiae, we allow the adversary full control of the
+  updates that are reported back
+  to \environment{} via  \fpaynet{}. 
+  Nevertheless, \fpaynet{} enforces that 
+  any   reporting deviations induced by the adversary will 
+   be caught  when a channel
+  closes.  This is quite intuitive: Consider
   a user of the payment network that does not understand its inner workings but
-  can read \ledger{} and count her funds there. In case the payment network is
-  not trustworthy, the only way she can verify that her funds are exactly as the
-  network reports is by closing the relevant channel and checking her state in
-  \ledger.
+  can read \ledger{} and count her funds there. \fpaynet{} provides no guarantees 
+  regarding any interim reporting except the fact that  
+  if the user chooses to close  the relevant channel,  her state in
+  \ledger will be consistent with all the payments that went through.
