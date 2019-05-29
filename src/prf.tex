@@ -20,13 +20,13 @@
     Let $k \in \mathbb{N}$. Let $\mathsf{Func}_k$ the set of all functions
     mapping $k$-bitstrings to $k$-bitstrings. We say that function $F: \{0,
     1\}^k \times \{0, 1\}^k \rightarrow \{0, 1\}^k$ is pseudorandom if $\forall
-    \text{ PPT } D$,
+    \text{ PPT } \adversary$,
     \begin{equation*}
-      |\underset{\substack{s \in \{0, 1\}^k \\ D\text{'s
-      coins}}}{\Pr}[D^{F(s, \cdot)}(1^k) = 1] - \underset{\substack{f \in
-      \mathsf{Func}_k \\ D\text{'s coins}}}{\Pr}[D^{f(\cdot)}(1^k) = 1]|
-      \leq \negl(k) \enspace,
+      |\underset{\substack{s \in \{0, 1\}^k \\ \adversary\text{'s
+      coins}}}{\Pr}[\adversary^{F(s, \cdot)}(1^k) = 1] - \underset{\substack{f
+      \in \mathsf{Func}_k \\ \adversary\text{'s
+      coins}}}{\Pr}[\adversary^{f(\cdot)}(1^k) = 1]| \leq \negl(k) \enspace,
     \end{equation*}
-    where $D$ is given oracle access to $F(s, \cdot)$ and $f(\cdot)$ in each of
-    the probability expressions above respectively.
+    where \adversary{} is given oracle access to $F(s, \cdot)$ and $f(\cdot)$ in
+    each of the probability expressions above respectively.
   \end{definition}
