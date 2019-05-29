@@ -20,14 +20,14 @@
   every message. We refer the reader to the formal definition of
   $\Pi_{\mathrm{LN}}$ for further details.
 
-  \subsection{Registration}
+  \noindent {\bf Registration.}
     Before \alice{} can use the network, \environment{} first has to send her a
     (\textsc{register}, delay, relayDelay) message. She generates her
     persistent key and sends it back to \environment{}. The latter may choose to
     add some funds to this key and then send (\textsc{toppedUp}) to \alice, who
     checks her state in \ledger{} and records her on-chain balance.
 
-  \subsection{Channel opening}
+  \noindent {\bf Channel opening.}
     When she receives (\textsc{openChannel}, \alice, \bob, $x$, \textit{tid})
     from \environment, \alice{} initiates the message sequence needed to open a
     channel with \bob, funded by her with $x$ coins. She first generates and
@@ -47,7 +47,7 @@
     The channel is now open. Both parties keep a note to give \environment{}
     a receipt of the new channel the next time they receive (\textsc{getNews}).
 
-  \subsection{Channel closing}
+  \noindent {\bf Channel closing.}
     When she receives (\textsc{closeChannel}, \texttt{receipt}, \textit{tid})
     from \environment, \alice{} checks that \texttt{receipt} corresponds to the
     latest state of the channel and submits to \ledger{} the latest commitment
@@ -55,7 +55,7 @@
     note to give \environment{} a receipt of the closed channel the next time
     she receives (\textsc{getNews}).
 
-  \subsection{Performing Payments}
+  \noindent {\bf Performing payments.}
     When she receives (\textsc{pay}, \charlie, $x$,
     $\overrightarrow{\mathtt{path}}$) from \environment, \alice{} attempts to
     pay \charlie{} $x$ coins, using the provided
@@ -107,7 +107,7 @@
     correct software implementation the corresponding actions happen
     automatically, without waiting for a prompt by the user.
 
-  \subsection{Polling}
+  \noindent {\bf Polling.}
     Lastly, \environment{} may send (\textsc{poll}) to \alice. She then reads
     her state in \ledger{} and checks for closed channels. If she finds
     maliciously closed channels (closed using old commitments), she punishes the
