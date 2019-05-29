@@ -47,8 +47,7 @@
 
   \begin{proposition}
   \label{prop:forgery:ds}
-    $\forall \environment, \Pr[P] \leq nm \cdot \mathrm{E \mhyphen ds}(k) \leq
-    \negl(k)$
+    $\forall \environment, \Pr[P] \leq nm \cdot \mathrm{E \mhyphen ds}(k)$
   \end{proposition}
 
   \begin{proof}
@@ -79,7 +78,7 @@
     \begin{equation*}
       \Pr[\adversary_{\mathrm{ds}} \text{ wins } \mathsf{EUF \mhyphen CMA}] \leq
       \mathrm{E \mhyphen ds}(k) \Rightarrow \forall \environment, a \leq nm
-      \cdot \mathrm{E \mhyphen ds}(k) \leq \negl(k) \enspace.
+      \cdot \mathrm{E \mhyphen ds}(k) \enspace.
     \end{equation*}
   \end{proof}
 
@@ -118,8 +117,7 @@
 
   \begin{proposition}
   \label{prop:forgery:ibs}
-    $\forall \environment, \Pr[Q] \leq 3np \cdot \mathrm{E \mhyphen ibs}(k) \leq
-    \negl(k)$
+    $\forall \environment, \Pr[Q] \leq 3np \cdot \mathrm{E \mhyphen ibs}(k)$
   \end{proposition}
 
   \begin{proof}
@@ -153,8 +151,7 @@
     \begin{gather*}
       \Pr[\adversary_{\mathrm{ibs}} \text{ wins } \mathsf{IBS \mhyphen EUF
       \mhyphen CMA}] \leq \mathrm{E \mhyphen ibs}(k) \Rightarrow \\ \forall
-      \environment, b \leq 3np \cdot \mathrm{E \mhyphen ibs}(k) \leq \negl(k)
-      \enspace.
+      \environment, b \leq 3np \cdot \mathrm{E \mhyphen ibs}(k) \enspace.
     \end{gather*}
   \end{proof}
 
@@ -198,7 +195,7 @@
   \begin{proposition}
   \label{prop:forgery:share}
     $\forall \environment, \Pr[R] \leq nmp \cdot \mathrm{E \mhyphen share}(k) +
-    \mathrm{E \mhyphen prf}(k) \leq \negl(k)$
+    \mathrm{E \mhyphen prf}(k)$
   \end{proposition}
 
   \begin{proof}
@@ -245,7 +242,7 @@
       \Pr[\adversary_{\mathrm{share}} \text{ wins } \mathsf{share \mhyphen EUF}]
       \leq \mathrm{E \mhyphen share}(k) \Rightarrow \\
       \forall \environment, c \leq nmp \cdot \mathrm{E \mhyphen share}(k) +
-      \mathrm{E \mhyphen prf}(k) \leq \negl(k) \enspace.
+      \mathrm{E \mhyphen prf}(k) \enspace.
     \end{gather*}
   \end{proof}
 
@@ -290,8 +287,7 @@
 
   \begin{proposition}
   \label{prop:forgery:master}
-    $\forall \environment, \Pr[S] \leq nm \cdot \mathrm{E \mhyphen master}(k)
-    \leq \negl(k)$
+    $\forall \environment, \Pr[S] \leq nm \cdot \mathrm{E \mhyphen master}(k)$
   \end{proposition}
 
   \begin{proof}
@@ -328,7 +324,7 @@
     \begin{gather*}
       \Pr[\adversary_{\mathrm{master}} \text{ wins } \mathsf{master \mhyphen EUF
       \mhyphen CMA}] \leq \mathrm{E \mhyphen master}(k) \Rightarrow \\
-      \forall \environment, d \leq nm \cdot \mathrm{E \mhyphen master}(k) \leq
-      \negl(k) \enspace.
+      \forall \environment, d \leq nm \cdot \mathrm{E \mhyphen master}(k)
+      \enspace.
     \end{gather*}
   \end{proof}

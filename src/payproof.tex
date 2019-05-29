@@ -231,7 +231,7 @@
   signed by \alice. Suppose that $m$ is the maximum number of channels that a
   player can open and $\exists \text{ PPT } \environment_P: \Pr[P] = a$. We show
   in Proposition~\ref{prop:forgery:ds} that $\forall \environment, \Pr[P] \leq
-  nm \cdot \mathrm{E \mhyphen ds}(k) \leq \negl(k)$.
+  nm \cdot \mathrm{E \mhyphen ds}(k)$.
 
   Let $Q$ be the event in which at some point during the execution a transaction
   that has the following two characteristics appears in $\Sigma_{\alice}$, for
@@ -242,7 +242,7 @@
   maximum total number of opens and updates that a player can perform and that
   $\exists \text{ PPT } \environment_Q: \Pr[Q] = b$. We show
   in Proposition~\ref{prop:forgery:ibs} that $\forall \environment, \Pr[Q] \leq
-  3np \cdot \mathrm{E \mhyphen ibs}(k) \leq \negl(k)$.
+  3np \cdot \mathrm{E \mhyphen ibs}(k)$.
 
   Let $R$ be the event in which at some point during the execution a transaction
   that has the following characteristic appears in $\Sigma_{\alice}$, for some
@@ -260,8 +260,7 @@
   $m$ is the maximum number of opens a player can perform and $\exists \text{
   PPT } \environment_R: Pr[R] = c$. We show in
   Proposition~\ref{prop:forgery:share} that $\forall \environment, \Pr[R] \leq
-  nmp \cdot \mathrm{E \mhyphen share}(k) + \mathrm{E \mhyphen prf}(k) \leq
-  \negl(k)$.
+  nmp \cdot \mathrm{E \mhyphen share}(k) + \mathrm{E \mhyphen prf}(k)$.
 
   Lastly, let $S$ be the event in which at some point during the execution a
   transaction that has the following two characteristics appears in
@@ -273,7 +272,7 @@
   maximum total number of opens and updates that a player can perform and that
   $\exists \text{ PPT } \environment_S: \Pr[S] = d$. We show in
   Proposition~\ref{prop:forgery:master} that $\forall \environment, \Pr[S] \leq
-  nm \cdot \mathrm{E \mhyphen master}(k) \leq \negl(k)$.
+  nm \cdot \mathrm{E \mhyphen master}(k)$.
 
   We can now move on to treating individual messages sent by \environment{}
   during the execution. When \environment{} sends $\left(\textsc{pay}, \bob, x,
