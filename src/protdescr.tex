@@ -20,7 +20,7 @@
   between \alice, \bob{} and \charlie{} correspond to messages specified by LN.
   For clarity of exposition, we avoid mentioning the exact name and contents of
   every message. We refer the reader to the formal definition of
-  $\Pi_{\mathrm{LN}}$ for further details.
+  $\Pi_{\mathrm{LN}}$ for further details (Appendix~\ref{appendix:protocol}).
 
   \noindent {\bf Registration.}
     Before \alice{} can use the network, \environment{} first has to send her a
@@ -96,7 +96,7 @@
     sends it back to \alice. Once more every party has to receive a
     (\textsc{commit}) message for each of the channels it participates in order
     to remove the HTLC and update the definitive balance of each player to the
-    righteous value after the payment is complete. After this last update, each
+    appropriate value after the payment is complete. After this last update, each
     party keeps a note to inform \environment{} about the new balance when it
     receives (\textsc{getNews}).
 
@@ -123,7 +123,7 @@
     (\textsc{getNews}).
 
   \begin{remark}[Differences between LN and $\Pi_{\mathrm{LN}}$]
-
+%
     In LN, a custom construction for generating a new secret during each channel
     update is used. It reduces the amount of space needed to maintain a channel
     from $O(n)$ to $O(\log n)$ in the number of updates. As far as we know, its
@@ -133,9 +133,8 @@
     As mentioned earlier, LN uses a custom construction that takes advantage of
     elliptic curve homomorphic properties in order to derive any number of
     keypairs by combining a single ``basepoint'' with different ``labels''. We
-    instead use the Identity Based Signature
-    primitive~\cite{ibsshamir,ibspaterson} in this work to abstract the
-    properties provided by the construction.
+    instead use  Identity Based Signatures~\cite{ibsshamir,ibspaterson} (IBS)  to abstract the
+    properties provided by the construction.  We also prove that it actually implements an IBS, see Section~\ref{sec:ibs}. 
 
     Additionally, we have chosen to simplify the protocol in a number of ways in
     order to keep the analysis tractable. In particular LN defines several
