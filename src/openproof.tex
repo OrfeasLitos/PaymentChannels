@@ -147,10 +147,10 @@
   would not change its state either (Fig.~\ref{alg:protocol:open:env},
   line~\ref{alg:protocol:open:env:valid}).
 
-  We also observe that, upon receiving \textsc{openChannel} or
+  We also observe that, upon receiving the message \textsc{openChannel} or
   \textsc{channelAnnounced}, $\fpaynet{}_{\mathrm{, Open}}$ does not send any
-  messages to parties other than $\simulator_{\mathrm{LN - Reg - Open}}$, so
-  we don't have to simulate those.
+  messages to parties other than $\simulator_{\mathrm{LN - Reg - Open}}$, so we
+  don't have to simulate those.
 
   When \environment{} sends (\textsc{checkForNew}, \alice, \bob, \textit{tid}) to
   \alice{} in the real world, line~\ref{alg:protocol:checkForNew:valid} of
