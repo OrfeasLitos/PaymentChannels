@@ -322,12 +322,12 @@
       \end{equation}
 
       We now focus at the event $\neg E$. Let $F$ the event in which the call of
-      $\mathcal{B}$ to \textsc{CombinePubKey} to produce $cpk^*$ results in
-      the $j$th invocation of the Random Oracle. Since $j$ is chosen uniformly
-      at random, $\Pr\left[F | \neg E\right] =
-      \frac{1}{T\left(\mathcal{B}\right)}$. Observe that $\Pr\left[F | E\right]
-      = 0 \Rightarrow \Pr\left[F\right] = \Pr\left[F | \neg E\right] =
-      \frac{1}{T\left(\mathcal{B}\right)}$.
+      $\mathcal{B}$ to \textsc{CombinePubKey} to produce $cpk^*$ results in the
+      $j$th invocation of the Random Oracle. Since $j$ is chosen uniformly at
+      random and using Proposition~\ref{prop:distrib}, $\Pr\left[F | \neg
+      E\right] = \frac{1}{T\left(\mathcal{B}\right)}$. Observe that $\Pr\left[F
+      | E\right] = 0 \Rightarrow \Pr\left[F\right] = \Pr\left[F | \neg E\right]
+      = \frac{1}{T\left(\mathcal{B}\right)}$.
 
       In the case where the event $\left(F \wedge \mathcal{B} \text{ wins}
       \wedge \neg E\right)$ holds, it is
@@ -475,11 +475,12 @@
 
       We now focus at the event $\neg E$. Let $F$ the event in which the call of
       to \textsc{CombinePubKey} that produces $cpk^*$ results in the $j$th
-      invocation of the Random Oracle. Since $j$ is chosen uniformly at random,
-      $\Pr\left[F | \neg E\right] = \frac{1}{T\left(\mathcal{B}\right) +
-      T\left(\adversary\right)}$. Observe that $\Pr\left[F | E\right] = 0
-      \Rightarrow \Pr\left[F\right] = \Pr\left[F | \neg E\right] =
-      \frac{1}{T\left(\mathcal{B}\right) + T\left(\adversary\right)}$.
+      invocation of the Random Oracle. Since $j$ is chosen uniformly at random
+      and using Proposition~\ref{prop:distrib}, $\Pr\left[F | \neg E\right] =
+      \frac{1}{T\left(\mathcal{B}\right) + T\left(\adversary\right)}$. Observe
+      that $\Pr\left[F | E\right] = 0 \Rightarrow \Pr\left[F\right] = \Pr\left[F
+      | \neg E\right] = \frac{1}{T\left(\mathcal{B}\right) +
+      T\left(\adversary\right)}$.
 
       Once more we can reason in the same fashion as in the proof of
       Lemma~\ref{lemma:comb:share} to deduce that
