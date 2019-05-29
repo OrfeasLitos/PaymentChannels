@@ -221,12 +221,9 @@
   some honest player \alice: it spends a funding transaction of a channel that
   contains \alice{} (and thus has a $p_{\alice, F}$ public key) and it was never
   signed by \alice. Suppose that $m$ is the maximum number of channels that a
-  player can open and $\exists \text{ PPT } \environment_P: \Pr[P] \geq a >
-  \negl$. In that case, there is an algorithm (Fig.~\ref{alg:forge:ds}) that
-  wins the \textsf{EUF-CMA} game (Fig.~\ref{game:ds}) with probability at least
-  $\frac{a}{nm} > \negl$ where $n$ is the number of players, thus breaking the
-  security assumption of the Digital Signatures scheme used. Therefore we deduce
-  that $\Pr[P] \leq \negl$.
+  player can open and $\exists \text{ PPT } \environment_P: \Pr[P] = a$. We show
+  in Proposition~\ref{prop:forgery:ds} that $\forall \environment, \Pr[P] \leq
+  nm \cdot \mathrm{E \mhyphen ds}(k) \leq \negl(k)$.
 
   Let $Q$ be the event in which at some point during the execution a transaction
   that has the following two characteristics appears in $\Sigma_{\alice}$, for
@@ -235,11 +232,9 @@
   \mathrm{pay}, n}, p_{\alice, \mathrm{dpay}, n}, p_{\alice, \mathrm{htlc}, n}$
   respectively) and it was never signed by \alice. Suppose that $p$ is the
   maximum total number of opens and updates that a player can perform and that
-  $\exists \text{ PPT } \environment_Q: \Pr[Q] \geq b > \negl$. In that case,
-  there is an algorithm (Fig.~\ref{alg:forge:ibs}) that breaks the Identity
-  Based Signatures scheme with probability at least $\frac{b}{3np}$
-  (Fig.~\ref{game:ibs}), thus breaking the security assumption of the IBS scheme
-  used. Therefore we deduce that $\Pr[Q] \leq \negl$.
+  $\exists \text{ PPT } \environment_Q: \Pr[Q] = b$. We show
+  in Proposition~\ref{prop:forgery:ibs} that $\forall \environment, \Pr[Q] \leq
+  3np \cdot \mathrm{E \mhyphen ibs}(k) \leq \negl(k)$.
 
   Let $R$ be the event in which at some point during the execution a transaction
   that has the following characteristic appears in $\Sigma_{\alice}$, for some
@@ -252,14 +247,13 @@
   \mathrm{com}, n}$ to any party. (This secret information could be used by
   \bob{} to efficiently compute $s_{\bob, \mathrm{rev}, n}$ with
   \textsc{CombineKey}($pb_{\bob, \mathrm{rev}}, sb_{\bob, \mathrm{rev}},
-  p_{\alice, \mathrm{com}, n}, s_{\alice, \mathrm{com}, n}$).) If $p$ is the
-  maximum total number of opens and updates that a player can perform, $m$ is
-  the maximum number of opens a player can perform and $\exists \text{ PPT }
-  \environment_R: Pr[R] \geq c > \negl$, there is an algorithm
-  (Fig.~\ref{alg:forge:share}) that wins the \textsf{share-EUF} game of the
-  Combined Signature Scheme with probability at least $\frac{c -
-  \epsilon_{\mathrm{PRF}}}{nmp}$, thus breaking the security assumption of the
-  Combined Signatures scheme used. Therefore we deduce that $\Pr[R] \leq \negl$.
+  p_{\alice, \mathrm{com}, n}, s_{\alice, \mathrm{com}, n}$).) Suppose that $p$
+  is the maximum total number of opens and updates that a player can perform,
+  $m$ is the maximum number of opens a player can perform and $\exists \text{
+  PPT } \environment_R: Pr[R] = c$. We show in
+  Proposition~\ref{prop:forgery:share} that $\forall \environment, \Pr[R] \leq
+  nmp \cdot \mathrm{E \mhyphen share}(k) + \mathrm{E \mhyphen prf}(k) \leq
+  \negl(k)$.
 
   Lastly, let $S$ be the event in which at some point during the execution a
   transaction that has the following two characteristics appears in
@@ -269,14 +263,9 @@
   it was never signed by \alice. Observe that, since \alice{} is honest, she has
   never sent $s_{\alice, \mathrm{rev}, n}$ to any party. Suppose that $m$ is the
   maximum total number of opens and updates that a player can perform and that
-  $\exists \text{ PPT } \environment_S: \Pr[S] \geq d > \negl$. In that case,
-  there is an algorithm (Fig.~\ref{alg:forge:master}) that wins the
-  \textsf{master-EUF-CMA} game of the Combined Signature Scheme with probability
-  at least $\frac{d}{nm}$, thus breaking the security assumption of the Combined
-  Signatures scheme used. Therefore we deduce that $\Pr[S] \leq \negl$. The rest
-  of the proof operates in the world where $\neg P \wedge \neg Q \wedge \neg R
-  \wedge \neg S$ holds.
-  % TODO: specify exact bounds for P, Q, R, S
+  $\exists \text{ PPT } \environment_S: \Pr[S] = d$. We show in
+  Proposition~\ref{prop:forgery:master} that $\forall \environment, \Pr[S] \leq
+  nm \cdot \mathrm{E \mhyphen master}(k) \leq \negl(k)$.
 
   We can now move on to treating individual messages sent by \environment{}
   during the execution. When \environment{} sends $\left(\textsc{pay}, \bob, x,
