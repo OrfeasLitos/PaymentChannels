@@ -87,6 +87,21 @@
       \end{equation*}
     \end{definition}
 
+    Let $\mathrm{E \mhyphen ibs}(k) = \underset{\adversary \in
+    \mathtt{PPT}}{\sup}\{\Pr[\mathsf{IBS \mhyphen EUF \mhyphen
+    CMA}^{\adversary}\left(1^k\right) = 1]\}$. Then
+    Definition~\ref{def:ibs:secure} is equivalent to the following:
+
+    \begin{definition}
+      \label{def:ibs:secure:sup}
+      An Identity Based Signatures scheme is \emph{\textsf{IBS-EUF-CMA}-secure}
+      if
+      \begin{equation*}
+        \forall k \in \mathbb{N}, \mathrm{E \mhyphen ibs}(k) \leq
+        \mathit{negl}\left(k\right) \enspace.
+      \end{equation*}
+    \end{definition}
+
   \subsection{Construction}
     Parameters: $\mathcal{H}, G$
     \begin{algorithmic}[0]
