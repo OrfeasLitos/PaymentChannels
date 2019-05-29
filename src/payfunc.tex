@@ -223,7 +223,7 @@
           \State $\mathrm{offChainBalance}\left(\mathrm{funder}\right) \gets
           \mathrm{offChainBalance}\left(\mathrm{funder}\right) + x$
           \State $\mathrm{onChainBalance}\left(\mathrm{funder}\right) \gets
-          \mathrm{offChainBalance}\left(\mathrm{funder}\right) - x$
+          \mathrm{onChainBalance}\left(\mathrm{funder}\right) - x$
           \State $\mathtt{channel} \gets \left(\mathrm{funder}, \mathrm{fundee},
           x, 0, 0, \mathit{fchid}, \mathit{pchid}\right)$
           \State add \texttt{channel} to \texttt{channels}
@@ -415,13 +415,13 @@
               \State let $x, y$ the balances of \alice{} and the
               \texttt{channel} counterparty \bob{} respectively
               \State $\mathrm{offChainBalance}\left(\alice\right) \gets
-              \mathrm{offChainBalance}\left(\alice\right) + x$
-              \State $\mathrm{onfChainBalance}\left(\alice\right) \gets
-              \mathrm{onChainBalance}\left(\alice\right) - x$
+              \mathrm{offChainBalance}\left(\alice\right) - x$
+              \State $\mathrm{onChainBalance}\left(\alice\right) \gets
+              \mathrm{onChainBalance}\left(\alice\right) + x$
               \State $\mathrm{offChainBalance}\left(\bob\right) \gets
-              \mathrm{offChainBalance}\left(\bob\right) + y$
+              \mathrm{offChainBalance}\left(\bob\right) - y$
               \State $\mathrm{onChainBalance}\left(\bob\right) \gets
-              \mathrm{onChainBalance}\left(\bob\right) - y$
+              \mathrm{onChainBalance}\left(\bob\right) + y$
               \State remove \texttt{channel} from \texttt{channels}
               \State remove entry from \texttt{pendingClose}(\alice)
               \If{there is an (\textit{fchid}, \_, \_) entry in
