@@ -119,7 +119,7 @@
       \State \textsc{KeyDer}($mpk, msk, l$):
       \Indent
         \State $pk \gets mpk + \mathcal{H}\left(l \concat mpk\right) \cdot G$
-        \State $sk \gets msk + \mathcal{H}\left(l \concat mpk\right) \cdot G$
+        \State $sk \gets msk + \mathcal{H}\left(l \concat mpk\right)$
         \State \Return $(pk, sk)$
       \EndIndent
     \end{algorithmic}
