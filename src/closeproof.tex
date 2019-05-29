@@ -33,7 +33,7 @@
     \ledger}_{\simulator_{\mathrm{LN - Reg - Open - Pay}}, \environment} = 1] -
     \Pr[\textsc{Exec}^{\fpaynet, \ledger}_{\simulator, \environment} = 1]| \leq
     \\
-    nm \cdot \mathrm{E \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen ds}(k) +
+    nm \cdot \mathrm{E \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen ibs}(k) +
     \\
     nmp \cdot \mathrm{E \mhyphen share}(k) + \mathrm{E \mhyphen prf}(k) + nm
     \cdot \mathrm{E \mhyphen master}(k) \enspace.
@@ -209,8 +209,8 @@
   Similarly to the previous proof, if we allow for forgeries again, i.e. if we
   allow the event $P \vee Q \vee R \vee S$, we observe that $\Pr[P \vee Q \vee R
   \vee S] \leq nm \cdot \mathrm{E \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen
-  ds}(k) + nmp \cdot \mathrm{E \mhyphen share}(k) + \mathrm{E \mhyphen prf}(k) +
-  nm \cdot \mathrm{E \mhyphen master}(k)$, where $n$ is the number of players,
+  ibs}(k) + nmp \cdot \mathrm{E \mhyphen share}(k) + \mathrm{E \mhyphen prf}(k)
+  + nm \cdot \mathrm{E \mhyphen master}(k)$, where $n$ is the number of players,
   $m$ is the maximum channels a player can open and $p$ is the maximum number of
   updates a player can perform. We thus deduce that
   \begin{gather*}
@@ -219,7 +219,7 @@
     \ledger}_{\simulator_{\mathrm{LN - Reg - Open - Pay}}, \environment} = 1] -
     \Pr[\textsc{Exec}^{\fpaynet, \ledger}_{\simulator, \environment} = 1]| \leq
     \\
-    nm \cdot \mathrm{E \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen ds}(k) +
+    nm \cdot \mathrm{E \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen ibs}(k) +
     \\
     nmp \cdot \mathrm{E \mhyphen share}(k) + \mathrm{E \mhyphen prf}(k) + nm
     \cdot \mathrm{E \mhyphen master}(k) \enspace.
