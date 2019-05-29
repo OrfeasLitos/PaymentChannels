@@ -207,10 +207,18 @@
 
 \begin{lemma}
   \label{lemma:pay}
-  $\textsc{Exec}^{\fpaynet{}_{\mathrm{, Open}}, \ledger}_{\simulator_{\mathrm{LN
-  - Reg - Open}}, \environment} \overset{c}{\approx}
-  \textsc{Exec}^{\fpaynet{}_{\mathrm{, Pay}}, \ledger}_{\simulator_{\mathrm{LN -
-  Reg - Open - Pay}}, \environment}$
+  \begin{gather*}
+    \forall k \in \mathbb{N}, \text{ PPT } \environment, \\
+    |\Pr[\textsc{Exec}^{\fpaynet{}_{\mathrm{, Open}},
+    \ledger}_{\simulator_{\mathrm{LN - Reg - Open}}, \environment} = 1] -
+    \Pr[\textsc{Exec}^{\fpaynet{}_{\mathrm{, Pay}},
+    \ledger}_{\simulator_{\mathrm{LN - Reg - Open - Pay}}, \environment} = 1]|
+    \leq \\
+    nm \cdot \mathrm{E \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen ds}(k) +
+    \\
+    nmp \cdot \mathrm{E \mhyphen share}(k) + \mathrm{E \mhyphen prf}(k) + nm
+    \cdot \mathrm{E \mhyphen master}(k) \enspace.
+  \end{gather*}
 \end{lemma}
 
 \begin{proof}
@@ -572,4 +580,28 @@
   line~\ref{alg:sim:push:report}). We therefore conclude that \fpaynet{} never
   halts on line~\ref{alg:fpaynet:resolvepay:loops:halt:do} of
   Fig.~\ref{alg:fpaynet:resolvepay:loops}.
+
+  To conclude, given $\neg P \wedge \neg Q \wedge \neg R \wedge \neg S$, it is
+  $\textsc{Exec}^{\fpaynet{}_{\mathrm{, Open}}, \ledger}_{\simulator_{\mathrm{LN
+  - Reg - Open}}, \environment} = \textsc{Exec}^{\fpaynet{}_{\mathrm{, Pay}},
+  \ledger}_{\simulator_{\mathrm{LN - Reg - Open - Pay}}, \environment}$. If we
+  allow for forgeries again, i.e. if we allow the event $P \vee Q \vee R \vee
+  S$, we observe that $\Pr[P \vee Q \vee R \vee S] \leq nm \cdot \mathrm{E
+  \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen ds}(k) + nmp \cdot \mathrm{E
+  \mhyphen share}(k) + \mathrm{E \mhyphen prf}(k) + nm \cdot \mathrm{E \mhyphen
+  master}(k)$, where $n$ is the number of players, $m$ is the maximum channels a
+  player can open and $p$ is the maximum number of updates a player can perform.
+  We thus deduce that
+  \begin{gather*}
+    \forall k \in \mathbb{N}, \text{ PPT } \environment, \\
+    |\Pr[\textsc{Exec}^{\fpaynet{}_{\mathrm{, Open}},
+    \ledger}_{\simulator_{\mathrm{LN - Reg - Open}}, \environment} = 1] -
+    \Pr[\textsc{Exec}^{\fpaynet{}_{\mathrm{, Pay}},
+    \ledger}_{\simulator_{\mathrm{LN - Reg - Open - Pay}}, \environment} = 1]|
+    \leq \\
+    nm \cdot \mathrm{E \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen ds}(k) +
+    \\
+    nmp \cdot \mathrm{E \mhyphen share}(k) + \mathrm{E \mhyphen prf}(k) + nm
+    \cdot \mathrm{E \mhyphen master}(k) \enspace.
+  \end{gather*}
 \end{proof}

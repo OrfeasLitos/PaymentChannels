@@ -8,9 +8,16 @@
 
   \begin{theorem}[Lightning Payment Network Security]
     \label{theorem:simulation}
-    \center $\textsc{Exec}^{\ledger}_{\Pi_{\mathrm{LN}},
-    \adversary_{\mathrm{d}}, \environment} \overset{c}{\approx}
-    \textsc{Exec}^{\fpaynet, \ledger}_{\simulator, \environment}$
+    \begin{gather*}
+      \forall k \in \mathbb{N}, \text{ PPT } \environment, \\
+      |\Pr[\textsc{Exec}^{\ledger}_{\Pi_{\mathrm{LN}}, \adversary_{\mathrm{d}},
+      \environment} = 1] - \Pr[\textsc{Exec}^{\fpaynet, \ledger}_{\simulator,
+      \environment} = 1]| \leq \\
+      2nm \cdot \mathrm{E \mhyphen ds}(k) + 6np \cdot \mathrm{E \mhyphen ds}(k) +
+      \\
+      2nmp \cdot \mathrm{E \mhyphen share}(k) + 2 \cdot \mathrm{E \mhyphen
+      prf}(k) + 2nm \cdot \mathrm{E \mhyphen master}(k) \enspace.
+    \end{gather*}
   \end{theorem}
 
   \begin{proof}
