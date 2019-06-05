@@ -8,6 +8,15 @@
   Appendix~\ref{appendix:combinedsign} for the exact syntax, correctness and
   security definitions, concrete construction and proof of security.
 
+  Previous work on the subject of multi-party
+  signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd1986digital,DBLP:conf/ndss/Ganesan95a,DBLP:conf/crypto/MacKenzieR01,ganesan1994secure}
+  focuses on use-cases where some parties desire to generate a signature without
+  revealing their private information; the latter is created using an
+  interactive protocol. The resulting signatures can be verified by a single
+  verification key, which is also included in the output of the key generation
+  protocol. As we will see however, the primitive defined here has different
+  aims and limitations and, to our knowledge, has not been formalized yet.
+
   A combined signature is a two-party primitive, say \alice{} and \bob{} with
   \bob{} playing the role of the signer and \alice{} the holder of a share of
   the secret-key that is essential for issuing signatures verifiable with the
