@@ -96,10 +96,28 @@ from the time a certain transaction is emitted to the time it becomes finalised
 Moreover, the two pollings should be separated by a time window that allows
 the chain to grow by at least $a$ blocks. 
 
-\item We provide a complete pseudocode description  of the lightning network protocol $\Pi_{\mathrm{LN}}$
-and we prove that indeed it 
-realises  $\fpaynet{}$ under a specific set of cryptographic 
-assumptions. In order to express $\Pi_{\mathrm{LN}}$ in a way that is succinct we identify a number of underlying cryptographic primitives that have been used in the specification of the lightning network in a non-black-box fashion and without reference.  Interestingly, while some of these cryptographic primitives are standard (they include a PRF, a Digital Signature scheme and an Identity Based Signature scheme) there is one additional primitive that is slightly less standard and we call  {\em combined digital signature}. A combined digital signature is a special case of an asymmetric  two-party digital signature primitive (e.g., see \cite{DBLP:conf/ndss/NicolosiKDM03} and references therein) with the characteristic that one of the two parties, the shareholder, generates and stores a share of the signing key, while the public-key of the combined signature is determined non-interactively based on public-key information produced by both two parties.  Issuing signatures requires the availability of the share which is verifiable given the public information provided by the shareholder.   We formalise the combined digital signature primitive and show that the construction lying within the specification of lightning is realising it under standard cryptographic assumptions. In summary, the realisation of  $\fpaynet{}$ is achieved assuming the security of the underlying primitives (which in turn can be based on EC-DLOG and the Random Oracle model). 
+\item We provide a complete pseudocode description of the lightning network
+protocol $\Pi_{\mathrm{LN}}$ and we prove that indeed it realises  $\fpaynet{}$
+under a specific set of cryptographic assumptions. In order to express
+$\Pi_{\mathrm{LN}}$ in a way that is succinct we identify a number of underlying
+cryptographic primitives that have been used in the specification of the
+lightning network in a non-black-box fashion and without reference.
+Interestingly, while some of these cryptographic primitives are standard (they
+include a PRF, a Digital Signature scheme and an Identity Based Signature
+scheme) there is one additional primitive that is slightly less standard and we
+call {\em combined digital signature}. A combined digital signature is a special
+case of an asymmetric two-party digital signature primitive (e.g., see
+\cite{DBLP:conf/ndss/NicolosiKDM03} and references therein) with the
+characteristic that one of the two parties, the shareholder, generates and
+stores a share of the signing key, while the public-key of the combined
+signature is determined non-interactively based on public-key information
+produced by both two parties. Issuing signatures requires the availability of
+the share which is verifiable given the public information provided by the
+shareholder. We formalise the combined digital signature primitive and show that
+the construction lying within the specification of lightning is realising it
+under standard cryptographic assumptions. In summary, the realisation of
+$\fpaynet{}$ is achieved assuming the security of the underlying primitives
+(which in turn can be based on EC-DLOG and the Random Oracle model).
 \end{enumerate}
 
 \noindent {\bf Related Work.} A first suggestion for building 
