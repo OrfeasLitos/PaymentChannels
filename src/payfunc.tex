@@ -320,13 +320,15 @@
                   l.~\ref{alg:protocol:pay:invoice:cltv})
                   \If{$\Sigma_{\dave}$ does not contain an old
                   $\mathtt{remoteCom}_m$}
-                    \If{\texttt{polls}(\dave) contains two elements in
-                    $[\mathtt{OutgoingCltvExpiry}, \mathtt{IncomingCltvExpiry} -
-                    \tochain{}]$ that have a difference of at least \tochain{} \
-                    $\wedge$ \texttt{focs}(\dave) contains
-                    $\mathtt{IncomingCltvExpiry} - \tochain{} \ \wedge$ \\ the
-                    element in \texttt{polls}(\dave) was added before the
-                    element in \texttt{focs}(\dave)}
+                    \If{$\mathtt{IncomingCltvExpiry} -
+                    \mathtt{OutgoingCltvExpiry} < \mathtt{relayDelay}(\alice) +
+                    \tochain{} \vee$ (\texttt{polls}(\dave) contains two
+                    elements in $[\mathtt{OutgoingCltvExpiry},
+                    \mathtt{IncomingCltvExpiry} - \tochain{}]$ that have a
+                    difference of at least \tochain{} \ $\wedge$
+                    \texttt{focs}(\dave) contains $\mathtt{IncomingCltvExpiry} -
+                    \tochain{} \ \wedge$ \\ the element in \texttt{polls}(\dave)
+                    was added before the element in \texttt{focs}(\dave))}
                     \label{alg:fpaynet:resolvepay:haltcond:abs}
                       \State halt \Comment{\dave{} \textsc{poll}ed and fulfilled,
                       but charged}

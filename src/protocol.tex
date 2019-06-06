@@ -599,6 +599,7 @@
             \State ensure $x = x', \mathtt{IncomingCltvExpiry} \geq
             \max\{\mathtt{OutgoingCltvExpiry}, t\} + \mathtt{relayDelay} +
             2\tochain{}$
+            \label{alg:protocol:pay:updateAddHtlc:slack}
             \State ensure $\mathtt{pchid}'$ corresponds to an open channel in
             \texttt{channels} where we have at least $x$
             \State mark \texttt{HTLCNo} as ``intermediary''

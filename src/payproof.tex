@@ -470,31 +470,45 @@
   Fig.~\ref{alg:fpaynet:resolvepay} if \dave{} is not the payer, no malicious
   closure succeeded ($\neg B$) and \dave{} has \textsc{poll}ed in time twice to
   learn the preimage of the HTLC early enough (event $C$) and has attempted to
-  fulfill on chain at the right moment (event $D$) -- i.e. halts in the event
-  $(A \wedge B) \vee (\neg B \wedge C \wedge D)$. $\simulator_{\mathrm{LN - Reg
-  - Open}}$ decides that \dave{} is charged if his previous counterparty did a
-  malicious closure to a channel version without the HTLC and spent their
-  (delayed) output ($B$), or if his next counterparty fulfilled (event $F$) and
-  his previous counterparty timed out the HTLC (event $G$)
-  (Fig.~\ref{alg:sim:resolvepay}, line~\ref{alg:sim:resolvepay:negligent}), --
-  i.e. \dave{} is charged in the event $B \vee (F \wedge G)$.
+  fulfill on chain at the right moment (event $D$). $\fpaynet{}_{\mathrm{,
+  Pay}}$ also halts if the two expiries do not have the expected distance (event
+  $H$) %TODO: reorder event letters so that this H becomes F
+  -- i.e. halts in the event $(A \wedge B) \vee (\neg B \wedge (H \vee (C \wedge
+  D)))$. $\simulator_{\mathrm{LN - Reg - Open}}$ decides that \dave{} is charged
+  if his previous counterparty did a malicious closure to a channel version
+  without the HTLC and spent their (delayed) output ($B$), or if his next
+  counterparty fulfilled (event $F$) and his previous counterparty timed out the
+  HTLC (event $G$) (Fig.~\ref{alg:sim:resolvepay},
+  line~\ref{alg:sim:resolvepay:negligent}), -- i.e. \dave{} is charged in the
+  event $B \vee (F \wedge G)$.
 
   We will now show that $\Pr[A \wedge B | \neg P \wedge \neg Q \wedge \neg R
   \wedge \neg S] = 0 \wedge \Pr[(C \wedge D) \wedge (F \wedge G) | \neg P \wedge
-  \neg Q \wedge \neg R \wedge \neg S] = 0$, from which we can deduce that
-  $\Pr[(A \wedge B) \vee ((C \wedge D) \wedge (F \wedge G)) | \neg P \wedge \neg
-  Q \wedge \neg R \wedge \neg S] = 0$ and thus $\Pr[((A \wedge B) \vee (\neg B
-  \wedge C \wedge D)) \wedge (B \vee (F \wedge G)) | \neg P \wedge \neg Q \wedge
-  \neg R \wedge \neg S] = 0$. This last step holds because $(A \wedge B) \vee
-  ((C \wedge D) \wedge (F \wedge G)) = (A \wedge B) \vee (C \wedge D \wedge F
-  \wedge G)$ and $((A \wedge B) \vee (\neg B \wedge C \wedge D)) \wedge (B \vee
-  (F \wedge G)) = (A \wedge B) \vee (\neg B \wedge C \wedge D \wedge F \wedge
-  G)$ and the latter is a subset of the former.
+  \neg Q \wedge \neg R \wedge \neg S] = 0 \wedge \Pr[H \wedge (F \wedge G) |
+  \neg P \wedge \neg Q \wedge \neg R \wedge \neg S] = 0$, from which we can
+  deduce that $\Pr[(A \wedge B) \vee ((H \vee (C \wedge D)) \wedge (F \wedge G))
+  | \neg P \wedge \neg Q \wedge \neg R \wedge \neg S] = 0$ and thus $\Pr[((A
+  \wedge B) \vee (\neg B \wedge (H \vee (C \wedge D)))) \wedge (B \vee (F \wedge
+  G)) | \neg P \wedge \neg Q \wedge \neg R \wedge \neg S] = 0$. This last step
+  holds because $(A \wedge B) \vee ((H \vee (C \wedge D)) \wedge (F \wedge G)) =
+  (A \wedge B) \vee ((H \vee (C \wedge D) \wedge F \wedge G)$ and $((A \wedge B)
+  \vee (\neg B \wedge (H \vee (C \wedge D)))) \wedge (B \vee (F \wedge G)) = (A
+  \wedge B) \vee (\neg B \wedge (H \vee (C \wedge D)) \wedge F \wedge G)$ and
+  the latter is a subset of the former.
 
   The analysis of the event $A \wedge B$ is identical to the one we did
   previously for the events $E'_1, E'_2$, with $A$ corresponding to $E'_2$ and
   $B$ to $E'_1$. We thus deduce that $\Pr[A \wedge B | \neg P \wedge \neg Q
   \wedge \neg R \wedge \neg S] = 0$.
+
+  Event $H$ is true only if $\mathtt{IncomingCltvExpiry} -
+  \mathtt{OutgoingCltvExpiry} < \mathtt{relayDelay}(\alice) + \tochain$. This
+  cannot happen however for any honest \alice, since \simulator{} will simulate
+  line~\ref{alg:protocol:pay:updateAddHtlc:slack} of
+  Fig.\ref{alg:protocol:pay:updateAddHtlc} with \alice's ITI before having her
+  agree to participate as an intermediary in the multi-hop payment. Therefore
+  $\Pr[H \wedge (F \wedge G) | \neg P \wedge \neg Q \wedge \neg R \wedge \neg S]
+  = 0$.
 
   The only way for event $C$ to be true is if \environment{} sends
   (\textsc{poll}) to \dave{} during the prescribed time period
