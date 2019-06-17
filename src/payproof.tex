@@ -472,28 +472,27 @@
   learn the preimage of the HTLC early enough (event $C$) and has attempted to
   fulfill on chain at the right moment (event $D$). $\fpaynet{}_{\mathrm{,
   Pay}}$ also halts if the two expiries do not have the expected distance (event
-  $H$) %TODO: reorder event letters so that this H becomes F
-  -- i.e. halts in the event $(A \wedge B) \vee (\neg B \wedge (H \vee (C \wedge
-  D)))$. $\simulator_{\mathrm{LN - Reg - Open}}$ decides that \dave{} is charged
-  if his previous counterparty did a malicious closure to a channel version
-  without the HTLC and spent their (delayed) output ($B$), or if his next
-  counterparty fulfilled (event $F$) and his previous counterparty timed out the
-  HTLC (event $G$) (Fig.~\ref{alg:sim:resolvepay},
+  $F$) -- i.e. halts in the event $(A \wedge B) \vee (\neg B \wedge (F \vee (C
+  \wedge D)))$. $\simulator_{\mathrm{LN - Reg - Open}}$ decides that \dave{} is
+  charged if his previous counterparty did a malicious closure to a channel
+  version without the HTLC and spent their (delayed) output ($B$), or if his
+  next counterparty fulfilled (event $G$) and his previous counterparty timed
+  out the HTLC (event $H$) (Fig.~\ref{alg:sim:resolvepay},
   line~\ref{alg:sim:resolvepay:negligent}), -- i.e. \dave{} is charged in the
-  event $B \vee (F \wedge G)$.
+  event $B \vee (G \wedge H)$.
 
   We will now show that $\Pr[A \wedge B | \neg P \wedge \neg Q \wedge \neg R
-  \wedge \neg S] = 0 \wedge \Pr[(C \wedge D) \wedge (F \wedge G) | \neg P \wedge
-  \neg Q \wedge \neg R \wedge \neg S] = 0 \wedge \Pr[H \wedge (F \wedge G) |
+  \wedge \neg S] = 0 \wedge \Pr[(C \wedge D) \wedge (G \wedge H) | \neg P \wedge
+  \neg Q \wedge \neg R \wedge \neg S] = 0 \wedge \Pr[F \wedge (G \wedge H) |
   \neg P \wedge \neg Q \wedge \neg R \wedge \neg S] = 0$, from which we can
-  deduce that $\Pr[(A \wedge B) \vee ((H \vee (C \wedge D)) \wedge (F \wedge G))
+  deduce that $\Pr[(A \wedge B) \vee ((F \vee (C \wedge D)) \wedge (G \wedge H))
   | \neg P \wedge \neg Q \wedge \neg R \wedge \neg S] = 0$ and thus $\Pr[((A
-  \wedge B) \vee (\neg B \wedge (H \vee (C \wedge D)))) \wedge (B \vee (F \wedge
-  G)) | \neg P \wedge \neg Q \wedge \neg R \wedge \neg S] = 0$. This last step
-  holds because $(A \wedge B) \vee ((H \vee (C \wedge D)) \wedge (F \wedge G)) =
-  (A \wedge B) \vee ((H \vee (C \wedge D) \wedge F \wedge G)$ and $((A \wedge B)
-  \vee (\neg B \wedge (H \vee (C \wedge D)))) \wedge (B \vee (F \wedge G)) = (A
-  \wedge B) \vee (\neg B \wedge (H \vee (C \wedge D)) \wedge F \wedge G)$ and
+  \wedge B) \vee (\neg B \wedge (F \vee (C \wedge D)))) \wedge (B \vee (G \wedge
+  H)) | \neg P \wedge \neg Q \wedge \neg R \wedge \neg S] = 0$. This last step
+  holds because $(A \wedge B) \vee ((F \vee (C \wedge D)) \wedge (G \wedge H)) =
+  (A \wedge B) \vee ((F \vee (C \wedge D) \wedge G \wedge H)$ and $((A \wedge B)
+  \vee (\neg B \wedge (F \vee (C \wedge D)))) \wedge (B \vee (G \wedge H)) = (A
+  \wedge B) \vee (\neg B \wedge (F \vee (C \wedge D)) \wedge G \wedge H)$ and
   the latter is a subset of the former.
 
   The analysis of the event $A \wedge B$ is identical to the one we did
@@ -501,13 +500,13 @@
   $B$ to $E'_1$. We thus deduce that $\Pr[A \wedge B | \neg P \wedge \neg Q
   \wedge \neg R \wedge \neg S] = 0$.
 
-  Event $H$ is true only if $\mathtt{IncomingCltvExpiry} -
+  Event $F$ is true only if $\mathtt{IncomingCltvExpiry} -
   \mathtt{OutgoingCltvExpiry} < \mathtt{relayDelay}(\alice) + \tochain$. This
   cannot happen however for any honest \alice, since \simulator{} will simulate
   line~\ref{alg:protocol:pay:updateAddHtlc:slack} of
   Fig.\ref{alg:protocol:pay:updateAddHtlc} with \alice's ITI before having her
   agree to participate as an intermediary in the multi-hop payment. Therefore
-  $\Pr[H \wedge (F \wedge G) | \neg P \wedge \neg Q \wedge \neg R \wedge \neg S]
+  $\Pr[F \wedge (G \wedge H) | \neg P \wedge \neg Q \wedge \neg R \wedge \neg S]
   = 0$.
 
   The only way for event $C$ to be true is if \environment{} sends
@@ -529,13 +528,13 @@
   (Fig.~\ref{alg:fpaynet:poll}, line~\ref{alg:fpaynet:poll:send}) (since, as we
   saw earlier, $\fpaynet{}_{\mathrm{, Pay}}$ never halts).
 
-  Event $G$ happens only when the previous counterparty successfully appends
+  Event $H$ happens only when the previous counterparty successfully appends
   \texttt{HTLC-timeout} to $\Sigma_{\dave}$, which is a valid transaction only
   from the block of height $\mathtt{IncomingCltvExpiry} + 1$ and on, or if the
   previous counterparty learns the preimage of the HTLC and forges a signature
   valid by \dave's public HTLC key, or if the previous counterparty forges a
   signature valid by \dave's public revocation key; the two latter scenarios can
-  never happen. Thus, given that $F$ happens until a moment when
+  never happen. Thus, given that $G$ happens until a moment when
   $|\Sigma_{\dave}| \leq \mathtt{IncomingCltvExpiry} - \tochain{}$, \dave{} has
   the time to successfully fulfill the HTLC. Given $C$, \dave{} has
   \textsc{poll}ed at two moments $h_1, h_2 \in$ [\texttt{OutgoingCltvExpiry},
@@ -564,8 +563,8 @@
   (at block height $h_2$) necessarily reveals the \texttt{HTLC-success} to
   \dave{} and subsequently the (\textsc{fulfillOnChain}) causes \dave{} to
   fulfill the HTLC with the previous counterparty, as argued above. Therefore in
-  no case \dave{} is charged for the payment, i.e. $\Pr[(C \wedge D) \wedge (F
-  \wedge G) | \neg P \wedge \neg Q \wedge \neg R \wedge \neg S] = 0$.
+  no case \dave{} is charged for the payment, i.e. $\Pr[(C \wedge D) \wedge (G
+  \wedge H) | \neg P \wedge \neg Q \wedge \neg R \wedge \neg S] = 0$.
 
   It remains to be proven that the halt of
   line~\ref{alg:fpaynet:resolvepay:loops:halt:do} in
