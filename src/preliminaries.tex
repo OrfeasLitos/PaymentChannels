@@ -6,8 +6,8 @@
   \noindent {\bf Universal Composability framework.}
 In simulation-based security, cryptographic tasks are defined via an
     ideal ``functionality'' $\mathcal{F}$, which can be thought of as 
-    a trusted third party that gets the
-    inputs of all parties and returns the outputs they expect while also interacting with the adversary. In this way, the functionality expresses the essence of a cryptographic task and its security features. A protocol $\Pi$ realises the functionality $\mathcal{F}$ if for any  real world adversary
+    an uncorruptible entity that gets the
+    inputs of all parties and returns the expected outputs while also interacting with the adversary in a prescribed manner. In this way, the functionality expresses the essence of a cryptographic task and its security features. A protocol $\Pi$ realises the functionality $\mathcal{F}$ if for any  real world adversary
   we can define a ``simulator'' \simulator{}, acting as an ideal world adversary, 
   such that any environment 
     cannot distinguish between the real world and the ideal world executions.
