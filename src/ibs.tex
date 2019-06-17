@@ -79,27 +79,17 @@
     \label{def:ibs:secure}
     An Identity Based Signatures scheme is \emph{\textsf{IBS-EUF-CMA}-secure}
     if
-    \begin{equation*}
+    \begin{gather*}
       \forall k \in \mathbb{N}, \forall \adversary \in \mathtt{PPT},
       \Pr\left[\mathsf{IBS \mhyphen EUF \mhyphen
-      CMA}^{\adversary}\left(1^k\right) = 1\right] =
-      \mathit{negl}\left(k\right) \enspace.
-    \end{equation*}
-  \end{definition}
-
-  Let $\mathrm{E \mhyphen ibs}(k) = \underset{\adversary \in
-  \mathtt{PPT}}{\sup}\{\Pr[\mathsf{IBS \mhyphen EUF \mhyphen
-  CMA}^{\adversary}\left(1^k\right) = 1]\}$. Then
-  Definition~\ref{def:ibs:secure} is equivalent to the following:
-
-  \begin{definition}
-    \label{def:ibs:secure:sup}
-    An Identity Based Signatures scheme is \emph{\textsf{IBS-EUF-CMA}-secure}
-    if
-    \begin{equation*}
+      CMA}^{\adversary}\left(1^k\right) = 1\right] = \mathit{negl}\left(k\right)
+      \text{or equivalently} \\
       \forall k \in \mathbb{N}, \mathrm{E \mhyphen ibs}(k) =
-      \mathit{negl}\left(k\right) \enspace.
-    \end{equation*}
+      \mathit{negl}\left(k\right) \enspace, \\
+      \text{where } \mathrm{E \mhyphen ibs}(k) = \underset{\adversary \in
+      \mathtt{PPT}}{\sup}\{\Pr[\mathsf{IBS \mhyphen EUF \mhyphen
+      CMA}^{\adversary}\left(1^k\right) = 1]\} \enspace.
+    \end{gather*}
   \end{definition}
 
   \subsection{Construction}

@@ -30,22 +30,15 @@
       coins}}}{\Pr}[\adversary^{f(\cdot)}(1^k) = 1]| = \negl(k) \enspace,
     \end{equation*}
     where \adversary{} is given oracle access to $F(s, \cdot)$ and $f(\cdot)$ in
-    each of the probability expressions above respectively.
+    each of the probability expressions above respectively. Equivalently, $F$ is
+    pseudorandom if
+    \begin{gather*}
+      \forall k \in \mathbb{N}, \mathrm{E \mhyphen prf}(k) =
+      \mathit{negl}\left(k\right) \enspace, \\
+      \text{where } \mathrm{E \mhyphen prf}(k) = \underset{\adversary \in
+      \mathtt{PPT}}{\sup}\{|\underset{\substack{s \in \{0, 1\}^k \\
+      \adversary\text{'s coins}}}{\Pr}[\adversary^{F(s, \cdot)}(1^k) = 1] -
+      \underset{\substack{f \in \mathsf{Func}_k \\ \adversary\text{'s
+      coins}}}{\Pr}[\adversary^{f(\cdot)}(1^k) = 1]|\} \enspace.
+    \end{gather*}
   \end{definition}
-
-    Let $\mathrm{E \mhyphen prf}(k) = \underset{\adversary \in
-    \mathtt{PPT}}{\sup}\{|\underset{\substack{s \in \{0, 1\}^k \\
-    \adversary\text{'s coins}}}{\Pr}[\adversary^{F(s, \cdot)}(1^k) = 1] -
-    \underset{\substack{f \in \mathsf{Func}_k \\ \adversary\text{'s
-    coins}}}{\Pr}[\adversary^{f(\cdot)}(1^k) = 1]|\}$. Then
-    Definition~\ref{def:prf:secure} is equivalent to the following:
-
-    \begin{definition}
-      \label{def:prf:secure:sup}
-      $F: \{0, 1\}^k \times \{0, 1\}^k \rightarrow \{0, 1\}^k$ is pseudorandom
-      if
-      \begin{equation*}
-        \forall k \in \mathbb{N}, \mathrm{E \mhyphen prf}(k) =
-        \mathit{negl}\left(k\right) \enspace.
-      \end{equation*}
-    \end{definition}

@@ -57,23 +57,14 @@
   \begin{definition}
     \label{def:ds:secure}
     A Digital Signatures scheme is \emph{strongly \textsf{EUF-CMA}-secure} if
-    \begin{equation*}
+    \begin{gather*}
       \forall k \in \mathbb{N}, \forall \adversary \in \mathtt{PPT},
-      \Pr\left[\mathsf{EUF \mhyphen CMA}^{\adversary}\left(1^k\right) =
-      1\right] = \mathit{negl}\left(k\right) \enspace.
-    \end{equation*}
-  \end{definition}
-
-  Let $\mathrm{E \mhyphen ds}(k) = \underset{\adversary \in
-  \mathtt{PPT}}{\sup}\{\Pr[\mathsf{EUF \mhyphen
-  CMA}^{\adversary}\left(1^k\right) = 1]\}$. Then
-  Definition~\ref{def:ds:secure} is equivalent to the following:
-
-  \begin{definition}
-    \label{def:ds:secure:sup}
-    A Digital Signatures scheme is \emph{\textsf{EUF-CMA}-secure} if
-    \begin{equation*}
+      \Pr\left[\mathsf{EUF \mhyphen CMA}^{\adversary}\left(1^k\right) = 1\right]
+      = \mathit{negl}\left(k\right) \text{or equivalently} \\
       \forall k \in \mathbb{N}, \mathrm{E \mhyphen ds}(k) =
-      \mathit{negl}\left(k\right) \enspace.
-    \end{equation*}
+      \mathit{negl}\left(k\right) \enspace, \\
+      \text{where } \mathrm{E \mhyphen ds}(k) = \underset{\adversary \in
+      \mathtt{PPT}}{\sup}\{\Pr[\mathsf{EUF \mhyphen
+      CMA}^{\adversary}\left(1^k\right) = 1]\} \enspace.
+    \end{gather*}
   \end{definition}
