@@ -42,38 +42,31 @@ drawn from the   UC formalisation of~\cite{BMTZ17,genesis}.
 
   \begin{proposition}
     \label{prop:tochain}
-    Consider any synchronised honest party that wishes to place a transaction
-    \tx in some specific block height $[h+1, h+t-1]$ where $t$ is a parameter
-    and $h$ an arbitrary positive integer. Then, as long as $t\geq 1+(2+r)\windowSize$, where $r = \lceil (\maxTime +  \frac{\vdelay}{2})/ \minTime \rceil$, \tx is
-    guaranteed to be included in the intended block range as long as the party
-    submits $\tx$ to the ledger functionality 
-    by the time the block indexed by $h+ t - 1 - (2+r) \windowSize$
-    is added to $\state$ in its view.
+    Consider a synchronised honest party that submits a transaction \tx to the
+    ledger functionality by the time the block indexed by $h$ is added to
+    $\state$ in its view. Then \tx is guaranteed to be included in the block
+    range $[h+1, h + (2 + r) \windowSize]$, where $r = \lceil (\maxTime +
+    \frac{\vdelay}{2})/ \minTime \rceil$.
   \end{proposition}
 
   \begin{proof}
-Consider $\tau^{\stkh}_{h+x}$ to be 
-the round that a party $\stkh$  becomes aware of the 
-$(h+x)$-th block in the $\state$. It follows that 
-$\tau_{h+x} \leq \tau^{\stkh}_{h+x}$ where $\tau_{h+x}$ is the round the $(h+x)$ enters $\state$. Note that by time $\tau_{h+x} + \maxTime$ another $\windowSize$
-blocks are added to $\state$ and thus $\tau^{\stkh}_{h+x} 
-\leq \tau_{h+x}  + \maxTime$. 
+    Consider $\tau^{\stkh}_h$ to be the round that a party $\stkh$  becomes
+    aware of the $h$-th block in the $\state$. It follows that $\tau_h \leq
+    \tau^{\stkh}_h$ where $\tau_h$ is the round block $h$ enters $\state$. Note
+    that by time $\tau_h + \maxTime$ another $\windowSize$ blocks are added to
+    $\state$ and thus $\tau^{\stkh}_h \leq \tau_h + \maxTime$.
 
-Suppose $\stkh$ transmits the transaction $\tx$
-to the ledger at time $\tau^{\stkh}_{h+x}$. Observe that as
-long as $\tau_{h+x} + \maxTime$ is $\vdelay/2$ 
-before the time that block with index $h+t-1-2\windowSize$ 
-enters $\state$, then $\tx$ is guaranteed to enter the $\state$ in a 
-block with index up to $h+t-1$ since $\advBlocksinWindowSize<\windowSize$. 
-It follows we need
-$\tau_{h+x}  + \maxTime < \tau_{h+t-1-2\windowSize} - \frac{\vdelay}{2} $. 
-Let $r = \lceil (\maxTime +  \frac{\vdelay}{2})/ \minTime \rceil$.
-Recall that in a period of $\minTime$ rounds at most $\windowSize$
-blocks enter $\state$. As a result $r \windowSize$ blocks require
-at least $r \minTime \geq \maxTime +  \frac{\vdelay}{2}$ rounds. 
-It follows that if $t \geq 1+(2+r)\windowSize$
-and $x = t - 1 - (2+r) \windowSize$
-the inequality follows. 
+    Suppose $\stkh$ submits the transaction $\tx$ to the ledger at time
+    $\tau^{\stkh}_h$. Observe that as long as $\tau_h + \maxTime$ is $\vdelay/2$
+    before the time that block with index $h + t - 2\windowSize$ enters
+    $\state$, then $\tx$ is guaranteed to enter the $\state$ in a block with
+    index up to $h + t$ where since $\advBlocksinWindowSize < \windowSize$. It
+    follows we need $\tau_h + \maxTime < \tau_{h + t - 2\windowSize} -
+    \frac{\vdelay}{2}$. Let $r = \lceil (\maxTime + \frac{\vdelay}{2})/ \minTime
+    \rceil$. Recall that in a period of $\minTime$ rounds at most $\windowSize$
+    blocks enter $\state$. As a result $r \cdot \windowSize$ blocks require at
+    least $r \cdot \minTime \geq \maxTime + \frac{\vdelay}{2}$ rounds. We deduce
+    that if $t \geq (2 + r)\windowSize$ the inequality follows.
   \end{proof}
 
   \begin{systembox}{$\Fledger$}\vspace{1ex}
