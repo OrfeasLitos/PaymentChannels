@@ -40,25 +40,39 @@
     their view).
     \item \fpaynet{} expects \simulator{} to send a (\textsc{resolvePays},
     \texttt{charged}) message that gives details on the outcome of one or more
-    multi-hop payments. \fpaynet{} checks that for each payment the charged
-    party was (a) the one that initiated the payment, (b) a malicious party or
-    (c) a honest party that is negligent. The latter case happens when the
-    honest party \aggelos{break to bullets/enumerate} either did not \textsc{poll} in time to catch a malicious
-    closure similarly to the previous bullet (Fig.~\ref{alg:fpaynet:resolvepay},
-    line~\ref{alg:fpaynet:resolvepay:haltcond:rel}) or did not \textsc{poll}
-    twice while the block height in the view of the player was within
-    $[\mathtt{OutgoingCltvExpiry}, \mathtt{IncomingCltvExpiry} - \tochain]$ with
-    a distance of at least \tochain{} between the two \textsc{poll}s in order to
-    learn the preimage from a correct closure, or did not enforce the retrieval
-    of her funds (\aggelos{ Substitute by fulfill on chain message}) when the chain in
-    view had height $\mathtt{IncomingCltvExpiry} - \tochain$
-    (Fig.~\ref{alg:fpaynet:resolvepay},
-    line~\ref{alg:fpaynet:resolvepay:haltcond:abs}). \fpaynet{} ensures that the
-    two expiries have a distance of at least $\mathtt{relayDelay}(\alice) +
-    \tochain$. In case the charged party was honest and non-negligent,
-    \fpaynet{} halts. It also halts if a particular payment resulted in a
-    channel update for which \simulator{} did not inform \fpaynet{}
-    (Fig.~\ref{alg:fpaynet:resolvepay:loops},
+    multi-hop payments. For each resolved payment, the message includes two
+    expiry values in block height: \texttt{OutgoingCltvExpiry}, which is the
+    largest block in which the charged party could claim money from the previous
+    hop (closer to the payment initiator) and \texttt{IncomingCltvExpiry}, which
+    is the smallest block in which the charged party could claim money from the
+    next hop (closer to the payment receiver). \fpaynet{} checks that for each
+    payment the charged party was (a) the one that initiated the payment, (b) a
+    malicious party or (c) a honest party that is negligent. The latter case
+    happens when the honest party either:
+    \begin{enumerate}
+      \item did not \textsc{poll} in time to catch a malicious closure
+      (similarly to the \texttt{poll} message)
+      (Fig.~\ref{alg:fpaynet:resolvepay},
+      line~\ref{alg:fpaynet:resolvepay:haltcond:rel}) or
+      \item did not \textsc{poll} twice while the block height in the view of
+      the player was in $[\mathtt{OutgoingCltvExpiry},
+      \mathtt{IncomingCltvExpiry} - \tochain]$ with a distance of at least
+      \tochain{} between the two \textsc{poll}s or
+      \item did not enforce the retrieval of her funds when the chain in view
+      had height $\mathtt{IncomingCltvExpiry} - \tochain$
+      (Fig.~\ref{alg:fpaynet:resolvepay},
+      line~\ref{alg:fpaynet:resolvepay:haltcond:abs}) with a
+      \textsc{fulfillOnChain} message, as discussed below.
+    \end{enumerate}
+    Note that $\tochain$ is the maximum number of blocks an honest party needs
+    to wait from the moment a valid transaction is submitted until it is added
+    to the ledger state (Proposition~\ref{prop:tochain}). \fpaynet{} also
+    ensures that the two expiries (\texttt{Outgoing} and
+    \texttt{IncomingCltvExpiry}) have a distance of at least
+    $\mathtt{relayDelay}(\alice) + \tochain$, otherwise it halts. In case the
+    charged party was honest and non-negligent, \fpaynet{} halts. It also halts
+    if a particular payment resulted in a channel update for which \simulator{}
+    did not inform \fpaynet{} (Fig.~\ref{alg:fpaynet:resolvepay:loops},
     line~\ref{alg:fpaynet:resolvepay:loops:halt:do}).
     \item \fpaynet{} executes the function
     \texttt{checkClosed}($\Sigma_{\alice}$) every time it receives
