@@ -35,7 +35,7 @@
     she did not manage to punish the counterparty. Refer to
     lines~\ref{alg:fpaynet:poll:ifdsforgery}
     and~\ref{alg:fpaynet:poll:haspolled} of Fig.~\ref{alg:fpaynet:poll} for more
-    details. If \fpaynet{} does not halt, it leaks \simulator{} the polling
+    details. If \fpaynet{} does not halt, it leaks to \simulator{} the polling
     details (including the identity of the poller and the state of the ledger in
     their view).
     \item \fpaynet{} expects \simulator{} to send a (\textsc{resolvePays},
@@ -43,14 +43,14 @@
     multi-hop payments. \fpaynet{} checks that for each payment the charged
     party was (a) the one that initiated the payment, (b) a malicious party or
     (c) a honest party that is negligent. The latter case happens when the
-    honest party either did not \textsc{poll} in time to catch a malicious
+    honest party \aggelos{break to bullets/enumerate} either did not \textsc{poll} in time to catch a malicious
     closure similarly to the previous bullet (Fig.~\ref{alg:fpaynet:resolvepay},
     line~\ref{alg:fpaynet:resolvepay:haltcond:rel}) or did not \textsc{poll}
     twice while the block height in the view of the player was within
     $[\mathtt{OutgoingCltvExpiry}, \mathtt{IncomingCltvExpiry} - \tochain]$ with
     a distance of at least \tochain{} between the two \textsc{poll}s in order to
     learn the preimage from a correct closure, or did not enforce the retrieval
-    of her funds by using the preimage to fulfill on chain when the chain in
+    of her funds (\aggelos{ Substitute by fulfill on chain message}) when the chain in
     view had height $\mathtt{IncomingCltvExpiry} - \tochain$
     (Fig.~\ref{alg:fpaynet:resolvepay},
     line~\ref{alg:fpaynet:resolvepay:haltcond:abs}). \fpaynet{} ensures that the
