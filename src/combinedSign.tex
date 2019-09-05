@@ -148,18 +148,19 @@
     \end{algorithmic}
 
     \begin{algorithmic}[0]
-      \State \textsc{CombineKey}($mpk, msk, pk, sk$):
+      \State \textsc{CombinePubKey}($mpk, pk$):
       \Indent
-        \State \Return $msk \cdot \mathcal{H}\left(mpk \concat pk\right) + sk
+        \State \Return $mpk \cdot \mathcal{H}\left(mpk \concat pk\right) + pk
         \cdot \mathcal{H}\left(pk \concat mpk\right)$
       \EndIndent
     \end{algorithmic}
 
     \begin{algorithmic}[0]
-      \State \textsc{CombinePubKey}($mpk, pk$):
+      \State \textsc{CombineKey}($mpk, msk, pk, sk$):
       \Indent
-        \State \Return $mpk \cdot \mathcal{H}\left(mpk \concat pk\right) + pk
-        \cdot \mathcal{H}\left(pk \concat mpk\right)$
+        \State \Return $(\textsc{CombinePubKey}(mpk, pk), msk \cdot
+        \mathcal{H}\left(mpk \concat pk\right) + sk \cdot \mathcal{H}\left(pk
+        \concat mpk\right))$
       \EndIndent
     \end{algorithmic}
 
