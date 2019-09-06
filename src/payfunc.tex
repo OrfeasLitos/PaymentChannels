@@ -169,8 +169,8 @@
           \State ensure that there is a \texttt{pendingOpen}(\textit{fchid})
           entry with temporary id \textit{tid}
           \label{alg:fpaynet:announced:valid}
-          \State add ``\alice{} announced'', $p_{\alice, F}, p_{\bob, F}$,
-          \textit{pchid} to \texttt{pendingOpen}(\textit{fchid})
+          \State add $p_{\alice, F}, p_{\bob, F}$, \textit{pchid} and  mark
+          ``\alice{} announced'' to \texttt{pendingOpen}(\textit{fchid})
           \label{alg:fpaynet:announced:add}
         \EndIndent
         \Statex
