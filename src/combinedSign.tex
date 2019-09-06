@@ -13,12 +13,13 @@
     \item $\left\{0, 1\right\} \gets \textsc{VerifyCS}\left(\sigma, m,
     cpk\right)$
   \end{itemize}
-
-  We demand that the following holds for a scheme to have correctness:
+  We demand that these three properties hold for a scheme to have correctness:
   \begin{itemize}
     \item $\forall k \in \mathbb{N},$ \\
     $\Pr[\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$ \\
     $\textsc{TestKey}(pk, sk) = 1] = 1$
+
+    I.e. \textsc{KeyShareGen}() must always generate a valid keypair.
 
     \item $\forall k \in \mathbb{N},$ \\
     $\Pr[(mpk, msk) \gets \textsc{MasterKeyGen}\left(1^k\right),$ \\
@@ -28,14 +29,21 @@
     $cpk_2 \gets \textsc{CombinePubKey}\left(mpk, pk\right),$ \\
     $cpk_1 = cpk_2] = 1$
 
+    I.e. for suitable input, \textsc{CombinePubKey}() and \textsc{CombineKey}()
+    produce the same public key.
+
     \item $\forall k \in \mathbb{N}, m \in \mathcal{M},$ \\
     $\Pr[(mpk, msk) \gets \textsc{MasterKeyGen}\left(1^k\right),$ \\
     $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$ \\
     $\left(cpk, csk\right) \gets \textsc{CombineKey}\left(mpk, msk, pk,
     sk\right),$ \\
     $\textsc{VerifyCS}(\textsc{SignCS}(m, csk), m, cpk) = 1] = 1$
-  \end{itemize}
 
+    I.e. for suitable input, honestly generated signatures always verify
+    correctly.
+  \end{itemize}
+  Last but not least, the security of the scheme is defined in terms of two
+  games:
   \begin{figure}[!htbp]
     \begin{gamebox}{$\mathsf{share \mhyphen
     EUF}^{\adversary}\left(1^k\right)$}
@@ -57,7 +65,7 @@
         \EndIf
       \end{algorithmic}
     \end{gamebox}
-    \caption{}
+    \caption{Key Share: Existential Unforgeability -- Key-Only Attack}
     \label{game:comb:share}
   \end{figure}
   \begin{definition}
@@ -71,7 +79,8 @@
       \mathit{negl}\left(k\right) \enspace, \\
       \text{where } \mathrm{E \mhyphen share}(k) = \underset{\adversary \in
       \mathtt{PPT}}{\sup}\{\Pr[\mathsf{share \mhyphen
-      EUF}^{\adversary}\left(1^k\right) = 1]\} \enspace.
+      EUF}^{\adversary}\left(1^k\right) = 1]\} \text{ (cf.
+      Fig~\ref{game:comb:share})} \enspace.
     \end{gather*}
   \end{definition}
 
@@ -104,7 +113,7 @@
         \EndIf
       \end{algorithmic}
     \end{gamebox}
-    \caption{}
+    \caption{Master Key: Existential Unforgeability -- Chosen Message Attack}
     \label{game:comb:master}
   \end{figure}
   \begin{definition}
@@ -119,7 +128,8 @@
       \mathit{negl}\left(k\right) \enspace, \\
       \text{where } \mathrm{E \mhyphen master}(k) = \underset{\adversary \in
       \mathtt{PPT}}{\sup}\{\Pr[\mathsf{master \mhyphen
-      EUF-CMA}^{\adversary}\left(1^k\right) = 1]\} \enspace.
+      EUF-CMA}^{\adversary}\left(1^k\right) = 1]\} \text{ (cf.
+      Fig~\ref{game:comb:master})} \enspace.
     \end{gather*}
   \end{definition}
 
@@ -127,6 +137,13 @@
     A Combined Signatures scheme is \emph{\textsf{combine-EUF}-secure} if it
     is both \textsf{share-EUF}-secure and \textsf{master-EUF-CMA}-secure.
   \end{definition}
+
+  In conclusion, a collection of algoritms is said to be a secure Combined
+  Signatures scheme if it conforms to the syntax of the seven aforementioned
+  algorithms, it satisfies the three correctness properties and provides
+  existential unforgeability against key-only attacks with respect to key shares
+  and existential unforgeability against chosen message attacks with respect to
+  master keys.
 
   \subsection{Construction}
     We here define the particular construction for Combined Signatures used in
