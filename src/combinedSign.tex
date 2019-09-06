@@ -5,9 +5,9 @@
   \begin{itemize}
     \item $\left(mpk, msk\right) \gets \textsc{MasterKeyGen}\left(1^k\right)$
     \item $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right)$
+    \item $cpk_l \gets \textsc{CombinePubKey}\left(mpk, pk\right)$
     \item $\left(cpk_l, csk_l\right) \gets \textsc{CombineKey}\left(mpk,
     msk, pk, sk\right)$
-    \item $cpk_l \gets \textsc{CombinePubKey}\left(mpk, pk\right)$
     \item $\{0, 1\} \gets \textsc{TestKey}\left(sk, pk\right)$
     \item $\sigma \gets \textsc{SignCS}\left(m, csk\right)$
     \item $\left\{0, 1\right\} \gets \textsc{VerifyCS}\left(\sigma, m,
