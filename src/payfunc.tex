@@ -145,6 +145,18 @@
     \label{alg:fpaynet:support}
   \end{figure}
 
+  The process of \alice{} opening a channel with \bob{} is as follows: First
+  \alice{} asks \fpaynet{} to open and \fpaynet{} informs \simulator.
+  \simulator{} provides the necessary keys and IDs for the new channel to
+  \fpaynet. \alice{} asks \fpaynet{} to check if \ledger{} contains the funding
+  transaction from \alice's point of view. If it does, \fpaynet{} activates
+  \simulator, who in turn returns control to \fpaynet{}. Now \fpaynet{} checks
+  that the funding transaction is in the \ledger{} also from \bob's point of
+  view and in case it does, it notifies \simulator. \simulator{} then confirms
+  that to \fpaynet{} that the channel is open and \fpaynet{} finally stores the
+  channel as open. This last exchange is needed to match the real-world
+  interaction.
+
   \begin{figure}[H]
     \begin{systembox}{\fpaynet{} - open}
       \begin{algorithmic}[1]
