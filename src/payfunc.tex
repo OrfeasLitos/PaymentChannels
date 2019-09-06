@@ -58,6 +58,19 @@
     \label{alg:fpaynet:interface}
   \end{figure}
 
+  All players need to register in order to use channels. The registration of
+  \alice{} works as follows: \alice{} inputs her desired delay and relayDelay
+  that will be used for all her future channels. The first denotes how often she
+  has to check the blockchain for revoked commitments and the second defines the
+  minimum time distance between incoming and outgoing CLTV expiries. \fpaynet{}
+  then informs \simulator{}, who sends back a long-lived public key for \alice.
+  This key represents \alice's account, from where \fpaynet{} can get coins to
+  open new channels on her behalf and to place coins of closed channels. The key
+  is sent to \alice{} who moves some initial funds to it and notifies
+  \fpaynet{}. She is now registered. The exact logic is found in
+  Fig.~\ref{alg:fpaynet:support}, which also contains the actions of \fpaynet{}
+  related to corruptions.
+
   \begin{figure}[H]
     \begin{systembox}{\fpaynet{} - registration and corruption}
       \begin{algorithmic}[1]
