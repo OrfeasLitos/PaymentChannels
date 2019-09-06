@@ -182,6 +182,17 @@
     \end{algorithmic}
 
     \begin{algorithmic}[0]
+      \State \textsc{TestKey}($pk, sk$):
+      \Indent
+        \If{$pk = G \cdot sk$}
+          \State \Return 1
+        \Else
+          \State \Return 0
+        \EndIf
+      \EndIndent
+    \end{algorithmic}
+
+    \begin{algorithmic}[0]
       \State \textsc{SignCS}($m, csk$):
       \Indent
         \State \Return \textsc{SignDS}($m, csk$)
