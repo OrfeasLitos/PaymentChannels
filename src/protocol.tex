@@ -811,7 +811,7 @@
           \bob{} with ID \textit{pchid} marked as ``waiting for
           \textsc{revokeAndAck}''
           \label{alg:protocol:pay:revokeAndAck:ensure}
-          \If{$\textsc{TestKey}\left(st_{\mathrm{com}, n}, pt_{\mathrm{com},
+          \If{$\textsc{TestKey}\left(pt_{\mathrm{com}, n}, st_{\mathrm{com},
           n}\right) \neq 1$} \Comment{wrong $st_{\mathrm{com}, n}$ - closing}
             \State close channel (as in Fig.~\ref{alg:protocol:close})
             \State \Return

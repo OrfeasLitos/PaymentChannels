@@ -8,7 +8,7 @@
     \item $cpk_l \gets \textsc{CombinePubKey}\left(mpk, pk\right)$
     \item $\left(cpk_l, csk_l\right) \gets \textsc{CombineKey}\left(mpk,
     msk, pk, sk\right)$
-    \item $\{0, 1\} \gets \textsc{TestKey}\left(sk, pk\right)$
+    \item $\{0, 1\} \gets \textsc{TestKey}\left(pk, sk\right)$
     \item $\sigma \gets \textsc{SignCS}\left(m, csk\right)$
     \item $\left\{0, 1\right\} \gets \textsc{VerifyCS}\left(\sigma, m,
     cpk\right)$
@@ -153,14 +153,14 @@
     \begin{algorithmic}[0]
       \State \textsc{MasterKeyGen}($1^k$, rand):
       \Indent
-        \State \Return (rand, $G \cdot \mathrm{rand}$)
+        \State \Return ($G \cdot \mathrm{rand}$, rand)
       \EndIndent
     \end{algorithmic}
 
     \begin{algorithmic}[0]
       \State \textsc{KeyShareGen}($1^k$, rand):
       \Indent
-        \State \Return (rand, $G \cdot \mathrm{rand}$)
+        \State \Return ($G \cdot \mathrm{rand}$, rand)
       \EndIndent
     \end{algorithmic}
 
