@@ -269,6 +269,16 @@
     \label{alg:fpaynet:open}
   \end{figure}
 
+  When instructed to perform a payment, \fpaynet{} simply takes note of the
+  message and forwards it to \simulator. It also remembers to inform the payer
+  that the payment has been completed when \simulator{} says so. Observe here
+  that \fpaynet{} trusts \simulator{} to correctly carry out channel updates.
+  While counterintuitive, it allows \fpaynet{} to ignore the details of channel
+  updates, signatures, key and transaction handling. Nevertheless, as we will
+  see \fpaynet{} keeps track of requested and ostensibly carried out updates and
+  ensures that upon channel closure the balances are as expected, therefore
+  ensuring funds security.
+
   \begin{figure}[H]
     \begin{systembox}{\fpaynet{} - pay}
       \begin{algorithmic}[1]
