@@ -354,7 +354,7 @@
                     malicious closure}
                     \label{alg:fpaynet:resolvepay:halt:rel}
                   \Else
-                    \State $\mathtt{negligent}(\alice) \gets \true$
+                    \State $\mathtt{negligent}(\dave) \gets \true$
                   \EndIf
                 \ElsIf{$\dave{} \neq \alice$}
                   \State calculate \texttt{IncomingCltvExpiry},
@@ -370,7 +370,7 @@
                       but charged}
                       \label{alg:fpaynet:resolvepay:halt:abs}
                     \Else
-                      \State $\mathtt{negligent}(\alice) \gets \true$
+                      \State $\mathtt{negligent}(\dave) \gets \true$
                     \EndIf
                   \EndIf
                 \EndIf
