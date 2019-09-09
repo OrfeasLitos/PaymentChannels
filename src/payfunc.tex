@@ -470,6 +470,15 @@
     \label{alg:fpaynet:resolvepay:loops}
   \end{figure}
 
+  Similarly to payment instructions, when \fpaynet{} receives a message
+  instructing it to close a channel (Fig.~\ref{alg:fpaynet:close}), it takes a
+  note of the pending closure, it stops serving any more requests for this
+  channel and it forwards the request to \simulator. Since the closing of a
+  channel is an event that can be observed on-chain, \fpaynet{} does not need to
+  be informed by \simulator{} on whether its request has been carried out, but
+  directly checks on-chain with \texttt{checkClosed}()
+  (Fig.~\ref{alg:fpaynet:close:func}).
+
   \begin{figure}[H]
     \begin{systembox}{\fpaynet{} - close}
       \begin{algorithmic}[1]
