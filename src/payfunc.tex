@@ -325,6 +325,8 @@
               remove it from \texttt{pendingPay}
               \If{$\dave{} = \bot$}
                 \State continue with next iteration of inner loop
+              \ElsIf{$\dave{} \notin \overrightarrow{\mathtt{path}}$}
+                \State halt \Comment{Only players on path may be charged}
               \ElsIf{$\dave{} \in \mathtt{corrupted}$}
                 \State run code of Fig.~\ref{alg:fpaynet:resolvepay:loops}
                 \State $\mathtt{offChainBalance}\left(\bob\right) \gets
