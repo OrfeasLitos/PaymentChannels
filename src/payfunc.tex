@@ -323,7 +323,7 @@
               \State retrieve $\left(\alice, \bob, x,
               \overrightarrow{\mathtt{path}}\right)$ with ID \textit{payid} and
               remove it from \texttt{pendingPay}
-              \If{$\dave{} = \bot$}
+              \If{$\dave{} = \bot$} \Comment{Payment failed}
                 \State continue with next iteration of inner loop
               \ElsIf{$\dave{} \notin \overrightarrow{\mathtt{path}}$}
                 \State halt \Comment{Only players on path may be charged}
@@ -350,8 +350,8 @@
                   $[h_{\mathtt{tx}}, h_{\mathtt{tx}} +
                   \mathtt{delay}\left(\dave\right) - 1]$}
                   \label{alg:fpaynet:resolvepay:haltcond:rel}
-                    \State halt \Comment{\dave{} \textsc{poll}ed, but malicious
-                    closure}
+                    \State halt \Comment{\dave{} \textsc{poll}ed, but successful
+                    malicious closure}
                     \label{alg:fpaynet:resolvepay:halt:rel}
                   \Else
                     \State $\mathtt{negligent}(\alice) \gets \true$
