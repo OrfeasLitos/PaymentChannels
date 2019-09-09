@@ -333,6 +333,9 @@
                 \mathtt{offChainBalance}\left(\bob\right) + x$
                 \label{alg:fpaynet:resolvepay:corr:credit}
               \Else \ \Comment{\dave{} honest}
+                \State send (\textsc{read}) to \ledger{} as \dave{} and store
+                reply to $\Sigma_{\dave}$
+                \State \texttt{checkClosed}($\Sigma_{\dave}$)
                 \If{$\Sigma_{\dave}$ contains a tx that is not a
                 $\mathtt{localCom}_n$ or a $\mathtt{remoteCom}_n$ and spends a
                 funding tx for an open \texttt{channel} that contains \dave{}}
