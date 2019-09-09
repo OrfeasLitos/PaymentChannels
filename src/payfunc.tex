@@ -297,10 +297,11 @@
 
         \State Upon receiving (\textsc{update}, \texttt{receipt}, \alice) from
         \simulator:
+        \label{alg:fpaynet:update}
         \Indent
           \State add \texttt{receipt} to \texttt{updatesToReport}(\alice)
           \Comment{trust \simulator{} here, check on \textsc{resolvePays}}
-          \label{alg:fpaynet:update}
+          \label{alg:fpaynet:update:add}
           \State send (\textsc{continue}) to \simulator
         \EndIndent
       \end{algorithmic}
@@ -308,6 +309,31 @@
     \caption{}
     \label{alg:fpaynet:pay}
   \end{figure}
+
+  The message \textsc{resolvePays}, sent by \simulator{}, is supposed to contain
+  a list of resolved payments, along with who was charged for each payment after
+  all. For each entry there are four ``happy paths'' that do not lead to
+  \fpaynet{} halting (\fpaynet{} halts when it cannot uphold its security
+  guarantees anymore): if the payment failed and no balance is changed, if the
+  charged player is the one who initiated the payment, if the charged player is
+  corrupted or if she has not checked the blockchain at the right times, i.e.
+  was negligent (as discussed in Section~\ref{sec:ov-paynet} and formally
+  defined in Figures~\ref{alg:fpaynet:resolvepay}
+  and~\ref{alg:fpaynet:resolvepay:haltcond:abs}). In case the payment was
+  completed in a legal manner, the balance of all channels involved is updated
+  accordingly (Fig.~\ref{alg:fpaynet:resolvepay:loops}). Conversely, \fpaynet{}
+  halts if the charged player was not on the payment path
+  (Fig.~\ref{alg:fpaynet:resolvepay},
+  l.~\ref{alg:fpaynet:resolvepay:halt:path}), if a signature forgery has taken
+  place (Fig.~\ref{alg:fpaynet:resolvepay},
+  l.~\ref{alg:fpaynet:resolvepay:halt:ds}), if the charged player has not been
+  negligent (Fig.~\ref{alg:fpaynet:resolvepay},
+  ll.~\ref{alg:fpaynet:resolvepay:halt:rel}
+  and~\ref{alg:fpaynet:resolvepay:halt:abs}), or if any one of the individual
+  channel updates needed to carry out the whole payment has not been previously
+  reported with an \textsc{update} message by \simulator{}
+  (Fig.~\ref{alg:fpaynet:resolvepay:loops},
+  l.~\ref{alg:fpaynet:resolvepay:loops:halt:do}).
 
   \begin{figure}[H]
     \begin{systembox}{\fpaynet{} - resolve payments}
@@ -327,6 +353,7 @@
                 \State continue with next iteration of inner loop
               \ElsIf{$\dave{} \notin \overrightarrow{\mathtt{path}}$}
                 \State halt \Comment{Only players on path may be charged}
+                \label{alg:fpaynet:resolvepay:halt:path}
               \ElsIf{$\dave{} \in \mathtt{corrupted}$}
                 \State run code of Fig.~\ref{alg:fpaynet:resolvepay:loops}
                 \State $\mathtt{offChainBalance}\left(\bob\right) \gets
