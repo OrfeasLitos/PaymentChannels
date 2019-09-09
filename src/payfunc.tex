@@ -358,16 +358,9 @@
                   l.~\ref{alg:protocol:pay:invoice:cltv})
                   \If{$\Sigma_{\dave}$ does not contain an old
                   $\mathtt{remoteCom}_m$}
-                    \If{$\mathtt{IncomingCltvExpiry} -
-                    \mathtt{OutgoingCltvExpiry} < \mathtt{relayDelay}(\alice) +
-                    \tochain{} \: \vee$ (\texttt{polls}(\dave) contains two
-                    elements in $[\mathtt{OutgoingCltvExpiry},
-                    \mathtt{IncomingCltvExpiry} - \tochain{}]$ that have a
-                    difference of at least $\tochain{} \: \wedge$
-                    \texttt{focs}(\dave) contains $\mathtt{IncomingCltvExpiry} -
-                    \tochain{} \ \wedge$ \\ the element in \texttt{polls}(\dave)
-                    was added before the element in \texttt{focs}(\dave))}
-                    \label{alg:fpaynet:resolvepay:haltcond:abs}
+                    \If{failure condition of
+                    Fig.~\ref{alg:fpaynet:resolvepay:haltcond:abs}
+                    is true}
                       \State halt \Comment{\dave{} \textsc{poll}ed and fulfilled,
                       but charged}
                       \label{alg:fpaynet:resolvepay:halt:abs}
@@ -391,6 +384,25 @@
     \end{systembox}
     \caption{$r$, \texttt{windowSize} as in Proposition~\ref{prop:tochain}}
     \label{alg:fpaynet:resolvepay}
+  \end{figure}
+
+  \begin{figure}[H]
+    \begin{titlebox}{\normalfont Absolute delay failure
+    condition}{roundbox}{normal}
+      \begin{algorithmic}[1,nonumber]
+        \State $\mathtt{IncomingCltvExpiry} - \mathtt{OutgoingCltvExpiry} <
+        \mathtt{relayDelay}(\alice) + \tochain{} \: \vee$
+        \State (\texttt{polls}(\dave) contains two elements in
+        $[\mathtt{OutgoingCltvExpiry}, \mathtt{IncomingCltvExpiry} -
+        \tochain{}]$ that have a difference of at least $\tochain{} \: \wedge$
+        \State \texttt{focs}(\dave) contains $\mathtt{IncomingCltvExpiry} -
+        \tochain{} \ \wedge$
+        \State the element in \texttt{polls}(\dave) was added before the element
+        in \texttt{focs}(\dave))
+      \end{algorithmic}
+    \end{titlebox}
+    \caption{}
+    \label{alg:fpaynet:resolvepay:haltcond:abs}
   \end{figure}
 
   \begin{figure}[H]
