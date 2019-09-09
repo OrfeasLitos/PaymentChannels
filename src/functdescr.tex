@@ -53,17 +53,15 @@
     \begin{enumerate}
       \item did not \textsc{poll} in time to catch a malicious closure
       (similarly to the check performed when a \textsc{poll} message is handled,
-      as described above)
-      (Fig.~\ref{alg:fpaynet:resolvepay},
+      as described above) (Fig.~\ref{alg:fpaynet:resolvepay},
       line~\ref{alg:fpaynet:resolvepay:haltcond:rel}) or
       \item did not \textsc{poll} twice while the block height in the view of
       the player was in $[\mathtt{OutgoingCltvExpiry},
       \mathtt{IncomingCltvExpiry} - \tochain]$ with a distance of at least
       \tochain{} between the two \textsc{poll}s or
-      \item did not enforce the retrieval of the funds lost as a result of this payment 
-      when the chain in her view
-      had height $\mathtt{IncomingCltvExpiry} - \tochain$
-      (Fig.~\ref{alg:fpaynet:resolvepay:haltcond:abs}) with a
+      \item did not enforce the retrieval of the funds lost as a result of this
+      payment when the chain in her view had height $\mathtt{IncomingCltvExpiry}
+      - \tochain$ (Fig.~\ref{alg:fpaynet:resolvepay:haltcond:abs}) with a
       \textsc{fulfillOnChain} message, as discussed below.
     \end{enumerate}
     Note that $\tochain$ is the maximum number of blocks an honest party needs
