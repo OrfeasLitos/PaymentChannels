@@ -473,10 +473,11 @@
   Similarly to payment instructions, when \fpaynet{} receives a message
   instructing it to close a channel (Fig.~\ref{alg:fpaynet:close}), it takes a
   note of the pending closure, it stops serving any more requests for this
-  channel and it forwards the request to \simulator. Since the closing of a
-  channel is an event that can be observed on-chain, \fpaynet{} does not need to
-  be informed by \simulator{} on whether its request has been carried out, but
-  directly checks on-chain with \texttt{checkClosed}()
+  channel and it forwards the request to \simulator. In turn \simulator{}
+  notifies \fpaynet{} of a closed channel with the corresponding message, upon
+  which \fpaynet{} takes a note to inform the corresponding player. Once more
+  \fpaynet{} trusts \simulator, but later checks that the chain contains the
+  correct transactions with \texttt{checkClosed}()
   (Fig.~\ref{alg:fpaynet:close:func}).
 
   \begin{figure}[H]
@@ -500,6 +501,19 @@
           \alice) to \simulator
           \label{alg:fpaynet:close:send}
         \EndIndent
+        \Statex
+
+        \State Upon receiving (\textsc{closedChannel}, \texttt{channel}, \alice)
+        from \simulator:
+        \Indent
+          \State add (\textit{fchid} of channel,
+          \texttt{receipt}(\texttt{channel}), $\bot$) to
+          \texttt{closedChannels}(\alice)
+          \Comment{trust \simulator{} here, check on \texttt{checkClosed}()}
+          \label{alg:fpaynet:closedChannel:report}
+          \State send (\textsc{continue}) to \simulator
+        \EndIndent
+        \Statex
       \end{algorithmic}
     \end{systembox}
     \caption{}
@@ -693,18 +707,6 @@
           \State add $t$ to \texttt{focs}(\alice)
           \State \texttt{checkClosed}($\Sigma_{\alice}$)
           \State send (\textsc{fulfillOnChain}, $t$, \alice) to \simulator
-        \EndIndent
-        \Statex
-
-        \State Upon receiving (\textsc{closedChannel}, \texttt{channel}, \alice)
-        from \simulator:
-        \Indent
-          \State add (\textit{fchid} of channel,
-          \texttt{receipt}(\texttt{channel}), $\bot$) to
-          \texttt{closedChannels}(\alice)
-          \Comment{trust \simulator{} here, check on \texttt{checkClosed}()}
-          \label{alg:fpaynet:closedChannel:report}
-          \State send (\textsc{continue}) to \simulator
         \EndIndent
         \Statex
 
