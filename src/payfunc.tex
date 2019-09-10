@@ -24,7 +24,6 @@
           \item (\textsc{register}, \alice, \texttt{delay}(\alice),
           \texttt{relayDelay}(\alice), pubKey)
           \item (\textsc{registered})
-          \item (\textsc{channelClosed}, \texttt{receipt})
           \item (\textsc{news}, newChannels, closedChannels, updatesToReport)
         \end{itemize}
         \item from $\simulator$:
@@ -34,6 +33,7 @@
           \item (\textsc{channelAnnounced}, \alice, $p_{\alice, F}, p_{\bob,
           F}$, \textit{fchid}, \textit{pchid}, \textit{tid})
           \item (\textsc{update}, \texttt{receipt}, \alice)
+          \item (\textsc{closedChannel}, \texttt{channel}, \alice)
           \item (\textsc{resolvePays}, \textit{payid}, \texttt{charged})
         \end{itemize}
         \item to $\simulator$:
