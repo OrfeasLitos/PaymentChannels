@@ -599,6 +599,18 @@
     \label{alg:fpaynet:close:func}
   \end{figure}
 
+  \textsc{poll} is a request that every player has to make to \fpaynet{}
+  periodically (once every \texttt{delay} blocks, as set on registration) in
+  order to remain non-negligent. In a software implementation, such a request
+  would be automatically sent at safe time intervals. When receiving
+  \textsc{poll} (Fig.~\ref{alg:fpaynet:poll}), \fpaynet{} checks the ledger for
+  maliciously closed channels and halts in case of a forgery
+  (l.~\ref{alg:fpaynet:poll:dsforgery}) or in case of a successful malicious
+  closing of a channel whilst the offended player was non-negligent
+  (l.~\ref{alg:fpaynet:poll:haspolled:halt}). If on the other hand a channel has
+  been closed maliciously but the offended player did not \textsc{poll} in time,
+  she is marked as negligent (l.~\ref{alg:fpaynet:poll:negligent}).
+
   \begin{figure}[H]
     \begin{systembox}{\fpaynet{} - poll}
       \begin{algorithmic}[1]
@@ -632,6 +644,7 @@
                 \label{alg:fpaynet:poll:haspolled:halt}
               \Else
                 \State $\mathtt{negligent}(\alice) \gets \true$
+                \label{alg:fpaynet:poll:negligent}
               \EndIf
             \EndIf
           \EndFor
