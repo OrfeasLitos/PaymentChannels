@@ -617,10 +617,10 @@
             \State halt \Comment{DS forgery}
             \label{alg:fpaynet:poll:dsforgery}
           \EndIf
-          \ForAll{$\mathtt{channel}s \in \Sigma_{\alice}$ that contain \alice{}
-          and are maliciously closed by a remote commitment \texttt{tx} (one
-          with an older channel version than the irrevocably committed one) in
-          block with height $h_{\mathtt{tx}}$}
+          \ForAll{$\mathtt{channel}\text{s} \in \Sigma_{\alice}$ that contain
+          \alice{} and are maliciously closed by a remote commitment \texttt{tx}
+          (one with an older channel version than the irrevocably committed one)
+          in block with height $h_{\mathtt{tx}}$}
           \label{alg:fpaynet:poll:malicious}
             \If{the delayed output (of the counterparty) has been spent}
               \If{\texttt{polls}(\alice) has an element in
