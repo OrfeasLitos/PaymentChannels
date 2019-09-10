@@ -671,6 +671,21 @@
     \label{alg:fpaynet:poll}
   \end{figure}
 
+  The last part of \fpaynet{} (Fig.~\ref{alg:fpaynet:daemon}) contains some
+  additional ``daemon'' messages that help various processes carry on.
+  \textsc{pushFulfill}, \textsc{pushAdd} and \textsc{commit} are simply
+  forwarded to \simulator. They exist because the ``token of execution'' in the
+  protocol does not follow the strict order required by UC, and thus some
+  additional messages are needed for the protocol to carry on. In other words,
+  they are needed due to the incompatibility of the serial execution of UC and
+  the asynchronous nature of LN.
+
+  \textsc{FulfillOnChain} has to be sent by a multi-hop payment intermediary
+  that has not been paid by the previous player off-chain in order to close the
+  channel. The request is noted and forwarded to \simulator. \textsc{getNews}
+  requests from \fpaynet{} information on newly opened, closed and updated
+  channels.
+
   \begin{figure}[H]
     \begin{systembox}{\fpaynet{} - daemon messages}
       \begin{algorithmic}[1]
