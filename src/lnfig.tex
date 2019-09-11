@@ -3,24 +3,25 @@
   \begin{minipage}{0.5\textwidth}
   \scalebox{.67}{\begin{pspicture}
     \btc(0,0,0)(n_btc)(funding)(
-      {asfd,asf}%
+      {,}%
     )(
-      {fads,asfd}%
+      {$pk_{F, A} \wedge pk_{F, B}$,$c_A + c_B$}%
     )
   \end{pspicture}}
   \label{fig:ln:funding}
-  \caption{Funding TX}
+  \caption{Funding TX (on-chain)}
   \end{minipage}
   \hfill
   \begin{minipage}{0.5\textwidth}
   \scalebox{.67}{\begin{pspicture}
     \btc(0,0,0)(m_btc)(commitment)(
-      {asdf,bbw}%
+      {$pk_{F, A} \wedge pk_{F, B}$,}%
     )(
-      {erter,wfe}%
+      {$pk_{\mathrm{rev}, B} \vee \mathrm{del}_B(pk_{\mathrm{dcom}, A})$,$c_A$},
+      {$pk_{\mathrm{com}, B}$,$c_B$}%
     )
   \end{pspicture}}
   \label{fig:ln:commitment}
-  \caption{Commitment TX}
+  \caption{\alice's commitment TX (off-chain)}
   \end{minipage}
   \end{figure}
