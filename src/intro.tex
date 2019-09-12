@@ -98,21 +98,24 @@ of the network. In more details our results are as follows.
 
 \begin{enumerate}
 \item We present the $\fpaynet{}$ functionality which abstracts the syntax and
-security properties that are provided by the lightning network. Using
-$\fpaynet{}$, parties can open and close channels, forward payments along
-channel paths in the network as well as poll its status. Importantly, the
-functionality keeps track of all the off-chain and on-chain balances of the
-parties registered and ensures that when a channel closes the on-chain balances
-are in line with the off-chain balances. In order to handle adversarial
-deviations in multi-hop payments, the functionality permits the adversary to
-determine the outcome of each payment by choosing either one of the following
-options: (i) let it go through as requested, (ii) charge it to an adversarial
-party along the path, (iii) charge it to a {\em negligent} honest party along
-the path. This last outcome is a crucial characteristic of the security that is
-provided by the lightning network to its participants: honest parties are
-expected to poll the functionality at a certain specific rhythm that corresponds
-to their level of involvement in the network and the properties of the
-underlying ledger. If a party misses that requirement it is identified as
+security properties that are provided by the lightning network. \orfeas{The
+approach taken can be applied to any payment network by just changing the exact
+channel opening message sequence, the details of the on-chain checks performed
+by \fpaynet, the negligence time bounds and the penalty in case of a malicious
+closure being caught.} Using $\fpaynet{}$, parties can open and close channels,
+forward payments along channel paths in the network as well as poll its status.
+Importantly, the functionality keeps track of all the off-chain and on-chain
+balances of the parties registered and ensures that when a channel closes the
+on-chain balances are in line with the off-chain balances. In order to handle
+adversarial deviations in multi-hop payments, the functionality permits the
+adversary to determine the outcome of each payment by choosing either one of the
+following options: (i) let it go through as requested, (ii) charge it to an
+adversarial party along the path, (iii) charge it to a {\em negligent} honest
+party along the path. This last outcome is a crucial characteristic of the
+security that is provided by the lightning network to its participants: honest
+parties are expected to poll the functionality at a certain specific rhythm that
+corresponds to their level of involvement in the network and the properties of
+the underlying ledger. If a party misses that requirement it is identified as
 negligent by the functionality and may lose funds.
 
 \item We identify for the first time the exact polling requirements that are
