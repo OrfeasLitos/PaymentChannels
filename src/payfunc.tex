@@ -555,8 +555,8 @@
             for open \texttt{channel} with ID \textit{fchid} with a balance that
             corresponds to \texttt{receipt}}
             \label{alg:fpaynet:close:func:happy:start}
-              \State let $x, y$ the balances of \alice{} and the
-              \texttt{channel} counterparty \bob{} respectively
+              \State let $x, y$ \alice{}'s and \texttt{channel} counterparty
+              \bob{}'s balances respectively
               \State $\mathrm{offChainBalance}\left(\alice\right) \gets
               \mathrm{offChainBalance}\left(\alice\right) - x$
               \State $\mathrm{onChainBalance}\left(\alice\right) \gets
@@ -567,8 +567,8 @@
               \State $\mathrm{onChainBalance}\left(\bob\right) \gets
               \mathrm{onChainBalance}\left(\bob\right) + y$
               \label{alg:fpaynet:close:func:bob:credit}
-              \State remove \texttt{channel} from \texttt{channels}
-              \State remove entry from \texttt{pendingClose}(\alice)
+              \State remove \texttt{channel} from \texttt{channels} \& entry
+              from \texttt{pendingClose}(\alice)
               \If{there is an (\textit{fchid}, \_, \_) entry in
               \texttt{pendingClose}(\bob)}
                 \State remove it from \texttt{pendingClose}(\bob)
