@@ -526,7 +526,8 @@
   channels and, in case no security violation has taken place, it updates the
   on- and off-chain balances of the player accordingly
   (ll.~\ref{alg:fpaynet:close:func:happy:start}-\ref{alg:fpaynet:close:func:happy:end}).
-  The possible security violations are: signature forgery
+  The possible security violations are: channels found closed but unreported by
+  \simulator{} (l.~\ref{alg:fpaynet:close:func:unnotified}), signature forgery
   (l.~\ref{alg:fpaynet:close:func:dsforgery}), malicious closure even though the
   player was not negligent (l.~\ref{alg:fpaynet:close:func:malicious}), no
   closing transaction in $\Sigma$ even though the player asked for channel
@@ -541,6 +542,13 @@
         \Function{checkClosed}{$\Sigma_{\alice}$} \Comment{Called after every
         (\textsc{read}), ensures requested closes eventually happen}
         \label{alg:fpaynet:close:func:start}
+          \If{there is any closing/commitment transaction in $\Sigma_{\alice}$
+          with no corresponding entry in $\mathtt{pendingClose}(\alice) \cup
+          \mathtt{closedChannels}(\alice)$}
+          \label{alg:fpaynet:close:func:ifunnotified}
+            \State halt
+            \label{alg:fpaynet:close:func:unnotified}
+          \EndIf
           \ForAll{entries $(\mathit{fchid}, \mathtt{receipt}, h) \in
           \mathtt{pendingClose}(\alice) \cup \mathtt{closedChannels}(\alice)$}
             \If{there is a closing commitment transaction in $\Sigma_{\alice}$
