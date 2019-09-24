@@ -551,7 +551,7 @@
           \EndIf
           \ForAll{entries $(\mathit{fchid}, \mathtt{receipt}, h) \in
           \mathtt{pendingClose}(\alice) \cup \mathtt{closedChannels}(\alice)$}
-            \If{there is a closing commitment transaction in $\Sigma_{\alice}$
+            \If{there is a closing/commitment transaction in $\Sigma_{\alice}$
             for open \texttt{channel} with ID \textit{fchid} with a balance that
             corresponds to \texttt{receipt}}
             \label{alg:fpaynet:close:func:happy:start}
@@ -574,17 +574,16 @@
                 \State remove it from \texttt{pendingClose}(\bob)
               \EndIf
               \label{alg:fpaynet:close:func:happy:end}
-            \ElsIf{there is a tx in $\Sigma_{\alice}$ that is not a commitment
-            tx and spends the funding tx of the \texttt{channel} with ID
-            \textit{fchid}}
+            \ElsIf{there is a tx in $\Sigma_{\alice}$ that is not a
+            closing/commitment tx and spends the funding tx of the
+            \texttt{channel} with ID \textit{fchid}}
             \label{alg:fpaynet:close:func:ifdsforgery}
               \State halt \Comment{DS forgery}
               \label{alg:fpaynet:close:func:dsforgery}
-            \ElsIf{there is a closing commitment transaction in block of height
-            $h$ in $\Sigma_{\alice}$ for open \texttt{channel} with ID
-            \textit{fchid} with a balance that does not correspond to the
-            \texttt{receipt} and the delayed output has been spent by the
-            counterparty}
+            \ElsIf{there is a commitment transaction in block of height $h$ in
+            $\Sigma_{\alice}$ for open \texttt{channel} with ID \textit{fchid}
+            with a balance that does not correspond to the \texttt{receipt} and
+            the delayed output has been spent by the counterparty}
               \If{\texttt{polls}(\alice) contains an entry in $[h, h
               + \mathtt{delay}(\alice) - 1]$}
               \label{alg:fpaynet:close:func:ifmalicious}
@@ -593,12 +592,13 @@
               \Else
                 \State $\mathtt{negligent}(\alice) \gets \true$
               \EndIf
-            \ElsIf{there is no such closing transaction $\wedge \ h = \bot$}
+            \ElsIf{there is no such closing/commitment transaction $\wedge \ h =
+            \bot$}
               \State assign largest block number of $\Sigma_{\alice}$ to $h$ of
               entry
-            \ElsIf{there is no such closing transaction $\wedge \ h \neq \bot \
-            \wedge$ (largest block number of $\Sigma_{\alice}) \geq h +
-            \tochain{}$}
+            \ElsIf{there is no such closing/commitment transaction $\wedge \ h
+            \neq \bot \ \wedge$ (largest block number of $\Sigma_{\alice}) \geq
+            h + \tochain{}$}
             \label{alg:fpaynet:close:func:ifidle}
               \State halt
               \label{alg:fpaynet:close:func:idle}
