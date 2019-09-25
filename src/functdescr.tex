@@ -103,7 +103,8 @@
     (\textsc{toppedUp}) message. It lets \fpaynet{} know that the desired amount
     of initial funds have been transferred to \alice's public key. \fpaynet{}
     reads \alice's state on \ledger{} to retrieve this number and subsequently
-    allows \alice{} to participate in the payment network after it updates her  \texttt{onChainBalance}.
+    allows \alice{} to participate in the payment network after it updates her
+    \texttt{onChainBalance}.
     \item When \fpaynet{} receives (\textsc{checkForNew}, \alice, \bob,
     \textit{tid}) from \alice, it asks \ledger{} for \alice's latest state
     $\Sigma_{\alice}$ and looks for a funding transaction $F$ in it. If one is
