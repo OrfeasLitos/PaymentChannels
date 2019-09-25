@@ -498,28 +498,33 @@
           : \mathtt{receipt}\left(\mathtt{channel}\right) = \mathtt{receipt}$
           with ID \textit{pchid}
           \State retrieve \textit{fchid} from \texttt{channel}
-          \label{alg:fpaynet:close:retrieve}
+          \label{alg:fpaynet:close:coop:retrieve}
           \State add (\textit{fchid}, \texttt{receipt}(\texttt{channel}),
           $\infty$) to \texttt{pendingClose}(\alice)
-          \label{alg:fpaynet:close:mark}
+          \label{alg:fpaynet:close:coop:mark}
           \State do not serve any other (\textsc{pay}, \textsc{closeChannel})
           message from \alice{} for this channel
-          \label{alg:fpaynet:close:noserve}
+          \label{alg:fpaynet:close:coop:noserve}
           \State send (\textsc{closeChannel}, \texttt{receipt}, \textit{pchid},
           \alice) to \simulator
-          \label{alg:fpaynet:close:send}
+          \label{alg:fpaynet:close:coop:send}
         \EndIndent
         \Statex
 
         \State Upon receiving (\textsc{forceCloseChannel}, \texttt{receipt},
         \textit{pchid}) from \alice
         \Indent
-          \State follow the same steps as in \textsc{closeChannel}, but instead
-          of $\infty$ put $\bot$ in third slot of new element to
-          \texttt{pendingClose}(\alice) and send \textsc{forceCloseChannel} to
-          \simulator. Also do not serve any other (\textsc{pay},
-          \textsc{closeChannel} or \textsc{forceCloseChannel}) message from
-          \alice{} for this channel.
+          \State retrieve \textit{fchid} from \texttt{channel}
+          \label{alg:fpaynet:close:unilateral:retrieve}
+          \State add (\textit{fchid}, \texttt{receipt}(\texttt{channel}),
+          $\bot$) to \texttt{pendingClose}(\alice)
+          \label{alg:fpaynet:close:unilateral:mark}
+          \State do not serve any other (\textsc{pay}, \textsc{closeChannel},
+          \textsc{forceCloseChannel}) message from \alice{} for this channel
+          \label{alg:fpaynet:close:unilateral:noserve}
+          \State send (\textsc{forceCloseChannel}, \texttt{receipt},
+          \textit{pchid}, \alice) to \simulator
+          \label{alg:fpaynet:close:unilateral:send}
         \EndIndent
         \Statex
 
