@@ -347,7 +347,8 @@
           with ``\textsc{fundingLocked} received''
           \State move channel data from \texttt{pendingOpen} to
           \texttt{channels}
-          \State add receipt of channel to \texttt{newChannels}
+          \State add receipt of channel to \texttt{newChannels}, where
+          $\mathrm{receipt} \gets (\alice: x, \bob: 0, \mathit{pchid})$
           \label{alg:protocol:fundingLocked:report}
           \If{\texttt{channel} is not marked with ``\textsc{fundingLocked}
           sent''}
