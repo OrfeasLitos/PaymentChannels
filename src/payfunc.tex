@@ -131,10 +131,13 @@
         \EndIndent
         \Statex
 
-        \State Upon receiving any message except for
-        $\left(\textsc{register}\right)$ from \alice:
+        \State Upon receiving any message ($M$) except for (\textsc{register})
+        or (\textsc{toppedUp}) from \alice:
         \Indent
-          \State ignore message if \alice{} has not registered
+          \If{if haven't received (\textsc{register}) and (\textsc{toppedUp})
+          from \alice{} (in this order)}
+            \State send (\textsc{invalid}, $M$) to \alice{} and ignore message
+          \EndIf
           \label{alg:fpaynet:support:unreg}
         \EndIndent
         \Statex

@@ -45,9 +45,10 @@
         \Statex
 
         \State Upon receiving any message ($M$) except for
-        $\left(\textsc{register}\right)$:
+        $\left(\textsc{register}\right)$ or (\textsc{toppedUp}):
         \Indent
-          \If{if haven't received (\textsc{register}) from \environment{}}
+          \If{if haven't received (\textsc{register}) and (\textsc{toppedUp})
+          from \environment{} (in this order)}
             \State send (\textsc{invalid}, $M$) to \environment{} and ignore
             message
           \EndIf
