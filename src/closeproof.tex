@@ -59,30 +59,73 @@
   \wedge \neg R \wedge \neg S$ holds.
 
   When \environment{} sends (\textsc{forceCloseChannel}, \texttt{receipt},
-  \textit{pchid}) to \alice, in the ideal world, if it is not the first closing
-  message to \alice{} the message is ignored (Fig.~\ref{alg:fpaynet:close},
-  line~\ref{alg:fpaynet:close:noserve}). Similarly in the real world, if there
-  has been another such message, \alice{} ignores it
-  (Fig.\ref{alg:protocol:close:unilateral},
-  lines~\ref{alg:protocol:close:remove}
+  \textit{pchid}) to \alice, in the ideal world, if it is not the first such
+  message to \alice{} for this channel, the message is ignored
+  (Fig.~\ref{alg:fpaynet:close},
+  line~\ref{alg:fpaynet:close:unilateral:noserve}). Similarly in the real world,
+  if there has been another such message, \alice{} ignores it
+  (Fig.~\ref{alg:protocol:close:unilateral},
+  lines~\ref{alg:protocol:close:unilateral:remove}
   and~\ref{alg:protocol:close:unilateral:ensure}).
 
-  In the case that it is indeed the first closing message, in the ideal world
-  \fpaynet{} takes note that this close is pending
-  (Fig.~\ref{alg:fpaynet:close},
-  lines~\ref{alg:fpaynet:close:retrieve}-\ref{alg:fpaynet:close:mark}) and stops
-  serving more requests for this channel (line~\ref{alg:fpaynet:close:noserve}),
-  before asking \simulator{} to carry out channel closing. \simulator{} then
-  simulates the response to the original message from \environment{} with
-  \alice's ITI (Fig.~\ref{alg:sim:close}). Observe that, since \fpaynet{} has
-  ensured that this is the first request for closing this particular channel,
-  the simulated check of line~\ref{alg:protocol:close:unilateral:ensure} in
+  In the case that it is indeed the first \textsc{forceCloseChannel} message for
+  this channel, in the ideal world \fpaynet{} takes note that this close is
+  pending (Fig.~\ref{alg:fpaynet:close},
+  lines~\ref{alg:fpaynet:close:unilateral:retrieve}-\ref{alg:fpaynet:close:unilateral:mark})
+  and stops serving more requests for this channel
+  (line~\ref{alg:fpaynet:close:unilateral:noserve}), before asking \simulator{}
+  to carry out channel closing (Fig.~\ref{alg:fpaynet:close},
+  line~\ref{alg:fpaynet:close:unilateral:send}). \simulator{} then simulates the
+  response to the original message from \environment{} with \alice's ITI
+  (Fig.~\ref{alg:sim:close}). Observe that, since \fpaynet{} has ensured that
+  this is the first request for closing this particular channel, the simulated
+  check of line~\ref{alg:protocol:close:unilateral:ensure} in
   Fig.~\ref{alg:protocol:close:unilateral} always passes and the rest of
   Fig.~\ref{alg:protocol:close:unilateral} is executed. In the real world, the
   check also passes (since we are in the case where this is the first closing
   message) and Fig.~\ref{alg:protocol:close:unilateral} is executed by the real
   \alice{} in its entirety. Therefore, when \environment{} sends
   \textsc{forceCloseChannel}, no opportunity for distinguishability arises.
+
+  When \environment{} sends (\textsc{closeChannel}, \texttt{receipt},
+  \textit{pchid}) to \alice, in both the ideal and the real world the request
+  will be further processed only if the identical checks of
+  Fig.~\ref{alg:fpaynet:close}, line~\ref{alg:fpaynet:close:coop:ensure} and
+  Fig.~\ref{alg:protocol:close:coop}, line~\ref{alg:protocol:close:coop:ensure}
+  respectively pass. Further, in the ideal world, if \alice{} has already
+  received a closing message for this channel (either \textsc{closeChannel} or
+  \textsc{forceCloseChannel}), the message is ignored
+  (Fig.~\ref{alg:fpaynet:close}, lines~\ref{alg:fpaynet:close:coop:noserve}
+  and~\ref{alg:fpaynet:close:unilateral:noserve}). Likewise in the real world,
+  if \alice{} has received another such message, she ignores it
+  (Fig.~\ref{alg:protocol:close:coop},
+  line~\ref{alg:protocol:close:coop:noserve} and
+  Fig.~\ref{alg:protocol:close:unilateral},
+  line~\ref{alg:protocol:close:unilateral:remove}).
+
+  In the case that this is the first closing message for this channel, in the
+  ideal world \fpaynet{} takes note that this close is pending
+  (Fig.~\ref{alg:fpaynet:close},
+  lines~\ref{alg:fpaynet:close:coop:retrieve}-\ref{alg:fpaynet:close:coop:mark})
+  and stops rerving more \textsc{closeChannel} requests for this channel
+  (Fig.~\ref{alg:fpaynet:close}, line~\ref{alg:fpaynet:close:coop:noserve}),
+  before asking \simulator{} to carry out the cooperative channel closing
+  negotiation (Fig.~\ref{alg:fpaynet:close},
+  line~\ref{alg:fpaynet:close:coop:send}). \simulator{} then simulates the
+  negotiation, respecting the fact that the counterparty may be corrupted
+  (Fig.~\ref{alg:sim:close}, line~\ref{alg:sim:close:coop} and
+  Fig.~\ref{alg:protocol:close:coop}). Observe that all checks of
+  Fig.~\ref{alg:protocol:close:coop}
+  (lines~\ref{alg:protocol:close:coop:ensure},~\ref{alg:protocol:close:coop:init:continue},~\ref{alg:protocol:close:coop:shutdown:continue},~\ref{alg:protocol:close:coop:signed:ensure:exists},~\ref{alg:protocol:close:coop:signed:ensure:marked}
+  and~\ref{alg:protocol:close:coop:signed:ensure:sig}) will either succeed or
+  fail in both the real and the ideal world in the same manner, since the same
+  code is run in both cases (simulated in the ideal, directly in the real) and
+  the inputs and state are, as we have seen, indistinguishable up to that point.
+  Furthermore, for the same reason, if \bob{} is corrupted in the ideal world at
+  the moment when \alice{} sends him \textsc{shutdown}, he would also be
+  corrupted in the real world at the corresponding moment. Therefore, when
+  \environment{} sends \textsc{closeChannel}, no opportunity for
+  distinguishability arises.
 
   When \environment{} sends (\textsc{getNews}) to \alice, in the ideal world
   \fpaynet{} sends (\textsc{news}, \texttt{newChannels}(\alice),
@@ -189,10 +232,11 @@
   happen, for two reasons. First, regarding elements in
   \texttt{pendingClose}(\alice), because \fpaynet{} forwards a
   (\textsc{forceCloseChannel}) message to \simulator{}
-  (Fig.~\ref{alg:fpaynet:close}, line~\ref{alg:fpaynet:close:send}) for every
-  element that it adds to \texttt{pendingClose} (Fig~\ref{alg:fpaynet:close},
-  line~\ref{alg:fpaynet:close:mark}) and this causes \simulator{} to submit the
-  closing transaction to \ledger{} (Fig.~\ref{alg:protocol:close:unilateral},
+  (Fig.~\ref{alg:fpaynet:close}, line~\ref{alg:fpaynet:close:unilateral:send})
+  for every element that it adds to \texttt{pendingClose}
+  (Fig~\ref{alg:fpaynet:close}, line~\ref{alg:fpaynet:close:mark}) and this
+  causes \simulator{} to submit the commitment transaction to \ledger{}
+  (Fig.~\ref{alg:protocol:close:unilateral},
   line~\ref{alg:protocol:close:unilateral:submit}). This transaction is
   necessarily valid, because there is no other transaction that spends the
   funding transaction of the channel, according to the first check of
@@ -200,7 +244,10 @@
   \fpaynet{} halts in this case only if it is sure that the chain has grown by
   \tochain{} blocks, and thus if the closing transaction had been submitted when
   (\textsc{forceCloseChannel}) was received, it should have been necessarily
-  included (Proposition~\ref{prop:tochain}). Second, every element added to
+  included (Proposition~\ref{prop:tochain}). Second, elements added to
+  \texttt{pendingClose}(\alice) as a reaction to a (\textsc{closeChannel})
+  message are built with an infinite waiting time (Fig.~\ref{alg:fpaynet:close},
+  line~\ref{alg:fpaynet:close:coop:mark}). Third, every element added to
   \texttt{closedChannels} (Fig.~\ref{alg:protocol:close:unilateral},
   line~\ref{alg:protocol:close:unilateral:report} and
   Fig.~\ref{alg:protocol:poll:closedch}, line~\ref{alg:protocol:poll:report})

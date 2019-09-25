@@ -1007,9 +1007,10 @@
         \Indent
           \State ensure \texttt{receipt} corresponds to an open
           $\mathtt{channel} \in \mathtt{channels}$ with ID \textit{pchid}
-          \label{alg:protocol:close:unilateral:ensure}
+          \label{alg:protocol:close:coop:ensure}
           \State stop serving any (\textsc{pay}, \textsc{closeChannel}) message
           from \environment{} for this channel.
+          \label{alg:protocol:close:coop:noserve}
           \State mark \texttt{channel} as ``coop closing''
           \If{there are outstanding HTLC outputs in the latest
           $\mathtt{localCom}_n$}
@@ -1031,7 +1032,7 @@
             $\mathtt{localCom}_n$}
               continue from here when there are none left
             \EndIf
-            \label{alg:protocol:close:unilateral:shutdown:continue}
+            \label{alg:protocol:close:coop:shutdown:continue}
             \State send (\textsc{shutdown}, $pk_{\alice}$, \textit{pchid}) to
             \bob
           \Else
@@ -1051,7 +1052,9 @@
         \Indent
           \State ensure there is an open $\mathtt{channel} \in
           \mathtt{channels}$ with \bob with ID \textit{pchid}
+          \label{alg:protocol:close:coop:signed:ensure:exists}
           \State ensure \texttt{channel} is marked as ``coop closing''
+          \label{alg:protocol:close:coop:signed:ensure:marked}
           \State add \texttt{receipt}(\texttt{channel}) to
           \texttt{closedChannels}
           \label{alg:protocol:close:coop:report}
@@ -1063,6 +1066,7 @@
           state
           \State ensure $\textsc{VerifyDS}(\mathrm{bobSig}, Cl, pk_\bob) =
           \mathtt{True}$
+          \label{alg:protocol:close:coop:signed:ensure:sig}
           \State $\mathrm{aliceSig} \gets \textsc{SignDS}(Cl, sk_{\alice})$
           \State sort aliceSig, bobSig according to the ordering of the
           respective keys to produce sig1, sig2

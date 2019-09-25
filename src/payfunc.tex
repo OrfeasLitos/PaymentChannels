@@ -497,6 +497,7 @@
           \State ensure that there is a $\mathtt{channel} \in \mathtt{channels}
           : \mathtt{receipt}\left(\mathtt{channel}\right) = \mathtt{receipt}$
           with ID \textit{pchid}
+          \label{alg:fpaynet:close:coop:ensure}
           \State retrieve \textit{fchid} from \texttt{channel}
           \label{alg:fpaynet:close:coop:retrieve}
           \State add (\textit{fchid}, \texttt{receipt}(\texttt{channel}),
