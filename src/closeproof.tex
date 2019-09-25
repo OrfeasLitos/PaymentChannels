@@ -3,10 +3,10 @@
     Like $\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$. Differences:
     \begin{algorithmic}[1]
       \State Upon receiving (\textsc{forceCloseChannel}, \texttt{receipt},
-      \textit{tid}, \alice) from \fpaynet:
+      \textit{pchid}, \alice) from \fpaynet:
       \Indent
         \State simulate Fig.~\ref{alg:protocol:close:unilateral} receiving
-        (\textsc{forceCloseChannel}, \texttt{receipt}, \textit{tid}) with
+        (\textsc{forceCloseChannel}, \texttt{receipt}, \textit{pchid}) with
         \alice's ITI
       \EndIndent
       \Statex
@@ -47,7 +47,7 @@
   \wedge \neg R \wedge \neg S$ holds.
 
   When \environment{} sends (\textsc{forceCloseChannel}, \texttt{receipt},
-  \textit{tid}) to \alice, in the ideal world, if it is not the first closing
+  \textit{pchid}) to \alice, in the ideal world, if it is not the first closing
   message to \alice{} the message is ignored (Fig.~\ref{alg:fpaynet:close},
   line~\ref{alg:fpaynet:close:noserve}). Similarly in the real world, if there
   has been another such message, \alice{} ignores it

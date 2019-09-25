@@ -50,7 +50,7 @@
     a receipt of the new channel the next time they receive (\textsc{getNews}).
 
   \noindent {\bf Channel closing.}
-    When she receives (\textsc{closeChannel}, \texttt{receipt}, \textit{tid})
+    When she receives (\textsc{closeChannel}, \texttt{receipt}, \textit{pchid})
     from \environment, \alice{} checks that \texttt{receipt} corresponds to the
     latest channel state and together with \bob{} she signs and publishes the
     closing transaction which unlocks parties' funds without a timelock. If she
