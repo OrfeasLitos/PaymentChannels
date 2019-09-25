@@ -1,5 +1,12 @@
 \section{Lightning Protocol}
   \label{appendix:protocol}
+
+  Simiarly to Fig.~\ref{alg:fpaynet:support} of \fpaynet, the registration of a
+  new player consists of the generation a new keypair, the topping up of the
+  public key with some initial funds and the non-serving any other messages
+  until registration is complete. The main difference is that here the keypair
+  is generated locally.
+
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ (self is \alice{} always) - support}
       \begin{algorithmic}[1]
