@@ -668,7 +668,8 @@
           \If{$\mathtt{HTLCNo} > \mathtt{lastRemoteSigned} \vee \mathtt{HTLCNo}
           > \mathtt{lastLocalSigned} \vee \mathcal{H}\left(R\right) \neq h$,
           where $h$ is the hash in the HTLC with number \texttt{HTLCNo}}
-            \State close channel (as in Fig.~\ref{alg:protocol:close})
+            \State close channel (as in
+            Fig.~\ref{alg:protocol:close:unilateral})
             \State \Return
           \EndIf
           \State ensure \texttt{HTLCNo} is an offered HTLC (\texttt{localCom}
@@ -771,7 +772,7 @@
           \If{$\textsc{VerifyDS}\left(\mathtt{comSig}_{n+1}, \mathtt{localCom},
           pt_F\right) = \mathtt{false} \vee |\mathtt{HTLCSigs}_{n+1}| \neq
           \mathtt{HTLCNo} - \mathtt{lastLocalSigned} + 1$}
-            \State close channel (as in Fig.~\ref{alg:protocol:close})
+            \State close channel (as in Fig.~\ref{alg:protocol:close:unilateral})
             \State \Return
           \EndIf
           \For{$i$ from \texttt{lastLocalSigned} to \texttt{HTLCNo}}
@@ -782,7 +783,8 @@
             \If{$\textsc{VerifyIBS}\left(\mathtt{HTLCSigs}_{n+1, i},
             \mathtt{localHTLC}_{n+1, i}, pt_{\mathrm{htlc}, n+1}\right) =
             \mathtt{false}$}
-              \State close channel (as in Fig.~\ref{alg:protocol:close})
+              \State close channel (as in
+              Fig.~\ref{alg:protocol:close:unilateral})
               \State \Return
             \EndIf
           \EndFor
@@ -814,7 +816,8 @@
           \label{alg:protocol:pay:revokeAndAck:ensure}
           \If{$\textsc{TestKey}\left(pt_{\mathrm{com}, n}, st_{\mathrm{com},
           n}\right) \neq 1$} \Comment{wrong $st_{\mathrm{com}, n}$ - closing}
-            \State close channel (as in Fig.~\ref{alg:protocol:close})
+            \State close channel (as in
+            Fig.~\ref{alg:protocol:close:unilateral})
             \State \Return
           \EndIf
           \State mark $\mathtt{remoteCom}_{n+1}$ as ``irrevocably committed''
@@ -850,6 +853,17 @@
           \State $pt_{\mathrm{htlc}, n+2} \gets
           \textsc{PubKeyDer}\left(ptb_{\mathrm{htlc}}, pt_{\mathrm{com},
           n+2}\right)$
+          \If{no outstanding HTLCs remain for this channel and the sequence for
+          \textsc{closeChannel} or \textsc{shutdown}
+          (Figs.~\ref{alg:protocol:close:unilateral}
+          or~\ref{alg:protocol:close:coop}) has been initiated}
+            \State continue execution at
+            Fig.~\ref{alg:protocol:close:unilateral},
+            l.~\ref{alg:protocol:close:unilateral:init:continue} or
+            Fig.~\ref{alg:protocol:close:coop},
+            l.~\ref{alg:protocol:close:unilateral:shutdown:continue}
+            respectively
+          \EndIf
         \EndIndent
       \end{algorithmic}
     \end{protocolbox}
@@ -945,14 +959,18 @@
   \end{figure}
 
   \begin{figure}[H]
-    \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - close}
+    \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - close unilaterally}
       \begin{algorithmic}[1]
-        \State Upon receiving (\textsc{closeChannel}, \texttt{receipt},
+        \State Upon receiving (\textsc{forceCloseChannel}, \texttt{receipt},
         \textit{pchid}) from \environment:
         \Indent
           \State ensure \texttt{receipt} corresponds to an open
           $\mathtt{channel} \in \mathtt{channels}$ with ID \textit{pchid}
-          \label{alg:protocol:close:ensure}
+          \label{alg:protocol:close:unilateral:ensure}
+          \If{the sequence for \textsc{closeChannel} has been initiated and is
+          pending on clearing all outstanding HTLCs}
+            \State forget this ``hook''
+          \EndIf
           \State assign latest \texttt{channel} sequence number to $n$
           \State $\mathrm{HTLCs} \gets \emptyset$
           \For{every $\text{HTLC output } \in \mathtt{localCom}_n$ with number
@@ -967,16 +985,92 @@
           sh_F\right)$
           \State add \texttt{receipt}(\texttt{channel}) to
           \texttt{closedChannels}
-          \label{alg:protocol:close:report}
+          \label{alg:protocol:close:unilateral:report}
           \State remove \texttt{channel} from \texttt{channels}
-          \label{alg:protocol:close:remove}
+          \label{alg:protocol:close:unilateral:remove}
           \State send (\textsc{submit}, $\left(\mathrm{sig},
           \mathtt{remoteSig}_n, \mathtt{localCom}_n\right), \mathrm{HTLCs}$) to
           \ledger
-          \label{alg:protocol:close:submit}
+          \label{alg:protocol:close:unilateral:submit}
         \EndIndent
       \end{algorithmic}
     \end{protocolbox}
     \caption{}
-    \label{alg:protocol:close}
+    \label{alg:protocol:close:unilateral}
+  \end{figure}
+
+  \begin{figure}[H]
+    \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - close cooperatively}
+      \begin{algorithmic}[1]
+        \State Upon receiving (\textsc{closeChannel}, \texttt{receipt},
+        \textit{pchid}) from \environment:
+        \Indent
+          \State ensure \texttt{receipt} corresponds to an open
+          $\mathtt{channel} \in \mathtt{channels}$ with ID \textit{pchid}
+          \label{alg:protocol:close:unilateral:ensure}
+          \State stop serving any (\textsc{pay}, \textsc{closeChannel}) message
+          from \environment{} for this channel.
+          \State mark \texttt{channel} as ``coop closing''
+          \If{there are outstanding HTLC outputs in the latest
+          $\mathtt{localCom}_n$}
+            continue from here when there are none left
+          \EndIf
+          \label{alg:protocol:close:unilateral:init:continue}
+          \State send (\textsc{shutdown}, $pk_{\alice}$, \textit{pchid}) to \bob
+        \EndIndent
+        \Statex
+
+        \State Upon receiving (\textsc{shutdown}, $pk_{\bob}$, \textit{pchid})
+        from \bob:
+        \Indent
+          \State ensure there is an open $\mathtt{channel} \in
+          \mathtt{channels}$ with \bob with ID \textit{pchid}
+          \If{\texttt{channel} is not marked ``coop closing''}
+            \State mark channel as ``coop closing''
+            \If{there are outstanding HTLC outputs in the latest
+            $\mathtt{localCom}_n$}
+              continue from here when there are none left
+            \EndIf
+            \label{alg:protocol:close:unilateral:shutdown:continue}
+            \State send (\textsc{shutdown}, $pk_{\alice}$, \textit{pchid}) to
+            \bob
+          \Else
+            \State $Cl \gets$ TX \{input spends \texttt{channel} funding TX
+            output, outputs pay $x, y$ to $pk_{\alice}, pk_{\bob}$ respectively,
+            alphabetically ordered by some fixed encoding of the keys, where $x$
+            is \alice's and $y$ is \bob's balance in the latest \texttt{channel}
+            state
+            \State $\mathrm{sig} \gets \textsc{SignDS}(Cl, sk_{\alice})$
+            \State send (\textsc{closingSigned}, sig, \textit{pchid}) to \bob
+          \EndIf
+        \EndIndent
+        \Statex
+
+        \State Upon receiving (\textsc{closingSigned}, bobSig, \textit{pchid}) from
+        \bob:
+        \Indent
+          \State ensure there is an open $\mathtt{channel} \in
+          \mathtt{channels}$ with \bob with ID \textit{pchid}
+          \State ensure \texttt{channel} is marked as ``coop closing''
+          \State add \texttt{receipt}(\texttt{channel}) to
+          \texttt{closedChannels}
+          \label{alg:protocol:close:coop:report}
+          \State remove \texttt{channel} from \texttt{channels}
+          \State $Cl \gets$ TX \{input spends \texttt{channel} funding TX
+          output, outputs pay $x, y$ to $pk_{\alice}, pk_{\bob}$ respectively,
+          alphabetically ordered by some fixed encoding of the keys, where $x$
+          is \alice's and $y$ is \bob's balance in the latest \texttt{channel}
+          state
+          \State ensure $\textsc{VerifyDS}(\mathrm{bobSig}, Cl, pk_\bob) =
+          \mathtt{True}$
+          \State $\mathrm{aliceSig} \gets \textsc{SignDS}(Cl, sk_{\alice})$
+          \State sort aliceSig, bobSig according to the ordering of the
+          respective keys to produce sig1, sig2
+          \State send (\textsc{submit}, $\left((\mathrm{sig1}, \mathrm{sig2}),
+          Cl\right)$) to \ledger
+        \EndIndent
+      \end{algorithmic}
+    \end{protocolbox}
+    \caption{}
+    \label{alg:protocol:close:coop}
   \end{figure}

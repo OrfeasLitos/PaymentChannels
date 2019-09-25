@@ -91,9 +91,9 @@
     Lastly, if \alice{} wants to unilaterally close a channel, all she has to do
     is broadcast her latest local commitment (the only one that is not revoked)
     and wait for the timelock to expire in order to spend her funds. The LN
-    specification allows for cooperative channel closure which avoids the need
-    to wait for the timelock, but in the current work this last type of closure
-    is not considered.
+    specification further allows for cooperative channel closure which avoids
+    the need to wait for the timelock, achieved by negotiating and broadcasting
+    the ``closing transaction''.
 
     As mentioned timelocks provide specific time windows within which both
     parties have to check the blockchain in order to punish a misbehaving

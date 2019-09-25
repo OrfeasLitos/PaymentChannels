@@ -12,6 +12,7 @@
           \item (\textsc{pay}, \bob, $x, \overrightarrow{\mathtt{path}}$,
           \texttt{receipt})
           \item (\textsc{closeChannel}, \texttt{receipt}, \textit{tid})
+          \item (\textsc{forceCloseChannel}, \texttt{receipt}, \textit{tid})
           \item (\textsc{poll})
           \item (\textsc{pushFulfill}, \textit{pchid})
           \item (\textsc{pushAdd}, \textit{pchid})
@@ -46,6 +47,7 @@
           \overrightarrow{\mathtt{path}}$, \texttt{receipt}, \textit{payid})
           \item (\textsc{continue})
           \item (\textsc{closeChannel}, \textit{fchid}, \alice)
+          \item (\textsc{forceCloseChannel}, \textit{fchid}, \alice)
           \item (\textsc{poll}, $\Sigma_{\alice}$, \alice)
           \item (\textsc{pushFulfill}, \textit{pchid}, \alice)
           \item (\textsc{pushAdd}, \textit{pchid}, \alice)
@@ -475,10 +477,16 @@
   note of the pending closure, it stops serving any more requests for this
   channel and it forwards the request to \simulator. In turn \simulator{}
   notifies \fpaynet{} of a closed channel with the corresponding message, upon
-  which \fpaynet{} takes a note to inform the corresponding player. Once more
-  \fpaynet{} trusts \simulator, but later checks that the chain contains the
-  correct transactions with \texttt{checkClosed}()
-  (Fig.~\ref{alg:fpaynet:close:func}).
+  which \fpaynet{} takes a note to inform the corresponding player. Depending on
+  whether the message instructed for a unilateral or a cooperative close,
+  \fpaynet{} will either put or not a time limit respectively to the service of
+  the request. In particular, in case of cooperative close, the time limit is
+  infinity (l.~\ref{alg:fpaynet:close:mark}). As we will see, in case a
+  unilateral close request was made and the time limit for servicing it is
+  reached, \fpaynet{} halts (Fig.~\ref{alg:fpaynet:close:func},
+  l.~\ref{alg:fpaynet:close:func:idle}). Once more \fpaynet{} trusts \simulator,
+  but later checks that the chain contains the correct transactions with
+  \texttt{checkClosed}() (Fig.~\ref{alg:fpaynet:close:func}).
 
   \begin{figure}[H]
     \begin{systembox}{\fpaynet{} - close}
@@ -492,9 +500,9 @@
           \State retrieve \textit{fchid} from \texttt{channel}
           \label{alg:fpaynet:close:retrieve}
           \State add (\textit{fchid}, \texttt{receipt}(\texttt{channel}),
-          $\bot$) to \texttt{pendingClose}(\alice)
+          $\infty$) to \texttt{pendingClose}(\alice)
           \label{alg:fpaynet:close:mark}
-          \State do not serve any other (\textsc{pay} or \textsc{closeChannel})
+          \State do not serve any other (\textsc{pay}, \textsc{closeChannel})
           message from \alice{} for this channel
           \label{alg:fpaynet:close:noserve}
           \State send (\textsc{closeChannel}, \texttt{receipt}, \textit{tid},
@@ -503,9 +511,24 @@
         \EndIndent
         \Statex
 
+        \State Upon receiving (\textsc{forceCloseChannel}, \texttt{receipt},
+        \textit{tid}) from \alice
+        \Indent
+          \State follow the same steps as in \textsc{closeChannel}, but instead
+          of $\infty$ put $\bot$ in third slot of new element to
+          \texttt{pendingClose}(\alice) and send \textsc{forceCloseChannel} to
+          \simulator. Also do not serve any other (\textsc{pay},
+          \textsc{closeChannel} or \textsc{forceCloseChannel}) message from
+          \alice{} for this channel.
+        \EndIndent
+        \Statex
+
         \State Upon receiving (\textsc{closedChannel}, \texttt{channel}, \alice)
         from \simulator:
         \Indent
+          \State remove any (\textit{fchid} of channel,
+          \texttt{receipt}(\texttt{channel}), $\infty$) from
+          \texttt{pendingClose}(\alice)
           \State add (\textit{fchid} of channel,
           \texttt{receipt}(\texttt{channel}), $\bot$) to
           \texttt{closedChannels}(\alice)

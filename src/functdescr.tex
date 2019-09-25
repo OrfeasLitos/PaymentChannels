@@ -7,7 +7,8 @@
   track of their state, updating them according to requested payments and
   closing them, as requested by honest players, all in a secure manner. In
   particular, the three main messages it can receive from \alice{} are
-  (\textsc{openChannel}), (\textsc{pay}) and (\textsc{closeChannel}).
+  (\textsc{openChannel}), (\textsc{pay}), (\textsc{closeChannel}) and
+  (\textsc{forceCloseChannel}).
 
   When \fpaynet{} receives (\textsc{openChannel}, \alice, \bob, $x$,
   \textit{tid}) from \alice, it informs \simulator{} of \environment's intention
@@ -16,9 +17,10 @@
   \texttt{receipt}) from \alice, it informs \simulator{} that \environment{}
   asked to perform a multi-hop payment of $x$ coins from \alice{} to \bob{}
   along the $\overrightarrow{\mathtt{path}}$. As expected, when \fpaynet{}
-  receives (\textsc{closeChannel}, \texttt{receipt}, \textit{tid}) from \alice,
-  it leaks to \simulator{} the fact that \environment{} wants to close the
-  relevant channel.
+  receives (\textsc{closeChannel}, \texttt{receipt}, \textit{tid}) or
+  (\textsc{forceCloseChannel}, \texttt{receipt}, \textit{tid}) from \alice (for
+  a cooperative or unilateral close respectively), it leaks to \simulator{} the
+  fact that \environment{} wants to close the relevant channel.
 
   In order to provide security guarantees, there are various moments when
   \fpaynet{} verifies whether certain expected events have actually taken place.

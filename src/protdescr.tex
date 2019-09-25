@@ -9,17 +9,18 @@
   For the rest of this section, we will assume that \alice, \bob{} and
   \charlie{} ITIs honestly execute $\Pi_{\mathrm{LN}}$. Similarly to the ideal
   world, the main functions of $\Pi_{\mathrm{LN}}$ are triggered when it
-  receives (\textsc{openChannel}), (\textsc{pay}) and (\textsc{closeChannel})
-  from \environment{}. These three messages along with (\textsc{getNews})
-  informally correspond to actions that a ``human user'' would instruct the
-  system to perform. (\textsc{register}) and (\textsc{toppedUp}) are sent by
-  \environment{} for player intialization. The rest of the messages sent from
-  \environment{} prompt $\Pi_{\mathrm{LN}}$ to perform actions that a software
-  implementation would spontaneously perform periodically. All messages sent
-  between \alice, \bob{} and \charlie{} correspond to messages specified by LN.
-  For clarity of exposition, we avoid mentioning the exact name and contents of
-  every message. We refer the reader to the formal definition of
-  $\Pi_{\mathrm{LN}}$ for further details (Appendix~\ref{appendix:protocol}).
+  receives (\textsc{openChannel}), (\textsc{pay}), (\textsc{closeChannel}) and
+  (\textsc{forceCloseChannel}) from \environment{}. These three messages along
+  with (\textsc{getNews}) informally correspond to actions that a ``human user''
+  would instruct the system to perform. (\textsc{register}) and
+  (\textsc{toppedUp}) are sent by \environment{} for player intialization. The
+  rest of the messages sent from \environment{} prompt $\Pi_{\mathrm{LN}}$ to
+  perform actions that a software implementation would spontaneously perform
+  periodically. All messages sent between \alice, \bob{} and \charlie{}
+  correspond to messages specified by LN. For clarity of exposition, we avoid
+  mentioning the exact name and contents of every message. We refer the reader
+  to the formal definition of $\Pi_{\mathrm{LN}}$ for further details
+  (Appendix~\ref{appendix:protocol}).
 
   \noindent {\bf Registration.}
     Before \alice{} can use the network, \environment{} first has to send her a
@@ -51,10 +52,13 @@
   \noindent {\bf Channel closing.}
     When she receives (\textsc{closeChannel}, \texttt{receipt}, \textit{tid})
     from \environment, \alice{} checks that \texttt{receipt} corresponds to the
-    latest state of the channel and submits to \ledger{} the latest commitment
-    transaction, along with all the relevant HTLC transactions. It also takes a
-    note to give \environment{} a receipt of the closed channel the next time
-    she receives (\textsc{getNews}).
+    latest channel state and together with \bob{} she signs and publishes the
+    closing transaction which unlocks parties' funds without a timelock. If she
+    receives \textsc{forceCloseChannel} instead, she performs the same checks
+    but directly submits to \ledger{} the latest commitment transaction, along
+    with all the relevant HTLC transactions. In both cases she takes a note to
+    notify \environment{} that the channel is closed when she receives
+    (\textsc{getNews}).
 
   \noindent {\bf Performing payments.}
     When she receives (\textsc{pay}, \charlie, $x$,
@@ -146,14 +150,9 @@
     ``delay'' and ``relayDelay'' parameters even after registration, which is
     not the case in $\Pi_{\mathrm{LN}}$.
 
-    In order to incentivize users to act as intermediaries or check for channel
-    closures on behalf of others, LN provides for fees for these two roles.
-    Furthermore, in order to reduce transaction size, it specifies exact rules
-    for prunning outputs of too low value (known as ``dust outputs''). In the
-    current analysis we do not consider these features.
-
-    Last but not least, LN makes it possible for parties to cooperatively close
-    a channel, thus avoiding the need to wait for the expiry of timelocks and
-    reducing the size of the transactions that are added to the blockchain. As
-    we mentioned earlier, we do not analyze this part of the specification.
+    Lastly, in order to incentivize users to act as intermediaries or check for
+    channel closures on behalf of others, LN provides for fees for these two
+    roles. Furthermore, in order to reduce transaction size, it specifies exact
+    rules for prunning outputs of too low value (known as ``dust outputs''). In
+    the current analysis we do not consider these features.
   \end{remark}

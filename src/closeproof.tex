@@ -2,18 +2,20 @@
   \begin{simulatorbox}{$\simulator$}
     Like $\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$. Differences:
     \begin{algorithmic}[1]
-      \State Upon receiving (\textsc{closeChannel}, \texttt{receipt},
+      \State Upon receiving (\textsc{forceCloseChannel}, \texttt{receipt},
       \textit{tid}, \alice) from \fpaynet:
       \Indent
-        \State simulate Fig.~\ref{alg:protocol:close} receiving
-        (\textsc{closeChannel}, \texttt{receipt}, \textit{tid}) with \alice's
-        ITI
+        \State simulate Fig.~\ref{alg:protocol:close:unilateral} receiving
+        (\textsc{forceCloseChannel}, \texttt{receipt}, \textit{tid}) with
+        \alice's ITI
       \EndIndent
       \Statex
 
-      \State every time \texttt{closedChannels} of \alice{} is updated with
-      data from a \texttt{channel} (Fig.~\ref{alg:protocol:close},
-      line~\ref{alg:protocol:close:report} and
+      \State every time \texttt{closedChannels} of \alice{} is updated with data
+      from a \texttt{channel} (Fig.~\ref{alg:protocol:close:unilateral},
+      line~\ref{alg:protocol:close:unilateral:report},
+      Fig~\ref{alg:protocol:close:coop},
+      line~\ref{alg:protocol:close:coop:report} and
       Fig.~\ref{alg:protocol:poll:closedch},
       line~\ref{alg:protocol:poll:report}), send (\textsc{closedChannel},
       \texttt{channel}, \alice) to \fpaynet{} and expect (\textsc{continue})
@@ -44,13 +46,14 @@
   Like in the previous proof, we here also assume that $\neg P \wedge \neg Q
   \wedge \neg R \wedge \neg S$ holds.
 
-  When \environment{} sends (\textsc{closeChannel}, \texttt{receipt},
+  When \environment{} sends (\textsc{forceCloseChannel}, \texttt{receipt},
   \textit{tid}) to \alice, in the ideal world, if it is not the first closing
   message to \alice{} the message is ignored (Fig.~\ref{alg:fpaynet:close},
   line~\ref{alg:fpaynet:close:noserve}). Similarly in the real world, if there
   has been another such message, \alice{} ignores it
-  (Fig.\ref{alg:protocol:close}, lines~\ref{alg:protocol:close:remove}
-  and~\ref{alg:protocol:close:ensure}).
+  (Fig.\ref{alg:protocol:close:unilateral},
+  lines~\ref{alg:protocol:close:remove}
+  and~\ref{alg:protocol:close:unilateral:ensure}).
 
   In the case that it is indeed the first closing message, in the ideal world
   \fpaynet{} takes note that this close is pending
@@ -61,13 +64,13 @@
   simulates the response to the original message from \environment{} with
   \alice's ITI (Fig.~\ref{alg:sim:close}). Observe that, since \fpaynet{} has
   ensured that this is the first request for closing this particular channel,
-  the simulated check of line~\ref{alg:protocol:close:ensure} in
-  Fig.~\ref{alg:protocol:close} always passes and the rest of
-  Fig.~\ref{alg:protocol:close} is executed. In the real world, the check also
-  passes (since we are in the case where this is the first closing message) and
-  Fig.~\ref{alg:protocol:close} is executed by the real \alice{} in its
-  entirety. Therefore, when \environment{} sends \textsc{closeChannel}, no
-  opportunity for distinguishability arises.
+  the simulated check of line~\ref{alg:protocol:close:unilateral:ensure} in
+  Fig.~\ref{alg:protocol:close:unilateral} always passes and the rest of
+  Fig.~\ref{alg:protocol:close:unilateral} is executed. In the real world, the
+  check also passes (since we are in the case where this is the first closing
+  message) and Fig.~\ref{alg:protocol:close:unilateral} is executed by the real
+  \alice{} in its entirety. Therefore, when \environment{} sends
+  \textsc{forceCloseChannel}, no opportunity for distinguishability arises.
 
   When \environment{} sends (\textsc{getNews}) to \alice, in the ideal world
   \fpaynet{} sends (\textsc{news}, \texttt{newChannels}(\alice),
@@ -173,25 +176,26 @@
   channel to close, but too much time has passed since. This event cannot
   happen, for two reasons. First, regarding elements in
   \texttt{pendingClose}(\alice), because \fpaynet{} forwards a
-  (\textsc{closeChannel}) message to \simulator{} (Fig.~\ref{alg:fpaynet:close},
-  line~\ref{alg:fpaynet:close:send}) for every element that it adds to
-  \texttt{pendingClose} (Fig~\ref{alg:fpaynet:close},
+  (\textsc{forceCloseChannel}) message to \simulator{}
+  (Fig.~\ref{alg:fpaynet:close}, line~\ref{alg:fpaynet:close:send}) for every
+  element that it adds to \texttt{pendingClose} (Fig~\ref{alg:fpaynet:close},
   line~\ref{alg:fpaynet:close:mark}) and this causes \simulator{} to submit the
-  closing transaction to \ledger{} (Fig.~\ref{alg:protocol:close},
-  line~\ref{alg:protocol:close:submit}). This transaction is necessarily valid,
-  because there is no other transaction that spends the funding transaction of
-  the channel, according to the first check of
+  closing transaction to \ledger{} (Fig.~\ref{alg:protocol:close:unilateral},
+  line~\ref{alg:protocol:close:unilateral:submit}). This transaction is
+  necessarily valid, because there is no other transaction that spends the
+  funding transaction of the channel, according to the first check of
   line~\ref{alg:fpaynet:close:func:ifidle} of Fig.~\ref{alg:fpaynet:close:func}.
   \fpaynet{} halts in this case only if it is sure that the chain has grown by
   \tochain{} blocks, and thus if the closing transaction had been submitted when
-  (\textsc{closeChannel}) was received, it should have been necessarily included
-  (Proposition~\ref{prop:tochain}). Second, every element added to
-  \texttt{closedChannels} (Fig.~\ref{alg:protocol:close},
-  line~\ref{alg:protocol:close:report} and
+  (\textsc{forceCloseChannel}) was received, it should have been necessarily
+  included (Proposition~\ref{prop:tochain}). Second, every element added to
+  \texttt{closedChannels} (Fig.~\ref{alg:protocol:close:unilateral},
+  line~\ref{alg:protocol:close:unilateral:report} and
   Fig.~\ref{alg:protocol:poll:closedch}, line~\ref{alg:protocol:poll:report})
   corresponds to a submission of a closing transaction for the same channel
-  (Fig.~\ref{alg:protocol:close}, line~\ref{alg:protocol:close:submit}), or to a
-  channel for which the closing transaction is already in the ledger state
+  (Fig.~\ref{alg:protocol:close:unilateral},
+  line~\ref{alg:protocol:close:unilateral:submit}), or to a channel for which
+  the closing transaction is already in the ledger state
   (Fig.~\ref{alg:protocol:poll:closedch},
   line~\ref{alg:protocol:poll:closedch:loop}). In both cases, the transaction
   has been submitted at least \tochain{} blocks earlier, thus again by
