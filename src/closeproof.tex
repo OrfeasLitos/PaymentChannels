@@ -11,6 +11,18 @@
       \EndIndent
       \Statex
 
+      \State Upon receiving (\textsc{closeChannel}, \texttt{receipt},
+      \textit{pchid}, \alice) from \fpaynet:
+      \Indent
+        \State simulate the interaction between \alice{} and \bob{} in
+        Fig.~\ref{alg:protocol:close:coop}, starting with \alice{} receiving
+        (\textsc{closeChannel}, \texttt{receipt}, \textit{pchid}) with \alice's
+        ITI. If \bob{} is honest, simulate his part as well; if not, let
+        \adversary{} handle his part.
+        \label{alg:sim:close:coop}
+      \EndIndent
+      \Statex
+
       \State every time \texttt{closedChannels} of \alice{} is updated with data
       from a \texttt{channel} (Fig.~\ref{alg:protocol:close:unilateral},
       line~\ref{alg:protocol:close:unilateral:report},
