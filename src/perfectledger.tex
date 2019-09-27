@@ -42,14 +42,20 @@
 
   \begin{proofsketch}
     We take advantage of the \adversary's ability to selectively send messages
-    to specific players. The attack is as follows: \environment{} flips a coin.
-    In one case, it \textsc{submit}s a random string through honest player
-    \alice{} and \textsc{read}s through another player \bob,
-    whereas in the other, it has \adversary{} \textsc{multicast} through
-    $\FnetworkEd^1$ a random string only to \alice and then instructs either
-    \alice{} or \bob{} (chosen again at random) to \textsc{read}. \environment{}
-    returns 1 when the player that was asked coincides with the player that was
-    initially informed \TODO{complete or delete}
+    to specific players. In particular, \environment{} starts an execution with
+    2 players and generates a random message $m$. In half of the executions
+    (randomly selected), $m$ is multicast only to one of the two players, say
+    \alice{} by \adversary{} (in the real world). The environment then sends
+    \textsc{read} to the other player, say \bob. If \bob{} knows $m$, then
+    \environment{} assumes that it is the ideal world, otherwise it sends
+    \textsc{read} to \alice. If she knows $m$, then \environment{} decides it is
+    in the real world, otherwise it declares this the ideal world.
+
+    To avoid the obvious counterattack of a protocol that always returns an
+    empty ledger, in the other half of the executions \environment{} sends
+    (\textsc{submit}, $m$) to \alice{} and then (\textsc{read}) to \bob. If
+    \bob{} knows $m$, then \environment{} decides this is the ideal world, so
+    for that case the protocol is forced to try to achieve instant finality.
   \end{proofsketch}
 
   \begin{proof}
