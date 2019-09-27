@@ -57,6 +57,9 @@
     \end{equation*}
   \end{theorem}
 
+  We refer the reader to Appendix~\ref{appendix:ledger} for the definition of
+  $\FnetworkEd^1$.
+
   \begin{proofsketch}
     We take advantage of the \adversary's ability to selectively send messages
     to specific players. The attack is as follows: \environment{} flips a coin.
@@ -89,9 +92,11 @@
               \State send (\textsc{read}) to \bob{} and assign result to
               $\mathcal{L}$
               \If{$m \in \mathcal{L}$}
-                \State \Return 0 \Comment{players communicated}
+                \State \Return 1 \Comment{players communicated}
+                \label{fig:perfectledger:env:coin0:in}
               \Else
-                \State \Return 1 \Comment{players did not communicate}
+                \State \Return 0 \Comment{players did not communicate}
+                \label{fig:perfectledger:env:coin0:out}
               \EndIf
             \EndIndent
           \EndProcedure
@@ -101,19 +106,25 @@
             \State First activation:
             \Indent
               \State choose random number $m \overset{\$}{\gets} \{0, 1\}^k$
-              \State send (\textsc{leak}, $m$) to \adversary{} \Comment{will
-              \textsc{multicast} to \alice}
+              \State send (\textsc{leak}, $m$) to \adversary{} \Comment{in real
+              world \adversary{} will \textsc{multicast} to \alice}
             \EndIndent
             \State Second activation:
             \Indent
-              \State assign to $P$ a random choice from \{\alice, \bob\}
-              \State send (\textsc{read}) to $P$ and assign result to
-              $\mathcal{L}$
-              \If{($m \in \mathcal{L}$ and $P$ = \bob) or ($m \notin
-              \mathcal{L}$ and $P$ = \alice)}
-                \State \Return 0 \Comment{unexpected}
+              \State send (\textsc{read}) to \alice
+            \EndIndent
+            \State Third activation:
+            \Indent
+              \State Assign subroutine output from \alice{} to
+              $\mathcal{L}_{\alice}$
+              \State send (\textsc{read}) to \bob{} and assign result to
+              $\mathcal{L}_{\bob}$
+              \If{$m \in \mathcal{L}_{\alice}$ and $m \in \mathcal{L}_{\bob}$}
+                \State \Return 1 \Comment{ideal world}
+                \label{fig:perfectledger:env:coin1:ideal}
               \Else
-                \State \Return 1 \Comment{expected}
+                \State \Return 0 \Comment{real world}
+                \label{fig:perfectledger:env:coin1:real}
               \EndIf
             \EndIndent
           \EndProcedure
@@ -132,5 +143,52 @@
       \label{fig:perfectledger:adv}
     \end{figure}
 
-    \TODO{continue}
+    Since we quantify over all possible \simulator{} and \perfectprot, we have
+    to refer to the probabilities of them taking specific actions of interest:
+    \begin{gather*}
+      \pssubmits = \Pr[\text{Upon receiving (\textsc{leak}, $m$) from
+      \environment,} \\
+      \text{\simulator{} sends (\textsc{submit}, $m$) to $\mathcal{L}$}] \\
+      \ppsubmits = \Pr[\text{Upon receiving (\textsc{submit}, $m$) from
+      \environment,} \\
+      \text{\perfectprot{} sends (\textsc{multicast}, $m$) to $\FnetworkEd^1$}]
+      \\
+      \ppfetches = \Pr[\text{Upon receiving (\textsc{read}) from \environment,}
+      \\
+      \text{\perfectprot{} sends (\textsc{fetch}) to $\FnetworkEd^1$} \\
+      \text{and appends result to $\mathcal{L}$ before sending it back to
+      \environment}]
+    \end{gather*}
+
+    We first analyze the event in which the initial coin flip of \environment{}
+    results in 0, $\mathrm{Coin}_0$. In the ideal world, the submitted message
+    $m$ always ends up in the ledger right away and therefore when
+    \environment{} has \bob{} \textsc{read}, it always sees $m$ in the answer,
+    therefore (Fig.~\ref{fig:perfectledger:env},
+    line~\ref{fig:perfectledger:env:coin0:in})
+    \begin{equation}
+    \label{eq:coin0:ideal}
+      \Pr[\textsc{Exec}^{\perfectledger}_{\simulator, \perfectenv} = 1 |
+      \mathrm{Coin}_0] = 1 \enspace.
+    \end{equation}
+
+    In the real world, in order for the submitted message $m$ to be in \bob's
+    response to \textsc{read}, he must have fetched from $\FnetworkEd^1$ and
+    \alice{} must have sent $m$ to $\FnetworkEd^1$ when she received
+    (\textsc{submit}, $m$), therefore
+    \begin{equation}
+    \label{eq:coin0:real}
+      \Pr[\textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot, \perfectadv,
+      \perfectenv} = 1 | \mathrm{Coin}_0] = \ppsubmits \ppfetches \enspace.
+    \end{equation}
+
+    We now move on to the event in which the initial coin flip results in 1,
+    $\mathrm{Coin}_1$. In the ideal world, if \simulator{} submits the received
+    $m$ to the ledger then both \environment's \textsc{read} requests will be
+    answered with an output that contains $m$, therefore
+    \begin{equation}
+    \label{eq:coin1:ideal}
+      \Pr[\textsc{Exec}^{\perfectledger}_{\simulator, \perfectenv} = 1 |
+      \mathrm{Coin}_1] = \pssubmits \ppfetches \ppfetches \enspace.
+    \end{equation}
   \end{proof}
