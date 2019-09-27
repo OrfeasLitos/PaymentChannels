@@ -150,12 +150,12 @@
       \\
       \ppfetches = \Pr[\text{Upon receiving (\textsc{read}) from \environment,}
       \\
-      \text{\perfectprot{} sends (\textsc{fetch}) to $\FnetworkEd^1$ for result
-      } [m_1', \dots, m_n'] \\
+      \text{\perfectprot{} sends (\textsc{fetch}) to $\FnetworkEd^1$ for data }
+      m' \\
       \text{and sends back to \environment{} a (\textsc{read}, $\mathcal{L}$)
       such that} \\
-      \text{for the last $n$ elements of $\mathcal{L}, (m_1, \dots, m_n)$ it is
-      } f(m_i) = m_i']
+      \text{if there is a unique element $m$ in $\mathcal{L}$, it is } f(m) =
+      m']
     \end{gather*}
 
     We first analyze the event in which the initial coin flip of \environment{}
