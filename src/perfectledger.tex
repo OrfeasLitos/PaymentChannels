@@ -164,29 +164,74 @@
     \environment{} has \bob{} \textsc{read}, it always sees $m$ in the answer,
     therefore (Fig.~\ref{fig:perfectledger:env},
     line~\ref{fig:perfectledger:env:coin0:in})
-    \begin{equation}
-    \label{eq:coin0:ideal}
-      \Pr[\textsc{Exec}^{\perfectledger}_{\simulator, \perfectenv} = 1 |
-      \mathrm{Coin}_0] = 1 \enspace.
-    \end{equation}
+    \begin{equation*}
+      \Pr[\textsc{Exec}^{\perfectledger, \gFclock}_{\simulator, \perfectenv} = 1
+      | \mathrm{Coin}_0] = 1 \enspace.
+    \end{equation*}
 
     In the real world, in order for the submitted message $m$ to be in \bob's
     response to \textsc{read}, he must have fetched from $\FnetworkEd^1$ and
-    \alice{} must have sent $m$ to $\FnetworkEd^1$ when she received
-    (\textsc{submit}, $m$), therefore
-    \begin{equation}
-    \label{eq:coin0:real}
+    considered this data as a new ledger entry, and \alice{} must have sent some
+    function of $m$ to $\FnetworkEd^1$ when she received (\textsc{submit}, $m$),
+    except if he could guess $m$, which can happen with negligible probability,
+    therefore
+    \begin{equation*}
       \Pr[\textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot, \perfectadv,
-      \perfectenv} = 1 | \mathrm{Coin}_0] = \ppsubmits \ppfetches \enspace.
-    \end{equation}
+      \perfectenv} = 1 | \mathrm{Coin}_0] < \ppsubmits \ppfetches + \negl(k)
+      \enspace.
+    \end{equation*}
 
     We now move on to the event in which the initial coin flip results in 1,
-    $\mathrm{Coin}_1$. In the ideal world, if \simulator{} submits the received
-    $m$ to the ledger then both \environment's \textsc{read} requests will be
-    answered with an output that contains $m$, therefore
-    \begin{equation}
-    \label{eq:coin1:ideal}
-      \Pr[\textsc{Exec}^{\perfectledger}_{\simulator, \perfectenv} = 1 |
-      \mathrm{Coin}_1] = \pssubmits \ppfetches \ppfetches \enspace.
-    \end{equation}
+    $\mathrm{Coin}_1$. In the ideal world, if \simulator{} \textsc{submit}s the
+    received $m$ to the ledger then \environment's \textsc{read} request to
+    \bob{} will be answered with an output that contains $m$ an \environment{}
+    will output 1 (Fig.~\ref{fig:perfectledger:env},
+    line~\ref{fig:perfectledger:env:coin1:ideal1}). If on the other hand
+    \simulator{} does not \textsc{submit} it, then neither \bob's nor \alice's
+    answer will contain $m$, so \environment's output will also be 1
+    (Fig.~\ref{fig:perfectledger:env},
+    line~\ref{fig:perfectledger:env:coin1:ideal2}).
+    \begin{equation*}
+      \Pr[\textsc{Exec}^{\perfectledger, \gFclock}_{\simulator, \perfectenv} = 1
+      | \mathrm{Coin}_1] = 1 \enspace.
+    \end{equation*}
+
+    Lastly, in the real world, \bob's buffer in $\FnetworkEd^1$ does not
+    contain any information, so he may return a ledger containing $m$ only with
+    negligible probability. In case he returns a ledger without $m$, \alice{}
+    will respond to \environment's \textsc{read} query with a ledger containing
+    $m$ exactly in the case that the event that defines \ppfetches{} is true,
+    therefore
+    \begin{equation*}
+      \Pr[\textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot, \perfectadv,
+      \perfectenv} = 1 | \mathrm{Coin}_1] < (1 - \ppfetches) + \negl(k)
+      \enspace.
+    \end{equation*}
+
+    In aggregate,
+    \begin{gather*}
+      \Pr[\textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot, \perfectadv,
+      \perfectenv} = 1] = \\
+      \frac{1}{2}(\Pr[\textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot,
+      \perfectadv, \perfectenv} = 1 | \mathrm{Coin}_0] +
+      \Pr[\textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot, \perfectadv,
+      \perfectenv} = 1 | \mathrm{Coin}_1]) < \\
+      \frac{1}{2}(\ppsubmits \ppfetches + 1 - \ppfetches) + \negl(k) = \\
+      \frac{1}{2} + \ppfetches \frac{\ppsubmits - 1}{2} + \negl(k) \enspace,
+    \end{gather*}
+    and
+    \begin{gather*}
+      \Pr[\textsc{Exec}^{\perfectledger, \gFclock}_{\simulator, \perfectenv} =
+      1] = \\
+      \frac{1}{2}(\Pr[\textsc{Exec}^{\perfectledger, \gFclock}_{\simulator,
+      \perfectenv} = 1 | \mathrm{Coin}_0] + \Pr[\textsc{Exec}^{\perfectledger,
+      \gFclock}_{\simulator, \perfectenv} = 1 | \mathrm{Coin}_1]) = 1 \enspace.
+    \end{gather*}
+
+    For these two probabilities to be equal (which is necessary and sufficient
+    for indistinguishability to hold), it would have to be
+    $\ppfetches(\ppsubmits - 1) = 1$. One can verify that there is no assignment
+    to the two probabilities that satisfies this equation and maintains both
+    values within $[0, 1]$. Therefore, the real and the ideal world are
+    distinguishable.
   \end{proof}
