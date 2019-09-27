@@ -13,33 +13,13 @@
         \State State: List of txs $\mathcal{L}$
         \Statex
 
-        \State Upon receiving (\textsc{Submit}, $m$) from \alice, append $m$ to
-        $\mathcal{L}$ and send (\textsc{Submit}, \alice, $m$) to \adversary
-        \Statex
-
-        \State Upon receiving (\textsc{Submit}, $m$) from \adversary, append $m$
-        to $\mathcal{L}$
+        \State Upon receiving (\textsc{Submit}, $m$) from \alice or \adversary,
+        append $m$ to $\mathcal{L}$ and send (\textsc{Submit}, \alice or
+        \adversary, $m$) to \adversary
         \Statex
 
         \State Upon receiving (\textsc{Read}) from \alice, send (\textsc{Read},
         $\mathcal{L}$) to \alice
-        \Statex
-
-        \orfeas{next three entries are what I assume to be boilerplate for all
-        UC functionalities -- correct me if I'm wrong}
-        \State Upon receiving (\textsc{corrupt}, \alice) from \adversary, mark
-        \alice{} as \texttt{corrupted} and route all future messages directed to
-        \alice{} to \adversary
-        \Statex
-
-        \State Upon receiving any message (\textsc{handle}, \alice, $M$) from
-        \adversary, if \alice{} is corrupted, handle message $M$ as incoming
-        from \alice{} and if it creates an outgoing message $M'$ to
-        \texttt{dest}, send ($M'$, \texttt{dest}) to \adversary{} instead
-        \Statex
-
-        \State Upon receiving any message (\textsc{forward}, \alice, $M$) from
-        \adversary, if \alice{} is corrupted, send ($M$) to \alice
       \end{algorithmic}
     \end{systembox}
     \caption{}
