@@ -65,18 +65,21 @@
             \State First activation:
             \Indent
               \State choose random number $m \overset{\$}{\gets} \{0, 1\}^k$
+              \State assign at random names \alice, \bob{} to two players
               \State send (\textsc{submit}, $m$) to \alice
             \EndIndent
             \State Second activation:
             \Indent
-              \State send (\textsc{read}) to \bob{} and assign result to
-              $\mathcal{L}$
-              \If{$m \in \mathcal{L}$}
+              \State send (\textsc{read}) to \bob
+              \If{\bob{} does not give subroutine output}
+                \State \Return 0 \Comment{real world}
+                \label{fig:perfectledger:env:coin0:real}
+              \ElsIf{\bob's subroutine output $\mathcal{L}$ contains $m$}
                 \State \Return 1 \Comment{players communicated}
-                \label{fig:perfectledger:env:coin0:in}
-              \Else
+                \label{fig:perfectledger:env:coin0:comm}
+              \ElsIf{$\mathcal{L}$ does not contain $m$}
                 \State \Return 0 \Comment{players did not communicate}
-                \label{fig:perfectledger:env:coin0:out}
+                \label{fig:perfectledger:env:coin0:nocomm}
               \EndIf
             \EndIndent
           \EndProcedure
@@ -86,25 +89,36 @@
             \State First activation:
             \Indent
               \State choose random number $m \overset{\$}{\gets} \{0, 1\}^k$
-              \State send (\textsc{leak}, $m$) to \adversary{} \Comment{in real
-              world \adversary{} will \textsc{multicast} to \alice}
+              \State assign at random names \alice, \bob{} to two players
+              \State send (\textsc{leak}, $m$, \alice) to \adversary{}
+              \Comment{in real world \adversary{} will \textsc{multicast} to
+              \alice}
             \EndIndent
             \State Second activation:
             \Indent
-              \State send (\textsc{read}) to \alice
+              \State send (\textsc{read}) to \bob
             \EndIndent
             \State Third activation:
             \Indent
-              \State Assign subroutine output from \alice{} to
-              $\mathcal{L}_{\alice}$
-              \State send (\textsc{read}) to \bob{} and assign result to
-              $\mathcal{L}_{\bob}$
-              \If{$m \in \mathcal{L}_{\alice}$ and $m \in \mathcal{L}_{\bob}$}
-                \State \Return 1 \Comment{ideal world}
-                \label{fig:perfectledger:env:coin1:ideal}
-              \Else
+              \If{\bob{} does not give subroutine output}
                 \State \Return 0 \Comment{real world}
-                \label{fig:perfectledger:env:coin1:real}
+                \label{fig:perfectledger:env:coin1:real1}
+              \ElsIf{\bob's subroutine output $\mathcal{L}_{\bob}$ contains $m$}
+                \State \Return 1 \Comment{ideal world}
+                \label{fig:perfectledger:env:coin1:ideal1}
+              \EndIf
+              \State send (\textsc{read}) to \alice
+              \If{\alice{} does not give subroutine output}
+                \State \Return 0 \Comment{real world}
+                \label{fig:perfectledger:env:coin1:real3}
+              \ElsIf{\alice's subroutine output $\mathcal{L}_{\alice}$ contains
+              $m$}
+                \State \Return 0 \Comment{real world}
+                \label{fig:perfectledger:env:coin1:real2}
+              \ElsIf{$\mathcal{L}_{\alice}$ does not contain $m$}
+                \State \Return 1 \Comment{ideal world or real \alice{}
+                misbehaving}
+                \label{fig:perfectledger:env:coin1:ideal2}
               \EndIf
             \EndIndent
           \EndProcedure
@@ -116,7 +130,7 @@
 
     \begin{figure}[H]
       \begin{titlebox}{Adversary \normalfont \perfectadv}{commonbox}{normal}
-        Upon receiving (\textsc{leak}, $m$) from \perfectenv, simulate
+        Upon receiving (\textsc{leak}, $m$, \alice) from \perfectenv, simulate
         \perfectprot{} reacting to (\textsc{submit}, $m$). If it attempts to
         send a message (\textsc{multicast}, $m'$) to $\FnetworkEd^1$, send
         (\textsc{multicast}, ($m'$, \alice)) to $\FnetworkEd^1$.
