@@ -136,8 +136,10 @@
 
     \begin{figure}[H]
       \begin{titlebox}{Adversary \normalfont \perfectadv}{commonbox}{normal}
-        Upon receiving (\textsc{leak}, $m$) from \perfectenv, send
-        (\textsc{multicast}, ($m$, \alice)) to $\FnetworkEd^1$
+        Upon receiving (\textsc{leak}, $m$) from \perfectenv, simulate
+        \perfectprot{} reacting to (\textsc{submit}, $m$). If it attempts to
+        send a message (\textsc{multicast}, $m'$) to $\FnetworkEd^1$, send
+        (\textsc{multicast}, ($m'$, \alice)) to $\FnetworkEd^1$.
       \end{titlebox}
       \caption{}
       \label{fig:perfectledger:adv}
