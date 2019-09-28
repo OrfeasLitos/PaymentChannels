@@ -3,7 +3,7 @@
 
   Simiarly to Fig.~\ref{alg:fpaynet:support} of \fpaynet, the registration of a
   new player consists of the generation a new keypair, the topping up of the
-  public key with some initial funds and the non-serving any other messages
+  public key with some initial funds and the non-serving of any other messages
   until registration is complete. The main difference is that here the keypair
   is generated locally.
 
@@ -92,6 +92,13 @@
     \label{alg:protocol:support}
   \end{figure}
 
+  When a player receives \textsc{openChannel} from \environment, she generates a
+  number of base keypairs (funding, payment, delayed payment, HTLC), along with
+  a seed for the per-update key shares, a master keypair and a share keypair
+  used for revocation. She then sends the public keys along with the desired
+  delay and initial funds to the counterparty as specified by \environment{} in
+  a message labeled also \textsc{openChannel}.
+
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{openChannel} from
     \environment}
@@ -131,6 +138,10 @@
     \label{alg:protocol:open:env}
   \end{figure}
 
+  When he receives \textsc{openChannel} by a funding party, the same steps are
+  followed by the counterparty. The only difference is that he labels his reply
+  with \textsc{acceptChannel} instead.
+
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{openChannel} from \bob}
       \begin{algorithmic}[1]
@@ -162,6 +173,11 @@
     \caption{}
     \label{alg:protocol:open:openChannel}
   \end{figure}
+
+  When she receives \textsc{acceptChannel} by the counterparty, the funding
+  party creates the funding transaction and the first commitment transaction,
+  signs the funding transaction and sends this signature to the counterparty
+  with a message labelled \textsc{fundingCreated}.
 
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{acceptChannel}}
