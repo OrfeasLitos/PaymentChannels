@@ -213,6 +213,12 @@
       \perfectenv} = 1 | \mathrm{Coin}_1] < (1 - \ppfetches) + \negl(k)
       \enspace.
     \end{equation*}
+    Note that \perfectprot{} cannot leverage knowledge of its own pid in order
+    to have \alice{} behave differently from \bob{} in a manner that tricks
+    \perfectenv{} into believing that it interacts with the ideal world (i.e.
+    make \alice{} also not return a ledger that contains $m$) because the roles
+    of \alice{} and \bob{} are assigned and the coin is flipped secretly at
+    random by \perfectenv.
 
     In aggregate,
     \begin{gather*}
