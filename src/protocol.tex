@@ -235,6 +235,12 @@
     \label{alg:protocol:open:acceptChannel}
   \end{figure}
 
+  When he receives \textsc{fundingCreated} by the funding party, the
+  counterparty creates the funding transaction and then checks the validity of
+  the received signature. If it is valid, he then creates the first commitment
+  transaction as well, signs the funding transaction and sends this signature to
+  the funding party with a message labelled \textsc{fundingSigned}.
+
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{fundingCreated}}
       \begin{algorithmic}[1]
@@ -281,6 +287,10 @@
     \label{alg:protocol:open:fundingCreated}
   \end{figure}
 
+  When the funding party receives \textsc{fundingSigned}, she verifies the
+  validity of the received signature. If it is valid, it broadcasts the funding
+  transaction.
+
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{fundingSigned}}
       \begin{algorithmic}[1]
@@ -309,6 +319,12 @@
     \caption{}
     \label{alg:protocol:open:fundingSigned}
   \end{figure}
+
+  When either party (say \alice) receives \textsc{checkForNew} from
+  \environment, she checks if the funding transaction is in the ledger. If it
+  is, it generates the keyshare for the next update and sends it to \bob{} in a
+  message labelled \textsc{fundingLocked}. When \alice{} receives a similar
+  message from \bob, she considers the channel open.
 
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{checkForNew}}
