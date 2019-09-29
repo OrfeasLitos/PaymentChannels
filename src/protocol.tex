@@ -456,12 +456,12 @@
         \EndIndent
         \Statex
 
-        \State Upon receiving (\textsc{getNews}) from \alice:
+        \State Upon receiving (\textsc{getNews}) from \environment:
         \label{alg:protocol:getnews}
         \Indent
           \State clear \texttt{newChannels}, \texttt{closedChannels},
-          \texttt{updatesToReport} and send them to \alice{} with message name
-          \textsc{news}
+          \texttt{updatesToReport} and send them to \environment{} with message
+          name \textsc{news}
           \label{alg:protocol:getnews:send}
         \EndIndent
       \end{algorithmic}
