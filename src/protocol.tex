@@ -595,7 +595,7 @@
           \mathtt{SphinxCreate}\left(m, \text{ public keys of }
           \overrightarrow{\mathtt{path}} \text{ parties}\right)$
           \State let $\mathtt{remoteCom}_n$ the latest signed remote commitment
-          tx
+          tx with first $\overrightarrow{\mathtt{path}}$ member
           \State reduce simple payment output in \texttt{remoteCom} by $x$
           \State add an additional $\left(x, ph_{\mathrm{rev}, n+1} \vee
           \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc}, n+1}, \text{
