@@ -404,6 +404,13 @@
     \label{alg:protocol:fundingLocked}
   \end{figure}
 
+  When a player receives \textsc{poll}, she checks the ledger for closed
+  channels and acts upon them. In particular, she retrieves funds from failed
+  HTLC payments and punishes counterparties that closed their channel
+  maliciously. She also takes note of honestly closed channels. When she
+  receives \textsc{getNews}, she sends back a list of all unreported channels
+  that opened or closed, along with payments that were carried out successfully.
+
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - poll}
       \begin{algorithmic}[1]
