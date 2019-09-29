@@ -637,6 +637,15 @@
     \label{alg:protocol:pay:invoice}
   \end{figure}
 
+  When a player receives \textsc{updateAddHtlc}, she peels the outermost onion
+  layer and extracts the CLTV expiry, the next channel ID (or $\bot$ if she is
+  the payee) and the payment amount. She checks that the CLTV expiry is within
+  her desired relay delay and adds to the incoming channel an HTLC that pays her
+  the payment amount. If she is the payee, she prepares to disclose the
+  preimage. Otherwise, she creates an HTLC that transfers the payment amount
+  from her to the next party of the path, prepares the next onion and takes a
+  note to send it to the next party.
+
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{updateAddHtlc}}
       \begin{algorithmic}[1]
@@ -717,6 +726,13 @@
     \caption{}
     \label{alg:protocol:pay:updateAddHtlc}
   \end{figure}
+
+  When a player receives a preimage for a particular HTLC in an
+  \textsc{updateFulfillHtlc} message, she verifies the validity of the preimage,
+  she removes the HTLC and incorporates the new balance to the commitment
+  transactions and, if she is an intermediary, she sends the preimage to the
+  previous party on the path if the channel is still open, or publishes the
+  preimage on-chain otherwise.
 
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{updateFulfillHtlc}}
