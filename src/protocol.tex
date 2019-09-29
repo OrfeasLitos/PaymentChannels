@@ -532,6 +532,18 @@
     \label{alg:protocol:poll:closedch}
   \end{figure}
 
+  When a player (say \alice) receives \textsc{pay} along with a payee (say
+  \bob), a payment amount and a path, she informs \bob{} of the upcoming payment
+  with a \textsc{sendInvoice} message. He then generates a secret preimage and
+  sends back its hash and his desired minimum slack between the present and the
+  moment he has to disclose the preimage (known as ``relay delay'') in a message
+  labelled \textsc{invoice}. Subsequently \alice{} prepares a Sphinx onion
+  packet~\cite{sphinx} with one message for each path member, taking into
+  account each hop's desired relay delay. Afterwards she creates an HTLC that
+  transfers the payment amount and adds it to her channel with the first path
+  member. She then sends the onion, the payment amount and the hash to the first
+  hop in a message labelled \textsc{updateAddHtlc}.
+
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - invoice}
       \begin{algorithmic}[1]
