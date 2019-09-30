@@ -1,7 +1,7 @@
 \section{Payment Network Functionality}
   \label{appendix:payfunc}
   \begin{figure}[H]
-    \begin{systembox}{\fpaynet{} - interface}
+    \begin{systembox}{\fpaynet{} -- interface}
       \begin{itemize}
         \item from $\environment$:
         \begin{itemize}
@@ -80,7 +80,7 @@
   Fig.~\ref{alg:fpaynet:close:func}, along with a discussion of its purpose.
 
   \begin{figure}[H]
-    \begin{systembox}{\fpaynet{} - registration and corruption}
+    \begin{systembox}{\fpaynet{} -- registration and corruption}
       \begin{algorithmic}[1]
         \State Initialisation:
         \Indent
@@ -169,7 +169,7 @@
   interaction.
 
   \begin{figure}[H]
-    \begin{systembox}{\fpaynet{} - open}
+    \begin{systembox}{\fpaynet{} -- open}
       \begin{algorithmic}[1]
         \State Upon receiving $\left(\textsc{openChannel}, \alice, \bob, x,
         \mathit{tid}\right)$ from \alice:
@@ -285,7 +285,7 @@
   ensuring funds security.
 
   \begin{figure}[H]
-    \begin{systembox}{\fpaynet{} - pay}
+    \begin{systembox}{\fpaynet{} -- pay}
       \begin{algorithmic}[1]
         \State Upon receiving $\left(\textsc{pay}, \bob, x,
         \overrightarrow{\mathtt{path}}\right)$ from \alice:
@@ -341,7 +341,7 @@
   l.~\ref{alg:fpaynet:resolvepay:loops:halt:do}).
 
   \begin{figure}[H]
-    \begin{systembox}{\fpaynet{} - resolve payments}
+    \begin{systembox}{\fpaynet{} -- resolve payments}
       \begin{algorithmic}[1]
         \State Upon receiving $\left(\textsc{resolvePays},
         \mathtt{charged}\right)$ from \simulator:
@@ -492,7 +492,7 @@
   \texttt{checkClosed}() (Fig.~\ref{alg:fpaynet:close:func}).
 
   \begin{figure}[H]
-    \begin{systembox}{\fpaynet{} - close}
+    \begin{systembox}{\fpaynet{} -- close}
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{closeChannel}, \texttt{receipt},
         \textit{pchid}) from \alice
@@ -568,7 +568,7 @@
   (l.~\ref{alg:fpaynet:close:func:balance}).
 
   \begin{figure}[H]
-    \begin{systembox}{\fpaynet{} - \texttt{checkClosed}()}
+    \begin{systembox}{\fpaynet{} -- \texttt{checkClosed}()}
       \begin{algorithmic}[1]
         \Function{checkClosed}{$\Sigma_{\alice}$} \Comment{Called after every
         (\textsc{read}), ensures requested closes eventually happen}
@@ -668,7 +668,7 @@
   she is marked as negligent (l.~\ref{alg:fpaynet:poll:negligent}).
 
   \begin{figure}[H]
-    \begin{systembox}{\fpaynet{} - poll}
+    \begin{systembox}{\fpaynet{} -- poll}
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{poll}) from \alice:
         \Indent
@@ -729,7 +729,7 @@
   channels.
 
   \begin{figure}[H]
-    \begin{systembox}{\fpaynet{} - daemon messages}
+    \begin{systembox}{\fpaynet{} -- daemon messages}
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{pushFulfill}, \textit{pchid}) from
         \alice:
