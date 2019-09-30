@@ -51,7 +51,7 @@
         \texttt{payids}
         \State strip \textit{payid}, simulate receiving the message with
         \alice{} ITI and further execute the parts of $\Pi_{\mathrm{LN}}$ that
-        correspond to honest parties (Fig.~\ref{alg:protocol:pay:invoice}-
+        correspond to honest parties (Fig.~\ref{alg:protocol:pay:outofband}-
         Fig.~\ref{alg:protocol:pay:updateFulfillHtlc})
         \label{alg:sim:pay:simulate}
         \If{any ``ensure'' in $\Pi_{\mathrm{LN}}$ fails until \bob{} processes
@@ -421,11 +421,11 @@
   $\simulator_{\mathrm{LN - Reg - Open}}$ does not have control of the
   execution. That can happen if a simulated ITI sends a message to a corrupted
   player and that player does not respond (e.g. in
-  Fig.~\ref{alg:protocol:pay:invoice}, line~\ref{alg:protocol:pay:sendinvoice},
-  when the first message is $\left(\textsc{pay}, \bob, x,
-  \overrightarrow{\mathtt{path}}\right)$ and \bob{} is corrupted), or if the
-  handling of the message results in sending (\textsc{submit}) to \ledger{}
-  (e.g. in Fig.~\ref{alg:protocol:pay:push},
+  Fig.~\ref{alg:protocol:pay:outofband},
+  line~\ref{alg:protocol:pay:sendinvoice}, when the first message is
+  $\left(\textsc{pay}, \bob, x, \overrightarrow{\mathtt{path}}\right)$ and
+  \bob{} is corrupted), or if the handling of the message results in sending
+  (\textsc{submit}) to \ledger{} (e.g. in Fig.~\ref{alg:protocol:pay:push},
   line~\ref{alg:protocol:pushfulfill:submit} when the first message is
   (\textsc{pushFulfill}, \textit{pchid}) and counterparty has gone on-chain). In
   that case, the (\textsc{state}) message is simply ignored

@@ -546,7 +546,7 @@
   hop in a message labelled \textsc{updateAddHtlc}.
 
   \begin{figure}[H]
-    \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -- invoice}
+    \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -- pay}
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{pay}, \textit{Bob}, $x$,
         $\overrightarrow{\mathtt{path}}$) from \environment:
@@ -581,8 +581,15 @@
           \mathtt{relayDelay} + \tochain{}, \mathit{payid}\right)$ to
           \bob{}
         \EndIndent
-        \Statex
+      \end{algorithmic}
+    \end{protocolbox}
+    \caption{}
+    \label{alg:protocol:pay:outofband}
+  \end{figure}
 
+  \begin{figure}[H]
+    \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -- invoice}
+      \begin{algorithmic}[1]
         \State Upon receiving (\textsc{invoice}, $h$,
         \texttt{minFinalCltvExpiry}, \textit{payid}) from \bob:
         \Indent
