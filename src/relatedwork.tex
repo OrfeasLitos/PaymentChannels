@@ -3,14 +3,12 @@
   In \cite{DBLP:conf/ccs/DziembowskiFH18}, \cite{perun} and
   \cite{Malavolta:2017:CPP:3133956.3134096} the specified ledger functionality
   settles every submitted transaction immediately and makes it visible to all
-  players. To date, such a ledger has not been realized by any protocol.
-  Furthermore, any realistic model of the network should consider the fact that
-  messages reach their destination with a delay and possibly in a different
-  order from the one they were sent. Therefore it is plausible to believe that
-  such a ledger functionality is not realizable on top of realistic network
-  models, even when corruptions are not allowed. We therefore conclude that such
-  a ledger is ``too ideal.'' \TODO{rephrase to fit Perfect Ledger
-  Appendix~\ref{appendix:perfectledger}}
+  players. To date, such a ledger has not been realized by any protocol. In
+  Appendix~\ref{appendix:perfectledger} we prove that there is good reason for
+  that: even under strong network assumptions (namely, a synchronous multicast
+  network and a global clock), a ledger functionality with instant finality is
+  unrealisable. We therefore conclude that the ledger vatiations used in the
+  aforementioned works are ``too ideal.''
 
   In \cite{sprites} the ledger is not explicitly specified as a functionality,
   but it is only informally described. Several smart contracts are formally
