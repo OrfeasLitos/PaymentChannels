@@ -804,6 +804,11 @@
     \label{alg:protocol:pay:updateFulfillHtlc}
   \end{figure}
 
+  When a player receives \textsc{commit} from \environment{} accompanied by a
+  channel ID, she generates and signs a new commitment tx and all new HTLC
+  txs that correspond to unsigned added HTLCs. She then sends the signatures to
+  the channel counterparty in a message labelled \textsc{commitmentSigned}.
+
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -- \textsc{commit}}
       \begin{algorithmic}[1]
@@ -847,6 +852,13 @@
     \caption{}
     \label{alg:protocol:pay:commit}
   \end{figure}
+
+  When a player receives \textsc{commitmentSigned} with some signatures for a
+  particular channel, she verifies that the signatures correspond to the
+  expected HTLCs (i.e. the added but unsigned ones) and that the signatures for
+  the new commitment tx and said HTLCs are valid. She then generates the
+  keyshare pair and sends its public part to the counterparty along with the
+  secret part of the old keyshare in a message labelled \textsc{revokeAndAck}.
 
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -- \textsc{commitmentSigned}}
@@ -896,6 +908,15 @@
     \caption{}
     \label{alg:protocol:pay:commitmentSigned}
   \end{figure}
+
+  When a player receives \textsc{revokeAndAck} from a counterparty for a
+  particular channel, she checks that the secret keyshare received corresponds
+  to the public keyshare that had been received in the last
+  \textsc{revokeAndAck} (or in the \textsc{fundingLocked} if this is the first
+  \textsc{revokeAndAck} received for this channel) and then generates all the
+  necessary new keys for the next update. There are now no more outstanding
+  updates. Furthermore, if a closing of the channel is pending, execution
+  continues with the closing sequence.
 
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -- \textsc{revokeAndAck}}
