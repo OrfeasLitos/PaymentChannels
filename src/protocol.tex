@@ -985,6 +985,17 @@
     \label{alg:protocol:pay:revokeAndAck}
   \end{figure}
 
+  The following code defines a player's actions when she receives from
+  \environment{} one of the three messages needed to ``nudge'' her to carry on
+  with some particular part of the protocol. \textsc{pushFulfill} makes the
+  player read a preimage of a hash from \ledger{} and use it to fulfill the
+  relevant HTLC that pays her, \textsc{pushAdd} has the player send an
+  \textsc{updateAddHtlc} message that is ready but has not yet been sent and
+  \textsc{fulfillOnChain} requests that the player publish all HTLC txs that are
+  about to expire on-chain. A player that does not receive such messages in time
+  may end up losing funds albeit being honest; such a player is dubbed
+  ``negligent''.
+
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -- \textsc{push}}
       \begin{algorithmic}[1]
