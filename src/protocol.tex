@@ -1083,6 +1083,10 @@
     \label{alg:protocol:pay:push}
   \end{figure}
 
+  When a player receives \textsc{forceCloseChannel} for a particular channel,
+  she signs and publishes the latest commitment and HTLC txs for this particular
+  channel, in effect unilateraly closing the channel.
+
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -- close unilaterally}
       \begin{algorithmic}[1]
@@ -1123,6 +1127,12 @@
     \caption{}
     \label{alg:protocol:close:unilateral}
   \end{figure}
+
+  When a player receives \textsc{closeChannel} for a particular channel, she
+  initiates the cooperative channel close sequence with the counterparty. The
+  sequence includes completing all outstanding updates and creating, signing and
+  publishing the ``closing'' transaction that spends the funding transaction and
+  distributes the funds to the counterparties without timelocks.
 
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -- close cooperatively}
