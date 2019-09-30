@@ -652,27 +652,8 @@
         \State Upon receiving (\textsc{updateAddHtlc}, \textit{pchid},
         $\mathtt{HTLCNo}, x, h, \mathtt{IncomingCltvExpiry}, M$) from \bob:
         \Indent
-          \State ensure \textit{pchid} corresponds to an open \texttt{channel}
-          in \texttt{channels} where \bob{} has at least $x$
-          \State ensure $\mathtt{HTLCNo} = \mathtt{HTLCNo}_{\mathit{pchid}} + 1$
-          \State $\left(\mathit{pchid}', x', \mathtt{OutgoingCltvExpiry},
-          \delta\right) \gets \mathtt{SphinxPeel}\left(sk_{\alice}, M\right)$
-          \State send (\textsc{read}) to \ledger{} and assign largest block
-          number to $t$
-          \If{$\delta = \mathtt{receiver}$}
-            \State ensure $\mathit{pchid}' = \bot, x = x',
-            \mathtt{IncomingCltvExpiry} \geq \mathtt{OutgoingCltvExpiry} =
-            \mathtt{minFinalCltvExpiry}$
-            \State mark \texttt{HTLCNo} as ``receiver''
-          \Else \ \Comment{We are an intermediary}
-            \State ensure $x = x', \mathtt{IncomingCltvExpiry} \geq
-            \max\{\mathtt{OutgoingCltvExpiry}, t\} + \mathtt{relayDelay} +
-            2\tochain{}$
-            \label{alg:protocol:pay:updateAddHtlc:slack}
-            \State ensure $\mathtt{pchid}'$ corresponds to an open channel in
-            \texttt{channels} where we have at least $x$
-            \State mark \texttt{HTLCNo} as ``intermediary''
-          \EndIf
+          \State run code of Fig.~\ref{alg:protocol:pay:updateAddHtlc:checks} --
+          \textsc{updateAddHtlc} checks
           \State increment $\mathtt{HTLCNo}_{\mathit{pchid}}$ by one
           \State let $\mathtt{remoteCom}_n$ the latest signed remote commitment
           tx
@@ -725,6 +706,36 @@
     \end{protocolbox}
     \caption{}
     \label{alg:protocol:pay:updateAddHtlc}
+  \end{figure}
+
+  \begin{figure}[H]
+    \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ - \textsc{updateAddHtlc} checks}
+      \begin{algorithmic}[1]
+        \State ensure \textit{pchid} corresponds to an open \texttt{channel}
+        in \texttt{channels} where \bob{} has at least $x$
+        \State ensure $\mathtt{HTLCNo} = \mathtt{HTLCNo}_{\mathit{pchid}} + 1$
+        \State $\left(\mathit{pchid}', x', \mathtt{OutgoingCltvExpiry},
+        \delta\right) \gets \mathtt{SphinxPeel}\left(sk_{\alice}, M\right)$
+        \State send (\textsc{read}) to \ledger{} and assign largest block
+        number to $t$
+        \If{$\delta = \mathtt{receiver}$}
+          \State ensure $\mathit{pchid}' = \bot, x = x',
+          \mathtt{IncomingCltvExpiry} \geq \mathtt{OutgoingCltvExpiry} =
+          \mathtt{minFinalCltvExpiry}$
+          \State mark \texttt{HTLCNo} as ``receiver''
+        \Else \ \Comment{We are an intermediary}
+          \State ensure $x = x', \mathtt{IncomingCltvExpiry} \geq
+          \max\{\mathtt{OutgoingCltvExpiry}, t\} + \mathtt{relayDelay} +
+          2\tochain{}$
+          \label{alg:protocol:pay:updateAddHtlc:slack}
+          \State ensure $\mathtt{pchid}'$ corresponds to an open channel in
+          \texttt{channels} where we have at least $x$
+          \State mark \texttt{HTLCNo} as ``intermediary''
+        \EndIf
+      \end{algorithmic}
+    \end{protocolbox}
+    \caption{}
+    \label{alg:protocol:pay:updateAddHtlc:checks}
   \end{figure}
 
   When a player receives a preimage for a particular HTLC in an

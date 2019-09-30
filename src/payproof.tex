@@ -504,10 +504,10 @@
   \mathtt{OutgoingCltvExpiry} < \mathtt{relayDelay}(\alice) + \tochain$. This
   cannot happen however for any honest \alice, since \simulator{} will simulate
   line~\ref{alg:protocol:pay:updateAddHtlc:slack} of
-  Fig.\ref{alg:protocol:pay:updateAddHtlc} with \alice's ITI before having her
-  agree to participate as an intermediary in the multi-hop payment. Therefore
-  $\Pr[F \wedge (G \wedge H) | \neg P \wedge \neg Q \wedge \neg R \wedge \neg S]
-  = 0$.
+  Fig.\ref{alg:protocol:pay:updateAddHtlc:checks} with \alice's ITI before
+  having her agree to participate as an intermediary in the multi-hop payment.
+  Therefore $\Pr[F \wedge (G \wedge H) | \neg P \wedge \neg Q \wedge \neg R
+  \wedge \neg S] = 0$.
 
   The only way for event $C$ to be true is if \environment{} sends
   (\textsc{poll}) to \dave{} during the prescribed time period
