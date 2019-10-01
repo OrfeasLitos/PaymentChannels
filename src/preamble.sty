@@ -33,6 +33,9 @@
 \usepackage{float}
 \ifelseieee{}{\usepackage{appendix}}
 
+% For a better amsmath, as per the IEEE instructions
+\ifelseieee{\interdisplaylinepenalty=2500}{}
+
 \usepackage{pstricks,pst-node}
 \usepackage{auto-pst-pdf}
 \usepackage{amssymb}
