@@ -152,9 +152,13 @@
     \begin{gather*}
       \ppsubmits = \Pr[\text{Upon receiving (\textsc{submit}, $m$) from
       \environment,} \\
-      \text{\perfectprot{} sends (\textsc{multicast}, $f(m)$) to
-      $\FnetworkEd^1$ for some function $f$}]
-      \\
+      \ifelseieee{
+        \text{\perfectprot{} sends (\textsc{multicast}, $f(m)$) to} \\
+        \text{$\FnetworkEd^1$ for some function $f$}] \\
+      }{
+        \text{\perfectprot{} sends (\textsc{multicast}, $f(m)$) to
+        $\FnetworkEd^1$ for some function $f$}] \\
+      }
       \ppfetches = \Pr[\text{Upon receiving (\textsc{read}) from \environment,}
       \\
       \text{\perfectprot{} sends (\textsc{fetch}) to $\FnetworkEd^1$ for data }
@@ -182,11 +186,19 @@
     function of $m$ to $\FnetworkEd^1$ when she received (\textsc{submit}, $m$),
     except if he could guess $m$, which can happen with negligible probability,
     therefore
-    \begin{equation*}
-      \Pr[\textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot, \perfectadv,
-      \perfectenv} = 1 | \mathrm{Coin}_0] < \ppsubmits \ppfetches + \negl(k)
-      \enspace.
-    \end{equation*}
+    \ifelseieee{
+      \begin{gather*}
+        \Pr[\textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot, \perfectadv,
+        \perfectenv} = 1 | \mathrm{Coin}_0] < \\
+        < \ppsubmits \ppfetches + \negl(k) \enspace.
+      \end{gather*}
+    }{
+      \begin{equation*}
+        \Pr[\textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot, \perfectadv,
+        \perfectenv} = 1 | \mathrm{Coin}_0] < \ppsubmits \ppfetches + \negl(k)
+        \enspace.
+      \end{equation*}
+    }
 
     We now move on to the event in which the initial coin flip results in 1,
     $\mathrm{Coin}_1$. In the ideal world, if \simulator{} \textsc{submit}s the
@@ -209,11 +221,19 @@
     will respond to \environment's \textsc{read} query with a ledger containing
     $m$ exactly in the case that the event that defines \ppfetches{} is true,
     therefore
-    \begin{equation*}
-      \Pr[\textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot, \perfectadv,
-      \perfectenv} = 1 | \mathrm{Coin}_1] < (1 - \ppfetches) + \negl(k)
-      \enspace.
-    \end{equation*}
+    \ifelseieee{
+      \begin{gather*}
+        \Pr[\textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot, \perfectadv,
+        \perfectenv} = 1 | \mathrm{Coin}_1] < \\
+        < (1 - \ppfetches) + \negl(k) \enspace.
+      \end{gather*}
+    }{
+      \begin{equation*}
+        \Pr[\textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot, \perfectadv,
+        \perfectenv} = 1 | \mathrm{Coin}_1] < (1 - \ppfetches) + \negl(k)
+        \enspace.
+      \end{equation*}
+    }
     Note that \perfectprot{} cannot leverage knowledge of its own pid in order
     to have \alice{} behave differently from \bob{} in a manner that tricks
     \perfectenv{} into believing that it interacts with the ideal world (i.e.
@@ -227,6 +247,7 @@
       \perfectenv} = 1] = \\
       \frac{1}{2}(\Pr[\textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot,
       \perfectadv, \perfectenv} = 1 | \mathrm{Coin}_0] +
+      \ifelseieee{\\ +}{}
       \Pr[\textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot, \perfectadv,
       \perfectenv} = 1 | \mathrm{Coin}_1]) < \\
       \frac{1}{2}(\ppsubmits \ppfetches + 1 - \ppfetches) + \negl(k) = \\
@@ -237,8 +258,10 @@
       \Pr[\textsc{Exec}^{\perfectledger, \gFclock}_{\simulator, \perfectenv} =
       1] = \\
       \frac{1}{2}(\Pr[\textsc{Exec}^{\perfectledger, \gFclock}_{\simulator,
-      \perfectenv} = 1 | \mathrm{Coin}_0] + \Pr[\textsc{Exec}^{\perfectledger,
-      \gFclock}_{\simulator, \perfectenv} = 1 | \mathrm{Coin}_1]) = 1 \enspace.
+      \perfectenv} = 1 | \mathrm{Coin}_0] +
+      \ifelseieee{\\ +}{}
+      \Pr[\textsc{Exec}^{\perfectledger, \gFclock}_{\simulator, \perfectenv} = 1
+      | \mathrm{Coin}_1]) = 1 \enspace.
     \end{gather*}
 
     For these two probabilities to be equal (which is necessary and sufficient
