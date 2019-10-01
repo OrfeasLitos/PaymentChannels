@@ -74,13 +74,16 @@
     \begin{gather*}
       \forall k \in \mathbb{N}, \forall \adversary \in \mathtt{PPT},
       \Pr\left[\mathsf{share \mhyphen EUF}^{\adversary}\left(1^k\right) =
-      1\right] = \mathit{negl}\left(k\right) \text{or equivalently} \\
+      1\right] = \mathit{negl}\left(k\right)
+      \ifelseieee{\\}{}
+      \text{or equivalently} \\
       \forall k \in \mathbb{N}, \mathrm{E \mhyphen share}(k) =
       \mathit{negl}\left(k\right) \enspace, \\
       \text{where } \mathrm{E \mhyphen share}(k) = \underset{\adversary \in
       \mathtt{PPT}}{\sup}\{\Pr[\mathsf{share \mhyphen
-      EUF}^{\adversary}\left(1^k\right) = 1]\} \text{ (cf.
-      Fig~\ref{game:comb:share})} \enspace.
+      EUF}^{\adversary}\left(1^k\right) = 1]\}
+      \ifelseieee{\\}{}
+      \text{ (cf. Fig~\ref{game:comb:share})} \enspace.
     \end{gather*}
   \end{definition}
 
@@ -121,15 +124,21 @@
     A Combined Signatures scheme is \emph{\textsf{master-EUF-CMA}-secure} if
     \begin{gather*}
       \forall k \in \mathbb{N}, \forall \adversary \in \mathtt{PPT},
+      \ifelseieee{\\}{}
       \Pr\left[\mathsf{master \mhyphen EUF \mhyphen
       CMA}^{\adversary}\left(1^k\right) = 1\right] =
-      \mathit{negl}\left(k\right) \text{or equivalently} \\
+      \mathit{negl}\left(k\right)
+      \ifelseieee{\\}{}
+      \text{or equivalently} \\
       \forall k \in \mathbb{N}, \mathrm{E \mhyphen master}(k) =
       \mathit{negl}\left(k\right) \enspace, \\
-      \text{where } \mathrm{E \mhyphen master}(k) = \underset{\adversary \in
+      \text{where }
+      \ifelseieee{\\}{}
+      \mathrm{E \mhyphen master}(k) = \underset{\adversary \in
       \mathtt{PPT}}{\sup}\{\Pr[\mathsf{master \mhyphen
-      EUF-CMA}^{\adversary}\left(1^k\right) = 1]\} \text{ (cf.
-      Fig~\ref{game:comb:master})} \enspace.
+      EUF-CMA}^{\adversary}\left(1^k\right) = 1]\}
+      \ifelseieee{\\}{}
+      \text{ (cf. Fig~\ref{game:comb:master})} \enspace.
     \end{gather*}
   \end{definition}
 
@@ -310,9 +319,13 @@
       \begin{equation}
         \begin{gathered}
           \Pr\left[cpk^* = \textsc{CombinePubKey}\left(mpk, pk^*\right) |
-          E\right] = \frac{1}{|Y|} < \mathit{negl}\left(k\right) \Rightarrow \\
+          E\right] =
+          \ifelseieee{\\ =}{}
+          \frac{1}{|Y|} < \mathit{negl}\left(k\right) \Rightarrow \\
           \Pr\left[cpk^* = \textsc{CombinePubKey}\left(mpk, pk^*\right)
-          \wedge E\right] < \mathit{negl}\left(k\right) \enspace.
+          \wedge E\right] <
+          \ifelseieee{\\ <}{}
+          \mathit{negl}\left(k\right) \enspace.
         \end{gathered}
         \label{proof:comb:share:nocomb}
       \end{equation}
@@ -320,10 +333,14 @@
       \begin{gather*}
         \left(\mathcal{B} \text{ wins}\right) \rightarrow \left(cpk^* =
         \textsc{CombinePubKey}\left(mpk, pk^*\right)\right) \Rightarrow \\
-        \Pr\left[\mathcal{B} \text{ wins}\right] \leq \Pr\left[cpk^* =
-        \textsc{CombinePubKey}\left(mpk, pk^*\right)\right] \Rightarrow \\
-        \Pr\left[\mathcal{B} \text{ wins} \wedge E\right] \leq \Pr\left[cpk^* =
-        \textsc{CombinePubKey}\left(mpk, pk^*\right) \wedge E\right]
+        \Pr\left[\mathcal{B} \text{ wins}\right] \leq
+        \ifelseieee{\\ \leq}{}
+        \Pr\left[cpk^* = \textsc{CombinePubKey}\left(mpk, pk^*\right)\right]
+        \Rightarrow \\
+        \Pr\left[\mathcal{B} \text{ wins} \wedge E\right] \leq
+        \ifelseieee{\\ \leq}{}
+        \Pr\left[cpk^* = \textsc{CombinePubKey}\left(mpk, pk^*\right) \wedge
+        E\right]
         \overset{\left(\ref{proof:comb:share:nocomb}\right)}{\Rightarrow} \\
         \Pr\left[\mathcal{B} \text{ wins} \wedge E\right] <
         \mathit{negl}\left(k\right) \enspace.
@@ -367,6 +384,7 @@
       independent, thus
       \begin{gather*}
         \Pr\left[F \wedge \mathcal{B} \text{ wins} \wedge \neg E\right] =
+        \ifelseieee{\\ =}{}
         \Pr\left[F\right] \Pr\left[\mathcal{B} \text{ wins} \wedge \neg E\right]
         \pm \mathit{negl}\left(k\right)
         \overset{\left(\ref{proof:comb:share:nohash}\right)}{=} \\
@@ -477,9 +495,13 @@
       \begin{equation}
         \begin{gathered}
           \Pr\left[cpk^* = \textsc{CombinePubKey}\left(mpk, pk^*\right) |
-          E\right] < \mathit{negl}\left(k\right) \Rightarrow \\
+          E\right] <
+          \ifelseieee{\\ <}{}
+          \mathit{negl}\left(k\right) \Rightarrow \\
           \Pr\left[cpk^* = \textsc{CombinePubKey}\left(mpk, pk^*\right) \wedge
-          E\right] < \mathit{negl}\left(k\right) \enspace.
+          E\right] <
+          \ifelseieee{\\ <}{}
+          \mathit{negl}\left(k\right) \enspace.
         \end{gathered}
         \label{proof:comb:master:nocomb}
       \end{equation}
@@ -504,6 +526,7 @@
       Lemma~\ref{lemma:comb:share} to deduce that
       \begin{gather*}
         \Pr\left[F \wedge \mathcal{B} \text{ wins} \wedge \neg E\right] =
+        \ifelseieee{\\ =}{}
         \Pr\left[F\right] \Pr\left[\mathcal{B} \text{ wins} \wedge \neg E\right]
         \pm \mathit{negl}\left(k\right)
         \overset{\left(\ref{proof:comb:master:nohash}\right)}{=} \\

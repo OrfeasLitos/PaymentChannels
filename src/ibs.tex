@@ -81,8 +81,10 @@
     if
     \begin{gather*}
       \forall k \in \mathbb{N}, \forall \adversary \in \mathtt{PPT},
+      \ifelseieee{\\}{}
       \Pr\left[\mathsf{IBS \mhyphen EUF \mhyphen
       CMA}^{\adversary}\left(1^k\right) = 1\right] = \mathit{negl}\left(k\right)
+      \ifelseieee{\\}{}
       \text{or equivalently} \\
       \forall k \in \mathbb{N}, \mathrm{E \mhyphen ibs}(k) =
       \mathit{negl}\left(k\right) \enspace, \\
@@ -250,8 +252,9 @@
         \textsc{PubKeyDer}\left(mpk, l^*\right)\right) \Rightarrow \\
         \Pr\left[\mathcal{B} \text{ wins}\right] \leq \Pr\left[vk =
         \textsc{PubKeyDer}\left(mpk, l^*\right)\right] \Rightarrow \\
-        \Pr\left[\mathcal{B} \text{ wins} \wedge E\right] \leq \Pr\left[vk =
-        \textsc{PubKeyDer}\left(mpk, l^*\right) \wedge E\right]
+        \Pr\left[\mathcal{B} \text{ wins} \wedge E\right] \leq
+        \ifelseieee{\\ \leq}{}
+        \Pr\left[vk = \textsc{PubKeyDer}\left(mpk, l^*\right) \wedge E\right]
         \overset{\left(\ref{proof:ibs:nocomb}\right)}{\Rightarrow} \\
         \Pr\left[\mathcal{B} \text{ wins} \wedge E\right] <
         \mathit{negl}\left(k\right) \enspace.
@@ -279,10 +282,18 @@
 
       In the case where the event $\left(F \wedge \mathcal{B} \text{ wins}
       \wedge \neg E\right)$ holds, it is
-      \begin{equation*}
-        \textsc{PubKeyDer}\left(mpk, l^*\right) = mpk + \mathcal{H}\left(l^*
-        \concat mpk\right) \cdot G = mpk + (vk - mpk) \cdot G^{-1} \cdot G = vk
-      \end{equation*}
+      \ifelseieee{
+        \begin{gather*}
+          \textsc{PubKeyDer}\left(mpk, l^*\right) = \\
+          mpk + \mathcal{H}\left(l^* \concat mpk\right) \cdot G = \\
+          mpk + (vk - mpk) \cdot G^{-1} \cdot G = vk
+        \end{gather*}
+      }{
+        \begin{equation*}
+          \textsc{PubKeyDer}\left(mpk, l^*\right) = mpk + \mathcal{H}\left(l^*
+          \concat mpk\right) \cdot G = mpk + (vk - mpk) \cdot G^{-1} \cdot G = vk
+        \end{equation*}
+      }
       Since $F$ holds, the $k$th invocation of the Random Oracle queried
       $\mathcal{H}\left(l^* \concat mpk\right)$.
       Therefore it is $\textsc{PubKeyDer}\left(mpk, l^*\right) = vk$. This means
@@ -294,6 +305,7 @@
       are almost independent, thus
       \begin{gather*}
         \Pr\left[F \wedge \mathcal{B} \text{ wins} \wedge \neg E\right] =
+        \ifelseieee{\\ =}{}
         \Pr\left[F\right] \Pr\left[\mathcal{B} \text{ wins} \wedge \neg E\right]
         \pm \mathit{negl}\left(k\right)
         \overset{\left(\ref{proof:ibs:nohash}\right)}{=} \\
