@@ -23,10 +23,11 @@
 }
 
 %----- Theorems ----------------------------------------------------------------
-%\newtheorem{theorem}{Theorem}
-%\newtheorem{lemma}{Lemma}
+\ifelseieee{\newtheorem{theorem}{Theorem}}{}
+\ifelseieee{\newtheorem{lemma}{Lemma}}{}
+\ifelseieee{\newtheorem{proposition}{Proposition}}{}
 %\newtheorem{corollary}{Corollary}
-%\newtheorem{definition}{Definition}
+\ifelseieee{\newtheorem{definition}{Definition}}{}
 %\newtheorem{example}{Example}
 %\spnewtheorem*{definition*}{Definition}{\bfseries}{\itshape}
 
