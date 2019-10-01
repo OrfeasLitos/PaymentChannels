@@ -185,9 +185,9 @@
         \EndIndent
         \Statex
 
-        \State Upon receiving $\left(\textsc{channelAnnounced}, \alice,
-        p_{\alice, F}, p_{\bob, F}, \mathit{fchid}, \mathit{pchid},
-        \mathit{tid}\right)$ from \simulator:
+        \State Upon receiving (\textsc{channelAnnounced}, \alice, $p_{\alice,
+        F}$, $p_{\bob, F}$, \textit{fchid}, \textit{pchid}, \textit{tid}) from
+        \simulator:
         \Indent
           \State ensure that there is a \texttt{pendingOpen}(\textit{fchid})
           entry with temporary id \textit{tid}

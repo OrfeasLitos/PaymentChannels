@@ -13,13 +13,24 @@
       \begin{algorithmic}[1]
         \State Initialisation:
         \Indent
-          \State $\mathtt{channels}, \mathtt{pendingOpen}, \mathtt{pendingPay},
-          \mathtt{pendingClose} \gets \emptyset$
-          \State $\mathtt{newChannels}, \mathtt{closedChannels},
-          \mathtt{updatesToReport} \gets \emptyset$
-          \State $\mathtt{unclaimedOfferedHTLCs},
-          \mathtt{unclaimedReceivedHTLCs}, \mathtt{pendingGetPaid} \gets
-          \emptyset$
+          \ifelseieee{
+            \State $\mathtt{channels}, \mathtt{pendingOpen},
+            \mathtt{pendingPay} \gets \emptyset$
+            \State $\mathtt{pendingClose}, \mathtt{newChannels} \gets \emptyset$
+            \State $\mathtt{closedChannels}, \mathtt{updatesToReport} \gets
+            \emptyset$
+            \State $\mathtt{unclaimedOfferedHTLCs} \gets \emptyset$
+            \State $\mathtt{unclaimedReceivedHTLCs}, \mathtt{pendingGetPaid}
+            \gets \emptyset$
+          }{
+            \State $\mathtt{channels}, \mathtt{pendingOpen},
+            \mathtt{pendingPay}, \mathtt{pendingClose} \gets \emptyset$
+            \State $\mathtt{newChannels}, \mathtt{closedChannels},
+            \mathtt{updatesToReport} \gets \emptyset$
+            \State $\mathtt{unclaimedOfferedHTLCs},
+            \mathtt{unclaimedReceivedHTLCs}, \mathtt{pendingGetPaid} \gets
+            \emptyset$
+          }
         \EndIndent
         \Statex
 
@@ -121,13 +132,12 @@
           \State $\left(ph_{\mathrm{com}, 1}, sh_{\mathrm{com}, 1}\right) \gets
           \textsc{KeyShareGen}\left(1^k; \mathrm{prand}_1\right)$
           \State associate keys with \textit{tid}
-          \State add $\left(\alice, \bob, x, \mathtt{tid}, \left(ph_F,
-          sh_F\right), \left(phb_{\mathrm{pay}}, shb_{\mathrm{pay}}\right),
-          \left(phb_{\mathrm{dpay}}, shb_{\mathrm{dpay}}\right)\right.$
-          $\left.\left(phb_{\mathrm{htlc}}, shb_{\mathrm{htlc}}\right),
-          \left(phb_{\mathrm{com}, 1}, shb_{\mathrm{com}, 1}\right),\right.$
-          $\left.\left(phb_{\mathrm{rev}}, shb_{\mathrm{rev}}\right),
-          \mathit{tid}\right)$ to \texttt{pendingOpen}
+          \State add (\alice, \bob, $x$, \texttt{tid}, $(ph_F, sh_F)$,
+          $(phb_{\mathrm{pay}}, shb_{\mathrm{pay}})$, $(phb_{\mathrm{dpay}},
+          shb_{\mathrm{dpay}})$ $(phb_{\mathrm{htlc}}, shb_{\mathrm{htlc}})$,
+          $(phb_{\mathrm{com}, 1}, shb_{\mathrm{com}, 1})$,
+          $(phb_{\mathrm{rev}}, shb_{\mathrm{rev}})$, \textit{tid}) to
+          \texttt{pendingOpen}
           \label{alg:protocol:open:env:pendingOpen}
           \State send (\textsc{openChannel}, $x, \mathtt{delay} + \tochain,
           ph_F, phb_{\mathrm{pay}}, phb_{\mathrm{dpay}}, phb_{\mathrm{htlc}},$
@@ -146,17 +156,16 @@
   \begin{figure}[H]
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -- \textsc{openChannel} from \bob}
       \begin{algorithmic}[1]
-        \State Upon receiving (\textsc{openChannel}, $x, \mathtt{remoteDelay},
-        pt_F, ptb_{\mathrm{pay}}, ptb_{\mathrm{dpay}}, ptb_{\mathrm{htlc}},
-        pt_{\mathrm{com}, 1}, ptb_{\mathrm{rev}}$, \textit{tid}) from \bob:
+        \State Upon receiving (\textsc{openChannel}, $x$, \texttt{remoteDelay},
+        $pt_F$, $ptb_{\mathrm{pay}}$, $ptb_{\mathrm{dpay}}$,
+        $ptb_{\mathrm{htlc}}$, $pt_{\mathrm{com}, 1}$, $ptb_{\mathrm{rev}}$,
+        \textit{tid}) from \bob:
         \Indent
           \State ensure \textit{tid} has not been used yet with \bob
-          \State $\left(\left(ph_F, sh_F\right), \left(phb_{\mathrm{pay}},
-          shb_{\mathrm{pay}}\right), \left(phb_{\mathrm{dpay}},
-          shb_{\mathrm{dpay}}\right), \left(phb_{\mathrm{htlc}},
-          shb_{\mathrm{htlc}}\right), \mathtt{seed},\right.$
-          $\left.\left(phb_{\mathrm{rev}}, shb_{\mathrm{rev}}\right)\right)
-          \gets \texttt{GetKeys}\left(\right)$
+          \State ($(ph_F, sh_F)$, $(phb_{\mathrm{pay}}, shb_{\mathrm{pay}})$,
+          $(phb_{\mathrm{dpay}}, shb_{\mathrm{dpay}})$, $(phb_{\mathrm{htlc}},
+          shb_{\mathrm{htlc}})$, \texttt{seed} $(phb_{\mathrm{rev}},
+          shb_{\mathrm{rev}})$) $\gets$ \texttt{GetKeys}()
           \State $\mathrm{prand}_1 \gets \textsc{PRF}\left(\mathtt{seed},
           1\right)$
           \label{alg:protocol:open:peer:prf}
@@ -215,13 +224,13 @@
           \textsc{KeyDer}\left(phb_{\mathrm{htlc}}, shb_{\mathrm{htlc}},
           ph_{\mathrm{com}, 1}\right)$
           \State $\mathtt{remoteCom} \gets \mathtt{remoteCom}_1 \gets$ TX
-          \{input: output 1 of $F$, outputs: $\left(x, ph_{\mathrm{pay},
-          1}\right), \left(0, ph_{\mathrm{rev}, 1} \vee \left(pt_{\mathrm{dpay},
-          1}, \mathtt{delay} + \tochain{} \text{ relative}\right)\right)$\}
+          \{input: output 1 of $F$, outputs: $(x, ph_{\mathrm{pay}, 1})$, $(0,
+          ph_{\mathrm{rev}, 1} \vee (pt_{\mathrm{dpay}, 1}, \mathtt{delay} +
+          \tochain{} \text{ relative}))$\}
           \State $\mathtt{localCom} \gets$ TX \{input: output 1 of $F$, outputs:
-          $\left(x, pt_{\mathrm{rev}, 1} \vee \left(ph_{\mathrm{dpay}, 1},
-          \mathtt{remoteDelay} \text{ relative}\right)\right), \left(0,
-          pt_{\mathrm{pay}, 1}\right)$\}
+          $(x, pt_{\mathrm{rev}, 1} \vee (ph_{\mathrm{dpay}, 1},
+          \mathtt{remoteDelay} \text{ relative}))$, $(0, pt_{\mathrm{pay},
+          1})$\}
           \State add $\mathtt{remoteCom}$ and $\mathtt{localCom}$ to channel
           entry in \texttt{pendingOpen}
           \State $\mathrm{sig} \gets \textsc{SignDS}\left(\mathtt{remoteCom}_1,
@@ -264,15 +273,15 @@
           \textsc{PubKeyDer}\left(ptb_{\mathrm{htlc}}, pt_{\mathrm{com},
           1}\right)$
           \State $\mathtt{localCom} \gets \mathtt{localCom}_1 \gets$ TX \{input:
-          output 1 of $F$, outputs: $\left(x, pt_{\mathrm{pay}, 1}\right),
-          \left(0, pt_{\mathrm{rev}, 1} \vee \left(ph_{\mathrm{dpay}, 1},
-          \mathtt{remoteDelay} \text{ relative}\right)\right)$\}
+          output 1 of $F$, outputs: $(x, pt_{\mathrm{pay}, 1})$, $(0,
+          pt_{\mathrm{rev}, 1} \vee (ph_{\mathrm{dpay}, 1}, \mathtt{remoteDelay}
+          \text{ relative})$\}
           \State ensure $\textsc{VerifyDS}\left(\mathtt{BobSig}_1,
           \mathtt{localCom}_1, pt_F\right) = \mathtt{True}$
           \State $\mathtt{remoteCom} \gets \mathtt{remoteCom}_1 \gets$ TX
-          \{input: output 1 of $F$, outputs: $\left(x, ph_{\mathrm{rev}, 1} \vee
-          \left(pt_{\mathrm{dpay}, 1}, \mathtt{delay} + \tochain{} \text{
-          relative}\right)\right), \left(0, ph_{\mathrm{pay}, 1}\right)\}$
+          \{input: output 1 of $F$, outputs: $(x, ph_{\mathrm{rev}, 1} \vee
+          (pt_{\mathrm{dpay}, 1}, \mathtt{delay} + \tochain{} \text{
+          relative}))$, $(0, ph_{\mathrm{pay}, 1})$\}
           \State add $\mathtt{BobSig}_1, \mathtt{remoteCom}_1$ and
           $\mathtt{localCom}_1$ to channel entry in \texttt{pendingOpen}
           \State $\mathrm{sig} \gets \textsc{SignDS}\left(\mathrm{remoteCom}_1,
@@ -577,9 +586,8 @@
           \texttt{pendingGetPaid}
           \State choose random, unique preimage $R$
           \State add (\bob, $R$, \textit{payid}) to \texttt{pendingGetPaid}
-          \State send $\left(\textsc{invoice}, \mathcal{H}\left(R\right),
-          \mathtt{relayDelay} + \tochain{}, \mathit{payid}\right)$ to
-          \bob{}
+          \State send (\textsc{invoice}, $\mathcal{H}(R)$, $\mathtt{relayDelay}
+          + \tochain{}$, \textit{payid}) to \bob{}
         \EndIndent
       \end{algorithmic}
     \end{protocolbox}
@@ -617,19 +625,17 @@
           \State let $\mathtt{remoteCom}_n$ the latest signed remote commitment
           tx with first $\overrightarrow{\mathtt{path}}$ member
           \State reduce simple payment output in \texttt{remoteCom} by $x$
-          \State add an additional $\left(x, ph_{\mathrm{rev}, n+1} \vee
-          \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc}, n+1}, \text{
-          on preimage}\right.\right.$ $\left.\left.\text{of } h\right) \vee
-          ph_{\mathrm{htlc}, n+1}, \mathtt{CltvExpiry}_1 \text{
-          absolute}\right)$
+          \State add an additional ($x$, $ph_{\mathrm{rev}, n+1}$ $\vee$
+          ($ph_{\mathrm{htlc}, n+1}$ $\wedge$ $pt_{\mathrm{htlc}, n+1}$,
+          on preimage of $h$) $\vee$
+          $ph_{\mathrm{htlc}, n+1}$, $\mathtt{CltvExpiry}_1$ absolute)
           output (all with $n+1$ keys) to \texttt{remoteCom}, marked with
           \texttt{HTLCNo}
           \State reduce delayed payment output in \texttt{localCom} by $x$
-          \State add an additional $\left(x, pt_{\mathrm{rev}, n+1} \vee
-          \left(pt_{\mathrm{htlc}, n+1}, \text{ on preimage}\right.\right.$
-          $\left.\left.\text{of } h\right) \vee \left(ph_{\mathrm{htlc}, n+1}
-          \wedge pt_{\mathrm{htlc}, n+1}, \mathtt{CltvExpiry}_1 \text{
-          absolute}\right)\right)$ output (all with $n+1$ keys) to
+          \State add an additional ($x$, $pt_{\mathrm{rev}, n+1}$ $\vee$
+          ($pt_{\mathrm{htlc}, n+1}$, on preimage of $h$) $\vee$
+          ($ph_{\mathrm{htlc}, n+1}$ $\wedge$ $pt_{\mathrm{htlc}, n+1}$,
+          $\mathtt{CltvExpiry}_1$ absolute)) output (all with $n+1$ keys) to
           \texttt{localCom}, marked with \texttt{HTLCNo}
           \State increment $\mathtt{HTLCNo}_{\mathit{pchid}}$ by one and
           associate $x, h, \mathit{pchid}$ with it
@@ -658,7 +664,7 @@
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -- \textsc{updateAddHtlc}}
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{updateAddHtlc}, \textit{pchid},
-        $\mathtt{HTLCNo}, x, h, \mathtt{IncomingCltvExpiry}, M$) from \bob:
+        \texttt{HTLCNo}, $x$, $h$, \texttt{IncomingCltvExpiry}, $M$) from \bob:
         \Indent
           \State run code of Fig.~\ref{alg:protocol:pay:updateAddHtlc:checks} --
           \textsc{updateAddHtlc} checks
@@ -666,18 +672,17 @@
           \State let $\mathtt{remoteCom}_n$ the latest signed remote commitment
           tx
           \State reduce delayed payment output in \texttt{remoteCom} by $x$
-          \State add an $\left(x, ph_{\mathrm{rev}, n+1} \vee
-          \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc}, n+1},
-          \mathtt{IncomingCltvExpiry} \text{ absolute}\right) \vee\right.$
-          $\left.ph_{\mathrm{htlc}, n+1}, \text{ on preimage of } h\right)$ htlc
-          output (all with $n+1$ keys) to \texttt{remoteCom}, marked with
-          \texttt{HTLCNo}
+          \State add an ($x$, $ph_{\mathrm{rev}, n+1}$ $\vee$
+          ($ph_{\mathrm{htlc}, n+1}$ $\wedge$ $pt_{\mathrm{htlc}, n+1}$,
+          \texttt{IncomingCltvExpiry} absolute) $\vee$ $ph_{\mathrm{htlc},
+          n+1}$, on preimage of $h$) htlc output (all with $n+1$ keys) to
+          \texttt{remoteCom}, marked with \texttt{HTLCNo}
           \State reduce simple payment output in \texttt{localCom} by $x$
-          \State add an $\left(x, pt_{\mathrm{rev}, n+1} \vee pt_{\mathrm{htlc},
-          n+1}, \mathtt{IncomingCltvExpiry} \text{ absolute}\right) \vee$
-          $\left(\left(pt_{\mathrm{htlc}, n+1} \wedge ph_{\mathrm{htlc}, n+1},
-          \text{ on preimage of } h\right)\right)$ htlc output (all with $n+1$
-          keys) to \texttt{remoteCom}, marked with \texttt{HTLCNo}
+          \State add an ($x$, $pt_{\mathrm{rev}, n+1}$ $\vee$
+          $pt_{\mathrm{htlc}, n+1}$, \texttt{IncomingCltvExpiry} absolute)
+          $\vee$ (($pt_{\mathrm{htlc}, n+1}$ $\wedge$ $ph_{\mathrm{htlc}, n+1}$,
+          on preimage of $h$)) htlc output (all with $n+1$ keys) to
+          \texttt{remoteCom}, marked with \texttt{HTLCNo}
           \If{$\delta = \mathtt{receiver}$}
             \State retrieve $R : \mathcal{H}\left(R\right) = h$ from
             \texttt{pendingGetPaid} and clear entry
@@ -696,12 +701,11 @@
             absolute}\right)$ output (all with $n+1$ keys) to
             $\mathtt{remoteCom}'$, marked with $\texttt{HTLCNo}'$
             \State reduce delayed payment output in $\mathtt{localCom}'$ by $x$
-            \State add an additional $\left(x, pt_{\mathrm{rev}, n+1} \vee
-            \left(pt_{\mathrm{htlc}, n+1}, \text{ on preimage}\right.\right.$
-            $\left.\left.\text{of } h\right) \vee \left(pt_{\mathrm{htlc}, n+1}
-            \wedge ph_{\mathrm{htlc}, n+1}\mathtt{OutgoingCltvExpiry} \text{
-            absolute}\right)\right)$ output (all with $n+1$ keys) to
-            $\mathtt{remoteCom}'$, marked with $\texttt{HTLCNo}'$
+            \State add an additional ($x$, $pt_{\mathrm{rev}, n+1}$ $\vee$
+            ($pt_{\mathrm{htlc}, n+1}$, on preimage of $h$) $\vee$
+            ($pt_{\mathrm{htlc}, n+1}$ $\wedge$ $ph_{\mathrm{htlc}, n+1}$
+            \texttt{OutgoingCltvExpiry} absolute)) output (all with $n+1$ keys)
+            to $\mathtt{remoteCom}'$, marked with $\texttt{HTLCNo}'$
             \State increment $\texttt{HTLCNo}'$ by 1
             \State $M' \gets \mathtt{SphinxPrepare}\left(M, \delta,
             sk_{\mathit{Alice}}\right)$
@@ -835,9 +839,9 @@
           \State $\mathrm{HTLCSigs} \gets \emptyset$
           \For{$i$ from \texttt{lastRemoteSigned} + 1 to \texttt{HTLCNo}}
             \State $\mathtt{remoteHTLC}_{n+1, i} \gets$ TX \{input: HTLC output
-            $i$ of $\mathtt{remoteCom}_{n+1}$, output: $\left(c_{\mathrm{htlc,
-            i}}, ph_{\mathrm{rev}, n+1} \vee \left(pt_{\mathrm{dpay}, n+1},
-            \mathtt{delay} + \tochain{} \text{ relative}\right)\right)$\}
+            $i$ of $\mathtt{remoteCom}_{n+1}$, output: ($c_{\mathrm{htlc, i}}$,
+            $ph_{\mathrm{rev}, n+1}$ $\vee$ ($pt_{\mathrm{dpay}, n+1}$,
+            $\mathtt{delay} + \tochain{}$ relative))\}
             \State add $\textsc{SignIBS}\left(\mathtt{remoteHTLC}_{n+1, i},
             sh_{\mathrm{htlc}, n+1}\right)$ to HTLCSigs
           \EndFor
@@ -881,12 +885,12 @@
           \EndIf
           \For{$i$ from \texttt{lastLocalSigned} + 1 to \texttt{HTLCNo}}
             \State $\mathtt{localHTLC}_{n+1, i} \gets$ TX \{input: HTLC output
-            $i$ of $\mathtt{localCom}$, output: $\left(c_{\mathrm{htlc, i}},
-            ph_{\mathrm{rev}, n+1} \vee \left(pt_{\mathrm{dpay}, n+1},
-            \mathtt{remoteDelay} \text{ relative}\right)\right)$\}
-            \If{$\textsc{VerifyIBS}\left(\mathtt{HTLCSigs}_{n+1, i},
-            \mathtt{localHTLC}_{n+1, i}, pt_{\mathrm{htlc}, n+1}\right) =
-            \mathtt{false}$}
+            $i$ of $\mathtt{localCom}$, output: ($c_{\mathrm{htlc, i}}$,
+            $ph_{\mathrm{rev}, n+1}$ $\vee$ ($pt_{\mathrm{dpay}, n+1}$,
+            \texttt{remoteDelay} relative))\}
+            \If{\textsc{VerifyIBS}($\mathtt{HTLCSigs}_{n+1, i}$,
+            $\mathtt{localHTLC}_{n+1, i}$, $pt_{\mathrm{htlc}, n+1}$) =
+            \texttt{false}}
               \State close channel (as in
               Fig.~\ref{alg:protocol:close:unilateral})
               \State \Return
