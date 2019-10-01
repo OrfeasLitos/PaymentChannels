@@ -30,9 +30,11 @@
 %\newtheorem{example}{Example}
 %\spnewtheorem*{definition*}{Definition}{\bfseries}{\itshape}
 
-\spnewtheorem*{theorem*}{Theorem}{\bfseries}{\itshape}
-\spnewtheorem*{theoremnn}{Theorem}{\bfseries}{\itshape}
-\spnewtheorem*{lemma*}{Lemma}{\bfseries}{\itshape}
+\ifelseieee{}{
+  \spnewtheorem*{theorem*}{Theorem}{\bfseries}{\itshape}
+  \spnewtheorem*{theoremnn}{Theorem}{\bfseries}{\itshape}
+  \spnewtheorem*{lemma*}{Lemma}{\bfseries}{\itshape}
+}
 \newenvironment{claimproof}[1]{\par\noindent\underline{Proof}:\space#1}{\hfill $\blacksquare$}
 
 \newcommand{\ignore}[1]{\relax} 
