@@ -44,6 +44,11 @@
 
 \usepackage{xspace}
 
+% redefine environment proof to IEEEproof if using IEEE class
+\ifelseieee
+  {\renewenvironment{proof}[1][Proof]{\begin{IEEEproof}[#1]}{\end{IEEEproof}}}
+  {}
+
 % PG: Margin comments were placed oddly for me, and this saved the day (taken from
 % http://mirror.hmc.edu/ctan/macros/latex/contrib/todonotes/todonotes.pdf)
 %\setlength{\marginparwidth}{2cm}
@@ -123,7 +128,9 @@
 \newenvironment{sepproof}[1]{\noindent \textbf{#1}}{\qed \smallskip \ \\}
 
 % environment for proof sketch
-\newenvironment{proofsketch}{\noindent \textit{Proof Sketch.}}{\qed \smallskip \ \\}
+\ifelseieee
+  {\newenvironment{proofsketch}[1][Proof Sketch]{\begin{IEEEproof}[#1]}{\end{IEEEproof}}}
+  {\newenvironment{proofsketch}{\noindent \textit{Proof Sketch.}}{\qed \smallskip \ \\}}
 
 % page style set to plain
 \pagestyle{plain}
