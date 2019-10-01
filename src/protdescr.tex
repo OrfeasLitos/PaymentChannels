@@ -125,7 +125,9 @@
     keeps a note to report it to \environment{} the next time she receives
     (\textsc{getNews}).
 
-  \begin{remark}[Differences between LN and $\Pi_{\mathrm{LN}}$]
+  \ifelseieee
+    {\noindent {\it Remark 1 (Differences between LN and $\Pi_{\mathrm{LN}}$).}}
+    {\begin{remark}[Differences between LN and $\Pi_{\mathrm{LN}}$]}
 %
     In LN, a custom construction for generating a new secret during each channel
     update is used. It reduces the amount of space needed to maintain a channel
@@ -155,4 +157,4 @@
     roles. Furthermore, in order to reduce transaction size, it specifies exact
     rules for prunning outputs of too low value (known as ``dust outputs''). In
     the current analysis we do not consider these features.
-  \end{remark}
+  \ifelseieee{}{\end{remark}}
