@@ -150,47 +150,20 @@
           \label{alg:sim:resolvepay:everystate}
             \ForAll{$(\overrightarrow{\mathtt{path}}, \mathit{payid}) \in
             \mathtt{payids} : \alice \in \overrightarrow{\mathtt{path}}$}
-              \If{\alice{} sent \textsc{updateFulfillHtlc} to a corrupted player
-              and either (got the fulfillment of the HTLC irrevocably committed
-              OR fulfilled the HTLC on-chain (i.e. \texttt{HTLC-success} is in
-              $\Sigma_{\alice}$)), AND the next honest player \bob{} down the
-              line successfully timed out the HTLC on-chain (i.e.
-              \texttt{HTLC-timeout} is in $\Sigma_{\bob}$)} \Comment{no or bad
-              communication with \bob's previous player}
+              \If{condition in Fig.~\ref{alg:sim:resolvepay:corrupted:fig} is
+              met} \Comment{no or bad communication with \bob's previous player}
               \label{alg:sim:resolvepay:corrupted}
-                \State add to \texttt{charged}(\alice) a tuple
-                (\texttt{corrupted}, \textit{payid}) where \texttt{corrupted} is
-                set to one of the corrupted parties between \alice{} and \bob{}
-                \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid})
-                from \texttt{payids}
-              \ElsIf{$\Sigma_{\alice}$ contains an old $\mathtt{remoteCom}_m$ of
-              the channel before \alice{} (closer to payer) on the
-              $\overrightarrow{\mathtt{path}}$ that does not contain the
-              relevant HTLC and a tx that spends the delayed output of
-              $\mathtt{remoteCom}_m \vee$ (($\Sigma_{\alice}$ contains the most
-              recent $\mathtt{remoteCom}_n$ or $\mathtt{localCom}_n$ of the
-              channel before \alice{} and the \texttt{HTLC-success} of the
-              relevant HTLC $\vee$ \alice's latest irrevocably committed
-              $\mathtt{remoteCom}_n$ for the channel before \alice{} does not
-              contain the HTLC) $\wedge \Sigma_{\alice}$ contains the most
-              recent $\mathtt{remoteCom}_l$ or $\mathtt{localCom}_l$ and (the
-              \texttt{HTLC-timeout} or an \texttt{HTLC-success} that pays the
-              counterparty) for HTLC of the channel after \alice{})}
-              \Comment{\alice{} did not fulfill in time}
+                \State execute effect in
+                Fig.~\ref{alg:sim:resolvepay:corrupted:fig}
+              \ElsIf{condition in Fig.~\ref{alg:sim:resolvepay:nofulfill} is
+              met} \Comment{\alice{} did not fulfill in time}
               \label{alg:sim:resolvepay:negligent}
-                \State add (\alice, \textit{payid}) to \texttt{charged}(\alice)
-                \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid})
-                from \texttt{payids}
-              \ElsIf{\alice{} is the payer in $\overrightarrow{\mathtt{path}}$
-              AND ((she has received \textsc{updateFulfillHtlc} AND has
-              subsequently sent \textsc{commit} and \textsc{revokeAndAck}) OR
-              player after \alice{} has irrevocably fulfilled the HTLC on-chain
-              (i.e. his \texttt{HTLC-success} is in $\Sigma_{\alice}$)}
-              \Comment{honest payment completed}
+                \State execute effect in Fig.~\ref{alg:sim:resolvepay:nofulfill}
+              \ElsIf{condition in Fig.~\ref{alg:sim:resolvepay:honest:fig} is
+              met} \Comment{honest payment completed}
               \label{alg:sim:resolvepay:honest}
-                \State add (\alice, \textit{payid}) to \texttt{charged}(\alice)
-                \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid})
-                from \texttt{payids}
+                \State execute effect in
+                Fig.~\ref{alg:sim:resolvepay:honest:fig}
               \EndIf
             \EndFor
           \EndFor
@@ -203,6 +176,94 @@
   \end{simulatorbox}
   \caption{}
   \label{alg:sim:resolvepay}
+\end{figure}
+
+\begin{figure}[H]
+  \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$ --
+  corrupted charged}
+    \begin{algorithmic}[1]
+      \Statex \textit{Condition}:
+      \Indent
+        \State \alice{} sent \textsc{updateFulfillHtlc} to a corrupted player
+        and either (got the fulfillment of the HTLC irrevocably committed OR
+        fulfilled the HTLC on-chain (i.e. \texttt{HTLC-success} is in
+        $\Sigma_{\alice}$)), AND the next honest player \bob{} down the line
+        successfully timed out the HTLC on-chain (i.e. \texttt{HTLC-timeout} is
+        in $\Sigma_{\bob}$)
+      \EndIndent
+      \Statex
+
+      \Statex \textit{Effect}:
+      \Indent
+         \State add to \texttt{charged}(\alice) a tuple (\texttt{corrupted},
+         \textit{payid}) where \texttt{corrupted} is set to one of the corrupted
+         parties between \alice{} and \bob{}
+         \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid}) from
+         \texttt{payids}
+      \EndIndent
+    \end{algorithmic}
+  \end{simulatorbox}
+  \caption{}
+  \label{alg:sim:resolvepay:corrupted:fig}
+\end{figure}
+
+\begin{figure}[H]
+  \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$ -- no
+  timely fulfill}
+    \begin{algorithmic}[1]
+      \Statex \textit{Condition}:
+      \Indent
+        \State $\Sigma_{\alice}$ contains an old $\mathtt{remoteCom}_m$ of the
+        channel before \alice{} (closer to payer) on the
+        $\overrightarrow{\mathtt{path}}$ that does not contain the relevant HTLC
+        and a tx that spends the delayed output of $\mathtt{remoteCom}_m \vee$
+        (($\Sigma_{\alice}$ contains the most recent $\mathtt{remoteCom}_n$ or
+        $\mathtt{localCom}_n$ of the channel before \alice{} and the
+        \texttt{HTLC-success} of the relevant HTLC $\vee$ \alice's latest
+        irrevocably committed $\mathtt{remoteCom}_n$ for the channel before
+        \alice{} does not contain the HTLC) $\wedge \Sigma_{\alice}$ contains
+        the most recent $\mathtt{remoteCom}_l$ or $\mathtt{localCom}_l$ and (the
+        \texttt{HTLC-timeout} or an \texttt{HTLC-success} that pays the
+        counterparty) for HTLC of the channel after \alice{})
+      \EndIndent
+      \Statex
+
+      \Statex \textit{Effect}:
+      \Indent
+         \State add (\alice, \textit{payid}) to \texttt{charged}(\alice)
+         \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid}) from
+         \texttt{payids}
+      \EndIndent
+    \end{algorithmic}
+  \end{simulatorbox}
+  \caption{}
+  \label{alg:sim:resolvepay:nofulfill}
+\end{figure}
+
+\begin{figure}[H]
+  \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$ -- honest
+  payment}
+    \begin{algorithmic}[1]
+      \Statex \textit{Condition}:
+      \Indent
+        \State \alice{} is the payer in $\overrightarrow{\mathtt{path}}$ AND
+        ((she has received \textsc{updateFulfillHtlc} AND has subsequently sent
+        \textsc{commit} and \textsc{revokeAndAck}) OR player after \alice{} has
+        irrevocably fulfilled the HTLC on-chain (i.e. his \texttt{HTLC-success}
+        is in $\Sigma_{\alice}$)
+      \EndIndent
+      \Statex
+
+      \Statex \textit{Effect}:
+      \Indent
+        \State add (\alice, \textit{payid}) to \texttt{charged}(\alice)
+        \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid}) from
+        \texttt{payids}
+      \EndIndent
+    \end{algorithmic}
+  \end{simulatorbox}
+  \caption{}
+  \label{alg:sim:resolvepay:honest:fig}
 \end{figure}
 
 \begin{lemma}
