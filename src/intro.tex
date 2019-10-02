@@ -163,6 +163,14 @@ the construction lying within the specification of lightning is realising it
 under standard cryptographic assumptions. In summary, the realisation of
 $\fpaynet{}$ is achieved assuming the security of the underlying primitives
 (which in turn can be based on EC-DLOG and the Random Oracle model).
+
+\item \orfeas{check} We prove that a ``perfect'' ledger functionality, i.e. a
+ledger with instant finality, is unrealisable even assuming a synchronous
+multicast network. This result informs our decision to use the more realistic
+ledger functionality of~\cite{BMTZ17}, since it establishes that if our analysis
+was based on the perfect ledger, it would not be implementable neither in the
+real world of UC, nor as a piece of software, thus turning our work in a purely
+theoretical exercise.
 \end{enumerate}
 
 \noindent {\bf Related Work.} A first suggestion for building a unidirectional
