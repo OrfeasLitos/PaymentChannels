@@ -970,14 +970,10 @@
           n+2}\right)$
           \If{no outstanding HTLCs remain for this channel and the sequence for
           \textsc{closeChannel} or \textsc{shutdown}
-          (Figs.~\ref{alg:protocol:close:unilateral}
-          or~\ref{alg:protocol:close:coop}) has been initiated}
-            \State continue execution at
-            Fig.~\ref{alg:protocol:close:unilateral},
-            l.~\ref{alg:protocol:close:unilateral:init:continue} or
-            Fig.~\ref{alg:protocol:close:coop},
-            l.~\ref{alg:protocol:close:unilateral:shutdown:continue}
-            respectively
+          (Fig.~\ref{alg:protocol:close:coop}) has been initiated}
+            \State continue execution at Fig.~\ref{alg:protocol:close:coop},
+            l.~\ref{alg:protocol:close:coop:init:continue} or
+            l.~\ref{alg:protocol:close:coop:shutdown:continue} respectively
           \EndIf
         \EndIndent
       \end{algorithmic}
@@ -1152,7 +1148,7 @@
           $\mathtt{localCom}_n$}
             continue from here when there are none left
           \EndIf
-          \label{alg:protocol:close:unilateral:init:continue}
+          \label{alg:protocol:close:coop:init:continue}
           \State send (\textsc{shutdown}, $pk_{\alice}$, \textit{pchid}) to \bob
         \EndIndent
         \Statex

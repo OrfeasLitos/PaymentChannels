@@ -229,14 +229,14 @@
 
   \fpaynet{} halts in line~\ref{alg:fpaynet:close:func:idle} of
   Fig.~\ref{alg:fpaynet:close:func} in case \environment{} has asked for the
-  channel to close, but too much time has passed since. This event cannot
-  happen, for two reasons. First, regarding elements in
-  \texttt{pendingClose}(\alice), because \fpaynet{} forwards a
-  (\textsc{forceCloseChannel}) message to \simulator{}
-  (Fig.~\ref{alg:fpaynet:close}, line~\ref{alg:fpaynet:close:unilateral:send})
-  for every element that it adds to \texttt{pendingClose}
-  (Fig~\ref{alg:fpaynet:close}, line~\ref{alg:fpaynet:close:mark}) and this
-  causes \simulator{} to submit the commitment transaction to \ledger{}
+  channel to close, but too much time has passed since. This event cannot happen
+  for two reasons. First, regarding elements in \texttt{pendingClose}(\alice),
+  because \fpaynet{} forwards a (\textsc{forceCloseChannel}) message to
+  \simulator{} (Fig.~\ref{alg:fpaynet:close},
+  line~\ref{alg:fpaynet:close:unilateral:send}) for every element that it adds
+  to \texttt{pendingClose} (Fig~\ref{alg:fpaynet:close},
+  line~\ref{alg:fpaynet:close:unilateral:mark}) and this causes \simulator{} to
+  submit the commitment transaction to \ledger{}
   (Fig.~\ref{alg:protocol:close:unilateral},
   line~\ref{alg:protocol:close:unilateral:submit}). This transaction is
   necessarily valid, because there is no other transaction that spends the
