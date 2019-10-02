@@ -190,20 +190,26 @@ payment network functionality in the UC setting, a number of previous papers
 \cite{DBLP:conf/ccs/DziembowskiFH18,Malavolta:2017:CPP:3133956.3134096,sprites,perun}
 presented ideal functionalities abstracting the concept.
 
-\noindent {\bf Organisation.} In section~\ref{sec:preliminaries} we present
-preliminaries for the model we employ and the relevant cryptographic primitives.
-In Section~\ref{sec:ov-lightning} we present an overview of the lightning
-network. Our payment network functionality is given an overview description in
-Section~\ref{sec:ov-paynet}. Our abstraction of the core lightning protocol is
-provided in Section~\ref{sec:ov-lightning}. We give more details about the
-combined digital signature primitive in Section~\ref{sec:ov-combined-ds}.
-Finally, in Section~\ref{sec:ov-security-proof} we provide an overview of the
-security proof. In the appendix, first we give more details on the preliminary
-primitives, specifically in Sections~\ref{sec:ds},\ref{sec:ibs},\ref{sec:prf} we
-discuss digital signatures, identity based signatures and pseudorandom
-functions. Subsequently in Section~\ref{appendix:combinedsign} we go into more
-details about combined digital signatures. The transaction structure that is
-assumed to be provided by the underlying distributed ledger is discussed in
+\noindent {\bf Organisation.} In Section~\ref{sec:related-work} we compare the
+present analysis with related work. \orfeas{check prev} In
+section~\ref{sec:preliminaries} we present preliminaries for the model we employ
+and the relevant cryptographic primitives. In Section~\ref{sec:ov-lightning} we
+present an overview of the lightning network. Our payment network functionality
+is given an overview description in Section~\ref{sec:ov-paynet}. Our abstraction
+of the core lightning protocol is provided in Section~\ref{sec:ov-lightning}. We
+give more details about the combined digital signature primitive in
+Section~\ref{sec:ov-combined-ds}. In Section~\ref{sec:ov-security-proof} we
+provide an overview of the security proof. \orfeas{check next} Finally, in
+Section~\ref{sec:perfect-ledger} we formalise our claim that a ledger
+functionality with instant finality is unrealisable. In the appendix, we first
+prove our claim on the unrealisability of a perfect ledger in
+Section~\ref{appendix:perfectledger}. \orfeas{check prev} Then we give more
+details on the preliminary primitives, specifically in
+Sections~\ref{sec:ds},\ref{sec:ibs},\ref{sec:prf} we discuss digital signatures,
+identity based signatures and pseudorandom functions. Subsequently in
+Section~\ref{appendix:combinedsign} we go into more details about combined
+digital signatures. The transaction structure that is assumed to be provided by
+the underlying distributed ledger is discussed in
 Section~\ref{appendix:txstructure}. The paynet functionality is presented in
 detail in Section~\ref{appendix:payfunc}. The complete description of protocol
 $\Pi_{\mathrm{LN}}$ is presented in Section~\ref{appendix:protocol}. The ledger
