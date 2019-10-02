@@ -247,7 +247,6 @@ drawn from the   UC formalisation of~\cite{BMTZ17,genesis}.
       \State $\mathsf{oldValidTxMissing} \gets \mathsf{false}$ \quad \Comment{Flag to keep track whether old enough, valid transactions are inserted.}
       \For{each list $\cbuffer_i$ of transaction IDs}  
       \State \Comment{Compute the next state block}
-      %\State $\vec{N}_i \gets \varepsilon$ \TODO{Assignment never used?}
       \State \Comment{Verify validity of $\cbuffer_i$ and compute content}
       \State Use the $\txid$ contained in $\cbuffer_i$ to determine the list of transactions
       \State Let $\vec{\tx}=(\tx_1,\dots,\tx_{|\cbuffer_i|})$ denote the transactions of $\cbuffer_i$
