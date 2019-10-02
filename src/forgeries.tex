@@ -10,8 +10,9 @@
 
   \begin{proof}
     \begin{gather*}
-      \Pr[T = U] = \sum\limits_{a \in A}\Pr[T = a \wedge U = a] = \sum\limits_{a
-      \in A}\frac{1}{p(k)}\Pr[U = a] =\\
+      \Pr[T = U] = \sum\limits_{a \in A}\Pr[T = a \wedge U = a] =
+      \ifelseieee{\\ =}{}
+      \sum\limits_{a \in A}\frac{1}{p(k)}\Pr[U = a] =\\
       = \frac{1}{p(k)}\sum\limits_{a \in A}\Pr[U = a] = \frac{1}{p(k)}
     \end{gather*}
   \end{proof}
@@ -75,11 +76,18 @@
 
     Since the Digital Signatures scheme used during the execution is assumed to
     be \textsf{EUF-CMA}-secure, it is
-    \begin{equation*}
-      \Pr[\adversary_{\mathrm{ds}} \text{ wins } \mathsf{EUF \mhyphen CMA}] \leq
-      \mathrm{E \mhyphen ds}(k) \Rightarrow \forall \environment, a \leq nm
-      \cdot \mathrm{E \mhyphen ds}(k) \enspace.
-    \end{equation*}
+    \ifelseieee
+      {\begin{gather*}
+        \Pr[\adversary_{\mathrm{ds}} \text{ wins } \mathsf{EUF \mhyphen CMA}] \leq
+        \mathrm{E \mhyphen ds}(k) \Rightarrow \\
+        \Rightarrow \forall \environment, a \leq nm \cdot \mathrm{E \mhyphen
+        ds}(k) \enspace.
+      \end{gather*}}
+      {\begin{equation*}
+        \Pr[\adversary_{\mathrm{ds}} \text{ wins } \mathsf{EUF \mhyphen CMA}] \leq
+        \mathrm{E \mhyphen ds}(k) \Rightarrow \forall \environment, a \leq nm
+        \cdot \mathrm{E \mhyphen ds}(k) \enspace.
+      \end{equation*}}
   \end{proof}
 
   \begin{figure}[!htbp]

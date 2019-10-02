@@ -65,12 +65,15 @@
   \label{alg:sim:reg}
 \end{figure}
 
+\newcommand{\lemmareg}
+  {$\textsc{Exec}^{\fpaynet{}_{\mathrm{, dummy}},
+  \ledger}_{\simulator_{\mathrm{LN}}, \environment} =
+  \textsc{Exec}^{\fpaynet{}_{\mathrm{, Reg}}, \ledger}_{\simulator_{\mathrm{LN -
+  Reg}}, \environment}$}
+
 \begin{lemma}
   \label{lemma:reg}
-  $\textsc{Exec}^{\fpaynet{}_{\mathrm{, dummy}},
-  \ledger}_{\simulator_{\mathrm{LN}}, \environment} =
-  \textsc{Exec}^{\fpaynet{}_{\mathrm{, Reg}},
-  \ledger}_{\simulator_{\mathrm{LN - Reg}}, \environment}$
+  \ifelseieee{ \ \smallskip \\ \centerline{\lemmareg}}{\lemmareg}
 \end{lemma}
 
 \begin{proof}
