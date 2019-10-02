@@ -39,7 +39,7 @@
         \end{itemize}
         \item to $\simulator$:
         \begin{itemize}
-          \item (\textsc{register}, \alice, delay, relayDelay, lastPoll)
+          \item (\textsc{register}, \alice, delay, relayDelay)
           \item (\textsc{openChannel}, \alice, \bob, $x$, \textit{fchid},
           \textit{tid})
           \item (\textsc{channelOpened}, \alice, \textit{fchid})
@@ -104,10 +104,10 @@
           \State send (\textsc{read}) to \ledger{} as \alice{}, store reply to
           $\Sigma_{\alice}$, add $\Sigma_{\alice}$ to $\Sigma$ and add largest
           block number to \texttt{polls}(\alice)
-          \label{alg:fpaynet:support:lastpoll}
+          \label{alg:fpaynet:support:read}
           \State \texttt{checkClosed}($\Sigma_{\alice}$)
           \State send $\left(\textsc{register}, \alice, \mathrm{delay},
-          \mathrm{relayDelay}, \mathrm{lastPoll}\right)$ to \simulator
+          \mathrm{relayDelay}\right)$ to \simulator
         \EndIndent
         \Statex
 

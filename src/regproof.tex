@@ -32,15 +32,13 @@
     (\textsc{toppedUp}) from $\fpaynet{}_{\mathrm{, Reg}}$.
     Additional differences:
     \begin{algorithmic}[1]
-      \State Upon receiving (\textsc{register}, \alice, delay, relayDelay,
-      lastPoll) from $\fpaynet{}_{\mathrm{, Reg}}$:
+      \State Upon receiving (\textsc{register}, \alice, delay, relayDelay) from
+      $\fpaynet{}_{\mathrm{, Reg}}$:
       \Indent
         \State $\mathtt{delay} \text{ of \alice{} ITI } \gets \mathrm{delay}$
         \label{alg:sim:reg:delay}
         \State $\mathtt{relayDelay} \text{ of \alice{} ITI } \gets
         \mathrm{relayDelay}$
-        \State $\mathtt{lastPoll} \text{ of \alice{} ITI } \gets
-        \mathrm{lastPoll}$
         \State $\left(pk_{\alice}, sk_{\alice}\right) \text{ of \alice{} ITI }
         \gets \mathtt{KeyGen}()$
         \label{alg:sim:reg:keygen}
@@ -86,8 +84,8 @@
 
   Furthermore, one (\textsc{read}) is sent to \ledger{} from \alice{} in both
   cases (Fig.~\ref{alg:protocol:support},
-  line~\ref{alg:protocol:support:lastpoll} and Fig.~\ref{alg:fpaynet:support},
-  line~\ref{alg:fpaynet:support:lastpoll}).
+  line~\ref{alg:protocol:support:read} and Fig.~\ref{alg:fpaynet:support},
+  line~\ref{alg:fpaynet:support:read}).
 
   Additionally, $\simulator{}_{\mathrm{LN - Reg}}$ ensures that the state of
   \alice{} ITI is exactly the same as what would have been in the case of

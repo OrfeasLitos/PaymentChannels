@@ -41,10 +41,9 @@
           at least once every \texttt{delay} blocks}
           \label{alg:protocol:support:delay}
           \State $\mathtt{relayDelay} \gets \mathrm{relayDelay}$
-          \State send (\textsc{read}) to \ledger{} and assign largest block
-          number to \texttt{lastPoll} % TODO maybe remove lastPoll from real
-          % world?
-          \label{alg:protocol:support:lastpoll}
+          \State send (\textsc{read}) to \ledger{} and assign reply to
+          $\Sigma_{\alice}$
+          \label{alg:protocol:support:read}
           \State $\left(pk_{\alice}, sk_{\alice}\right) \gets
           \textsc{KeyGen}\left(\right)$
           \label{alg:protocol:support:keygen}
@@ -429,10 +428,8 @@
           \State send (\textsc{read}) to \ledger{} and assign reply to
           $\Sigma_{\alice}$
           \label{alg:protocol:poll:read}
-          \State assign largest block number in $\Sigma_{\alice}$ to
-          \texttt{lastPoll}
+          \State $\mathtt{toSubmit} \gets \emptyset$
           \label{alg:protocol:poll:afterread}
-        \State $\mathtt{toSubmit} \gets \emptyset$
           \ForAll{$\tau \in \mathtt{unclaimedOfferedHTLCs}$}
             \If{input of $\tau$ has been spent} \Comment{by
             \texttt{remote HTLC-success}}

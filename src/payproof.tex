@@ -575,18 +575,17 @@
   (\textsc{poll}) to \dave{} during the prescribed time period
   (Fig.~\ref{alg:fpaynet:poll}, line~\ref{alg:fpaynet:poll:height}) -- note that
   the addition to \texttt{polls}(\dave) during registration
-  (Fig.~\ref{alg:fpaynet:support}, line~\ref{alg:fpaynet:support:lastpoll})
-  cannot be within the desired range due to the fact that
-  \texttt{OutgoingCltvExpiry} is not smaller than the chain height when the
-  corresponding (\textsc{invoice}) was received
-  (Fig.~\ref{alg:protocol:pay:invoice},
+  (Fig.~\ref{alg:fpaynet:support}, line~\ref{alg:fpaynet:support:read}) cannot
+  be within the desired range due to the fact that \texttt{OutgoingCltvExpiry}
+  is not smaller than the chain height when the corresponding (\textsc{invoice})
+  was received (Fig.~\ref{alg:protocol:pay:invoice},
   line~\ref{alg:protocol:pay:invoice:cltv}), registration happens necessarily
   before handling (\textsc{invoice}) (Fig.~\ref{alg:fpaynet:support},
   line~\ref{alg:fpaynet:support:unreg}) and the element added to
   \texttt{polls}(\dave) at registration is the chain height at that time
-  (Fig.~\ref{alg:fpaynet:support}, line~\ref{alg:fpaynet:support:lastpoll}).
-  When \dave{} receives (\textsc{poll}), $\fpaynet{}_{\mathrm{, Pay}}$ always
-  sends (\textsc{getClosedFunds}) to $\simulator_{\mathrm{LN - Reg - Open}}$
+  (Fig.~\ref{alg:fpaynet:support}, line~\ref{alg:fpaynet:support:read}). When
+  \dave{} receives (\textsc{poll}), $\fpaynet{}_{\mathrm{, Pay}}$ always sends
+  (\textsc{getClosedFunds}) to $\simulator_{\mathrm{LN - Reg - Open}}$
   (Fig.~\ref{alg:fpaynet:poll}, line~\ref{alg:fpaynet:poll:send}) (since, as we
   saw earlier, $\fpaynet{}_{\mathrm{, Pay}}$ never halts).
 
