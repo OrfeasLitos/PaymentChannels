@@ -1,13 +1,23 @@
-\section{A Perfect Ledger is unrealisable}
-\label{appendix:perfectledger}
+\section{A ledger with instant finality is unrealisable}
+\label{sec:perfect-ledger}
   As already mentioned, previous attempts at formalising payment channels in
   UC~\cite{DBLP:conf/ccs/DziembowskiFH18,perun,Malavolta:2017:CPP:3133956.3134096,sprites}
   assume a variant of a ledger functionality with instant finality. We here
-  define a reasonable variant \perfectledger{} (Fig.~\ref{fig:perfectledger})
-  and argue that such a functionality is unrealisable, even under strong network
-  assumptions, i.e. a multicast synchronous network.
+  define a reasonable variant \perfectledger{}
+  (Fig.~\ref{fig:perfectledger:func}) where all submitted transactions are
+  instantly added to the ledger and immediately available to be read by all
+  players. Subsequently we argue that, albeit an attractive abstraction, such a
+  functionality is unrealisable, even under strong network assumptions, i.e. a
+  multicast synchronous network $\FnetworkEd^1$.
 
-  \TODO{move functionality and theorem in main body if there's space}
+  Such a network ensures that messages sent by honest parties will be instantly
+  delivered to all other parties; no delays can be introduced by the adversary.
+  The latter however may choose to send its own messages only to specific
+  parties. This allows the adversary to spread conflicting information or
+  withhold data from some parties. As we will see, this adversarial ability
+  precludes the possibility of the ledger of Fig.~\ref{fig:perfectledger:func}
+  to be realised. We refer the reader to Appendix~\ref{appendix:ledger} for the
+  formal definition of $\FnetworkEd^1$.
 
   \begin{figure}[H]
     \begin{systembox}{\perfectledger}
@@ -39,9 +49,6 @@
     \end{equation*}
   \end{theorem}
 
-  We refer the reader to Appendix~\ref{appendix:ledger} for the definition of
-  $\FnetworkEd^1$.
-
   \begin{proofsketch}
     We take advantage of the \adversary's ability to selectively send messages
     to specific players. In particular, \environment{} starts an execution with
@@ -59,215 +66,3 @@
     \bob{} knows $m$, then \environment{} decides this is the ideal world, so
     for that case the protocol is forced to try to achieve instant finality.
   \end{proofsketch}
-
-  \begin{proof}
-    We first define the offending environment and adversary and subsequently
-    show how they can distinguish the ideal from the real world.
-    \begin{figure}[H]
-      \begin{titlebox}{Environment \normalfont \perfectenv}{commonbox}{normal}
-        Spawn two players, \alice{} and \bob. Flip a coin. If it returns 0,
-        execute \texttt{writeWithPlayer}, otherwise execute
-        \texttt{writeWithAdversary}.
-        \begin{algorithmic}[1]
-          \Procedure{writeWithPlayer}{}
-            \State First activation:
-            \Indent
-              \State choose random number $m \overset{\$}{\gets} \{0, 1\}^k$
-              \State assign at random names \alice, \bob{} to two players
-              \State send (\textsc{submit}, $m$) to \alice
-            \EndIndent
-            \State Second activation:
-            \Indent
-              \State send (\textsc{read}) to \bob
-              \If{\bob{} does not give subroutine output}
-                \State \Return 0 \Comment{real world}
-                \label{fig:perfectledger:env:coin0:real}
-              \ElsIf{\bob's subroutine output $\mathcal{L}$ contains $m$}
-                \State \Return 1 \Comment{players communicated}
-                \label{fig:perfectledger:env:coin0:comm}
-              \ElsIf{$\mathcal{L}$ does not contain $m$}
-                \State \Return 0 \Comment{players did not communicate}
-                \label{fig:perfectledger:env:coin0:nocomm}
-              \EndIf
-            \EndIndent
-          \EndProcedure
-          \Statex
-
-          \Procedure{writeWithAdversary}{}
-            \State First activation:
-            \Indent
-              \State choose random number $m \overset{\$}{\gets} \{0, 1\}^k$
-              \State assign at random names \alice, \bob{} to two players
-              \State send (\textsc{leak}, $m$, \alice) to \adversary{}
-              \Comment{in real world \adversary{} will \textsc{multicast} to
-              \alice}
-            \EndIndent
-            \State Second activation:
-            \Indent
-              \State send (\textsc{read}) to \bob
-            \EndIndent
-            \State Third activation:
-            \Indent
-              \If{\bob{} does not give subroutine output}
-                \State \Return 0 \Comment{real world}
-                \label{fig:perfectledger:env:coin1:real1}
-              \ElsIf{\bob's subroutine output $\mathcal{L}_{\bob}$ contains $m$}
-                \State \Return 1 \Comment{ideal world}
-                \label{fig:perfectledger:env:coin1:ideal1}
-              \EndIf
-              \State send (\textsc{read}) to \alice
-              \If{\alice{} does not give subroutine output}
-                \State \Return 0 \Comment{real world}
-                \label{fig:perfectledger:env:coin1:real3}
-              \ElsIf{\alice's subroutine output $\mathcal{L}_{\alice}$ contains
-              $m$}
-                \State \Return 0 \Comment{real world}
-                \label{fig:perfectledger:env:coin1:real2}
-              \ElsIf{$\mathcal{L}_{\alice}$ does not contain $m$}
-                \State \Return 1 \Comment{ideal world or real \alice{}
-                misbehaving}
-                \label{fig:perfectledger:env:coin1:ideal2}
-              \EndIf
-            \EndIndent
-          \EndProcedure
-        \end{algorithmic}
-      \end{titlebox}
-      \caption{}
-      \label{fig:perfectledger:env}
-    \end{figure}
-
-    \begin{figure}[H]
-      \begin{titlebox}{Adversary \normalfont \perfectadv}{commonbox}{normal}
-        Upon receiving (\textsc{leak}, $m$, \alice) from \perfectenv, simulate
-        \perfectprot{} reacting to (\textsc{submit}, $m$). If it attempts to
-        send a message (\textsc{multicast}, $m'$) to $\FnetworkEd^1$, send
-        (\textsc{multicast}, ($m'$, \alice)) to $\FnetworkEd^1$.
-      \end{titlebox}
-      \caption{}
-      \label{fig:perfectledger:adv}
-    \end{figure}
-
-    Since we quantify over all possible \simulator{} and \perfectprot, we have
-    to refer to the probabilities of them taking specific actions of interest:
-    \begin{gather*}
-      \ppsubmits = \Pr[\text{Upon receiving (\textsc{submit}, $m$) from
-      \environment,} \\
-      \ifelseieee{
-        \text{\perfectprot{} sends (\textsc{multicast}, $f(m)$) to} \\
-        \text{$\FnetworkEd^1$ for some function $f$}] \\
-      }{
-        \text{\perfectprot{} sends (\textsc{multicast}, $f(m)$) to
-        $\FnetworkEd^1$ for some function $f$}] \\
-      }
-      \ppfetches = \Pr[\text{Upon receiving (\textsc{read}) from \environment,}
-      \\
-      \text{\perfectprot{} sends (\textsc{fetch}) to $\FnetworkEd^1$ for data }
-      m' \\
-      \text{and sends back to \environment{} a (\textsc{read}, $\mathcal{L}$)
-      such that} \\
-      \text{if there is a unique element $m$ in $\mathcal{L}$, it is } f(m) =
-      m']
-    \end{gather*}
-
-    We first analyze the event in which the initial coin flip of \environment{}
-    results in 0, $\mathrm{Coin}_0$. In the ideal world, the submitted message
-    $m$ always ends up in the ledger right away and therefore when
-    \environment{} has \bob{} \textsc{read}, it always sees $m$ in the answer,
-    therefore (Fig.~\ref{fig:perfectledger:env},
-    line~\ref{fig:perfectledger:env:coin0:in})
-    \begin{equation*}
-      \Pr[\textsc{Exec}^{\perfectledger, \gFclock}_{\simulator, \perfectenv} = 1
-      | \mathrm{Coin}_0] = 1 \enspace.
-    \end{equation*}
-
-    In the real world, in order for the submitted message $m$ to be in \bob's
-    response to \textsc{read}, he must have fetched from $\FnetworkEd^1$ and
-    considered this data as a new ledger entry, and \alice{} must have sent some
-    function of $m$ to $\FnetworkEd^1$ when she received (\textsc{submit}, $m$),
-    except if he could guess $m$, which can happen with negligible probability,
-    therefore
-    \ifelseieee{
-      \begin{gather*}
-        \Pr[\textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot, \perfectadv,
-        \perfectenv} = 1 | \mathrm{Coin}_0] < \\
-        < \ppsubmits \ppfetches + \negl(k) \enspace.
-      \end{gather*}
-    }{
-      \begin{equation*}
-        \Pr[\textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot, \perfectadv,
-        \perfectenv} = 1 | \mathrm{Coin}_0] < \ppsubmits \ppfetches + \negl(k)
-        \enspace.
-      \end{equation*}
-    }
-
-    We now move on to the event in which the initial coin flip results in 1,
-    $\mathrm{Coin}_1$. In the ideal world, if \simulator{} \textsc{submit}s the
-    received $m$ to the ledger then \environment's \textsc{read} request to
-    \bob{} will be answered with an output that contains $m$ an \environment{}
-    will output 1 (Fig.~\ref{fig:perfectledger:env},
-    line~\ref{fig:perfectledger:env:coin1:ideal1}). If on the other hand
-    \simulator{} does not \textsc{submit} it, then neither \bob's nor \alice's
-    answer will contain $m$, so \environment's output will also be 1
-    (Fig.~\ref{fig:perfectledger:env},
-    line~\ref{fig:perfectledger:env:coin1:ideal2}).
-    \begin{equation*}
-      \Pr[\textsc{Exec}^{\perfectledger, \gFclock}_{\simulator, \perfectenv} = 1
-      | \mathrm{Coin}_1] = 1 \enspace.
-    \end{equation*}
-
-    Lastly, in the real world, \bob's buffer in $\FnetworkEd^1$ does not
-    contain any information, so he may return a ledger containing $m$ only with
-    negligible probability. In case he returns a ledger without $m$, \alice{}
-    will respond to \environment's \textsc{read} query with a ledger containing
-    $m$ exactly in the case that the event that defines \ppfetches{} is true,
-    therefore
-    \ifelseieee{
-      \begin{gather*}
-        \Pr[\textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot, \perfectadv,
-        \perfectenv} = 1 | \mathrm{Coin}_1] < \\
-        < (1 - \ppfetches) + \negl(k) \enspace.
-      \end{gather*}
-    }{
-      \begin{equation*}
-        \Pr[\textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot, \perfectadv,
-        \perfectenv} = 1 | \mathrm{Coin}_1] < (1 - \ppfetches) + \negl(k)
-        \enspace.
-      \end{equation*}
-    }
-    Note that \perfectprot{} cannot leverage knowledge of its own pid in order
-    to have \alice{} behave differently from \bob{} in a manner that tricks
-    \perfectenv{} into believing that it interacts with the ideal world (i.e.
-    make \alice{} also not return a ledger that contains $m$) because the roles
-    of \alice{} and \bob{} are assigned and the coin is flipped secretly at
-    random by \perfectenv.
-
-    In aggregate,
-    \begin{gather*}
-      \Pr[\textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot, \perfectadv,
-      \perfectenv} = 1] = \\
-      \frac{1}{2}(\Pr[\textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot,
-      \perfectadv, \perfectenv} = 1 | \mathrm{Coin}_0] +
-      \ifelseieee{\\ +}{}
-      \Pr[\textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot, \perfectadv,
-      \perfectenv} = 1 | \mathrm{Coin}_1]) < \\
-      \frac{1}{2}(\ppsubmits \ppfetches + 1 - \ppfetches) + \negl(k) = \\
-      \frac{1}{2} + \ppfetches \frac{\ppsubmits - 1}{2} + \negl(k) \enspace,
-    \end{gather*}
-    and
-    \begin{gather*}
-      \Pr[\textsc{Exec}^{\perfectledger, \gFclock}_{\simulator, \perfectenv} =
-      1] = \\
-      \frac{1}{2}(\Pr[\textsc{Exec}^{\perfectledger, \gFclock}_{\simulator,
-      \perfectenv} = 1 | \mathrm{Coin}_0] +
-      \ifelseieee{\\ +}{}
-      \Pr[\textsc{Exec}^{\perfectledger, \gFclock}_{\simulator, \perfectenv} = 1
-      | \mathrm{Coin}_1]) = 1 \enspace.
-    \end{gather*}
-
-    For these two probabilities to be equal (which is necessary and sufficient
-    for indistinguishability to hold), it would have to be
-    $\ppfetches(\ppsubmits - 1) = 1$. One can verify that there is no assignment
-    to the two probabilities that satisfies this equation and maintains both
-    values within $[0, 1]$. Therefore, the real and the ideal world are
-    distinguishable.
-  \end{proof}
