@@ -5,7 +5,7 @@
     \btc(0,0,0)(n_btc)(funding)(
       {,}%
     )(
-      {$pk_{F, A} \wedge pk_{F, B}$,$c_A + c_B$}%
+      {$pk_{F, A} \wedge pk_{F, B}$,$c_A + c_B + c_h$}%
     )
   \end{pspicture}}
   \label{fig:ln:funding}
@@ -14,14 +14,61 @@
   \hfill
   \begin{minipage}{0.5\textwidth}
   \scalebox{.67}{\begin{pspicture}
-    \btc(0,0,0)(m_btc)(commitment)(
-      {$pk_{F, A} \wedge pk_{F, B}$,}%
+    \btc(0,0,0)(m_btc)($\mathrm{commitment}_A$)(
+      {$\sigma_{F, A} \wedge \sigma_{F, B}$,}%
     )(
-      {$pk_{\mathrm{rev}, B} \vee \mathrm{del}_B(pk_{\mathrm{dcom}, A})$,$c_A$},
+      {$pk_{\mathrm{rev}, B} \vee (\mathrm{relDel}_B \wedge pk_{\mathrm{dcom},
+      A})$,$c_A$},
+      {$pk_{\mathrm{rev}, B} \vee (pk_{\mathrm{htlc}, B} \wedge h) \vee
+      (pk_{htlc, A} \wedge pk_{htlc, B})$,$c_h$},
       {$pk_{\mathrm{com}, B}$,$c_B$}%
     )
   \end{pspicture}}
-  \label{fig:ln:commitment}
+  \label{fig:ln:commitment:alice}
   \caption{\alice's commitment TX (off-chain)}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.5\textwidth}
+  \scalebox{.67}{\begin{pspicture}
+    \btc(0,0,0)(m_btc)($\mathrm{commitment}_B$)(
+      {$\sigma_{F, A} \wedge \sigma_{F, B}$,}%
+    )(
+      {$pk_{\mathrm{rev}, A} \vee (\mathrm{relDel}_A \wedge pk_{\mathrm{dcom},
+      B})$,$c_B$},
+      {$pk_{\mathrm{rev}, A} \vee (pk_{\mathrm{htlc}, A} \wedge
+      pk_{\mathrm{htlc}, B} \wedge h) \vee (\mathrm{absDel}_{\mathrm{cltv}}
+      \wedge pk_{\mathrm{htlc}, A})$,$c_h$},
+      {$pk_{\mathrm{com}, A}$,$c_A$}%
+    )
+  \end{pspicture}}
+  \label{fig:ln:commitment:bob}
+  \caption{\bob's commitment TX (off-chain)}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.5\textwidth}
+  \scalebox{.67}{\begin{pspicture}
+    \btc(0,0,0)(m_btc)($\mathrm{HTLC}_A$)(
+      {$\sigma_{\mathrm{htlc}, A} \wedge \sigma_{\mathrm{htlc}, B}$,}%
+    )(
+      {$pk_{\mathrm{rev}, B} \vee (\mathrm{relDel}_B \wedge pk_{\mathrm{dcom},
+      A})$,$c_h$}%
+    )
+  \end{pspicture}}
+  \label{fig:ln:htlc:alice}
+  \caption{\alice's HTLC-Timeout TX (off-chain)}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.5\textwidth}
+  \scalebox{.67}{\begin{pspicture}
+    \btc(0,0,0)(m_btc)($\mathrm{HTLC}_B$)(
+      {$\sigma_{\mathrm{htlc}, A} \wedge \sigma_{\mathrm{htlc}, B} \wedge
+      \mathrm{Preim}(h)$,}%
+    )(
+      {$pk_{\mathrm{rev}, A} \vee (\mathrm{relDel}_A \wedge pk_{\mathrm{dcom},
+      B})$,$c_h$}%
+    )
+  \end{pspicture}}
+  \label{fig:ln:htlc:bob}
+  \caption{\bob's HTLC-Success TX (off-chain)}
   \end{minipage}
   \end{figure}
