@@ -29,7 +29,7 @@
 \end{figure}
 
 \begin{figure}[!htbp]
-  \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$ - pay}
+  \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$ -- pay}
     Like $\simulator{}_{\mathrm{LN - Reg - Open}}$. Differences:
     \begin{algorithmic}[1]
       \State Upon receiving $\left(\textsc{fulfillOnChain}, t, \alice\right)$
@@ -80,7 +80,7 @@
 \end{figure}
 
 \begin{figure}[!htbp]
-  \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$ - push}
+  \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$ -- push}
     \begin{algorithmic}[1]
       \State Upon receiving (\textsc{pushFulfill}, \textit{pchid}, \alice) from
       $\fpaynet{}_{\mathrm{, Pay}}$:
@@ -134,8 +134,8 @@
 \end{figure}
 
 \begin{figure}[H]
-  \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$ - resolve
-  payments}
+  \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$ --
+  resolve payments}
     \begin{algorithmic}[1]
       \State Upon receiving any message with a concatenated (\textsc{state},
       $\Sigma$) part from $\fpaynet{}_{\mathrm{, Pay}}$: \Comment{\textsc{pay},
