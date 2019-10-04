@@ -205,23 +205,19 @@ Theorem~\ref{theorem:perfectledger}, a representative variant of these
 functionalities (Fig.~\ref{fig:perfectledger:func}) is unrealisable even under
 strong network assumptions (cf. Section~\ref{sec:perfect-ledger}).
 
-\noindent {\bf Organisation.} In Section~\ref{sec:related-work} we compare the
-present analysis with related work. \orfeas{check prev} In
-section~\ref{sec:preliminaries} we present preliminaries for the model we employ
-and the relevant cryptographic primitives. In Section~\ref{sec:ov-ln} we present
-an overview of the lightning network and in Section~\ref{sec:ln-figures} a
-concrete example of an open channel is given, accompanied by figures of the
-relevant transactions. Our payment network functionality is given an overview
-description in Section~\ref{sec:ov-paynet}. Our abstraction of the core
-lightning protocol is provided in Section~\ref{sec:ov-protocol}. We give more
-details about the combined digital signature primitive in
-Section~\ref{sec:ov-combined-ds}. In Section~\ref{sec:ov-security-proof} we
-provide an overview of the security proof. \orfeas{check next} Finally, in
-Section~\ref{sec:perfect-ledger} we formalise our claim that a ledger
-functionality with instant finality is unrealisable. In the appendix, we first
-prove our claim on the unrealisability of a perfect ledger in
-Section~\ref{sec:perfect-ledger:proof}. \orfeas{check prev} Then we give more
-details on the preliminary primitives, specifically in
+\noindent {\bf Organisation.} In section~\ref{sec:preliminaries} we present
+preliminaries for the model we employ and the relevant cryptographic primitives.
+In Section~\ref{sec:ov-ln} we present an overview of the lightning network and
+in Section~\ref{sec:ln-figures} a concrete example of an open channel is given,
+accompanied by figures of the relevant transactions. Our payment network
+functionality is given an overview description in Section~\ref{sec:ov-paynet}.
+Our abstraction of the core lightning protocol is provided in
+Section~\ref{sec:ov-protocol}. We give more details about the combined digital
+signature primitive in Section~\ref{sec:ov-combined-ds}. In
+Section~\ref{sec:ov-security-proof} we provide an overview of the security
+proof. Finally, in Section~\ref{sec:perfect-ledger} we formalise our claim that
+a ledger functionality with instant finality is unrealisable. In the appendix,
+we first give more details on the preliminary primitives, specifically in
 Sections~\ref{sec:ds},\ref{sec:ibs},\ref{sec:prf} we discuss digital signatures,
 identity based signatures and pseudorandom functions. Subsequently in
 Section~\ref{appendix:combinedsign} we go into more details about combined
@@ -229,6 +225,8 @@ digital signatures. The transaction structure that is assumed to be provided by
 the underlying distributed ledger is discussed in
 Section~\ref{appendix:txstructure}. The paynet functionality is presented in
 detail in Section~\ref{appendix:payfunc}. The complete description of protocol
-$\Pi_{\mathrm{LN}}$ is presented in Section~\ref{appendix:protocol}. The ledger
-functionality is presented in Section~\ref{appendix:ledger} and finally, the
-security proof is presented in Section~\ref{appendix:secproof}.
+$\Pi_{\mathrm{LN}}$ is presented in Section~\ref{appendix:protocol} and the
+ledger functionality is presented in Section~\ref{appendix:ledger}. Subsequently
+the security proof of the payment channels is presented in
+Section~\ref{appendix:secproof} and finally we prove our claim on the
+unrealisability of a perfect ledger in Section~\ref{sec:perfect-ledger:proof}.
