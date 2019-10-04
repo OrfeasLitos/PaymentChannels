@@ -3,13 +3,12 @@
   As already mentioned, previous attempts at formalising payment channels in
   UC~\cite{DBLP:conf/ccs/DziembowskiFH18,perun,Malavolta:2017:CPP:3133956.3134096,sprites}
   assume a variant of a ledger functionality with instant finality. We here
-  define a reasonable variant \perfectledger{}
+  define a representative variant of this approach \perfectledger{}
   (Fig.~\ref{fig:perfectledger:func}) where all submitted transactions are
   instantly added to the ledger and immediately available to be read by all
   players. Subsequently we argue that, albeit an attractive abstraction, such a
   functionality is unrealisable, even under strong network assumptions, i.e. a
   multicast synchronous network $\FnetworkEd^1$.
-
   Such a network ensures that messages sent by honest parties will be instantly
   delivered to all other parties; no delays can be introduced by the adversary.
   The latter however may choose to send its own messages only to specific
@@ -52,17 +51,19 @@
   \begin{proofsketch}
     We take advantage of the \adversary's ability to selectively send messages
     to specific players. In particular, \environment{} starts an execution with
-    2 players and generates a random message $m$. In half of the executions
-    (randomly selected), $m$ is multicast only to one of the two players, say
+    two players and generates a random message $m$. In half of the executions
+    (randomly selected),  the adversary simulates a ``broken''  \perfectprot{} execution where the effects of submitting the message 
+    $m$ are only shared with one of the two players, say
     \alice{} by \adversary{} (in the real world). The environment then sends
-    \textsc{read} to the other player, say \bob. If \bob{} knows $m$, then
-    \environment{} assumes that it is the ideal world, otherwise it sends
-    \textsc{read} to \alice. If she knows $m$, then \environment{} decides it is
-    in the real world, otherwise it declares this the ideal world.
+    \textsc{read} to the other player, say \bob. If \bob{} returns a ledger containing
+    $m$, then
+    \environment{} concludes that it is the ideal world, otherwise it sends
+    \textsc{read} to \alice. If she returns a ledger with $m$, then \environment{} concludes it is in the real world, otherwise it concludes it is in the ideal world.
 
-    To avoid the obvious counterattack of a protocol that always returns an
-    empty ledger, in the other half of the executions \environment{} sends
-    (\textsc{submit}, $m$) to \alice{} and then (\textsc{read}) to \bob. If
-    \bob{} knows $m$, then \environment{} decides this is the ideal world, so
-    for that case the protocol is forced to try to achieve instant finality.
+    The above is not sufficient since a protocol may choose to  return an
+    empty ledger; to counter this, 
+    in the other half of the executions, the \environment{} sends
+    (\textsc{submit}, $m$) to \alice{} and then (\textsc{read}) to \bob. If, and only if, 
+    \bob{} knows $m$, then \environment{}s concludes this is the ideal world.   
+    This  forces the \perfectprot{}  protocol to achieve instant finality and will establish that a distinguishing advantage exists no matter how \perfectprot{} is implemented. 
   \end{proofsketch}

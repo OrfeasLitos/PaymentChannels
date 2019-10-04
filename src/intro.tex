@@ -25,26 +25,29 @@ Given the above state of affairs, one has to either change the underlying
 settlement protocol or devise some other mechanism that, in conjunction with the
 blockchain protocol, achieves high throughput and low latency. A number of works
 proceeded with the first direction, e.g., hybrid consensus
-\cite{DBLP:conf/wdag/PassS17} or Algorand \cite{DBLP:journals/corr/Micali16}. A
+\cite{DBLP:conf/wdag/PassS17},  Algorand \cite{DBLP:journals/corr/Micali16}. A
 downside of this approach is that the resulting protocols fundamentally change
 the threat model within which Bitcoin is supposed to operate, e.g., by reducing
 the threshold of corrupted players,  strengthening the underlying cryptographic
 assumptions or complicating the setup assumption required (e.g., from a public setup
 to a private setup).
-\anote{maybe the below is ``controversial'' and we should skip it ?  is it necessary? 
-The additional
-side-effect of such solutions is that they are fundamentally incompatible with
-the Bitcoin blockchain, which is arguably the currently most successful deployed
-instance of the blockchain protocol.} 
+%\anote{maybe the below is ``controversial'' and we should skip it ?  is it necessary? 
+%The additional
+%side-effect of such solutions is that they are fundamentally incompatible with
+%the Bitcoin blockchain, which is arguably the currently most successful deployed
+%instance of the blockchain protocol.} 
 
 The alternative approach is to build an {\em overlay} protocol that utilises the
-blockchain protocol as a ``fall back'' layer, while facilitating ``off-chain''
-settlement under certain additional assumptions. We note that in light of the
+blockchain protocol as a ``fall back'' layer and does not relax the threat model in anyway
+while it facilitates fast ``off-chain''
+settlement under certain additional assumptions.  
+We note that in light of the
 impossibility result regarding protocol ``responsiveness'' from
 \cite{DBLP:conf/wdag/PassS17} that states that no protocol can provide
-settlement in time proportional to actual network delay and provide a security
-threshold over $1/3$, we know that some additional assumption would be required
-for the overlay protocol to work.
+settlement in time proportional to actual network delay (i.e., fast settlement) 
+and provide a security
+threshold over $1/3$, we know that maintaining Bitcoin's threat model will
+require some additional assumption for the overlay protocol to offer fast settlement. 
 
 The first instance of this approach and by far the most widely known and
 utilised so far, came with the {\em lightning network}
@@ -72,14 +75,14 @@ The lightning network has been very influential in the space and spun a number
 of follow up research and implementations (see below for references). We note
 that the lightning network is not the only option for building an overlay over a
 blockchain, see e.g., \cite{DBLP:conf/eurocrypt/PassS18} for an alternative
-approach where it is shown that if the assumption is raised to a security
+approach focusing on reducing latency 
+where it is shown that if the assumption is raised to a security
 threshold of $3/4$ plus the honesty of an additional special player it is
-possible to obtain optimal latency. Nevertheless, the lightning network is
-currently the only option that readily interoperates with the Bitcoin
-blockchain.
+possible to obtain optimal latency. Nevertheless, this approach does not
+offer the throughput benefits that are intrinsic to the lightning network. 
 
-Despite the importance of the lightning network for low latency payments over
-Bitcoin there is still no work so far providing a thorough formal security
+Despite the importance of the lightning network for blockchain scalability 
+ there is still no work so far providing a thorough formal security
 analysis. This is a dire state of affairs given the fact that the protocol is
 actually currently operational\footnote{For current deployment statistics see
 e.g., \url{https://1ml.com/statistics}.} and its complexity makes it difficult
@@ -101,11 +104,13 @@ of the network. In more details our results are as follows.
 
 \begin{enumerate}
 \item We present the $\fpaynet{}$ functionality which abstracts the syntax and
-security properties that are provided by the lightning network. \orfeas{The
-approach taken can be applied to any payment network by just changing the exact
+security properties that are provided by the lightning network. Our 
+approach, not only captures lightning, but it is also 
+general as it  can be applied to any payment network 
+by finely tuning the functionality in terms of the exact
 channel opening message sequence, the details of the on-chain checks performed
 by \fpaynet, the negligence time bounds and the penalty in case of a malicious
-closure being caught.} Using $\fpaynet{}$, parties can open and close channels,
+closure being caught. Using $\fpaynet{}$, parties can open and close channels,
 forward payments along channel paths in the network as well as poll its status.
 Importantly, the functionality keeps track of all the off-chain and on-chain
 balances of the parties registered and ensures that when a channel closes the
@@ -167,13 +172,18 @@ under standard cryptographic assumptions. In summary, the realisation of
 $\fpaynet{}$ is achieved assuming the security of the underlying primitives
 (which in turn can be based on EC-DLOG and the Random Oracle model).
 
-\item \orfeas{check} We prove that a ``perfect'' ledger functionality, i.e. a
+\item We prove that a more idealized  ledger functionality, i.e. a
 ledger with instant finality, is unrealisable even assuming a synchronous
-multicast network. This result informs our decision to use the more realistic
+multicast network. This result supports our decision to use the more realistic
 ledger functionality of~\cite{BMTZ17}, since it establishes that if our analysis
-was based on the perfect ledger, it would not be implementable neither in the
-real world of UC, nor as a piece of software, thus turning our work in a purely
-theoretical exercise.
+was based on such a perfect ledger, it would not be relevant 
+for any real world deployment of a payment network since it would
+ -- necessarily -- depend on a non-perfect ledger. This choice also distinguishes our work compared to previous attempts~\cite{DBLP:conf/ccs/DziembowskiFH18,Malavolta:2017:CPP:3133956.3134096,sprites,perun}
+ to formalize payment networks, see below.
+%neither in the
+%real world of UC, nor as a piece of software.
+%, thus turning our work in a purely
+%theoretical exercise.
 \end{enumerate}
 
 \noindent {\bf Related Work.} A first suggestion for building a unidirectional
@@ -192,16 +202,17 @@ a decentralised fashion \cite{flare,spider}. With respect to idealising the
 payment network functionality in the UC setting, a number of previous papers
 \cite{DBLP:conf/ccs/DziembowskiFH18,Malavolta:2017:CPP:3133956.3134096,sprites,perun}
 presented ideal functionalities abstracting the concept.
-\orfeas{we had this here: The main advantage of
+The main advantage of
 our approach however here is that, for the first time, we present a payment
 network functionality that interoperates with a global ledger functionality for
 which we know, in light of the results of \cite{BMTZ17}, that is realisable by
 the Bitcoin blockchain and hence also reflects the actual parameters that can be
-enforced by the implementation. In contrast, previous work utilised ``too
-idealised'' ledger functionalities. As we prove in
-Theorem~\ref{theorem:perfectledger}, a commonly used variation of these
+enforced by the implementation and the exact participation conditions needed
+for security. In contrast, previous work utilized ``too
+idealised'' ledger functionalities for their analysis which offer instant finality; as we prove in
+Theorem~\ref{theorem:perfectledger}, a representative variant of these
 functionalities (Fig.~\ref{fig:perfectledger:func}) is unrealisable even under
-strong network assumptions (c.f. Section~\ref{sec:perfect-ledger}).}
+strong network assumptions (cf. Section~\ref{sec:perfect-ledger}).
 
 \noindent {\bf Organisation.} In Section~\ref{sec:related-work} we compare the
 present analysis with related work. \orfeas{check prev} In
