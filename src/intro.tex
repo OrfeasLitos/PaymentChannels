@@ -70,18 +70,19 @@ The lightning network has been very influential in the space and spun a number
 of follow up research and implementations (see below for references). We note
 that the lightning network is not the only option for building an overlay over a
 blockchain, see e.g., \cite{DBLP:conf/eurocrypt/PassS18} for an alternative
-approach focusing on reducing latency 
-where it is shown that if the assumption is raised to a security
-threshold of $3/4$ plus the honesty of an additional special player it is
-possible to obtain optimal latency. Nevertheless, this approach does not
-offer the throughput benefits that are intrinsic to the lightning network. 
+approach focusing on reducing latency where it is shown that if the assumption
+is raised to a security threshold of $3/4$ plus the honesty of an additional
+special player it is possible to obtain optimal latency. Nevertheless, this
+approach does not offer the throughput benefits that are intrinsic to the
+lightning network.
+%TODO: clarify above
 
-Despite the importance of the lightning network for blockchain scalability 
- there is still no work so far providing a thorough formal security
-analysis. This is a dire state of affairs given the fact that the protocol is
-actually currently operational\footnote{For current deployment statistics see
-e.g., \url{https://1ml.com/statistics}.} and its complexity makes it difficult
-to extract precise statements regarding the level of security it offers.
+Despite the importance of the lightning network for blockchain scalability there
+is still no work so far providing a thorough formal security analysis. This is a
+dire state of affairs given the fact that the protocol is actually currently
+operational\footnote{For current deployment statistics see e.g.,
+\url{https://1ml.com/statistics}.} and its complexity makes it difficult to
+extract precise statements regarding the level of security it offers.
 
 \noindent {\bf Our Results.} We present the first, to our knowledge, complete
 security analysis of the lightning network in the universal composition (UC)
