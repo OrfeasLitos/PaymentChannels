@@ -31,7 +31,10 @@
 %\newtheorem{example}{Example}
 %\spnewtheorem*{definition*}{Definition}{\bfseries}{\itshape}
 
-\ifelseieee{}{
+\ifelseieee{
+\newenvironment{theorem*}{\medskip \noindent {\bfseries Theorem.} \itshape}{\medskip}
+\newenvironment{lemma*}{\medskip \noindent {\bfseries Lemma.} \itshape}{\medskip}
+}{
   \spnewtheorem*{theorem*}{Theorem}{\bfseries}{\itshape}
   \spnewtheorem*{theoremnn}{Theorem}{\bfseries}{\itshape}
   \spnewtheorem*{lemma*}{Lemma}{\bfseries}{\itshape}
