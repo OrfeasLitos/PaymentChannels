@@ -49,7 +49,7 @@
   \end{theorem}
 
   \begin{proofsketch}
-    We take advantage of the \adversary's ability to selectively send messages
+    We take advantage of \adversary's ability to selectively send messages
     to specific players. In particular, \environment{} starts an execution with
     two players and generates a random message $m$. In half of the executions
     (randomly selected),  the adversary simulates a ``broken''  \perfectprot{} execution where the effects of submitting the message 
@@ -62,7 +62,7 @@
 
     The above is not sufficient since a protocol may choose to  return an
     empty ledger; to counter this, 
-    in the other half of the executions, the \environment{} sends
+    in the other half of the executions, \environment{} sends
     (\textsc{submit}, $m$) to \alice{} and then (\textsc{read}) to \bob. If, and only if, 
     \bob{} knows $m$, then \environment{}s concludes this is the ideal world.   
     This  forces the \perfectprot{}  protocol to achieve instant finality and will establish that a distinguishing advantage exists no matter how \perfectprot{} is implemented. 
