@@ -29,10 +29,39 @@
   Beyond correctness, combined signatures have two security properties expressed
   as follows. Share-EUF security expresses security from the point of view of
   \alice{}, and establishes that \bob{} is incapable of issuing a valid combined
-  signature if he does not possess the corresponding secret share. On the other
-  hand, master-EUF-CMA security is modeled very similarly to standard EUF-CMA
-  security, with the difference that \bob{} (the signer) combines malicious
-  shares into his public-key and issues signatures with respect to such combined
-  keys that still provide no advantage to the adversary in terms of producing a
-  forged message for a combined key of its choice.
+  signature if he does not possess the corresponding secret share. In
+  Appendix~\ref{appendix:combinedsign} we prove the following:
 
+  \begin{lemma}
+    \label{lemma:comb:share}
+    The construction defined in Appendix~\ref{appendix:combinedsign} is
+    \textsf{share-EUF}-secure in the Random Oracle model under the assumption
+    that the underlying signature scheme is strongly \textsf{EUF-CMA}-secure and
+    the range of the Random Oracle coincides with that of the underlying
+    signature scheme signing keys.
+  \end{lemma}
+
+  On the other hand, master-EUF-CMA security is modeled very similarly to
+  standard EUF-CMA security, with the difference that \bob{} (the signer)
+  combines malicious shares into his public-key and issues signatures with
+  respect to such combined keys that still provide no advantage to the adversary
+  in terms of producing a forged message for a combined key of its choice. In
+  this respect we prove:
+
+  \begin{lemma}
+    \label{lemma:comb:master}
+    The construction of Appendix~\ref{appendix:combinedsign} is
+    \textsf{master-EUF-CMA}-secure in the Random Oracle model under the
+    assumption that the underlying signature scheme is strongly
+    \textsf{EUF-CMA}-secure and the range of the Random Oracle coincides with
+    that of the underlying signature scheme signing keys.
+  \end{lemma}
+
+  The two results can then be combined to obtain the desired security property:
+
+  \begin{theorem}
+    \label{thm:combsign}
+    The construction of Appendix~\ref{appendix:combinedsign} is
+    \textsf{combine-EUF}-secure in the Random Oracle model under the assumption
+    that the underlying signature scheme is strongly \textsf{EUF-CMA}-secure.
+  \end{theorem}

@@ -222,15 +222,7 @@
     construction here satisfies the Combined Signatures correctness properties.
     We now move on to proving that the construction is also secure.
 
-    \begin{lemma}
-      \label{lemma:comb:share}
-      The construction above is \textsf{share-EUF}-secure in the Random Oracle
-      model under the assumption that the underlying signature scheme is
-      strongly \textsf{EUF-CMA}-secure and the range of the Random Oracle
-      coincides with that of the underlying signature scheme signing keys.
-    \end{lemma}
-
-    \begin{proof}
+    \begin{proof}[Proof of Lemma~\ref{lemma:comb:share}]
       Let $k \in \mathbb{N}, \mathcal{B}$ PPT algorithm such that
       \begin{equation*}
         \Pr\left[\mathsf{share \mhyphen EUF}^{\mathcal{B}}\left(1^k\right) =
@@ -393,15 +385,7 @@
       \end{gather*}
     \end{proof}
 
-    \begin{lemma}
-      \label{lemma:comb:master}
-      The construction above is \textsf{master-EUF-CMA}-secure in the Random
-      Oracle model under the assumption that the underlying signature scheme is
-      strongly \textsf{EUF-CMA}-secure and the range of the Random Oracle
-      coincides with that of the underlying signature scheme signing keys.
-    \end{lemma}
-
-    \begin{proof}
+    \begin{proof}[Proof of Lemma~\ref{lemma:comb:master}]
       Let $k \in \mathbb{N}, \mathcal{B}$ PPT algorithm such that
       \begin{equation*}
         \Pr\left[\mathsf{master \mhyphen EUF \mhyphen
@@ -536,14 +520,7 @@
       \end{gather*}
     \end{proof}
 
-    \begin{theorem}
-      \label{thm:combsign}
-      The construction above is \textsf{combine-EUF}-secure in the Random Oracle
-      model under the assumption that the underlying signature scheme is
-      strongly \textsf{EUF-CMA}-secure.
-    \end{theorem}
-
-    \begin{proof}
+    \begin{proof}[Proof of Theorem~\ref{thm:combsign}]
       The construction is \textsf{combine-EUF}-secure as a consequence of
       Lemma~\ref{lemma:comb:share}, Lemma~\ref{lemma:comb:master} and the
       definition of \textsf{combine-EUF}-security.
