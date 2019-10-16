@@ -40,6 +40,8 @@
     details. If \fpaynet{} does not halt, it leaks to \simulator{} the polling
     details (including the identity of the poller and the state of the ledger in
     their view).
+    % TODO: explicitly mention bounds for receiving node
+    % (maybe also in functionality/protocol/simulator/proof)
     \item \fpaynet{} expects \simulator{} to send a (\textsc{resolvePays},
     \texttt{charged}) message that gives details on the outcome of one or more
     multi-hop payments that include the identity of the party that is charged.
