@@ -10,13 +10,14 @@
    Mu₁ – mu_n parties of LN protocol
 -------------------------
 5. Proof of ind = def. simulator + follow every message seq from E and show that responses same in ideal & real
+   As secure as Bitcoin
 
-  Think of Env as human user + polling daemon
+   Think of Env as human user + polling daemon
 
-  Also
-   - write real-world prot. π (pseudocode) – like wallet
-   - prove revocation keys secure
-   - exact negligent behavior
+   Also
+    - write real-world prot. π (pseudocode) – like wallet
+    - prove revocation keys secure
+    - exact negligent behavior
 -------------------------
 7. First sync checks for HTLC-success
    Publish of HTLC-timeout forces potential conflicting HTLC-success to be on-chain at most after a
@@ -27,6 +28,7 @@
 8. Payee not analyzed in paper because equivalent to failed payment – can try again
 -------------------------
 9. Complicated interface – match protocol messages with E
+   But abstracts protocol messages, no cryptographic primitives -> much simpler
    Let’s look at subset
 -------------------------
 10. Poll – if defrauded player wasn’t negligent (polled in time), halt (ack of Func failure)
