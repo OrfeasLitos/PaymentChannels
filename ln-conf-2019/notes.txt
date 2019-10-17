@@ -1,0 +1,36 @@
+2. LN not about new functionality (fast payments through promises & goodwill)
+    But about ONLY desired functionality (promises & goodwill can be broken and insurers make a fortune)
+-------------------------
+3. Functionality: incorruptible, models what trusted party would do with all player inputs
+   E.g. encryption: give Alice’s message to Bob w/o showing it to Adversary
+-------------------------
+4. Every box 1 Turing machine
+   Environment can’t tell real from ideal world
+   Simulator weirdest part
+   Mu₁ – mu_n parties of LN protocol
+-------------------------
+5. Proof of ind = def. simulator + follow every message seq from E and show that responses same in ideal & real
+
+  Think of Env as human user + polling daemon
+
+  Also
+   - write real-world prot. π (pseudocode) – like wallet
+   - prove revocation keys secure
+   - exact negligent behavior
+-------------------------
+7. First sync checks for HTLC-success
+   Publish of HTLC-timeout forces potential conflicting HTLC-success to be on-chain at most after a
+   Second sync checks which of the two reached the chain
+
+   Multiple in-flight HTLCs: AND of individual HTLC polling requirements
+-------------------------
+8. Payee not analyzed in paper because equivalent to failed payment – can try again
+-------------------------
+9. Complicated interface – match protocol messages with E
+   Let’s look at subset
+-------------------------
+10. Poll – if defrauded player wasn’t negligent (polled in time), halt (ack of Func failure)
+    In proof we show that Prob[halt] < negl
+    Resolve_pays – also halts if non-negligent was defrauded
+    check_closed procedure after every sync – may halt
+    get_news returns opened, closed, updated channels
