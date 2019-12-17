@@ -85,18 +85,18 @@ operational\footnote{For current deployment statistics see e.g.,
 extract precise statements regarding the level of security it offers.
 
 \noindent {\bf Our Results.} We present the first, to our knowledge, complete
-security analysis of the lightning network in the universal composition (UC)
-setting. We model the payment overlay that the lightning network provides as an
-ideal functionality and we demonstrate how it can be implemented in a hybrid
-world which assumes a global ledger functionality. Our treatment is general and
-does not assume any specific implementation for the underlying ledger
-functionality. The ``paynet'' functionality that we introduce abstracts all the
-salient security features achieved by the lightning network. We subsequently
-describe the whole lightning protocol in this setting and we prove that it
-realises our paynet functionality under standard cryptographic assumptions; the
-security guarantees of the functionality reflect specific environmental
-conditions regarding the availability of the honest parties to poll the status
-of the network. In more details our results are as follows.
+security analysis of the lightning network, which we carry out in the universal
+composition (UC) setting. We model the payment overlay that the lightning
+network provides as an ideal functionality and we demonstrate how it can be
+implemented in a hybrid world which assumes a global ledger functionality. Our
+treatment is general and does not assume any specific implementation for the
+underlying ledger functionality. The ``paynet'' functionality that we introduce
+abstracts all the salient security features achieved by the lightning network.
+We subsequently describe the whole lightning protocol in this setting and we
+prove that it realises our paynet functionality under standard cryptographic
+assumptions; the security guarantees of the functionality reflect specific
+environmental conditions regarding the availability of the honest parties to
+poll the status of the network. In more details our results are as follows.
 
 \begin{enumerate}
 \item We present the $\fpaynet{}$ functionality which abstracts the syntax and
@@ -183,7 +183,7 @@ payment channel appeared in \cite{spilman}. Bidirectional payment channels were
 developed in \cite{DBLP:conf/sss/DeckerW15} and, of course as part of the
 lightning network \cite{lightning}. Subsequent work on the topic dealt with
 either improving payment networks by utilising more expressive blockchains such
-as Ethereum \cite{perun}, hardward assumptions, see e.g.,
+as Ethereum \cite{perun}, hardware assumptions, see e.g.,
 \cite{DBLP:conf/systor/LindNEKPS18}, or extending its functionality beyond
 payments, to smart contracts, \cite{sprites} or finally enhancing their privacy,
 see e.g.,
@@ -193,11 +193,12 @@ networks such as rebalancing \cite{DBLP:conf/ccs/KhalilG17} or finding routes in
 a decentralised fashion \cite{flare,spider}. With respect to idealising the
 payment network functionality in the UC setting, a number of previous papers
 \cite{DBLP:conf/ccs/DziembowskiFH18,Malavolta:2017:CPP:3133956.3134096,sprites,perun}
-presented ideal functionalities abstracting the concept. The main advantage of
-our approach however here is that, for the first time, we present a payment
-network functionality that interoperates with a global ledger functionality for
-which we know, in light of the results of \cite{BMTZ17}, that is realisable by
-the Bitcoin blockchain and hence also reflects the actual parameters that can be
+presented ideal functionalities abstracting the concept, but they did not prove
+that the lightning network realises them. The main advantage of our approach
+however here is that, for the first time, we present a payment network
+functionality that interoperates with a global ledger functionality for which we
+know, in light of the results of \cite{BMTZ17}, that is realisable by the
+Bitcoin blockchain and hence also reflects the actual parameters that can be
 enforced by the implementation and the exact participation conditions needed for
 security. In contrast, previous
 work~\cite{DBLP:conf/ccs/DziembowskiFH18,Malavolta:2017:CPP:3133956.3134096,perun}

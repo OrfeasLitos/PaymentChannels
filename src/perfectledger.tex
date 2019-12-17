@@ -24,9 +24,9 @@
         \State State: List of txs $\mathcal{L}$
         \Statex
 
-        \State Upon receiving (\textsc{Submit}, $m$) from \alice or \adversary,
-        append $m$ to $\mathcal{L}$ and send (\textsc{Submit}, \alice or
-        \adversary, $m$) to \adversary
+        \State Upon receiving (\textsc{Submit}, $m$) from \alice{} or
+        \adversary, append $m$ to $\mathcal{L}$ and send (\textsc{Submit},
+        \alice{} or \adversary, $m$) to \adversary
         \Statex
 
         \State Upon receiving (\textsc{Read}) from \alice, send (\textsc{Read},
@@ -61,11 +61,11 @@
     \alice. If she returns a ledger with $m$, then \environment{} concludes it
     is in the real world, otherwise it concludes it is in the ideal world.
 
-    The above is not sufficient since a protocol may choose to  return an empty
+    The above is not sufficient since a protocol may choose to return an empty
     ledger; to counter this, in the other half of the executions, \environment{}
     sends (\textsc{submit}, $m$) to \alice{} and then (\textsc{read}) to \bob.
-    If, and only if, \bob{} knows $m$, then \environment{}s concludes this is
-    the ideal world.   This  forces the \perfectprot{}  protocol to achieve
-    instant finality and will establish that a distinguishing advantage exists
-    no matter how \perfectprot{} is implemented.
+    If, and only if, \bob{} knows $m$, then \environment{} concludes this is the
+    ideal world. This forces the \perfectprot{} protocol to achieve instant
+    finality and will establish that a distinguishing advantage exists no matter
+    how \perfectprot{} is implemented.
   \end{proofsketch}
