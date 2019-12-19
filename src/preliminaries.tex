@@ -9,7 +9,7 @@ In simulation-based security, cryptographic tasks are defined via an
     an uncorruptible entity that gets the
     inputs of all parties and returns the expected outputs while also interacting with the adversary in a prescribed manner. In this way, the functionality expresses the essence of a cryptographic task and its security features. A protocol $\Pi$ realises the functionality $\mathcal{F}$ if for any  real world adversary
   we can define a ``simulator'' \simulator{}, acting as an ideal world adversary, 
-  such that any environment 
+  such that any environment \environment{}
     cannot distinguish between the real world and the ideal world executions.
     Albeit a powerful tool, simulation-based security only works when a single
     instance of the protocol is run in isolation. However, real-world systems
@@ -68,8 +68,9 @@ In simulation-based security, cryptographic tasks are defined via an
     in the statements of Lemmas~\ref{lemma:dummy}-\ref{lemma:close} and
     Theorem~\ref{theorem:simulation} for simplicity of notation; they should
     normally appear as hybrids along with \ledger. Their exact definition can be
-    found in Appendix~\ref{appendix:ledger}. We also note that \ledger{} and \Fclock are
-    global functionalities~\cite{globaluc}, whereas \fpaynet{} and
+    found in Appendix~\ref{appendix:ledger}. We also note that \ledger{} and
+    \Fclock are global functionalities~\cite{globaluc} and therefore can be
+    accessed directly by the environment, whereas \fpaynet{} and
     $\FnetworkEd^\Delta$ are not.
 
   \noindent {\bf Transaction structure.}

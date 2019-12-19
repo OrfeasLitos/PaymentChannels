@@ -11,16 +11,17 @@
   (\textsc{forceCloseChannel}).
 
   When \fpaynet{} receives (\textsc{openChannel}, \alice, \bob, $x$,
-  \textit{tid}) from \alice, it informs \simulator{} of \environment's intention
-  to create a channel between \alice{} and \bob{} where \alice{} owns $x$ coins.
-  When it receives (\textsc{pay}, \bob, $x, \overrightarrow{\mathtt{path}}$,
-  \texttt{receipt}) from \alice, it informs \simulator{} that \environment{}
-  asked to perform a multi-hop payment of $x$ coins from \alice{} to \bob{}
-  along the $\overrightarrow{\mathtt{path}}$. As expected, when \fpaynet{}
-  receives (\textsc{closeChannel}, \texttt{receipt}, \textit{pchid}) or
-  (\textsc{forceCloseChannel}, \texttt{receipt}, \textit{pchid}) from \alice
-  (for a cooperative or unilateral close respectively), it leaks to \simulator{}
-  the fact that \environment{} wants to close the relevant channel.
+  \textit{tid}) from \alice, it informs simulator \simulator{} of the intention
+  of environment \environment to create a channel between \alice{} and \bob{}
+  where \alice{} owns $x$ coins. When it receives (\textsc{pay}, \bob, $x,
+  \overrightarrow{\mathtt{path}}$, \texttt{receipt}) from \alice, it informs
+  \simulator{} that \environment{} asked to perform a multi-hop payment of $x$
+  coins from \alice{} to \bob{} along the $\overrightarrow{\mathtt{path}}$. As
+  expected, when \fpaynet{} receives (\textsc{closeChannel}, \texttt{receipt},
+  \textit{pchid}) or (\textsc{forceCloseChannel}, \texttt{receipt},
+  \textit{pchid}) from \alice (for a cooperative or unilateral close
+  respectively), it leaks to \simulator{} the fact that \environment{} wants to
+  close the relevant channel.
 
   In order to provide security guarantees, there are various moments when
   \fpaynet{} verifies whether certain expected events have actually taken place.
@@ -30,7 +31,7 @@
   following cases:
   \begin{itemize}
     \item On receiving (\textsc{poll}) by \alice, \fpaynet{} asks \ledger{} for
-    \alice's latest $\Sigma_{\alice}$ and verifies that no bad events have
+    \alice's latest state $\Sigma_{\alice}$ and verifies that no bad events have
     happened. In particular, \fpaynet{} halts if any of \alice's channels has
     been closed maliciously with a transaction at height $h$ and, even though
     \alice{} has \textsc{poll}ed within $[h, h + \mathtt{delay}(\alice) - 1]$,

@@ -18,13 +18,15 @@
     In more detail, to open a channel \alice{} and \bob{} first build locally
     some transactions. The ``funding transaction'' $F$ contains a 2-of-2
     multisig output with one ``funding'' public key $pkF_A, pkF_B$ for each
-    counterparty. This transaction is funded with coins that belong only to one
-    of the two parties, say \alice. Each party also builds a slightly different
-    version of the ``commitment transaction'' $C_A, C_B$. Both $C_A$ and $C_B$
-    spend the funding output of $F$ and allow \alice{} to retrieve her funds if
-    she acts honestly, as we will explain shortly. \alice{} sends \bob{} the
-    signature of $C_B$ made with her $skF_A$ and vice-versa. She now broadcasts
-    $F$; once it is confirmed, the channel is open.
+    counterparty. This multisig output needs signatures for both designated
+    public keys in order to be spent. This transaction is funded with coins that
+    belong only to one of the two parties, say \alice. Each party also builds a
+    slightly different version of the ``commitment transaction'' $C_A, C_B$.
+    Both $C_A$ and $C_B$ spend the funding output of $F$ and allow \alice{} to
+    retrieve her funds if she acts honestly, as we will explain shortly.
+    \alice{} sends \bob{} the signature of $C_B$ made with her $skF_A$ and
+    vice-versa. She now broadcasts $F$; once it is confirmed, the channel is
+    open.
 
     Every time they want to make a payment to each other, they exchange a series
     of messages that have two effects. First, a new pair of commitment

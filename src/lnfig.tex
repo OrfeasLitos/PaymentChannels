@@ -4,14 +4,14 @@
   comprise an open channel. In this example, \alice{} and \bob{} have a channel
   where \alice{} owns $c_A$ coins, \bob{} owns $c_B$ coins and there is an
   outstanding HTLC of value $c_h$ offered by \alice{} to \bob. As such, if
-  \bob{} learns the necessary preimage until block height
+  \bob{} learns the necessary preimage before block height
   ``$\mathrm{height}_{\mathrm{cltv}}$'', he can get the $c_h$ coins by
   cooperatively updating the channel to a state (i.e. a new pair of commitment
   transactions) where there is no HTLC output and the value of his output is
   $c_h + c_B$, or, in case \alice{} is uncooperative, by publishing
   $\mathrm{comm}_B$ and $\mathrm{HTLC}_B$. The latter transaction is valid only
   if it contains the preimage of the hash $h$, which in turn is hardcoded in the
-  two commitment transactions. Correspndingly, \alice{} can get the $c_h$ coins
+  two commitment transactions. Correspondingly, \alice{} can get the $c_h$ coins
   only if after block height ``$\mathrm{height}_{\mathrm{cltv}}$'' they remain
   unclaimed by \bob. She can obtain them either by cooperatively updating the
   channel, or unilaterally by publishing $\mathrm{comm}_A$ and
