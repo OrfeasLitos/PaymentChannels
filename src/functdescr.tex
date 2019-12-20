@@ -47,10 +47,10 @@
     \texttt{charged}) message that gives details on the outcome of one or more
     multi-hop payments that include the identity of the party that is charged.
     Moreover, for each resolved payment, the message includes two expiry values
-    in block height: \texttt{OutgoingCltvExpiry}, which is the largest block in
+    in block height: \texttt{OutgoingCltvExpiry}, which is the highest block in
     which the charged party could claim money from the previous hop (closer to
     the payment initiator) and \texttt{IncomingCltvExpiry}, which is the
-    smallest block in which the charged party could claim money from the next
+    lowest block in which the charged party could claim money from the next
     hop (closer to the payment receiver). \fpaynet{} checks that for each
     payment the charged party was one of the following: (a) the one that
     initiated the payment, (b) a malicious party or (c) an honest party that is
