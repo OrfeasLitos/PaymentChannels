@@ -168,14 +168,15 @@ under standard cryptographic assumptions. In summary, the realisation of
 $\fpaynet{}$ is achieved assuming the security of the underlying primitives
 (which in turn can be based on EC-DLOG and the Random Oracle model).
 
-\item We prove that a more idealized  ledger functionality, i.e. a
-ledger with instant finality, is unrealisable even assuming a synchronous
-multicast network. This result supports our decision to use the more realistic
-ledger functionality of~\cite{BMTZ17}, since it establishes that if our analysis
-was based on such a perfect ledger, it would not be relevant 
-for any real world deployment of a payment network since it would
- -- necessarily -- depend on a non-perfect ledger. This choice also distinguishes our work compared to previous attempts~\cite{DBLP:conf/ccs/DziembowskiFH18,Malavolta:2017:CPP:3133956.3134096,sprites,perun}
- to formalize payment networks, see below.
+\item We prove that a more idealized  ledger functionality, i.e. a ledger with
+instant finality, is unrealisable even assuming a synchronous multicast network.
+This result supports our decision to use the more realistic ledger functionality
+of~\cite{BMTZ17}, since it establishes that if our analysis was based on such a
+perfect ledger, it would not be relevant for any real world deployment of a
+payment network since such software would -- necessarily -- depend on a
+non-perfect ledger. This choice also distinguishes our work compared to previous
+attempts~\cite{DBLP:conf/ccs/DziembowskiFH18,Malavolta:2017:CPP:3133956.3134096,sprites,perun}
+to formalize payment networks, see below.
 \end{enumerate}
 
 \noindent {\bf Related Work.} A first suggestion for building a unidirectional
