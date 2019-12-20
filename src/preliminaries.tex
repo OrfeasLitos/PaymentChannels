@@ -41,13 +41,13 @@ In simulation-based security, cryptographic tasks are defined via an
     distributed append-only data structure akin to a blockchain. Any
     participating party can read from \ledger, which returns an ordered list
     of transactions. Furthermore parties can submit new transactions which, if
-    valid, will be added to the ledger at the discretion of the adversary, but
-    necessarily within a predefined time window. This property is called
-    liveness. Once a transaction is added to the ledger, it becomes visible to
-    all parties at the discretion of the adversary, but within another
-    predefined time window, and cannot be removed or reordered. This is called
-    persistence. The exact definition can be found in
-    Appendix~\ref{appendix:ledger}.
+    valid, will be added to the ledger and made visible to all parties at the
+    discretion of the adversary, but necessarily within a predefined time
+    window. This property is called liveness. Once a transaction is added to the
+    ledger, it becomes visible to all parties at the discretion of the
+    adversary, but within another predefined time window, and cannot be removed
+    or reordered. This is called persistence. The exact definition can be found
+    in Appendix~\ref{appendix:ledger}.
 
     Furthermore, \ledger{} needs the \Fclock functionality, which models the
     notion of time. Every participating party can request to read the current
