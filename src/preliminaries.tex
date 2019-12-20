@@ -49,29 +49,20 @@ In simulation-based security, cryptographic tasks are defined via an
     persistence. The exact definition can be found in
     Appendix~\ref{appendix:ledger}.
 
-    Furthermore, \ledger{} needs two more functionalities: \Fclock and
-    $\FnetworkEd^\Delta$. \Fclock models the notion of time. Every participating
-    party can request to read the current time (which is initialized to 0) and
-    inform \Fclock that her round is over. \Fclock increments the time by one
-    once all parties have declared the end of their round. $\FnetworkEd^\Delta$
-    provides an abstraction of the network. A party can send
-    $\FnetworkEd^\Delta$ a message to be multicast to all other participants of
-    the network. A party can also fetch its new messages from
-    $\FnetworkEd^\Delta$. $\FnetworkEd^\Delta$ makes a message available to be
-    fetched immediately after its arrival, but the adversary may delay the
-    arrival for up to $\Delta$ rounds. \adversary{} can choose different delays
-    for different players and reorder messages. Additionally, he has the power
-    to send his own messages to selected subsets of players.
+    Furthermore, \ledger{} needs the \Fclock functionality, which models the
+    notion of time. Every participating party can request to read the current
+    time (which is initialized to 0) and inform \Fclock that her round is over.
+    \Fclock increments the time by one once all parties have declared the end of
+    their round.
 
     The protocol and functionality defined in the current work do not make
-    direct use of \Fclock or $\FnetworkEd^\Delta$. We therefore omit these two
-    in the statements of Lemmas~\ref{lemma:dummy}-\ref{lemma:close} and
-    Theorem~\ref{theorem:simulation} for simplicity of notation; they should
-    normally appear as hybrids along with \ledger. Their exact definition can be
+    direct use of \Fclock. We therefore omit it in the statements of
+    Lemmas~\ref{lemma:dummy}-\ref{lemma:close} and
+    Theorem~\ref{theorem:simulation} for simplicity of notation; it should
+    normally appear as hybrid along with \ledger. Its exact definition can be
     found in Appendix~\ref{appendix:ledger}. We also note that \ledger{} and
     \Fclock are global functionalities~\cite{globaluc} and therefore can be
-    accessed directly by the environment, whereas \fpaynet{} and
-    $\FnetworkEd^\Delta$ are not.
+    accessed directly by the environment, whereas \fpaynet{} is not.
 
   \noindent {\bf Transaction structure.}
     \ledger{} does not define what is a valid transaction, but leaves it as a
