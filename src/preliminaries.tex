@@ -56,7 +56,10 @@ In simulation-based security, cryptographic tasks are defined via an
     their round.
 
     The protocol and functionality defined in the current work do not make
-    direct use of \Fclock. We therefore omit it in the statements of
+    direct use of \Fclock. Indeed, the only notion of time both in the lightning
+    protocol and in our work is provided by the height of the blockchain, as
+    reported respectively by the underlying Bitcoin node and \ledger. We
+    therefore omit it in the statements of
     Lemmas~\ref{lemma:dummy}-\ref{lemma:close} and
     Theorem~\ref{theorem:simulation} for simplicity of notation; it should
     normally appear as hybrid along with \ledger. Its exact definition can be
