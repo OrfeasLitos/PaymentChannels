@@ -45,10 +45,11 @@
     idea is leveraged instead: If \alice{} broadcasts an old commitment and
     \bob{} sees it, he can punish \alice{} by taking all the money in the
     channel. Therefore \alice{} is technically able to broadcast an old
-    commitment, but has no financial benefit in doing so. On the donwside this
-    imposes the requirement that parties must observe the blockchain
-    periodically --- see below the explanation of timelocks and how they
-    facilitate a time window within which parties should react.
+    commitment, but has no financial benefit in doing so. The same reasoning
+    holds if \bob{} broadcasts an old commitment. On the donwside this imposes
+    the requirement that parties must observe the blockchain periodically ---
+    see below the explanation of timelocks and how they facilitate a time window
+    within which parties should react.
 
     The punishing mechanism operates as follows. Suppose \alice{} considers
     posting her old local commitment which has an output that carries her old
