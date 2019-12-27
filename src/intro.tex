@@ -100,75 +100,66 @@ poll the status of the network. In more details our results are as follows.
 
 \begin{enumerate}
 \item We present the $\fpaynet{}$ functionality which abstracts the syntax and
-security properties that are provided by the lightning network. Our 
-approach, not only captures lightning, but it is also 
-general as it  can be applied to any payment network 
-by finely tuning the functionality in terms of the exact
-channel opening message sequence, the details of the on-chain checks performed
-by \fpaynet, the negligence time bounds and the penalty in case of a malicious
-closure being caught. Using $\fpaynet{}$, parties can open and close channels,
-forward payments along channel paths in the network as well as poll its status.
+security properties provided by the lightning network. We describe our
+$\fpaynet{}$ assuming a global ledger functionality $\ledger$ as defined
+in~\cite{BMTZ17}, and further refined in~\cite{genesis}, which we know that is
+realised by the Bitcoin blockchain. Our approach not only captures lightning,
+but it is also general as it can be applied to any payment network by finely
+tuning the following parts of the functionality: the exact channel opening
+message sequence, the details of the on-chain checks performed by \fpaynet, the
+negligence time bounds and the penalty in case of a malicious closure being
+caught. Using $\fpaynet{}$, parties can open and close channels, forward
+payments along channel paths in the network as well as poll its status.
 Importantly, the functionality keeps track of all the off-chain and on-chain
-balances of the parties registered and ensures that when a channel closes the
-on-chain balances are in line with the off-chain balances. In order to handle
-adversarial deviations in multi-hop payments, the functionality permits the
-adversary to determine the outcome of each payment by choosing either one of the
-following options: (i) let it go through as requested, (ii) charge it to an
-adversarial party along the path, (iii) charge it to a {\em negligent} honest
-party along the path. This last outcome is a crucial characteristic of the
-security that is provided by the lightning network to its participants: honest
-parties are expected to poll the functionality at a certain specific rhythm that
-corresponds to their level of involvement in the network and the properties of
-the underlying ledger. If a party misses that requirement it is identified as
-negligent by the functionality and may lose funds.
+balances and ensures that when a channel closes, the on-chain balances are in
+line with the off-chain ones. In order to handle realistic adversarial
+deviations, $\fpaynet{}$ allows the adversary to choose one of the following
+outcomes for each multi-hop payment: (i) let it go through as requested, (ii)
+charge it to an adversarial party along the path, (iii) charge it to a
+\emph{negligent} honest party along the path. This last outcome is a crucial
+security characteristic of the lightning network: honest parties are required to
+poll the functionality with a frequency that corresponds to their level of
+involvement in the network and the properties of the underlying ledger. If a
+party does not poll often enough, $\fpaynet{}$ identifies it as negligent and it
+may lose funds.
 
-\item We identify for the first time the exact polling requirements that are
-imposed by the lightning network to the honest parties that are participating so
-that they do not lose funds as a function of the underlying parameters of the
-ledger functionality over which the lightning network is overlaid. We describe
-our $\fpaynet{}$ given the global ledger functionality defined in \cite{BMTZ17},
-and further refined in \cite{genesis}, for which we know already that is
-realised by the Bitcoin blockchain. The functionality provides explicit security
-guarantees with respect to consistency and liveness which in turn impact the
-guarantees provided by $\fpaynet{}$. The polling requirements for each party are
-two-fold: (i) the first type of polling refers to monitoring for closures of
-channels that the party is one of the end-points and is specified by the user
-chosen parameter $\mathrm{delay}$, (ii) the second type of polling refers to
-monitoring for specific events related to receiving and relaying payments; in
-particular for each payment that a party acts as an intermediary, polling should
-happen twice within the window of time when the chain in the view of the party
-advances from blockheight $h$ to blockheight $h'-a$, where $h,h'$ are two
-blockheight parameters specified in the particular payment path, and $a$ is a
-(derived) ledger parameter which is the upper bound to the number of blocks that
-may be finalised in the ledger from the time a certain transaction is emitted to
-the time it becomes finalised (i.e. it is included in a block in the ``stable''
-part of the ledger). Moreover, the two pollings should be separated by a time
-window that allows the chain to grow by at least $a$ blocks.
+\item We identify for the first time the exact polling requirements so that
+honest parties do not lose funds, as a function of the parameters of $\ledger$.
+The polling requirements for each party are two-fold: (i) the first type refers
+to monitoring for closures of channels of which the party is a member, and is
+specified by the parameter ``$\mathrm{delay}$'' (chosen by the party), (ii) the
+second type refers to monitoring for specific events related to receiving and
+relaying payments. In detail, let \emph{Alice} be an intermediary of a multi-hop
+payment. When the payment starts, she specifies two blockheights $h, h'$. Also,
+let $a$ the upper bound to the number of blocks that may be finalised in the
+ledger from the time a certain transaction is emitted to the time it becomes
+finalised (i.e. it is included in a block in the ``stable'' part of the ledger).
+\emph{Alice} should then poll twice while her local view of the chain advances
+from blockheight $h$ to blockheight $h' - a$. Moreover, the two pollings should
+be separated by a time window so that the chain can grow by at least $a$ blocks.
 
 \item We provide a complete pseudocode description of the lightning network
-protocol $\Pi_{\mathrm{LN}}$ and we prove that indeed it realises $\fpaynet{}$
-under a specific set of cryptographic assumptions. In order to express
-$\Pi_{\mathrm{LN}}$ in a way that is succinct we identify a number of underlying
-cryptographic primitives that have been used in the specification of the
-lightning network in a non-black-box fashion and without reference.
-Interestingly, while some of these cryptographic primitives are standard (they
-include a PRF, a Digital Signature scheme and an Identity Based Signature
-scheme) there is one additional primitive that is slightly less standard and we
-call {\em combined digital signature}. A combined digital signature is a special
-case of an asymmetric two-party digital signature primitive (e.g., see
-\cite{DBLP:conf/ndss/NicolosiKDM03} and references therein) with the
-characteristic that one of the two parties, the shareholder, generates and
-stores a share of the signing key, while the public-key of the combined
-signature is determined non-interactively based on public-key information
-produced by both two parties. Issuing signatures requires the availability of
-the share which is verifiable given the public information provided by the
-shareholder. We formalise the combined digital signature primitive and show that
-the construction lying within the specification of lightning is realising it
-under standard cryptographic assumptions. In summary, the realisation of
-$\fpaynet{}$ is achieved assuming the security of the underlying primitives
-(which in turn can be based on EC-DLOG and the Random Oracle model).
+protocol $\Pi_{\mathrm{LN}}$ and prove that it realises $\fpaynet{}$ in the
+Random Oracle model. We identify a number of underlying cryptographic primitives
+that have been used in the specification of the lightning network in a
+non-black-box fashion and without reference. Interestingly, while most of these
+primitives are quite standard (a PRF, a Digital Signature scheme and an Identity
+Based Signature scheme), the remaining one is slightly less standard. The
+\emph{combined digital signature} -- as we chose to call it -- is a special case
+of an asymmetric two-party digital signature primitive (e.g.,
+see~\cite{DBLP:conf/ndss/NicolosiKDM03} and references therein) with the
+following characteristic: One of the two parties, the shareholder, generates and
+stores a share of the signing key. The public key of the combined signature can
+be determined non-interactively from public information produced by both
+parties. Issuing signatures requires the availability of the share, which is
+verifiable given the public information provided by the shareholder. We
+formalise the combined digital signature primitive and show that the
+construction lying within the lightning specification realises it under standard
+cryptographic assumptions. In summary, the realisation of $\fpaynet{}$ is
+achieved assuming the security of the underlying primitives, which in turn can
+be based on EC-DLOG and the Random Oracle model.
 
-\item We prove that a more idealized  ledger functionality, i.e. a ledger with
+\item We prove that a more idealized ledger functionality, i.e. a ledger with
 instant finality, is unrealisable even assuming a synchronous multicast network.
 This result supports our decision to use the more realistic ledger functionality
 of~\cite{BMTZ17}, since it establishes that if our analysis was based on such a
@@ -176,7 +167,7 @@ perfect ledger, it would not be relevant for any real world deployment of a
 payment network since such software would -- necessarily -- depend on a
 non-perfect ledger. This choice also distinguishes our work compared to previous
 attempts~\cite{DBLP:conf/ccs/DziembowskiFH18,Malavolta:2017:CPP:3133956.3134096,sprites,perun}
-to formalize payment networks, see below.
+to formalize payment networks.
 \end{enumerate}
 
 \noindent {\bf Related Work.} A first suggestion for building a unidirectional
