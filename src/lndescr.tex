@@ -2,31 +2,29 @@
 \label{sec:ov-ln}
 
   \noindent {\bf Two-party channels.}
-    The aim of LN is to enable fast and cheap transactions that do not have to
-    be added to the blockchain, without compromising security. Specifically no
-    trust between counterparties is needed. This is achieved as follows: Two
-    parties that plan to have recurring monetary exchanges lock up some funds
-    with one special on-chain transaction. We say that they opened a new
-    channel. They can then transact with the locked funds multiple times solely
-    by interacting privately, without informing the blockchain. If they want to
-    use their funds in the usual, on-chain way again, they have to close the
-    channel and unlock the funds with one more on-chain transaction. Each party
-    can unilaterally close the channel and retrieve the coins they are entitled
-    to -- according to the latest channel state -- and thus neither party has to
-    trust the other.
+    The aim of LN is to enable fast, cheap, off-chain transactions, without
+    compromising security. Specifically no trust between counterparties is
+    needed. This is achieved as follows: Two parties that plan to have recurring
+    monetary exchanges lock up some funds with one special on-chain transaction.
+    We say that they opened a new channel. They can then transact with the
+    locked funds multiple times solely by interacting privately, without
+    informing the blockchain. If they want to use their funds in the usual,
+    on-chain way again, they have to close the channel and unlock the funds with
+    one more on-chain transaction. Each party can unilaterally close the channel
+    and retrieve the coins they are entitled to -- according to the latest
+    channel state -- and thus neither party has to trust the other.
 
     In more detail, to open a channel \alice{} and \bob{} first build locally
     some transactions. The ``funding transaction'' $F$ contains a 2-of-2
     multisig output with one ``funding'' public key $pkF_A, pkF_B$ for each
     counterparty. This multisig output needs signatures for both designated
-    public keys in order to be spent. This transaction is funded with coins that
-    belong only to one of the two parties, say \alice. Each party also builds a
-    slightly different version of the ``commitment transaction'' $C_A, C_B$.
-    Both $C_A$ and $C_B$ spend the funding output of $F$ and allow \alice{} to
-    retrieve her funds if she acts honestly, as we will explain shortly.
-    \alice{} sends \bob{} the signature of $C_B$ made with her $skF_A$ and
-    vice-versa. She now broadcasts $F$; once it is confirmed, the channel is
-    open.
+    public keys in order to be spent. $F$ is funded with coins that belong only
+    to one of the two parties, say \alice. Each party also builds a slightly
+    different version of the ``commitment transaction'' $C_A, C_B$. Both $C_A$
+    and $C_B$ spend the funding output of $F$ and allow \alice{} to retrieve her
+    funds if she acts honestly, as we will explain shortly. \alice{} sends
+    \bob{} the signature of $C_B$ made with her $skF_A$ and vice-versa. She now
+    broadcasts $F$; once it is confirmed, the channel is open.
 
     Every time they want to make a payment to each other, they exchange a series
     of messages that have two effects. First, a new pair of commitment
@@ -40,16 +38,15 @@
 
     Invalidating past commitments requires some care. The reason is that it is
     impossible to actually make past commitments invalid without spending the
-    funding output; however, spending it would need an on-chain transaction for
-    each channel update, essentially defeating the purpose of LN. The following
-    idea is leveraged instead: If \alice{} broadcasts an old commitment and
-    \bob{} sees it, he can punish \alice{} by taking all the money in the
-    channel. Therefore \alice{} is technically able to broadcast an old
-    commitment, but has no financial benefit in doing so. The same reasoning
-    holds if \bob{} broadcasts an old commitment. On the donwside this imposes
-    the requirement that parties must observe the blockchain periodically ---
-    see below the explanation of timelocks and how they facilitate a time window
-    within which parties should react.
+    funding output on-chain; doing this for every update would however defeat
+    the purpose of LN. The following idea is leveraged instead: If \alice{}
+    broadcasts an old commitment and \bob{} sees it, he can punish \alice{} by
+    taking all the money in the channel. Therefore \alice{} is technically able
+    to broadcast an old commitment, but has no financial benefit in doing so.
+    The same reasoning holds if \bob{} broadcasts an old commitment. On the
+    donwside this imposes the requirement that parties must observe the
+    blockchain periodically --- see below the explanation of timelocks and how
+    they facilitate a time window within which parties should react.
 
     The punishing mechanism operates as follows. Suppose \alice{} considers
     posting her old local commitment which has an output that carries her old
@@ -69,15 +66,14 @@
     knows and one secret value that \bob{} knows. \alice{} therefore can prevent
     \bob{} from using his revocation key until she  sends this secret value to
     him. Therefore, \alice{} will send the secret value to \bob{} only after the
-    new commitment is built and signed. Thus \bob{} cannot abuse his the
-    revocation key on a commitment before this transaction is revoked. We note
-    that the underlying cryptographic mechanism  that enables such ``revocation
-    keys'' is not straightforward and, as part of our contributions, we
-    formalise it as a new two-party cryptographic primitive. We call it
-    ``combined signature'' and we prove that the construction hidden in the LN
-    implementation realizes it in the random oracle model under the assumption
-    that the underlying digital signature scheme is secure in
-    Appendix~\ref{appendix:combinedsign}.
+    new commitment is built and signed. Thus \bob{} cannot abuse his revocation
+    key on a commitment before this transaction is revoked. We note that the
+    underlying cryptographic mechanism  that enables such ``revocation keys'' is
+    not straightforward and, as part of our contributions, we formalise it as a
+    new two-party cryptographic primitive. We call it ``combined signature'' and
+    we prove that the construction hidden in the LN implementation realizes it
+    in the random oracle model under the assumption that the underlying digital
+    signature scheme is secure in Appendix~\ref{appendix:combinedsign}.
 
     The last element needed to make channel updates secure is the so called
     ``relative timelock''. If \alice{} broadcasts a commitment transaction, she
@@ -133,16 +129,16 @@
     coins were transmitted from \alice{} to \charlie{} and \bob{} did not gain
     or lose anything, he just increased his balance in the channel with \alice{}
     and reduced his balance by an equal amount in the channel with \charlie.
+    \bob{} may also charge a fee for his service.
 
-    This type of promise where a preimage is exchanged for money is called Hash
-    TimeLocked Contract (HTLC). It is enforceable on-chain in case the payer
-    does not cooperatively update upon disclosure of the preimage, thus no trust
-    is needed. In the previous example with \alice{}, \bob{} and \charlie, two
-    HTLCs were signed and fulfilled for the payment to go through and the whole
-    interaction was completely off-chain. Two updates happened in each channel:
-    one to sign the HTLC and one to fulfill it. The time frames were chosen so
-    that every intermediary has had the time to learn the preimage and give it
-    to the previous party on the path.
+    This type of promise where a preimage is exchanged for money is called
+    Hashed Time Locked Contract (HTLC). It is enforceable on-chain in case the
+    payer does not cooperatively update upon disclosure of the preimage, thus no
+    trust is needed. In the previous example with \alice{}, \bob{} and \charlie,
+    two HTLCs were signed and fulfilled for the payment to go through. Two
+    updates happened in each channel: one to sign the HTLC and one to fulfill
+    it. The time frames were chosen so that every intermediary has had the time
+    to learn the preimage and give it to the previous party on the path.
 
     In LN zero-hop payments are also carried out using HTLCs.
 
