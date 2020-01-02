@@ -53,13 +53,13 @@
     specific players. In particular, \environment{} starts an execution with two
     players and generates a random message $m$. In half of the executions
     (randomly selected),  the adversary simulates a ``broken''  \perfectprot{}
-    execution where the effects of submitting the message $m$ are only shared
-    with one of the two players, say \alice{} by \adversary{} (in the real
-    world). The environment then sends \textsc{read} to the other player, say
-    \bob. If \bob{} returns a ledger containing $m$, then \environment{}
-    concludes that it is the ideal world, otherwise it sends \textsc{read} to
-    \alice. If she returns a ledger with $m$, then \environment{} concludes it
-    is in the real world, otherwise it concludes it is in the ideal world.
+    execution where the effects of submitting $m$ are only shared with one of
+    the two players, say \alice{} by \adversary{} (in the real world). The
+    environment then sends \textsc{read} to the other player, say \bob. If
+    \bob{} returns a ledger containing $m$, then \environment{} concludes that
+    it is the ideal world, otherwise it sends \textsc{read} to \alice. If she
+    returns a ledger with $m$, then \environment{} concludes it is in the real
+    world, otherwise it concludes it is in the ideal world.
 
     The above is not sufficient since a protocol may choose to return an empty
     ledger; to counter this, in the other half of the executions, \environment{}
@@ -69,3 +69,5 @@
     finality and will establish that a distinguishing advantage exists no matter
     how \perfectprot{} is implemented.
   \end{proofsketch}
+
+  The full proof can be found in Appendix~\ref{sec:perfect-ledger:proof}.
