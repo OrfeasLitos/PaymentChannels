@@ -1,27 +1,23 @@
 \section{A ledger with instant finality is unrealisable}
 \label{sec:perfect-ledger}
   As already mentioned, previous attempts at formalising payment channels in
-  UC~\cite{DBLP:conf/ccs/DziembowskiFH18,perun,Malavolta:2017:CPP:3133956.3134096,sprites}
+  UC~\cite{DBLP:conf/ccs/DziembowskiFH18,Malavolta:2017:CPP:3133956.3134096,sprites,perun}
   assume a variant of a ledger functionality with instant finality. We here
   define a representative variant of this approach \perfectledger{}
   (Fig.~\ref{fig:perfectledger:func}) where all submitted transactions are
   instantly added to the ledger and immediately available to be read by all
   players. Subsequently we argue that, albeit an attractive abstraction, such a
   functionality is unrealisable, even under strong network assumptions, i.e. a
-  multicast synchronous network $\FnetworkEd^1$.
-  Such a network ensures that messages sent by honest parties will be instantly
-  delivered to all other parties; no delays can be introduced by the adversary.
-  We refer the reader to Appendix~\ref{appendix:ledger} for the formal
-  definition of $\FnetworkEd^1$. The adversary however may choose to send its
-  own messages only to specific parties. This allows the adversary to spread
-  conflicting information or withhold data from some parties. As we will see,
-  this adversarial ability precludes the possibility of the ledger of
-  Fig.~\ref{fig:perfectledger:func} to be realised. With regards to models where
-  the ledger provides instant finality but the adversary can delay any message
-  to the ledger by up to a number of
-  rounds~\cite{DBLP:conf/ccs/DziembowskiFH18}, the adversary can decide to add
-  no delay and thus make the communication synchronous. Therefore our result
-  applies equally to such models.
+  multicast synchronous network $\FnetworkEd^1$. Such a network ensures that
+  messages sent by honest parties will be instantly delivered to all other
+  parties; no delays can be introduced by the adversary. We refer the reader to
+  Appendix~\ref{appendix:ledger} for the formal definition of $\FnetworkEd^1$.
+
+  The adversary however may choose to send its own messages only to specific
+  parties. This allows the adversary to spread conflicting information or
+  withhold data from some parties. As we will see, this adversarial ability
+  precludes the possibility of the ledger of Fig.~\ref{fig:perfectledger:func}
+  to be realised.
 
   \begin{figure}[H]
     \begin{systembox}{\perfectledger}
@@ -76,3 +72,9 @@
   \end{proofsketch}
 
   The full proof can be found in Appendix~\ref{sec:perfect-ledger:proof}.
+
+  With regards to models where the ledger provides instant finality but the
+  adversary can delay any message to the ledger by up to a predetermined number
+  of rounds~\cite{DBLP:conf/ccs/DziembowskiFH18}, we can define an adversary
+  that adds no delay and thus make the communication synchronous. Therefore our
+  result applies equally to such models.
