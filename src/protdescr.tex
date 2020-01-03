@@ -1,26 +1,27 @@
 \section{Lightning Protocol $\Pi_{\mathrm{LN}}$ Overview}
 \label{sec:ov-protocol}
 
-  In order to prove that software adhering to the LN specification is secure
-  with respect to the guarantees given by \fpaynet, it is necessary to define a
-  concrete protocol that implements LN in the UC model. To that end we define
-  the formal protocol $\Pi_{\mathrm{LN}}$, an overview of which is given here.
+  In order to prove that software adhering to the LN specification fulfills the
+  security guarantees given by \fpaynet, a concrete protocol that implements LN
+  in the UC model is needed. To that end we define the formal protocol
+  $\Pi_{\mathrm{LN}}$, an overview of which is given here.
 
   For the rest of this section, we will assume that \alice, \bob{} and
-  \charlie{} interactive Turing machine instances (ITIs)~\cite{uc} honestly
-  execute $\Pi_{\mathrm{LN}}$. Similarly to the ideal world, the main functions
-  of $\Pi_{\mathrm{LN}}$ are triggered when it receives (\textsc{openChannel}),
-  (\textsc{pay}), (\textsc{closeChannel}) and (\textsc{forceCloseChannel}) from
-  \environment{}. These three messages along with (\textsc{getNews}) informally
-  correspond to actions that a ``human user'' would instruct the system to
-  perform. (\textsc{register}) and (\textsc{toppedUp}) are sent by
-  \environment{} for player intialization. The rest of the messages sent from
-  \environment{} prompt $\Pi_{\mathrm{LN}}$ to perform actions that a software
-  implementation would spontaneously perform periodically. All messages sent
-  between \alice, \bob{} and \charlie{} correspond to messages specified by LN.
-  For clarity of exposition, we avoid mentioning the exact name and contents of
-  every message. We refer the reader to the formal definition of
-  $\Pi_{\mathrm{LN}}$ for further details (Appendix~\ref{appendix:protocol}).
+  \charlie{} are interactive Turing machine instances (ITIs)~\cite{uc} that
+  honestly execute $\Pi_{\mathrm{LN}}$. Similarly to the ideal world, the main
+  functions of $\Pi_{\mathrm{LN}}$ are triggered when it receives
+  (\textsc{openChannel}), (\textsc{pay}), (\textsc{closeChannel}) and
+  (\textsc{forceCloseChannel}) from \environment{}. These three messages along
+  with (\textsc{getNews}) informally correspond to actions that a ``human user''
+  would instruct the system to perform. (\textsc{register}) and
+  (\textsc{toppedUp}) are sent by \environment{} for player intialization. The
+  rest of the messages sent from \environment{} prompt $\Pi_{\mathrm{LN}}$ to
+  perform actions that a software implementation would spontaneously perform
+  periodically. All messages sent between \alice, \bob{} and \charlie{}
+  correspond to messages specified by LN. For clarity of exposition, we avoid
+  mentioning the exact name and contents of every message. We refer the reader
+  to the formal definition of $\Pi_{\mathrm{LN}}$ for further details
+  (Appendix~\ref{appendix:protocol}).
 
   \noindent {\bf Registration.}
     Before \alice{} can use the network, \environment{} first has to send her a
@@ -32,76 +33,67 @@
   \noindent {\bf Channel opening.}
     When she receives (\textsc{openChannel}, \alice, \bob, $x$, \textit{tid})
     from \environment, \alice{} initiates the message sequence needed to open a
-    channel with \bob, funded by her with $x$ coins. She first generates and
-    sends to \bob{} some keys and her timelock delay, who also generates some
-    keys and sends them back along with his timelock delay. \alice{} then builds
-    the funding transaction using \bob's keys and sends her signature back to
-    \bob. He again mirrors \alice's steps, sending back his signature. Both
-    parties can now unilaterally spend the funding transaction, so \alice{}
-    submits it to \ledger.
+    channel with \bob, funded by her with $x$ coins. After following the steps
+    described in Section~\ref{sec:ov-ln}, the funding transaction has been
+    submitted to \ledger. However the channel is not open yet.
 
     At a later point \environment{} may send (\textsc{checkForNew}, \alice,
     \bob, \textit{tid}) to \alice. She then checks if her state in \ledger{}
     contains the funding transaction with the temporary ID \textit{tid} and in
-    that case she generates a new ``commitment'' key for the next update and
-    sends it to \bob. \bob{} also confirms that his state contains the funding
-    transaction, generates his next commitment key and sends it back to \alice.
-    The channel is now open. Both parties keep a note to give \environment{}
-    a receipt of the new channel the next time they receive (\textsc{getNews}).
+    that case she exchanges new commitment keys with \bob, as per
+    Section~\ref{sec:ov-ln}. The channel is now open. Both parties keep a note
+    to give \environment{} a receipt of the new channel the next time they
+    receive (\textsc{getNews}).
 
   \noindent {\bf Channel closing.}
-    When she receives (\textsc{closeChannel}, \texttt{receipt}, \textit{pchid})
-    from \environment, \alice{} checks that \texttt{receipt} corresponds to the
-    latest channel state and together with \bob{} she signs and publishes the
-    closing transaction which unlocks parties' funds without a timelock. If she
-    receives \textsc{forceCloseChannel} instead, she performs the same checks
-    but directly submits to \ledger{} the latest commitment transaction, along
-    with all the relevant HTLC transactions. In both cases she takes a note to
-    notify \environment{} that the channel is closed when she receives
+    When sent by \environment, the messages \textsc{closeChannel} and
+    \textsc{forceCloseChannel} prompt \alice{} to close the channel
+    cooperatively or unilaterally respectively, as explained in
+    Section~\ref{sec:ov-ln}. In both cases she takes a note to notify
+    \environment{} that the channel is closed when she receives
     (\textsc{getNews}).
 
   \noindent {\bf Performing payments.}
-    When she receives (\textsc{pay}, \charlie, $x$,
-    $\overrightarrow{\mathtt{path}}$) from \environment, \alice{} attempts to
-    pay \charlie{} $x$ coins, using the provided
-    $\overrightarrow{\mathtt{path}}$. Let us assume that the path is \alice{} --
-    \bob{} -- \charlie. \alice{} asks \charlie{} for an invoice with the HTLC
-    hash, to which \charlie{} reacts by choosing a random preimage and sending
-    back to \alice{} its hash. \alice{} then prepares a Sphinx~\cite{sphinx}
-    onion packet with the relevant information for each party on the
-    $\overrightarrow{\mathtt{path}}$ and sends it to \bob{} along with the hash.
-    \bob{} peels his layer of the onion and, after performing sanity checks, he
-    takes a note of this pending HTLC. He does not yet forward the onion to
-    \charlie, because \alice{} is not yet committed to paying \bob. The latter
-    happens if \alice{} subsequently receives (\textsc{commit},
-    $\mathit{pchid}_1$) from \environment, where $\mathit{pchid}_1$ is the ID of
-    the \alice{} -- \bob{} channel. She then sends \bob{} all the signatures
-    needed to make the new commitment transaction spendable, who replies with
-    the secret commitment key of the old commitment transaction (thus revoking
-    it), along with the public commitment key of the future commitment
-    transaction (to allow \alice{} to prepare the next update, when that
-    happens). LN demands that before \bob{} forwards the onion, he also should
-    commit to the new channel version (that includes the HTLC) to \alice. This
-    happens if he receives a (\textsc{commit}) message from \environment, which
-    causes a similar exchange as above, but with the roles swapped. Now that
-    both parties have the HTLC in their commitment transaction and all past
-    commitment transactions are revoked, they consider this HTLC ``irrevocably
-    committed''.
+    We will now follow the exact steps needed for a multi-hop payment, filling
+    in many details that we omitted from Section~\ref{sec:ov-ln}. When she
+    receives (\textsc{pay}, \charlie, $x$, $\overrightarrow{\mathtt{path}}$)
+    from \environment, \alice{} attempts to pay \charlie{} $x$ coins, using the
+    provided $\overrightarrow{\mathtt{path}}$. Let us assume that the path is
+    \alice{} -- \bob{} -- \charlie. \alice{} asks \charlie{} for an ``invoice''
+    with the HTLC hash, to which \charlie{} reacts by choosing a random preimage
+    and sending back to \alice{} its hash. \alice{} then prepares a
+    Sphinx~\cite{sphinx} onion packet with the relevant information for each
+    party on the $\overrightarrow{\mathtt{path}}$ and sends it to \bob{}. \bob{}
+    peels his layer of the onion and, after performing sanity checks and
+    extracting the hash, he takes a note of this pending HTLC. He does not yet
+    forward the onion to \charlie, because \alice{} is not yet committed to
+    paying \bob. The latter happens if \alice{} subsequently receives
+    (\textsc{commit}, $\mathit{pchid}_{AB}$) from \environment, where
+    $\mathit{pchid}_{AB}$ is the ID of the \alice{} -- \bob{} channel. She then
+    sends \bob{} all the signatures needed to make the new commitment
+    transaction spendable, who replies with the secret commitment key of the old
+    commitment transaction (thus revoking it), along with the public commitment
+    key of the future commitment transaction (to allow \alice{} to prepare the
+    next update, when that happens). LN demands that before \bob{} forwards the
+    onion to \charlie, he must commit as well to the HTLC to \alice. This
+    happens if he receives the relevant \textsc{commit} message from
+    \environment. Now that both parties have the HTLC in their commitment
+    transaction and all past commitment transactions are revoked, they consider
+    this HTLC ``irrevocably committed''.
 
-    \bob{} may then receive (\textsc{pushAdd}, $\mathit{pchid}_1$) from
-    \environment. Given that the HTLC is irrevocably committed, \bob{} sends the
-    onion to \charlie, who in turn peels it, recognizes that the payment is for
-    him and that indeed he knows the preimage (since he generated it himself)
-    and waits for the HTLC between him and \bob{} to be irrevocably committed.
-    After both \bob{} and \charlie{} receive (\textsc{commit}), \charlie{}
-    awaits for a (\textsc{pushFulfill}, \textit{pchid}) message from
-    \environment. If it arrives, \charlie{} sends the preimage to \bob, who
-    sends it back to \alice. Once more every party has to receive a
-    (\textsc{commit}) message for each of the channels it participates in order
-    to remove the HTLC and update the definitive balance of each player to the
-    appropriate value after the payment is complete. After this last update, each
-    party keeps a note to inform \environment{} about the new balance when it
-    receives (\textsc{getNews}).
+    \bob{} may then receive (\textsc{pushAdd}, $\mathit{pchid}_{AB}$) from
+    \environment. \bob{} sends the onion to \charlie, who in turn peels it,
+    recognizes that the payment is for him and that indeed he knows the preimage
+    (since he generated it himself) and waits for the HTLC between him and
+    \bob{} to be irrevocably committed. After both \bob{} and \charlie{} receive
+    (\textsc{commit}), \charlie{} awaits for a (\textsc{pushFulfill},
+    $\mathit{pchid}_{BC}$) message from \environment. If it arrives, \charlie{}
+    sends the preimage to \bob, who sends it back to \alice. Once more every
+    party has to receive a (\textsc{commit}) message for each of the channels it
+    participates in in order to remove the HTLC and update the definitive
+    balance of each player to the appropriate value after the payment is
+    complete. After this last update, each party keeps a note to inform
+    \environment{} about the new balance when it receives (\textsc{getNews}).
 
     Observe that while locked up in an HTLC, funds do not belong to either
     player; they are rather in a temporary, transitive state. If one party
@@ -130,8 +122,8 @@
     {\begin{remark}[Differences between LN and $\Pi_{\mathrm{LN}}$]}
 %
     In LN, a custom construction for generating a new secret during each channel
-    update is used. It reduces the amount of space needed to maintain a channel
-    from $O(n)$ to $O(\log n)$ in the number of updates. As far as we know, its
+    update is used. It reduces the space needed to maintain a channel from
+    $O(n)$ to $O(\log n)$ in the number of updates. As far as we know, its
     security has not been formally analyzed. In the current paper we use instead
     a PRF~\cite{katzlindell}.
 
@@ -154,7 +146,8 @@
 
     Lastly, in order to incentivize users to act as intermediaries or check for
     channel closures on behalf of others, LN provides for fees for these two
-    roles. Furthermore, in order to reduce transaction size, it specifies exact
-    rules for pruning outputs of too low value (known as ``dust outputs''). In
-    the current analysis we do not consider these features.
+    roles. Furthermore, in order to reduce transaction size and ensure that
+    bitcoin nodes relay the transactions, it specifies exact rules for pruning
+    outputs of too low value (known as ``dust outputs''). In the current
+    analysis we do not consider these features.
   \ifelseieee{}{\end{remark}}
