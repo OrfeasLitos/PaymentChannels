@@ -11,12 +11,17 @@
   multicast synchronous network $\FnetworkEd^1$.
   Such a network ensures that messages sent by honest parties will be instantly
   delivered to all other parties; no delays can be introduced by the adversary.
-  The latter however may choose to send its own messages only to specific
-  parties. This allows the adversary to spread conflicting information or
-  withhold data from some parties. As we will see, this adversarial ability
-  precludes the possibility of the ledger of Fig.~\ref{fig:perfectledger:func}
-  to be realised. We refer the reader to Appendix~\ref{appendix:ledger} for the
-  formal definition of $\FnetworkEd^1$.
+  We refer the reader to Appendix~\ref{appendix:ledger} for the formal
+  definition of $\FnetworkEd^1$. The adversary however may choose to send its
+  own messages only to specific parties. This allows the adversary to spread
+  conflicting information or withhold data from some parties. As we will see,
+  this adversarial ability precludes the possibility of the ledger of
+  Fig.~\ref{fig:perfectledger:func} to be realised. With regards to models where
+  the ledger provides instant finality but the adversary can delay any message
+  to the ledger by up to a number of
+  rounds~\cite{DBLP:conf/ccs/DziembowskiFH18}, the adversary can decide to add
+  no delay and thus make the communication synchronous. Therefore our result
+  applies equally to such models.
 
   \begin{figure}[H]
     \begin{systembox}{\perfectledger}
