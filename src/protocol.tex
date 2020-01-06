@@ -120,6 +120,9 @@
           \State ensure \textit{tid} hasn't been used for opening another
           channel before
           \label{alg:protocol:open:env:valid}
+          \State \Comment{Keys marked with ``$b$'' are called basepoint keys.
+          Their use reduces from three to one the public keys that have to be
+          exchanged on each update.}
           \State $\left(\left(ph_F, sh_F\right), \left(phb_{\mathrm{pay}},
           shb_{\mathrm{pay}}\right), \left(phb_{\mathrm{dpay}},
           shb_{\mathrm{dpay}}\right),\right.$ $\left.\left(phb_{\mathrm{htlc}},
