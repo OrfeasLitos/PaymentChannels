@@ -1,21 +1,27 @@
 \section{Preliminaries}
 \label{sec:preliminaries}
-  In this section we will give a brief overview of the tools and frameworks that
-  we use in this work.
+  In this section we give a brief overview of the tools and frameworks used in
+  this work.
 
-  \noindent {\bf Universal Composability framework.}
-In simulation-based security, cryptographic tasks are defined via an
-    ideal ``functionality'' $\mathcal{F}$, which can be thought of as 
-    an uncorruptible entity that gets the
-    inputs of all parties and returns the expected outputs while also interacting with the adversary in a prescribed manner. In this way, the functionality expresses the essence of a cryptographic task and its security features. A protocol $\Pi$ realises the functionality $\mathcal{F}$ if for any  real world adversary
-  we can define a ``simulator'' \simulator{}, acting as an ideal world adversary, 
-  such that any environment \environment{}
+  \noindent \textbf{Universal Composability framework.}
+    In simulation-based security, cryptographic tasks are defined via an ideal
+    ``functionality'' $\mathcal{F}$, which can be thought of as an uncorruptible
+    entity that gets the inputs of all parties and returns the expected outputs
+    while also interacting with the adversary in a prescribed manner. In this
+    way, the functionality expresses the essence of a cryptographic task and its
+    security features. A protocol $\Pi$ realises the functionality $\mathcal{F}$
+    if for any  real world adversary we can define a ``simulator'' \simulator{},
+    acting as an ideal world adversary, such that any environment \environment{}
     cannot distinguish between the real world and the ideal world executions.
     Albeit a powerful tool, simulation-based security only works when a single
     instance of the protocol is run in isolation. However, real-world systems
     almost always run several programs concurrently, which furthermore may run
-    different instances of the same protocol. To facilitate this in the Universal Composability~\cite{uc}
-  framework it is possible to analyse a single instance of the protocol and then take advantage of a generic composition theorem to infer the security of the protocol more broadly. This is achieved by allowing arbitrary interactions between the environment and the real-world adversary. 
+    different instances of the same protocol. To facilitate this, the Universal
+    Composability~\cite{uc} framework allows us to analyse a single instance of
+    the protocol and then take advantage of a generic composition theorem to
+    infer the security of the protocol more broadly. This is achieved by
+    allowing arbitrary interactions between the environment and the real-world
+    adversary.
 %In particular it
 %    replaces $\mathcal{F}$, $\Pi$, \adversary{}, \simulator{} and the external
 %    observer with Interactive Turing Machines (ITMs). The external observer is
@@ -35,7 +41,7 @@ In simulation-based security, cryptographic tasks are defined via an
 %    compose protocols. In this work we choose to use the UC framework in order
 %    to leverage previous results on the security of blockchains.
 
-  \noindent {\bf Hybrid functionalities used.}
+  \noindent \textbf{Hybrid functionalities used.}
     Both our main protocol and the corresponding functionality use
     \ledger~\cite{BMTZ17,genesis} as a hybrid. \ledger{} formalizes an ideal
     distributed append-only data structure akin to a blockchain. Any
@@ -67,7 +73,7 @@ In simulation-based security, cryptographic tasks are defined via an
     \Fclock are global functionalities~\cite{globaluc} and therefore can be
     accessed directly by the environment, whereas \fpaynet{} is not.
 
-  \noindent {\bf Transaction structure.}
+  \noindent \textbf{Transaction structure.}
     \ledger{} does not define what is a valid transaction, but leaves it as a
     system parameter. Importantly, no notion of coins is built in \ledger. We
     therefore specify a valid transaction, closely following concepts put forth
@@ -86,7 +92,7 @@ In simulation-based security, cryptographic tasks are defined via an
     values of the outputs connected to its inputs. We refer the reader to
     Appendix~\ref{appendix:txstructure} for a complete overview.
 
-  \noindent {\bf Cryptographic Primitives.}
+  \noindent \textbf{Cryptographic Primitives.}
     In the Lightning Network specification, a custom scheme for deriving keys is
     used. Its syntax and security aims closely match those of previously studied
     Identity Based Signature schemes~\cite{ibsshamir,ibspaterson}, thus we use
@@ -107,5 +113,9 @@ In simulation-based security, cryptographic tasks are defined via an
       \item $\{0, 1\} \leftarrow \textsc{VerifyIBS}(\sigma, m, pk_l)$: signature
       verification
     \end{itemize}
-    We refer the reader to~\cite{ibspaterson} for more details. 
-    Other cryptographic primitives used are digital signatures and pseudorandom functions, see Sections~\ref{sec:ds}, \ref{sec:ibs}, \ref{sec:prf}. Finally, a less common  two-party cryptographic primitive is employed that we formalise as {\em  combined digital signatures}, see Section~\ref{sec:ov-combined-ds}. 
+    We refer the reader to~\cite{ibspaterson} for more details. Other
+    cryptographic primitives used are digital signatures and pseudorandom
+    functions, see Appendices~\ref{sec:ds},~\ref{sec:ibs}, and~\ref{sec:prf}.
+    Finally, a less common  two-party cryptographic primitive is employed that
+    we formalise as {\em  combined digital signatures}, see
+    Section~\ref{sec:ov-combined-ds}.

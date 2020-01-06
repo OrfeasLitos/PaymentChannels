@@ -1,10 +1,10 @@
 \section{Overview of the Combined Signature primitive}
 \label{sec:ov-combined-ds}
-  As previously mentioned, we define in this work a new primitive for combining
-  keys and generating signatures that is leveraged in the revocation and
-  punishment mechanism of channel updates. Furthermore, we prove that the
-  construction designed by the creators of LN realizes this primitive. We here
-  provide the intuition behind it and refer the reader to
+  As previously mentioned, we define a new primitive for combining keys and
+  generating signatures, which is leveraged in the revocation and punishment
+  mechanism of channel updates. Furthermore, we prove that the construction
+  designed by the creators of LN realizes this primitive. We here provide the
+  intuition behind it and refer the reader to
   Appendix~\ref{appendix:combinedsign} for the exact syntax, correctness and
   security definitions, concrete construction and proof of security.
 
@@ -17,19 +17,19 @@
   protocol. As we will see however, the primitive defined here has different
   aims and limitations and, to our knowledge, has not been formalized yet.
 
-  A combined signature is a two-party primitive, say \alice{} and \bob{} with
-  \bob{} playing the role of the signer and \alice{} the holder of a share of
-  the secret-key that is essential for issuing signatures verifiable with the
-  ``combined'' verification key. The  derivation of the verification key is
-  achieved  using public information drawn from  \alice{} and \bob{} and is
-  feasible without any party knowing the corresponding signing key. Only if
-  \alice{} shares her secret information with \bob{} will he be able to
-  construct the signing key.
+  A combined signature is a two-party primitive, say between \alice{} and \bob,
+  with \bob{} being the signer and \alice{} the holder of a share of the secret
+  key. This share is essential for issuing signatures, which in turn are
+  verifiable with the ``combined'' verification key. The verification key is
+  generated using public information drawn from \alice{} and \bob{} and is
+  feasible without any party knowing the corresponding signing key. \bob{} will
+  be able to construct the signing key only if \alice{} shares her secret
+  information with him.
 
   Beyond correctness, combined signatures have two security properties expressed
-  as follows. Share-EUF security expresses security from the point of view of
-  \alice{}, and establishes that \bob{} is incapable of issuing a valid combined
-  signature if he does not possess the corresponding secret share. In
+  as follows. \textsf{Share-EUF} security expresses security from the point of
+  view of \alice{}, and establishes that \bob{} cannot issue a valid combined
+  signature if he does not possess \alice's corresponding secret share. In
   Appendix~\ref{appendix:combinedsign} we prove the following:
 
   \begin{lemma}
@@ -41,12 +41,12 @@
     signature scheme signing keys.
   \end{lemma}
 
-  On the other hand, master-EUF-CMA security is modeled very similarly to
-  standard EUF-CMA security, with the difference that \bob{} (the signer)
-  combines malicious shares into his public-key and issues signatures with
-  respect to such combined keys that still provide no advantage to the adversary
-  in terms of producing a forged message for a combined key of its choice. In
-  this respect we prove:
+  On the other hand, \textsf{master-EUF-CMA} security is modeled very similarly
+  to standard \textsf{EUF-CMA} security, with the difference that \bob{} (the
+  signer) combines malicious shares into his public key and issues signatures
+  with respect to such combined keys. The security property ensures that these
+  signatures provide no advantage to the adversary in terms of producing a
+  forged message for a combined key of its choice. In this respect we prove:
 
   \begin{lemma}
     \label{lemma:comb:master}

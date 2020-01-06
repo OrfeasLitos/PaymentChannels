@@ -1,10 +1,10 @@
 \section{Security proof overview}
 \label{sec:ov-security-proof}
   \begin{theorem}[Lightning Payment Network Security]
-The protocol $\Pi_{\mathrm{LN}}$ realises $\fpaynet$
-given a global functionality $\ledger$
-assuming the security of the underlying digital signature, identity-based signature,
-combined digital signature and PRF. Specifically,
+    The protocol $\Pi_{\mathrm{LN}}$ realises $\fpaynet$ given a global
+    functionality $\ledger$ and assuming the security of the underlying digital
+    signature, identity-based signature, combined digital signature and PRF.
+    Specifically,
     \label{theorem:simulation}
     \ifelseieee{
       \begin{gather*}
@@ -28,11 +28,10 @@ combined digital signature and PRF. Specifically,
         \mathrm{E \mhyphen prf}(k)  \enspace,
       \end{gather*}
     }
-    where $n$ is the max number of registered users,
-    $m$ is the max number of channels that a user is involved in,
-    $p$ is the max number of times that a channel is updated
-    and the ``E-'' terms correspond to the insecurity bounds of the
-    primitives.
+    where $n$ is the maximum number of registered users, $m$ is the maximum
+    number of channels that a user is involved in, $p$ is the maximum number of
+    times that a channel is updated and the ``E-'' terms correspond to the
+    insecurity bounds of the primitives.
   \end{theorem}
 
   \begin{proofsketch}
