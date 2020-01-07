@@ -44,25 +44,25 @@ over $1/3$, we know that maintaining Bitcoin's threat model will require some
 additional assumption for the overlay protocol to offer fast settlement.
 
 The first instance of this approach and by far the most widely known and
-utilised so far, came with the \emph{lightning
+utilised to date, came with the \emph{lightning
 network}~\cite{lightning}\footnote{The specification available online is a more
 descriptive reference for the inner workings of the protocol, see
 \url{https://github.com/lightningnetwork/lightning-rfc/blob/master/02-peer-protocol.md}.
 See also the raiden network that implements Lightning over Ethereum,
-\url{https://raiden.network}.} that provides an overlay mechanism over the
-Bitcoin blockchain that introduces and takes advantage of the concept of a
-bilateral payment channel. The latency for a transaction becomes linear to
-actual network delay and another factor that equals the number of bilateral
-payment channel hops in the path that connects the two end-points of the
-transaction. If a payment is confirmed by the implicated parties then it is
-guaranteed that, should they wish it, \emph{eventually} the ledger will record
-``gross'' settlement transactions that are consistent with the payment.
-Deviations from this guarantee are cryptographically feasible but deincentivised
-via on-chain penalties. Moreover, note that no record of a specific payment
-transaction need ever appear on-chain thus the number of lightning transactions
-that can be exchanged can reach the maximum capacity the network allows between
-the parties, without being impeded by any restrictions of the underlying
-blockchain protocol.
+\url{https://raiden.network}.} that functions over the Bitcoin blockchain and
+leverages the concept of a bilateral payment channel. The latency for a
+transaction becomes linear to actual network delay and another factor that
+equals the number of bilateral payment channel hops in the path that connects
+the two end-points of the transaction. Implicated parties are guaranteed that,
+if they wish so, \emph{eventually} the ledger will record a ``gross'' settlement
+transaction that reflects the balance resulting from all in-channel payments.
+Deviations from this guarantee are cryptographically feasible but
+deincentivised: a malicious party trying to commit to an outdated state will
+lose funds to a peer that provides evidence of a subsequent state. Moreover,
+note that no record of a specific payment transaction need ever appear on-chain
+thus the number of lightning transactions that can be exchanged can reach the
+maximum capacity the network allows between the parties, without being impeded
+by any restrictions of the underlying blockchain protocol.
 
 The lightning network has been very influential in the space and spun a number
 of follow up research and implementations (see below for references). We note
