@@ -3,15 +3,15 @@ all: paymentChannels.pdf
 #.ONESHELL:
 paymentChannels.pdf: src/*
 	export TEXINPUTS=.:./src//:; \
-	pdflatex --shell-escape paymentChannels.tex; \
+	pdflatex --shell-escape -halt-on-error -interaction=nonstopmode paymentChannels.tex; \
 	rm -rf paymentChannels.aux paymentChannels.log paymentChannels.out paymentChannels.toc paymentChannels.lof paymentChannels.lot paymentChannels.bbl paymentChannels.blg paymentChannels-autopp.log paymentChannels-autopp.out paymentChannels-pics.pdf
 
 bib: src/*
 	export TEXINPUTS=.:./src//:; \
-	pdflatex --shell-escape paymentChannels.tex; \
+	pdflatex --shell-escape -halt-on-error -interaction=nonstopmode paymentChannels.tex; \
 	bibtex paymentChannels.aux; \
-	pdflatex --shell-escape paymentChannels.tex; \
-	pdflatex --shell-escape paymentChannels.tex; \
+	pdflatex --shell-escape -halt-on-error -interaction=nonstopmode paymentChannels.tex; \
+	pdflatex --shell-escape -halt-on-error -interaction=nonstopmode paymentChannels.tex; \
 	rm -rf paymentChannels.aux paymentChannels.log paymentChannels.out paymentChannels.toc paymentChannels.lof paymentChannels.lot paymentChannels.bbl paymentChannels.blg paymentChannels-autopp.out paymentChannels-pics.pdf
 
 state.pdf: src/*
