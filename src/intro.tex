@@ -35,12 +35,12 @@ the setup assumption required (e.g., from a public to a private setup).
 
 The alternative approach is to build an \emph{overlay} protocol that utilises
 the blockchain protocol as a ``fall back'' layer and does not relax the threat
-model in anyway while it facilitates fast ``off-chain'' settlement under certain
-additional assumptions.  We note that in light of the impossibility result
-regarding protocol ``responsiveness'' from~\cite{DBLP:conf/wdag/PassS17} that
-states that no protocol can provide settlement in time proportional to actual
-network delay (i.e., fast settlement) and provide a security threshold over
-$1/3$, we know that maintaining Bitcoin's threat model will require some
+model in any way while it facilitates fast ``off-chain'' settlement under
+certain additional assumptions.  We note that in light of the impossibility
+result regarding protocol ``responsiveness'' from~\cite{DBLP:conf/wdag/PassS17}
+that states that no protocol can provide settlement in time proportional to
+actual network delay (i.e., fast settlement) and provide a security threshold
+over $1/3$, we know that maintaining Bitcoin's threat model will require some
 additional assumption for the overlay protocol to offer fast settlement.
 
 The first instance of this approach and by far the most widely known and
