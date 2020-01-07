@@ -74,6 +74,19 @@
     \alice, so she can immediately spend them if \bob{} closes.}
     \end{figure}
 
+    \begin{figure*}
+      % using png from GIMP. TODO: build tx composer and use that instead
+      \includegraphics[width=\textwidth]{all-txs-figure}
+      \caption{All transactions of an open channel with an HTLC in flight.
+      \alice{} owns $c_A$ coins, \bob{} $c_B$ coins, and $c_h$ coins will be
+      transferred to \bob{} if he discloses the preimage of $h$ until the ledger
+      has $\mathrm{height}_{\mathrm{cltv}}$ blocks, otherwise they will return
+      to \alice. ``funding'' is in the ledger, \alice{} keeps locally
+      ``$\mathrm{comm}_A$'' and ``$\mathrm{HTLC}_A$'', and \bob{} keeps
+      ``$\mathrm{comm}_B$'' and ``$\mathrm{HTLC}_B$''.}
+      \label{fig:all-txs}
+    \end{figure*}
+
     She now broadcasts $F$; once both parties see that it is confirmed, they
     generate and exchange new ``commitment'' keys (used for updating the channel
     later) and the channel is open.
@@ -199,7 +212,8 @@
     the payment to go through. Two updates happened in each channel: one to sign
     the HTLC and one to fulfill it. The time frames were chosen so that every
     intermediary has had the time to learn the preimage and give it to the
-    previous party on the path.
+    previous party on the path. Figure~\ref{fig:all-txs} shows all transactions
+    implicated in a channel that has an HTLC in flight.
 
     In LN zero-hop payments are also carried out using HTLCs.
 
