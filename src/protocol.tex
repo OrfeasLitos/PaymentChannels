@@ -941,7 +941,7 @@
           \State mark $\mathtt{remoteCom}_{n+1}$ as ``irrevocably committed''
           \State $\mathtt{localCom}_{n+1} \gets \mathtt{pendingLocalCom}$
           \State unmark \texttt{channel}
-          \State add \texttt{receipt}(\texttt{channel}) to
+          \State append \texttt{receipt}(\texttt{channel}) to
           \texttt{updatesToReport}
           \label{alg:protocol:pay:raa:report}
           \State $sh_{\mathrm{rev}, n} \gets

@@ -304,7 +304,7 @@
         \simulator:
         \label{alg:fpaynet:update}
         \Indent
-          \State add \texttt{receipt} to \texttt{updatesToReport}(\alice)
+          \State append \texttt{receipt} to \texttt{updatesToReport}(\alice)
           \Comment{trust \simulator{} here, check on \textsc{resolvePays}}
           \label{alg:fpaynet:update:add}
           \State send (\textsc{continue}) to \simulator
