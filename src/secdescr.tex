@@ -76,93 +76,84 @@
       \leq \mathit{negl}\left(k\right) \enspace,
     \end{equation*}
   \end{corollary}
-  where $\mathsf{BAL \mhyphen SEC}$ is defined in Figure~\ref{game:bal-sec}.
+  where $\mathsf{BAL \mhyphen SEC}$ is defined below. % TODO: fix if above
 
-  \begin{figure}[!htbp]
-    \begin{gamebox}{$\mathsf{BAL \mhyphen SEC}^{\adversary}\left(1^k\right)$}
-      Let $G = (\mathrm{P}, E)$ the current payment network, where $E$ consists
-      of all channels that have been reported as open and not as closed (as a
-      reply from \fpaynet{} to a (\textsc{getNews}) query). Let
-      $\mathit{tup}(E)$ the set of non-repeating tuples of channels in $E$. Let
-      $a = (2 + r)\mathtt{windowSize}$ be the maximum number of blocks needed
-      before a transaction submitted to \ledger{} is finalised (c.f.
-      Proposition~\ref{prop:tochain}).
-      \begin{algorithmic}[1]
-        \Procedure{channelLifecycle}{}
-          \State \Comment{open}
-          \State $\bob \overset{\$}{\gets} \mathcal{P}, c_{\mathrm{init}}
-          \overset{\$}{\gets} [0, c_{\mathrm{onchain}}], \mathit{tid}
-          \overset{\$}{\gets} \{0, 1\}^k$
-          \State send (\textsc{openChannel}, \alice, \bob, $c$, \textit{tid}) to
-          \alice
-          \Repeat
-            \State send (\textsc{getNews}) to \alice{}
-            \State extract \texttt{newChannels} from reply
-          \Until{$\exists (\alice: c, \bob: 0, \mathit{pchid}) \in
-          \mathtt{newChannels}$}
-          \State $\mathtt{receipt} \gets (\alice: c, \bob: 0, \mathit{pchid})$
-          \State $c_{\mathrm{onchain}} \gets c_{\mathrm{onchain}} - c$
-          \Statex
-          \State \Comment{send and receive}
-          \For{$i$ from $1$ to an arbitrary $n_{\mathrm{pays}} \in \mathbb{N}$}
-            \State $\overrightarrow{\mathtt{path}} \overset{\$}{\gets}
-            \mathit{tup}(E)$
-            \State flip a coin
-            \If{coin lands heads}
-              \State $c_i \overset{\$}{\gets} [-c, 0)$
-              \State send (\textsc{pay}, \bob, $-c_i$,
-              $\overrightarrow{\mathtt{path}}$) to \alice
-            \Else \Comment{\TODO{figure out how to keep track of incoming}}
-              \State send (\textsc{getNews}) to \alice{}
-              \State extract \texttt{updatesToReport} from reply
-              \If{$\exists (\alice: c_A, \bob: c_B, \mathit{pchid}) \in
-              \mathtt{updatesToReport}$}
-                 \State assign to \texttt{receipt} the last such entry
-              \EndIf
-              \State $c_i \overset{\$}{\gets} (0, c]$
-              \State send (\textsc{pay}, \alice, $c_i$,
-              $\overrightarrow{\mathtt{path}}$) to \bob
-              \State send (\textsc{getNews}) to \alice{}
-              \State extract \texttt{updatesToReport} from reply
-              \If{$\exists (\alice: c_A, \bob: c_B, \mathit{pchid}) \in
-              \mathtt{updatesToReport}$}
-                 \State assign to \texttt{receipt} the last such entry
-              \EndIf
-            \EndIf
-          \EndFor
-          \Statex
-          \State \Comment{close}
+  \begin{gamebox}{$\mathsf{BAL \mhyphen SEC}^{\adversary}\left(1^k\right)$}
+    Let $G = (\mathrm{P}, E)$ the current payment network, where $E$ consists
+    of all channels that have been reported as open and not as closed (as a
+    reply from \fpaynet{} to a (\textsc{getNews}) query). Let
+    $\mathit{tup}(E)$ the set of non-repeating tuples of channels in $E$. Let
+    $a = (2 + r)\mathtt{windowSize}$ be the maximum number of blocks needed
+    before a transaction submitted to \ledger{} is finalised (c.f.
+    Proposition~\ref{prop:tochain}).
+    \begin{algorithmic}[1]
+      \Procedure{channelLifecycle}{}
+        \State \Comment{open}
+        \State $\bob \overset{\$}{\gets} \mathcal{P}, c_{\mathrm{init}}
+        \overset{\$}{\gets} [0, c_{\mathrm{onchain}}], \mathit{tid}
+        \overset{\$}{\gets} \{0, 1\}^k$
+        \State send (\textsc{openChannel}, \alice, \bob, $c_0$, \textit{tid}) to
+        \alice
+        \Repeat
+          \State send (\textsc{getNews}) to \alice{}
+          \State extract \texttt{newChannels} from reply
+        \Until{$\exists (\alice: c_0, \bob: 0, \mathit{pchid}) \in
+        \mathtt{newChannels}$}
+        \State $\mathtt{receipt} \gets (\alice: c_0, \bob: 0, \mathit{pchid})$
+        \State $c_{\mathrm{onchain}} \gets c_{\mathrm{onchain}} - c_0$
+        \Statex
+        \State \Comment{send and receive}
+        \For{$i$ from $1$ to an arbitrary $n_{\mathrm{pays}} \in \mathbb{N}$}
+          \State $\overrightarrow{\mathtt{path}} \overset{\$}{\gets}
+          \mathit{tup}(E)$
+          \State flip a coin
+          \If{coin lands heads}
+            \State $c_i \overset{\$}{\gets} [-c_{i-1}, 0)$
+            \State send (\textsc{pay}, \bob, $-c_i$,
+            $\overrightarrow{\mathtt{path}}$) to \alice
+          \Else
+            \State \Comment{\TODO{figure out how to keep track of incoming}}
+            \State $c_i \overset{\$}{\gets} (0, c_0 - c_{i-1}]$
+            \State send (\textsc{pay}, \alice, $c_i$,
+            $\overrightarrow{\mathtt{path}}$) to \bob
+          \EndIf
           \State send (\textsc{getNews}) to \alice{}
           \State extract \texttt{updatesToReport} from reply
           \If{$\exists (\alice: c_A, \bob: c_B, \mathit{pchid}) \in
           \mathtt{updatesToReport}$}
              \State assign to \texttt{receipt} the last such entry
           \EndIf
-          \State send (\textsc{forceCloseChannel}, \texttt{receipt},
-          \textit{pchid}) to \alice
+        \EndFor
+        \Statex
+        \State \Comment{close}
+        \State send (\textsc{getNews}) to \alice{}
+        \State extract \texttt{updatesToReport} from reply
+        \If{$\exists (\alice: c_A, \bob: c_B, \mathit{pchid}) \in
+        \mathtt{updatesToReport}$}
+           \State assign to \texttt{receipt} the last such entry
+        \EndIf
+        \State send (\textsc{forceCloseChannel}, \texttt{receipt},
+        \textit{pchid}) to \alice
+        \State send (\textsc{read}) to \ledger{} and assign reply to
+        $\Sigma_0$
+        \Repeat
+        \label{game:bal-sec:closeloop}
           \State send (\textsc{read}) to \ledger{} and assign reply to
-          $\Sigma_0$
-          \Repeat
-          \label{game:bal-sec:closeloop}
-            \State send (\textsc{read}) to \ledger{} and assign reply to
-            $\Sigma$
-          \Until{$|\Sigma| \geq |\Sigma_0| + a$}
-          \State send (\textsc{getNews}) to \alice{}
-          \State extract \texttt{closedChannels} from reply
-          \If{$\nexists (\alice: c_A', \bob: c_B', \mathit{pchid}) \in
-          \mathtt{closedChannels}$}
-            \State \Return 1
-          \EndIf
-          \If{$c_A' < c_A \vee c_A' < c + \sum_{i=1}^{n_{\mathrm{pays}}} c_i$}
-            \State \Return 1
-          \EndIf
-          \State $c_{\mathrm{onchain}} \gets c_{\mathrm{onchain}} + c_A'$
-        \EndProcedure
-      \end{algorithmic}
-    \end{gamebox}
-    \caption{Balance Security}
-    \label{game:bal-sec}
-  \end{figure}
+          $\Sigma$
+        \Until{$|\Sigma| \geq |\Sigma_0| + a$}
+        \State send (\textsc{getNews}) to \alice{}
+        \State extract \texttt{closedChannels} from reply
+        \If{$\nexists (\alice: c_A', \bob: c_B', \mathit{pchid}) \in
+        \mathtt{closedChannels}$}
+          \State halt with $1$
+        \EndIf
+        \If{$c_A' < c_A \vee c_A' < c + \sum_{i=1}^{n_{\mathrm{pays}}} c_i$}
+          \State halt with $1$
+        \EndIf
+        \State $c_{\mathrm{onchain}} \gets c_{\mathrm{onchain}} + c_A'$
+      \EndProcedure
+    \end{algorithmic}
+  \end{gamebox}
 
   Informally, if \alice{} opens channels which she funds with a total of
   $c_{\mathrm{init}}$ coins, sends and receives in them payments of total value
