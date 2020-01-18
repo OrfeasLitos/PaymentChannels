@@ -19,14 +19,15 @@
             \State $\mathtt{pendingClose}, \mathtt{newChannels} \gets \emptyset$
             \State $\mathtt{closedChannels}, \mathtt{updatesToReport} \gets
             \emptyset$
-            \State $\mathtt{unclaimedOfferedHTLCs} \gets \emptyset$
+            \State $\mathtt{unclaimedOfferedHTLCs}, \mathtt{gotPaid} \gets
+            \emptyset$
             \State $\mathtt{unclaimedReceivedHTLCs}, \mathtt{pendingGetPaid}
             \gets \emptyset$
           }{
             \State $\mathtt{channels}, \mathtt{pendingOpen},
             \mathtt{pendingPay}, \mathtt{pendingClose} \gets \emptyset$
             \State $\mathtt{newChannels}, \mathtt{closedChannels},
-            \mathtt{updatesToReport} \gets \emptyset$
+            \mathtt{updatesToReport}, \mathtt{gotPaid} \gets \emptyset$
             \State $\mathtt{unclaimedOfferedHTLCs},
             \mathtt{unclaimedReceivedHTLCs}, \mathtt{pendingGetPaid} \gets
             \emptyset$
@@ -558,7 +559,7 @@
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -- pay}
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{pay}, \bob, $x$,
-        $\overrightarrow{\mathtt{path}}$) from \environment:
+        $\overrightarrow{\mathtt{path}}$, \textit{expayid}) from \environment:
         \Indent
           \State ensure that $\overrightarrow{\mathtt{path}}$ consists of
           syntactically valid (\textit{pchid}, \texttt{CltvExpiryDelta}) pair
@@ -574,18 +575,22 @@
           \State choose unique payment ID \textit{payid} \Comment{unique for
           \alice{} and \bob}
           \State add (\bob, $x$, $\overrightarrow{\mathtt{path}}$,
-          \textit{payid}, ``waiting for invoice'') to \texttt{pendingPay}
-          \State send (\textsc{sendInvoice}, \textit{payid}) to \bob{}
+          \textit{expayid}, \textit{payid}, ``waiting for invoice'') to
+          \texttt{pendingPay}
+          \State send (\textsc{sendInvoice}, $x$, \textit{payid},
+          \textit{expayid}) to \bob{}
           \label{alg:protocol:pay:sendinvoice}
         \EndIndent
         \Statex
 
-        \State Upon receiving (\textsc{sendInvoice}, \textit{payid}) from \bob:
+        \State Upon receiving (\textsc{sendInvoice}, $x$, \textit{expayid},
+        \textit{payid}) from \bob:
         \Indent
-          \State ensure there is no (\bob, \textit{payid}) entry in
-          \texttt{pendingGetPaid}
+          \State ensure there is no (\bob, \_,\textit{expayid}, \textit{payid},
+          \_) entry in \texttt{pendingGetPaid}
           \State choose random, unique preimage $R$
-          \State add (\bob, $R$, \textit{payid}) to \texttt{pendingGetPaid}
+          \State add (\bob, $R$, \textit{expayid}, \textit{payid}, $x$) to
+          \texttt{pendingGetPaid}
           \State send (\textsc{invoice}, $\mathcal{H}(R)$, $\mathtt{relayDelay}
           + \tochain{}$, \textit{payid}) to \bob{}
         \EndIndent
@@ -602,11 +607,12 @@
         \texttt{minFinalCltvExpiry}, \textit{payid}) from \bob:
         \Indent
           \State ensure there is a (\bob, $x$, $\overrightarrow{\mathtt{path}}$,
-          \textit{payid}, ``waiting for invoice'') entry in \texttt{pendingPay}
-          \State ensure $h$ is valid (in the range of $\mathcal{H}$)
-          \State retrieve \texttt{CltvExpiryDelta}s from
-          $\overrightarrow{\mathtt{path}}$ and remove entry from
+          \_, \textit{payid}, ``waiting for invoice'') entry in
           \texttt{pendingPay}
+          \State ensure $h$ is valid (in the range of $\mathcal{H}$)
+          \State remove mark from, add $h$ to entry in \texttt{pendingPay}
+          \State retrieve \texttt{CltvExpiryDelta}s from
+          $\overrightarrow{\mathtt{path}}$
           \State send (\textsc{read}) to \ledger{} and assign largest block
           number to $t$
           \State $l \gets |\left(\overrightarrow{\mathtt{path}}\right)|$
@@ -685,7 +691,7 @@
           \texttt{remoteCom}, marked with \texttt{HTLCNo}
           \If{$\delta = \mathtt{receiver}$}
             \State retrieve $R : \mathcal{H}\left(R\right) = h$ from
-            \texttt{pendingGetPaid} and clear entry
+            \texttt{pendingGetPaid} and move entry to \texttt{gotPaid}
             \State add $\left(\mathtt{HTLCNo}, R\right)$ to
             $\mathtt{pendingFulfills}_{\mathit{pchid}}$
           \ElsIf{$\delta \neq \mathtt{receiver}$} \Comment{Send HTLC to next
@@ -779,7 +785,8 @@
           \State remove HTLC output with number \texttt{HTLCNo} from
           \texttt{localCom}
           \If{we have a channel $\mathit{phcid}'$ that has a received HTLC with
-          hash $h$ with number $\mathtt{HTLCNo}'$} \Comment{We are intermediary}
+          hash $h$ with number $\mathtt{HTLCNo}'$} \Comment{We are an
+          intermediary}
             \State send (\textsc{read}) to \ledger{} and assign reply to
             $\Sigma_{\alice}$
             \If{latest $\mathtt{remoteCom}'_n \in \Sigma_{\alice}$}
@@ -800,6 +807,13 @@
               \State send $\left(\textsc{updateFulfillHtlc}, \mathit{pchid}',
               \mathtt{HTLCNo}', R\right)$ to counterparty
             \EndIf
+          \Else \Comment{We are the payer}
+            \State retrieve (\textit{expayid}, $-x$) from entry in
+            \texttt{pendingPay} with hash $h$ and remove the entry
+            % TODO: what if multiple such entries?
+            \State add (\textit{expayid}, $-x$) to
+            \texttt{diffs}(\texttt{channel}) of \texttt{channel} with ID
+            \textit{pchid}
           \EndIf
         \EndIndent
       \end{algorithmic}
@@ -941,9 +955,10 @@
           \State mark $\mathtt{remoteCom}_{n+1}$ as ``irrevocably committed''
           \State $\mathtt{localCom}_{n+1} \gets \mathtt{pendingLocalCom}$
           \State unmark \texttt{channel}
-          \State append \texttt{receipt}(\texttt{channel}) to
-          \texttt{updatesToReport}
+          \State append (\texttt{receipt}(\texttt{channel}),
+          \texttt{diffs}(\texttt{channel})) to \texttt{updatesToReport}
           \label{alg:protocol:pay:raa:report}
+          \State $\mathtt{diffs}(\mathtt{channel}) \gets \emptyset$
           \State $sh_{\mathrm{rev}, n} \gets
           \textsc{CombineKey}\left(phb_{\mathrm{rev}}, shb_{\mathrm{rev}},
           pt_{\mathrm{com} n}, st_{\mathrm{com}, n}\right)$
@@ -1013,6 +1028,12 @@
           $\Sigma_{\alice}$
           \State remove (\texttt{HTLCNo}, $R$) from
           $\mathtt{pendingFulfills}_{\mathit{pchid}}$
+          \If{$\exists (\_, R, \mathit{expayid}, \mathit{payid}, x) \in
+          \mathtt{gotPaid}$} \Comment{receiver}
+            \State remove entry from \texttt{gotPaid}
+            \State add $(\mathit{expayid}, x)$ to
+            \texttt{diffs}(\texttt{channel})
+          \EndIf
           \If{$\mathtt{remoteCom}_n \notin \Sigma_{\alice}$}
           \Comment{counterparty cooperative}
             \State send (\textsc{updateFulfillHtlc}, \textit{pchid},

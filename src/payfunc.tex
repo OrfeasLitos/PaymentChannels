@@ -10,7 +10,7 @@
           \item (\textsc{openChannel}, \alice, \bob, $x$, \textit{tid})
           \item (\textsc{checkForNew}, \alice, \bob, \textit{tid})
           \item (\textsc{pay}, \bob, $x, \overrightarrow{\mathtt{path}}$,
-          \texttt{receipt})
+          \textit{expayid})
           \item (\textsc{closeChannel}, \texttt{receipt}, \textit{pchid})
           \item (\textsc{forceCloseChannel}, \texttt{receipt}, \textit{pchid})
           \item (\textsc{poll})
@@ -45,7 +45,8 @@
           \textit{tid})
           \item (\textsc{channelOpened}, \alice, \textit{fchid})
           \item (\textsc{pay}, \alice, \bob, $x,
-          \overrightarrow{\mathtt{path}}$, \texttt{receipt}, \textit{payid})
+          \overrightarrow{\mathtt{path}}$, \textit{expayid}, \textit{payid},
+          \textsc{state}, $\Sigma$)
           \item (\textsc{continue})
           \item (\textsc{closeChannel}, \textit{fchid}, \alice)
           \item (\textsc{forceCloseChannel}, \textit{fchid}, \alice)
@@ -289,24 +290,34 @@
     \begin{systembox}{\fpaynet{} -- pay}
       \begin{algorithmic}[1]
         \State Upon receiving $\left(\textsc{pay}, \bob, x,
-        \overrightarrow{\mathtt{path}}\right)$ from \alice:
+        \overrightarrow{\mathtt{path}}, \mathit{expayid}\right)$ from \alice:
         \Indent
           \State choose unique payment ID \textit{payid}
           \State add $\left(\alice, \bob, x, \overrightarrow{\mathtt{path}},
           \mathit{payid}\right)$ to \texttt{pendingPay}
           \State send $\left(\textsc{pay}, \alice, \bob, x,
-          \overrightarrow{\mathtt{path}}, \mathit{payid}, \textsc{state},
-          \Sigma\right)$ to \simulator
+          \overrightarrow{\mathtt{path}}, \mathit{expayid}, \mathit{payid},
+          \textsc{state}, \Sigma\right)$ to \simulator
           \label{alg:fpaynet:pay:send}
         \EndIndent
         \Statex
 
-        \State Upon receiving (\textsc{update}, \texttt{receipt}, \alice) from
-        \simulator:
+        \State Upon receiving (\textsc{update}, \texttt{receipt}, \texttt{diffs}
+        \alice) from \simulator:
         \label{alg:fpaynet:update}
         \Indent
-          \State append \texttt{receipt} to \texttt{updatesToReport}(\alice)
-          \Comment{trust \simulator{} here, check on \textsc{resolvePays}}
+          \State let \bob{} be \alice's counterparty in the channel referred to
+          by \texttt{receipt}
+          % TODO: 1) modify proof to pass this test
+          %       2) maybe should accept diffs bigger than intended?
+          \State ensure \texttt{diffs} is a set of $(\mathit{payid}, x)$ pairs
+          such that for each pair $x$ is non-zero and, if $x > 0$, we have
+          previously received (\textsc{pay}, \alice, $x$, \_, \_) through \bob,
+          else if $x < 0$, we have previously received (\textsc{pay}, \bob,
+          $-x$, \_, \_) through \alice
+          \State append (\texttt{receipt}, \texttt{diffs}) to
+          \texttt{updatesToReport}(\alice) \Comment{trust \simulator{} here,
+          check on \textsc{resolvePays}}
           \label{alg:fpaynet:update:add}
           \State send (\textsc{continue}) to \simulator
         \EndIndent
