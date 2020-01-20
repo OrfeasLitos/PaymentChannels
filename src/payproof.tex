@@ -44,9 +44,9 @@
       \Statex
 
       \State Upon receiving $\left(\textsc{pay}, \alice, \bob, x,
-      \overrightarrow{\mathtt{path}}, \mathtt{receipt}, \mathit{payid}\right)$
+      \overrightarrow{\mathtt{path}}, \mathit{expayid}, \mathit{payid}\right)$
       from $\fpaynet{}_{\mathrm{, Pay}}$:
-      \Indent
+      \Indent % TODO: CONTINUE with doing something with expayid
         \State add ($\overrightarrow{\mathtt{path}}$, \textit{payid}) to
         \texttt{payids}
         \State strip \textit{payid}, simulate receiving the message with
@@ -338,7 +338,7 @@
 
   We can now move on to treating individual messages sent by \environment{}
   during the execution. When \environment{} sends $\left(\textsc{pay}, \bob, x,
-  \overrightarrow{\mathtt{path}}, \mathit{payid}\right)$ to \alice{} in the
+  \overrightarrow{\mathtt{path}}, \mathit{expayid}\right)$ to \alice{} in the
   ideal world, $\simulator_{\mathrm{LN - Reg - Open}}$ is always notified
   (Fig.~\ref{alg:fpaynet:pay}, line~\ref{alg:fpaynet:pay:send}) and simulates
   the relevant execution of the real world (Fig.~\ref{alg:sim:pay},
@@ -485,7 +485,7 @@
   player and that player does not respond (e.g. in
   Fig.~\ref{alg:protocol:pay:outofband},
   line~\ref{alg:protocol:pay:sendinvoice}, when the first message is
-  $\left(\textsc{pay}, \bob, x, \overrightarrow{\mathtt{path}}\right)$ and
+  $\left(\textsc{pay}, \bob, x, \overrightarrow{\mathtt{path}}, \_\right)$ and
   \bob{} is corrupted), or if the handling of the message results in sending
   (\textsc{submit}) to \ledger{} (e.g. in Fig.~\ref{alg:protocol:pay:push},
   line~\ref{alg:protocol:pushfulfill:submit} when the first message is
