@@ -46,12 +46,13 @@
       \State Upon receiving $\left(\textsc{pay}, \alice, \bob, x,
       \overrightarrow{\mathtt{path}}, \mathit{expayid}, \mathit{payid}\right)$
       from $\fpaynet{}_{\mathrm{, Pay}}$:
-      \Indent % TODO: CONTINUE with doing something with expayid
+      \Indent
         \State add ($\overrightarrow{\mathtt{path}}$, \textit{payid}) to
         \texttt{payids}
-        \State strip \textit{payid}, simulate receiving the message with
-        \alice{} ITI and further execute the parts of $\Pi_{\mathrm{LN}}$ that
-        correspond to honest parties (Fig.~\ref{alg:protocol:pay:outofband}-
+        \State strip \textit{payid} and \alice, simulate receiving the message
+        with \alice{} ITI and further execute the parts of $\Pi_{\mathrm{LN}}$
+        that correspond to honest parties
+        (Fig.~\ref{alg:protocol:pay:outofband}-
         Fig.~\ref{alg:protocol:pay:updateFulfillHtlc})
         \label{alg:sim:pay:simulate}
         \If{any ``ensure'' in $\Pi_{\mathrm{LN}}$ fails until \bob{} processes
@@ -117,9 +118,10 @@
         \If{during the simulation above, line~\ref{alg:protocol:pay:raa:report}
         of Fig.~\ref{alg:protocol:pay:revokeAndAck} is simulated in \alice's
         ITI}
-          \State send (\textsc{update}, \texttt{receipt}, \alice) to
-          $\fpaynet{}_{\mathrm{, Pay}}$, where \texttt{receipt} is the receipt
-          just added to the simulated \texttt{updatesToReport}
+          \State send (\textsc{update}, \texttt{receipt}, \texttt{diffs},
+          \alice) to $\fpaynet{}_{\mathrm{, Pay}}$, where \texttt{receipt} and
+          \texttt{diffs} are the fields just added to the simulated
+          \texttt{updatesToReport}
           (Fig.~\ref{alg:protocol:pay:revokeAndAck},
           line~\ref{alg:protocol:pay:raa:report})
           \label{alg:sim:push:report}
