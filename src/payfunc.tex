@@ -367,8 +367,8 @@
             \ForAll{$\left(\dave, \mathit{payid}\right) \in
             \mathtt{charged}\left(\alice\right)$}
               \State retrieve $\left(\alice, \bob, x,
-              \overrightarrow{\mathtt{path}}\right)$ with ID \textit{payid} and
-              remove it from \texttt{pendingPay}
+              \overrightarrow{\mathtt{path}}, \mathit{payid}\right)$ and remove
+              it from \texttt{pendingPay}
               \If{$\dave{} = \bot$} \Comment{Payment failed}
                 \State continue with next iteration of inner loop
               \ElsIf{$\dave{} \notin \overrightarrow{\mathtt{path}}$}
