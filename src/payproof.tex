@@ -170,9 +170,9 @@
             \EndFor
           \EndFor
           \label{alg:sim:resolvepay:loopend}
+          \State clear \texttt{charged} and send $\left(\textsc{resolvePays},
+          \mathtt{charged}\right)$ to $\fpaynet{}_{\mathrm{, Pay}}$
         \EndIf
-        \State clear \texttt{charged} and send $\left(\textsc{resolvePays},
-        \mathtt{charged}\right)$ to $\fpaynet{}_{\mathrm{, Pay}}$
       \EndIndent
     \end{algorithmic}
   \end{simulatorbox}
