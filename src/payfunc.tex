@@ -86,8 +86,10 @@
       \begin{algorithmic}[1]
         \State Initialisation:
         \Indent
-          \State $\mathtt{channels}, \mathtt{pendingPay}, \mathtt{pendingOpen},
-          \mathtt{corrupted}, \Sigma \gets \emptyset$
+          \State $\mathtt{channels}, \mathtt{pendingPay}, \mathtt{pendingOpen}
+          \gets \emptyset$
+          \State $\texttt{pendingDiffs}, \mathtt{corrupted}, \Sigma \gets
+          \emptyset$
         \EndIndent
         \Statex
 
@@ -306,22 +308,11 @@
         \texttt{diffs}, \alice) from \simulator:
         \label{alg:fpaynet:update}
         \Indent
-          \State let \bob{} be \alice's counterparty in the channel referred to
-          by \texttt{receipt}
-          % TODO: 1) modify proof to pass this test
-          %       2) maybe should accept diffs bigger than intended?
-          %       3) fix, only covers if both honest
-          %       4) if possible move checks to resolvePays for better locality
-          %       of proof
-          \State ensure \texttt{diffs} is a set of $(\mathit{payid}, x)$ pairs
-          such that for each pair $x$ is non-zero and, if $x > 0$, we have
-          previously received (\textsc{pay}, \alice, $x$, \_, \_) through \bob,
-          else if $x < 0$, we have previously received (\textsc{pay}, \bob,
-          $-x$, \_, \_) through \alice, otherwise halt
           \State append (\texttt{receipt}, \texttt{diffs}) to
           \texttt{updatesToReport}(\alice) \Comment{trust \simulator{} here,
           check on \textsc{resolvePays}}
           \label{alg:fpaynet:update:add}
+          \State append \texttt{diffs} to \texttt{pendingDiffs}
           \State send (\textsc{continue}) to \simulator
         \EndIndent
       \end{algorithmic}
@@ -484,6 +475,21 @@
           otherwise halt
           \label{alg:fpaynet:resolvepay:loops:halt:do}
         \EndFor
+        % TODO: modify proof to pass this test
+        \If{$\dave{} = \alice{} \wedge{} \alice{} \notin \mathtt{corrupted}
+        \wedge (\mathit{payid}, -x) \notin \mathtt{pendingDiffs}(\alice)$}
+        \Comment{payer not informed}
+        \label{alg:fpaynet:resolvepay:loops:indiffs:debit}
+          \State halt
+        \EndIf
+        \State remove (\textit{payid}, $-x$) from \texttt{pendingDiffs}(\alice)
+        \If{$\bob{} \notin \mathtt{corrupted} \wedge (\mathit{payid}, x) \notin
+        \mathtt{pendingDiffs}(\bob)$} \Comment{payee not informed}
+        \label{alg:fpaynet:resolvepay:loops:indiffs:credit}
+          \State halt
+        \EndIf
+        \State remove (\textit{payid}, $x$) from \texttt{pendingDiffs}(\bob)
+        % TODO end
       \end{algorithmic}
     \end{titlebox}
     \caption{}
