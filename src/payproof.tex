@@ -38,8 +38,18 @@
       \Indent
         \State execute
         lines~\ref{alg:protocol:pay:foc:tosubmit}-\ref{alg:protocol:pay:foc:submit}
-        of Fig.~\ref{alg:protocol:pay:push} as \alice{}, using $t$ from message
+        of Fig.~\ref{alg:protocol:pay:foc} as \alice{}, using $t$ from message
         \label{alg:sim:pay:foc:run}
+        \If{during the simulation above, line~\ref{alg:protocol:pay:foc:update}
+        is simulated in \alice's ITI}
+          \State send (\textsc{update}, \texttt{receipt}, \texttt{diffs},
+          \alice) to $\fpaynet{}_{\mathrm{, Pay}}$, where \texttt{receipt} and
+          \texttt{diffs} are the fields just added to the simulated
+          \texttt{updatesToReport}
+          \label{alg:sim:foc:report}
+          \State upon receiving (\textsc{continue}) from $\fpaynet{}_{\mathrm{,
+          Pay}}$, carry on with the simulation
+        \EndIf
       \EndIndent
       \Statex
 
@@ -369,7 +379,7 @@
 
   When \environment{} sends (\textsc{fulfillOnChain}) to \alice{} in the real
   world, lines~\ref{alg:protocol:pay:foc:top}-\ref{alg:protocol:pay:foc:submit}
-  of Fig.~\ref{alg:protocol:pay:push} are executed by \alice. In the ideal world
+  of Fig.~\ref{alg:protocol:pay:foc} are executed by \alice. In the ideal world
   on the other hand, $\fpaynet{}_{\mathrm{, Pay}}$ sends (\textsc{read}) to
   \ledger{} (Fig.~\ref{alg:fpaynet:daemon},
   line~\ref{alg:fpaynet:daemon:foc:read}) as \alice{} and subsequently instructs
@@ -379,7 +389,7 @@
   during this simulation a second (\textsc{read}) message to \ledger{} (that
   would not match any message in the real world) is avoided because
   $\simulator_{\mathrm{LN - Reg - Open}}$ skips
-  line~\ref{alg:protocol:pay:foc:read} of Fig.~\ref{alg:protocol:pay:push},
+  line~\ref{alg:protocol:pay:foc:read} of Fig.~\ref{alg:protocol:pay:foc},
   using as $t$ the one received from $\fpaynet{}_{\mathrm{, Pay}}$ in the
   message (\textsc{fulfillOnChain}, $t$, \alice). Since $\fpaynet{}_{\mathrm{,
   Pay}}$ sends (\textsc{read}) to \ledger{} as \alice{} and given that after
@@ -568,7 +578,7 @@
   \mathtt{OutgoingCltvExpiry} < \mathtt{relayDelay}(\alice) + \tochain$. This
   cannot happen however for any honest \alice, since \simulator{} will simulate
   line~\ref{alg:protocol:pay:updateAddHtlc:slack} of
-  Fig.\ref{alg:protocol:pay:updateAddHtlc:checks} with \alice's ITI before
+  Fig.~\ref{alg:protocol:pay:updateAddHtlc:checks} with \alice's ITI before
   having her agree to participate as an intermediary in the multi-hop payment.
   Therefore $\Pr[F \wedge (G \wedge H) | \neg P \wedge \neg Q \wedge \neg R
   \wedge \neg S] = 0$.
@@ -611,7 +621,7 @@
   and (\textsc{commit}) are not received) or fails (because the previous
   counterparty does not send (\textsc{revokeAndAck})), then the
   (\textsc{fulfillOnChain}) that he receives according to $D$ will make him
-  submit \texttt{HTLC-success} (Fig.~\ref{alg:protocol:pay:push},
+  submit \texttt{HTLC-success} (Fig.~\ref{alg:protocol:pay:foc},
   lines~\ref{alg:protocol:pay:foc:top}-\ref{alg:protocol:pay:foc:submit}) and
   have it on-chain by block of height \texttt{IncomingCltvExpiry}
   (Proposition~\ref{prop:tochain}). Furthermore, in the case that the

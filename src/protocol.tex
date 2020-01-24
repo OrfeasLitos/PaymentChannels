@@ -1070,8 +1070,15 @@
           $x, h, \mathtt{CltvExpiry}, M$) to \textit{pchid} counterparty
           \label{alg:protocol:pushadd:end}
         \EndIndent
-        \Statex
+      \end{algorithmic}
+    \end{protocolbox}
+    \caption{}
+    \label{alg:protocol:pay:push}
+  \end{figure}
 
+  \begin{figure}[H]
+    \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -- \textsc{fulfillOnChain}}
+      \begin{algorithmic}[1]
         \State Upon receiving (\textsc{fulfillOnChain}) from \environment:
         \label{alg:protocol:pay:foc:top}
         \Indent
@@ -1081,18 +1088,29 @@
           \State $\mathtt{toSubmit} \gets \emptyset$
           \label{alg:protocol:pay:foc:tosubmit}
           \ForAll{channels}
-            \If{there exists an HTLC in latest $\mathtt{localCom}_n$ for which
-            we have sent both \textsc{updateFulfillHtlc} and
-            \textsc{commitmentSigned} to a transaction without that HTLC to
-            counterparty, but have not received the corresponding
-            \textsc{revokeAndAck} AND the HTLC expires within $\left[t, t +
-            \tochain{}\right]$}
+            \If{there exist HTLCs with hashes $h_1, \dots, h_k$ in latest
+            $\mathtt{localCom}_n$ for which we have sent both
+            \textsc{updateFulfillHtlc} and \textsc{commitmentSigned} to a
+            transaction without that HTLC to counterparty, but have not received
+            the corresponding \textsc{revokeAndAck} AND the HTLC expires within
+            $\left[t, t + \tochain{}\right]$}
               \State add $\mathtt{localCom}_n$ of the channel and all
               corresponding valid \texttt{HTLC-success}es and
               \texttt{HTLC-timeout}s (for both $\mathtt{localCom}_n$ and
               $\mathtt{remoteCom}_n$\footnote{Ensures funds retrieval if
               counterparty has gone on-chain}), along with their signatures to
               \texttt{toSubmit}
+              \State $\mathtt{focDiffs} \gets \emptyset$
+              \ForAll{such HTLCs for which we are the payee (i.e., we have
+              received a (\textsc{sendInvoice}, $x$, \textit{expayid}, \_)
+              message in response to which we generated and sent $h_i$)}
+                \State append (\textit{expayid}, $-x$) to \texttt{focDiffs}
+              \EndFor
+              \If{$\mathtt{focDiffs} \neq \emptyset$}
+                \State append (\texttt{receipt}(\texttt{channel}),
+                \texttt{focDiffs}) to \texttt{updatesToReport}
+                \label{alg:protocol:pay:foc:update}
+              \EndIf
             \EndIf
           \EndFor
           \State send (\textsc{submit}, \texttt{toSubmit}) to \ledger
@@ -1101,7 +1119,7 @@
       \end{algorithmic}
     \end{protocolbox}
     \caption{}
-    \label{alg:protocol:pay:push}
+    \label{alg:protocol:pay:foc}
   \end{figure}
 
   When a player receives \textsc{forceCloseChannel} for a particular channel,
