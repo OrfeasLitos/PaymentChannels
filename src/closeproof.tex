@@ -277,17 +277,18 @@
   \simulator{} reports all updates with an (\textsc{update}) message
   (Fig.~\ref{alg:sim:push}, line~\ref{alg:sim:push:report}) and a
   (\textsc{resolvePays}) message; upon receiving the latter and given that it
-  doesn't halt, \fpaynet{} updates offChainBalance(\alice) if she is the payer
-  or payee of one of the resolved payments (Fig.~\ref{alg:fpaynet:resolvepay},
+  doesn't halt, \fpaynet{} updates \texttt{offChainBalance}(\alice) if she is
+  the payer or payee of one of the resolved payments
+  (Fig.~\ref{alg:fpaynet:resolvepay},
   lines~\ref{alg:fpaynet:resolvepay:corr:credit},~\ref{alg:fpaynet:resolvepay:debit}
   and~\ref{alg:fpaynet:resolvepay:credit}). Secondly, upon closure of each
   channel, \fpaynet{} would have halted if the closing balance were not the
   expected one (Fig.~\ref{alg:fpaynet:close:func},
   line~\ref{alg:fpaynet:close:func:ifmalicious}), an event that cannot happen as
   we have already proven. Lastly, upon each channel opening and closing,
-  \fpaynet{} updates offChainBalance(\alice) and onChainBalance(\alice) to
-  reflect the event (Fig.~\ref{alg:fpaynet:open},
-  lines~\ref{alg:fpaynet:channelOpened:offchain}
+  \fpaynet{} updates \texttt{offChainBalance}(\alice) and
+  \texttt{onChainBalance}(\alice) to reflect the event
+  (Fig.~\ref{alg:fpaynet:open}, lines~\ref{alg:fpaynet:channelOpened:offchain}
   and~\ref{alg:fpaynet:channelOpened:onchain} and
   Fig.~\ref{alg:fpaynet:close:func},
   lines~\ref{alg:fpaynet:close:func:alice:credit}

@@ -258,11 +258,11 @@
           \State ensure a \texttt{channel} is in
           \texttt{pendingOpen}(\textit{fchid}), marked with ``waiting for
           \textsc{channelOpened}'' and remove mark
-          \State $\mathrm{offChainBalance}\left(\mathrm{funder}\right) \gets
-          \mathrm{offChainBalance}\left(\mathrm{funder}\right) + x$
+          \State $\mathtt{offChainBalance}\left(\mathrm{funder}\right) \gets
+          \mathtt{offChainBalance}\left(\mathrm{funder}\right) + x$
           \label{alg:fpaynet:channelOpened:offchain}
-          \State $\mathrm{onChainBalance}\left(\mathrm{funder}\right) \gets
-          \mathrm{onChainBalance}\left(\mathrm{funder}\right) - x$
+          \State $\mathtt{onChainBalance}\left(\mathrm{funder}\right) \gets
+          \mathtt{onChainBalance}\left(\mathrm{funder}\right) - x$
           \label{alg:fpaynet:channelOpened:onchain}
           \State $\mathtt{channel} \gets \left(\mathrm{funder}, \mathrm{fundee},
           x, 0, 0, \mathit{fchid}, \mathit{pchid}\right)$
@@ -612,15 +612,15 @@
             \label{alg:fpaynet:close:func:happy:start}
               \State let $x, y$ \alice{}'s and \texttt{channel} counterparty
               \bob{}'s balances respectively
-              \State $\mathrm{offChainBalance}\left(\alice\right) \gets
-              \mathrm{offChainBalance}\left(\alice\right) - x$
-              \State $\mathrm{onChainBalance}\left(\alice\right) \gets
-              \mathrm{onChainBalance}\left(\alice\right) + x$
+              \State $\mathtt{offChainBalance}\left(\alice\right) \gets
+              \mathtt{offChainBalance}\left(\alice\right) - x$
+              \State $\mathtt{onChainBalance}\left(\alice\right) \gets
+              \mathtt{onChainBalance}\left(\alice\right) + x$
               \label{alg:fpaynet:close:func:alice:credit}
-              \State $\mathrm{offChainBalance}\left(\bob\right) \gets
-              \mathrm{offChainBalance}\left(\bob\right) - y$
-              \State $\mathrm{onChainBalance}\left(\bob\right) \gets
-              \mathrm{onChainBalance}\left(\bob\right) + y$
+              \State $\mathtt{offChainBalance}\left(\bob\right) \gets
+              \mathtt{offChainBalance}\left(\bob\right) - y$
+              \State $\mathtt{onChainBalance}\left(\bob\right) \gets
+              \mathtt{onChainBalance}\left(\bob\right) + y$
               \label{alg:fpaynet:close:func:bob:credit}
               \State remove \texttt{channel} from \texttt{channels} \& entry
               from \texttt{pendingClose}(\alice)
@@ -659,11 +659,11 @@
               \label{alg:fpaynet:close:func:idle}
             \EndIf
           \EndFor
-          \If{\alice{} has no open channels in $\Sigma_{\alice}$ AND
-          $\mathtt{negligent}(\alice) = \false$}
-            \If{$\mathrm{offChainBalance}(\alice) \neq 0$ OR
-            onChainBalance(\alice) is not equal to the total funds exclusively
-            spendable by \alice{} in $\Sigma_{\alice}$}
+          \If{\alice{} has no open channels in $\Sigma_{\alice} \wedge
+          \mathtt{negligent}(\alice) = \false$}
+            \If{$\mathtt{offChainBalance}(\alice) \neq 0 \vee$
+            \texttt{onChainBalance}(\alice) is not equal to the total funds
+            exclusively spendable by \alice{} in $\Sigma_{\alice}$}
               \State halt
               \label{alg:fpaynet:close:func:balance}
             \EndIf

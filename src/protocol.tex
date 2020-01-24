@@ -685,10 +685,10 @@
           \texttt{remoteCom}, marked with \texttt{HTLCNo}
           \State reduce simple payment output in \texttt{localCom} by $x$
           \State add an ($x$, $pt_{\mathrm{rev}, n+1}$ $\vee$
-          $pt_{\mathrm{htlc}, n+1}$, \texttt{IncomingCltvExpiry} absolute)
-          $\vee$ (($pt_{\mathrm{htlc}, n+1}$ $\wedge$ $ph_{\mathrm{htlc}, n+1}$,
+          ($pt_{\mathrm{htlc}, n+1}$, \texttt{IncomingCltvExpiry} absolute)
+          $\vee$ ($pt_{\mathrm{htlc}, n+1}$ $\wedge$ $ph_{\mathrm{htlc}, n+1}$,
           on preimage of $h$)) htlc output (all with $n+1$ keys) to
-          \texttt{remoteCom}, marked with \texttt{HTLCNo}
+          \texttt{localCom}, marked with \texttt{HTLCNo}
           \If{$\delta = \mathtt{receiver}$}
             \State retrieve $R : \mathcal{H}\left(R\right) = h$ from
             \texttt{pendingGetPaid} and move entry to \texttt{gotPaid}
@@ -700,18 +700,18 @@
             \State let $\mathtt{remoteCom}_n'$ the latest signed remote
             commitment tx
             \State reduce simple payment output in $\mathtt{remoteCom}'$ by $x$
-            \State add an additional $\left(x, ph_{\mathrm{rev}, n+1} \vee
-            \left(ph_{\mathrm{htlc}, n+1} \wedge pt_{\mathrm{htlc}, n+1}, \text{
-            on preimage}\right.\right.$ $\left.\left.\text{of } h\right) \vee
-            ph_{\mathrm{htlc}, n+1}\mathtt{OutgoingCltvExpiry} \text{
+            \State add an additional $\left(x, ph'_{\mathrm{rev}, n+1} \vee
+            \left(ph'_{\mathrm{htlc}, n+1} \wedge pt'_{\mathrm{htlc}, n+1},
+            \text{ on preimage}\right.\right.$ $\left.\left.\text{of } h\right)
+            \vee ph'_{\mathrm{htlc}, n+1}, \mathtt{OutgoingCltvExpiry} \text{
             absolute}\right)$ output (all with $n+1$ keys) to
             $\mathtt{remoteCom}'$, marked with $\texttt{HTLCNo}'$
             \State reduce delayed payment output in $\mathtt{localCom}'$ by $x$
-            \State add an additional ($x$, $pt_{\mathrm{rev}, n+1}$ $\vee$
-            ($pt_{\mathrm{htlc}, n+1}$, on preimage of $h$) $\vee$
-            ($pt_{\mathrm{htlc}, n+1}$ $\wedge$ $ph_{\mathrm{htlc}, n+1}$
+            \State add an additional ($x$, $pt'_{\mathrm{rev}, n+1}$ $\vee$
+            ($pt'_{\mathrm{htlc}, n+1}$, on preimage of $h$) $\vee$
+            ($pt'_{\mathrm{htlc}, n+1}$ $\wedge$ $ph'_{\mathrm{htlc}, n+1},$
             \texttt{OutgoingCltvExpiry} absolute)) output (all with $n+1$ keys)
-            to $\mathtt{remoteCom}'$, marked with $\texttt{HTLCNo}'$
+            to $\mathtt{localCom}'$, marked with $\texttt{HTLCNo}'$
             \State increment $\texttt{HTLCNo}'$ by 1
             \State $M' \gets \mathtt{SphinxPrepare}\left(M, \delta,
             sk_{\mathit{Alice}}\right)$
