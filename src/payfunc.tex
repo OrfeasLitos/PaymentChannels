@@ -614,15 +614,11 @@
             \label{alg:fpaynet:close:func:happy:start}
               \State let $x, y$ \alice{}'s and \texttt{channel} counterparty
               \bob{}'s balances respectively
-              \State $\mathtt{offChainBalance}\left(\alice\right) \gets
-              \mathtt{offChainBalance}\left(\alice\right) - x$
-              \State $\mathtt{onChainBalance}\left(\alice\right) \gets
-              \mathtt{onChainBalance}\left(\alice\right) + x$
+              \State reduce \texttt{offChainBalance}(\alice) by $x$
+              \State increase \texttt{onChainBalance}(\alice) by $x$
               \label{alg:fpaynet:close:func:alice:credit}
-              \State $\mathtt{offChainBalance}\left(\bob\right) \gets
-              \mathtt{offChainBalance}\left(\bob\right) - y$
-              \State $\mathtt{onChainBalance}\left(\bob\right) \gets
-              \mathtt{onChainBalance}\left(\bob\right) + y$
+              \State reduce \texttt{offChainBalance}(\bob) by $y$
+              \State increase \texttt{onChainBalance}(\bob) by $y$
               \label{alg:fpaynet:close:func:bob:credit}
               \State remove \texttt{channel} from \texttt{channels} \& entry
               from \texttt{pendingClose}(\alice)
@@ -662,13 +658,12 @@
             \EndIf
           \EndFor
           \If{\alice{} has no open channels in $\Sigma_{\alice} \wedge
-          \mathtt{negligent}(\alice) = \false$}
-            \If{$\mathtt{offChainBalance}(\alice) \neq 0 \vee$
-            \texttt{onChainBalance}(\alice) is not equal to the total funds
-            exclusively spendable by \alice{} in $\Sigma_{\alice}$}
-              \State halt
-              \label{alg:fpaynet:close:func:balance}
-            \EndIf
+          \mathtt{negligent}(\alice) = \false \wedge
+          (\mathtt{offChainBalance}(\alice) \neq 0 \vee$
+          \texttt{onChainBalance}(\alice) is not equal to the total funds
+          exclusively spendable by \alice{} in $\Sigma_{\alice}$)}
+            \State halt
+            \label{alg:fpaynet:close:func:balance}
           \EndIf
         \EndFunction
         \label{alg:fpaynet:close:func:end}
