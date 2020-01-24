@@ -479,14 +479,16 @@
         \If{$\dave{} = \alice{} \wedge{} \alice{} \notin \mathtt{corrupted}
         \wedge (\mathit{payid}, -x) \notin \mathtt{pendingDiffs}(\alice)$}
         \Comment{payer not informed}
-        \label{alg:fpaynet:resolvepay:loops:indiffs:debit}
+        \label{alg:fpaynet:resolvepay:loops:indiffs:debit:cond}
           \State halt
+          \label{alg:fpaynet:resolvepay:loops:indiffs:debit:halt}
         \EndIf
         \State remove (\textit{payid}, $-x$) from \texttt{pendingDiffs}(\alice)
         \If{$\bob{} \notin \mathtt{corrupted} \wedge (\mathit{payid}, x) \notin
         \mathtt{pendingDiffs}(\bob)$} \Comment{payee not informed}
-        \label{alg:fpaynet:resolvepay:loops:indiffs:credit}
+        \label{alg:fpaynet:resolvepay:loops:indiffs:credit:cond}
           \State halt
+          \label{alg:fpaynet:resolvepay:loops:indiffs:credit:halt}
         \EndIf
         \State remove (\textit{payid}, $x$) from \texttt{pendingDiffs}(\bob)
         % TODO end
