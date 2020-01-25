@@ -208,7 +208,7 @@
       \Statex \textit{Effect}:
       \Indent
          \State add (\texttt{corrupted}, \textit{payid}) to
-         \texttt{charged}(\alice) where \texttt{corrupted} is set to one of the
+         \texttt{charged}(payer) where \texttt{corrupted} is set to one of the
          corrupted parties between \alice{} and \bob{}
          \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid}) from
          \texttt{payids}
@@ -242,7 +242,7 @@
 
       \Statex \textit{Effect}:
       \Indent
-         \State add (\alice, \textit{payid}) to \texttt{charged}(\alice)
+         \State add (\alice, \textit{payid}) to \texttt{charged}(payer)
          \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid}) from
          \texttt{payids}
       \EndIndent
