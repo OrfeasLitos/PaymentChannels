@@ -22,6 +22,18 @@
     infer the security of the protocol more broadly. This is achieved by
     allowing arbitrary interactions between the environment and the real-world
     adversary.
+
+    As mentioned, lightning network members have to periodically check the
+    blockchain to ensure the security of their funds. However, the execution
+    model of the UC framework allows \environment{} to impose extended periods
+    of inactivity to any party. We opted to avoid the complication of using a
+    clock functionality to force regular activation. Restricting the analysis
+    only to environments that always cater for the needed activations would
+    preclude the composability of our model. We instead allow \environment{} to
+    deny activation to players (therefore becoming negligent) and provide
+    security guarantees conditional on \environment{} permitting the necessary
+    monitoring of the blockchain.
+
 %In particular it
 %    replaces $\mathcal{F}$, $\Pi$, \adversary{}, \simulator{} and the external
 %    observer with Interactive Turing Machines (ITMs). The external observer is
@@ -61,11 +73,11 @@
     \Fclock increments the time by one once all parties have declared the end of
     their round.
 
-    The protocol and functionality defined in the current work do not make
-    direct use of \Fclock. Indeed, the only notion of time both in the lightning
-    protocol and in our work is provided by the height of the blockchain, as
-    reported respectively by the underlying Bitcoin node and \ledger. We
-    therefore omit it in the statements of
+    As already mentioned, the protocol and functionality defined in the current
+    work do not make direct use of \Fclock. Indeed, the only notion of time both
+    in the lightning protocol and in our work is provided by the height of the
+    blockchain, as reported respectively by the underlying Bitcoin node and
+    \ledger. We therefore omit it in the statements of
     Lemmas~\ref{lemma:dummy}-\ref{lemma:close} and
     Theorem~\ref{theorem:simulation} for simplicity of notation; it should
     normally appear as hybrid along with \ledger. Its exact definition can be
