@@ -65,7 +65,9 @@
     ledger, it becomes visible to all parties at the discretion of the
     adversary, but within another predefined time window, and cannot be removed
     or reordered. This is called persistence. The exact definition can be found
-    in Appendix~\ref{appendix:ledger}.
+    in Appendix~\ref{appendix:ledger}. The current work makes heavy use of these
+    two security properties, as the security of the lightning network relies
+    crucially on the security of the underlying ledger.
 
     Furthermore, \ledger{} needs the \Fclock functionality, which models the
     notion of time. Every participating party can request to read the current
