@@ -43,29 +43,29 @@
     For any ITM \perfectprot{} there exist ITMs \perfectenv,
     \perfectadv{} such that for any ITM \simulator
     \begin{equation*}
-      \textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot, \adversary,
-      \environment} \not\approx \textsc{Exec}^{\perfectledger,
-      \gFclock}_{\simulator, \environment}
+      \textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot, \perfectadv,
+      \perfectenv} \not\approx \textsc{Exec}^{\perfectledger,
+      \gFclock}_{\simulator, \perfectenv}
     \end{equation*}
   \end{theorem}
 
   \begin{proofsketch}
-    We take advantage of \adversary's ability to selectively send messages to
-    specific players. In particular, \environment{} starts an execution with two
+    We take advantage of \perfectadv's ability to selectively send messages to
+    specific players. In particular, \perfectenv{} starts an execution with two
     players and generates a random message $m$. In half of the executions
     (randomly selected),  the adversary simulates a ``broken''  \perfectprot{}
     execution where the effects of submitting $m$ are only shared with one of
-    the two players, say \alice{} by \adversary{} (in the real world). The
+    the two players, say \alice{} by \perfectadv{} (in the real world). The
     environment then sends \textsc{read} to the other player, say \bob. If
-    \bob{} returns a ledger containing $m$, then \environment{} concludes that
-    it is the ideal world, otherwise it sends \textsc{read} to \alice. If she
-    returns a ledger with $m$, then \environment{} concludes it is in the real
+    \bob{} returns a ledger containing $m$, then \perfectenv{} concludes that it
+    is the ideal world, otherwise it sends \textsc{read} to \alice. If she
+    returns a ledger with $m$, then \perfectenv{} concludes it is in the real
     world, otherwise it concludes it is in the ideal world.
 
     The above is not sufficient since a protocol may choose to return an empty
-    ledger; to counter this, in the other half of the executions, \environment{}
+    ledger; to counter this, in the other half of the executions, \perfectenv{}
     sends (\textsc{submit}, $m$) to \alice{} and then (\textsc{read}) to \bob.
-    If, and only if, \bob{} knows $m$, then \environment{} concludes this is the
+    If, and only if, \bob{} knows $m$, then \perfectenv{} concludes this is the
     ideal world. This forces the \perfectprot{} protocol to achieve instant
     finality and will establish that a distinguishing advantage exists no matter
     how \perfectprot{} is implemented.
