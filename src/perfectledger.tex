@@ -56,9 +56,9 @@
     (randomly selected),  the adversary simulates a ``broken''  \perfectprot{}
     execution where the effects of submitting $m$ are only shared with one of
     the two players, say \alice{} by \perfectadv{} (in the real world). The
-    environment then sends \textsc{read} to the other player, say \bob. If
+    environment then sends (\textsc{read}) to the other player, say \bob. If
     \bob{} returns a ledger containing $m$, then \perfectenv{} concludes that it
-    is the ideal world, otherwise it sends \textsc{read} to \alice. If she
+    is the ideal world, otherwise it sends (\textsc{read}) to \alice. If she
     returns a ledger with $m$, then \perfectenv{} concludes it is in the real
     world, otherwise it concludes it is in the ideal world.
 
