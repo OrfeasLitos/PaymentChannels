@@ -1,0 +1,68 @@
+\section{Security proof overview}
+\label{sec:ov-security-proof}
+  \begin{theorem}[Lightning Payment Network Security]
+    The protocol $\Pi_{\mathrm{LN}}$ realises $\fpaynet$ given a global
+    functionality $\ledger$ and assuming the security of the underlying digital
+    signature, identity-based signature, combined digital signature and PRF.
+    Specifically,
+    \label{theorem:simulation}
+    \ifelseieee{
+      \begin{gather*}
+        \forall k \in \mathbb{N}, \text{ PPT } \environment, \\
+        |\Pr[\textsc{Exec}^{\ledger}_{\Pi_{\mathrm{LN}}, \adversary_{\mathrm{d}},
+        \environment} = 1] - \Pr[\textsc{Exec}^{\fpaynet, \ledger}_{\simulator,
+        \environment} = 1]| \leq \\
+        2nm \mathrm{E \mhyphen ds}(k) + 6np \mathrm{E \mhyphen ids}(k) + 2nmp
+        \mathrm{E \mhyphen share}(k) + \\
+        + 2nm \mathrm{E \mhyphen master}(k)+ 2 \mathrm{E \mhyphen prf}(k)
+        \enspace,
+      \end{gather*}
+    }{
+      \begin{gather*}
+        \forall k \in \mathbb{N}, \text{ PPT } \environment,
+        |\Pr[\textsc{Exec}^{\ledger}_{\Pi_{\mathrm{LN}}, \adversary_{\mathrm{d}},
+        \environment} = 1] - \Pr[\textsc{Exec}^{\fpaynet, \ledger}_{\simulator,
+        \environment} = 1]| \leq \\
+        2nm  \mathrm{E \mhyphen ds}(k)  + 6np  \mathrm{E \mhyphen ids}(k) + 2nmp
+        \mathrm{E \mhyphen share}(k) + 2nm \mathrm{E \mhyphen master}(k)+  2
+        \mathrm{E \mhyphen prf}(k)  \enspace,
+      \end{gather*}
+    }
+    where $n$ is the maximum number of registered users, $m$ is the maximum
+    number of channels that a user is involved in, $p$ is the maximum number of
+    times that a channel is updated and the ``E-'' terms correspond to the
+    insecurity bounds of the primitives.
+  \end{theorem}
+
+  \begin{proofsketch}
+    The proof is done in 5 steps of successive games replacement. In
+    Lemma~\ref{lemma:dummy} we define a simulator $\simulator_{\mathrm{LN}}$
+    that internally simulates a full execution of $\Pi_{\mathrm{LN}}$ for each
+    player, and a ``dummy'' functionality that acts as a simple relay between
+    \environment{} and $\simulator_{\mathrm{LN}}$. We argue that this version of
+    the ideal world trivially produces the exact same messages for
+    \environment{} as the real world.
+
+    In each subsequent step, we incrementally move responsibilities from the
+    simulator to the functionality. Each step defines a different functionality
+    that handles some additional messages from \environment{} exactly like
+    \fpaynet, until the last step (Lemma~\ref{lemma:close}) where we use
+    \fpaynet{} itself. Correspondingly, the simulator of each step is adapted so
+    that the new ideal execution is computationally indistinguishable from the
+    previous one.
+
+    Lemma~\ref{lemma:reg} lets $\mathcal{F}$ handle registration messages,
+    along with the corruption messages from \simulator. In Lemma~\ref{lemma:open}
+    the functionality additionally handles messages related to channel opening. It
+    behaves like \fpaynet, but does not execute \texttt{checkClosed}().
+    Lemma~\ref{lemma:pay} has the functionality handle all messages sent during
+    channel updates. Lastly, Lemma~\ref{lemma:close} has the entire \fpaynet{} as
+    its functionality, by incorporating the message for closing a channel,
+    executing \texttt{checkClosed}() normally and handing the message that returns
+    to \environment{} the receipts for newly opened, updated and closed
+    channels. The last two steps introduce a probability of failure in case
+    the various types of signatures used in  $\Pi_{\mathrm{LN}}$ are forged. We analyze these cases separately and argue that, if
+    such forgeries do not happen, the emulation is perfect. Therefore we can
+    calculate the concrete security bounds shown in the theorem.
+  \end{proofsketch}
+  For the formal proof, we refer the reader to Appendix~\ref{appendix:secproof}.
