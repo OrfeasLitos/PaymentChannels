@@ -202,7 +202,12 @@ only informally described. Several smart contracts are formally defined instead
 as UC ITMs, which are the entities with which protocols ultimately interact. The
 execution model of these contracts and their interaction with the blockchain is
 explained in an intuitive way, but a complete formalization of the ledger is
-missing.
+missing. Lastly, the ledger used in~\cite{DBLP:conf/ccs/DziembowskiFH18} cannot
+be used directly by protocol parties, only accessed via higher-level
+functionalities. This limitation is imposed because otherwise any party could
+arbitrarily change the balances of other parties, given the definition of the
+functionality. This ledger is therefore a useful abstraction for higher-level
+protocols, but not amenable to direct usage, let alone concrete realisation.
 
 \noindent \textbf{Organisation.} In Section~\ref{sec:preliminaries} we present
 preliminaries for the model we employ and the relevant cryptographic primitives.
