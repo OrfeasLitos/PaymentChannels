@@ -1141,7 +1141,7 @@
           \EndIf
           \State assign latest \texttt{channel} sequence number to $n$
           \State $\mathrm{HTLCs} \gets \emptyset$
-          \For{every $\text{HTLC output } \in \mathtt{localCom}_n$ with number
+          \For{every $\text{HTLC output} \in \mathtt{localCom}_n$ with number
           $i$}
             \State $\mathrm{sig} \gets
             \textsc{SignIBS}\left(\mathtt{localHTLC}_{n, i}, sh_{\mathrm{htlc},
@@ -1199,7 +1199,7 @@
         from \bob:
         \Indent
           \State ensure there is an open $\mathtt{channel} \in
-          \mathtt{channels}$ with \bob with ID \textit{pchid}
+          \mathtt{channels}$ with \bob{} with ID \textit{pchid}
           \If{\texttt{channel} is not marked ``coop closing''}
             \State mark channel as ``coop closing''
             \If{there are outstanding HTLC outputs in the latest
