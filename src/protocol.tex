@@ -1184,7 +1184,8 @@
           $\mathtt{channel} \in \mathtt{channels}$ with ID \textit{pchid}
           \label{alg:protocol:close:coop:ensure}
           \State stop serving any (\textsc{pay}, \textsc{closeChannel}) message
-          from \environment{} for this channel.
+          from \environment{} and any (\textsc{UpdateAddHtlc},
+          \textsc{sendInvoice}) message from counterparty for this channel.
           \label{alg:protocol:close:coop:noserve}
           \State mark \texttt{channel} as ``coop closing''
           \If{there are outstanding HTLC outputs in the latest
@@ -1202,6 +1203,9 @@
           \State ensure there is an open $\mathtt{channel} \in
           \mathtt{channels}$ with \bob{} with ID \textit{pchid}
           \If{\texttt{channel} is not marked ``coop closing''}
+            \State stop serving any (\textsc{pay}, \textsc{closeChannel})
+            message from \environment{} and any (\textsc{UpdateAddHtlc},
+            \textsc{sendInvoice}) message from counterparty for this channel.
             \State mark channel as ``coop closing''
             \If{there are outstanding HTLC outputs in the latest
             $\mathtt{localCom}_n$}
