@@ -1188,7 +1188,7 @@
           \State mark \texttt{channel} as ``coop closing''
           \If{there are outstanding HTLC outputs in the latest
           $\mathtt{localCom}_n$}
-            continue from here when there are none left
+            \State continue from here when there are none left
           \EndIf
           \label{alg:protocol:close:coop:init:continue}
           \State send (\textsc{shutdown}, $pk_{\alice}$, \textit{pchid}) to \bob
@@ -1204,7 +1204,7 @@
             \State mark channel as ``coop closing''
             \If{there are outstanding HTLC outputs in the latest
             $\mathtt{localCom}_n$}
-              continue from here when there are none left
+              \State continue from here when there are none left
             \EndIf
             \label{alg:protocol:close:coop:shutdown:continue}
             \State send (\textsc{shutdown}, $pk_{\alice}$, \textit{pchid}) to
