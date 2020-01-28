@@ -610,7 +610,8 @@
           \_, \textit{payid}, ``waiting for invoice'') entry in
           \texttt{pendingPay}
           \State ensure $h$ is valid (in the range of $\mathcal{H}$)
-          \State remove mark from, add $h$ to entry in \texttt{pendingPay}
+          \State remove mark from, add $h$ and \texttt{HTLCNo} to entry in
+          \texttt{pendingPay}
           \State retrieve \texttt{CltvExpiryDelta}s from
           $\overrightarrow{\mathtt{path}}$
           \State send (\textsc{read}) to \ledger{} and assign largest block
@@ -809,8 +810,8 @@
             \EndIf
           \Else \Comment{We are the payer}
             \State retrieve (\textit{expayid}, $-x$) from entry in
-            \texttt{pendingPay} with hash $h$ and remove the entry
-            % TODO: what if multiple such entries?
+            \texttt{pendingPay} with $h$, \texttt{HTLCNo} and remove the entry
+            \Comment{entry is unique because of \texttt{HTLCNo}}
             \State add (\textit{expayid}, $-x$) to
             \texttt{diffs}(\texttt{channel}) of \texttt{channel} with ID
             \textit{pchid}
