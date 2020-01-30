@@ -228,15 +228,15 @@
         \State $\Sigma_{\alice}$ contains an old $\mathtt{remoteCom}_m$ of the
         channel before \alice{} (closer to payer) on the
         $\overrightarrow{\mathtt{path}}$ that does not contain the relevant HTLC
-        and a tx that spends the delayed output of $\mathtt{remoteCom}_m \vee$
-        (($\Sigma_{\alice}$ contains the most recent $\mathtt{remoteCom}_n$ or
+        and a tx that spends the delayed output of $\mathtt{remoteCom}_m \vee
+        ((\Sigma_{\alice}$ contains the most recent $\mathtt{remoteCom}_n$ or
         $\mathtt{localCom}_n$ of the channel before \alice{} and the
-        \texttt{HTLC-success} of the relevant HTLC $\vee$ \alice's latest
+        \texttt{HTLC-timeout} of the relevant HTLC $\vee$ \alice's latest
         irrevocably committed $\mathtt{remoteCom}_n$ for the channel before
         \alice{} does not contain the HTLC) $\wedge \: \Sigma_{\alice}$ contains
-        the most recent $\mathtt{remoteCom}_l$ or $\mathtt{localCom}_l$ and (the
-        \texttt{HTLC-timeout} or an \texttt{HTLC-success} that pays the
-        counterparty) for HTLC of the channel after \alice{})
+        the most recent $\mathtt{remoteCom}_l$ or $\mathtt{localCom}_l$ and the
+        \texttt{HTLC-success} that pays the counterparty for HTLC of the
+        channel after \alice{})
       \EndIndent
       \Statex
 
