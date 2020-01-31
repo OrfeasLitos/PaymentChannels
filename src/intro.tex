@@ -165,7 +165,9 @@ perfect ledger, it would not be relevant for any real world deployment of a
 payment network since such software would -- necessarily -- depend on a
 non-perfect ledger. This choice also distinguishes our work compared to previous
 attempts~\cite{DBLP:conf/ccs/DziembowskiFH18,Malavolta:2017:CPP:3133956.3134096,sprites,perun}
-to formalize payment networks.
+to formalize payment networks, as well as highlights the considerable latency
+improvement that the lightning protocol offers in comparison to directly using
+the ledger.
 \end{enumerate}
 
 \noindent \textbf{Related Work.} A first suggestion for building a
@@ -196,18 +198,21 @@ utilized ``too idealised'' ledger functionalities for their analysis which offer
 instant finality; as we prove in Theorem~\ref{theorem:perfectledger}, a
 representative variant of these functionalities
 (Fig.~\ref{fig:perfectledger:func}) is unrealisable even under strong network
-assumptions (cf. Section~\ref{sec:perfect-ledger}). On the other hand,
-in~\cite{sprites} the ledger is not explicitly specified as a functionality, but
-only informally described. Several smart contracts are formally defined instead
-as UC ITMs, which are the entities with which protocols ultimately interact. The
-execution model of these contracts and their interaction with the blockchain is
-explained in an intuitive way, but a complete formalization of the ledger is
-missing. Lastly, the ledger used in~\cite{DBLP:conf/ccs/DziembowskiFH18} cannot
-be used directly by protocol parties, only accessed via higher-level
-functionalities. This limitation is imposed because otherwise any party could
-arbitrarily change the balances of other parties, given the definition of the
-functionality. This ledger is therefore a useful abstraction for higher-level
-protocols, but not amenable to direct usage, let alone concrete realisation.
+assumptions (cf. Section~\ref{sec:perfect-ledger}). It is worth noting here
+that, were such a ledger realizable, layer-2 payment networks would not be as
+useful in practice because one of their two main motivations is the high latency
+of real blockchains. On the other hand, in~\cite{sprites} the ledger is not
+explicitly specified as a functionality, but only informally described. Several
+smart contracts are formally defined instead as UC ITMs, which are the entities
+with which protocols ultimately interact. The execution model of these contracts
+and their interaction with the blockchain is explained in an intuitive way, but
+a complete formalization of the ledger is missing. Lastly, the ledger used
+in~\cite{DBLP:conf/ccs/DziembowskiFH18} cannot be used directly by protocol
+parties, only accessed via higher-level functionalities. This limitation is
+imposed because otherwise any party could arbitrarily change the balances of
+other parties, given the definition of the functionality. This ledger is
+therefore a useful abstraction for higher-level protocols, but not amenable to
+direct usage, let alone concrete realisation.
 
 \noindent \textbf{Organisation.} In Section~\ref{sec:preliminaries} we present
 preliminaries for the model we employ and the relevant cryptographic primitives.
