@@ -142,9 +142,9 @@
   previously received (\textsc{checkForNew}) (Fig.~\ref{alg:fpaynet:open},
   line~\ref{alg:fpaynet:channelOpened:report}). This happens when the simulated
   \alice{} ITI handles a \textsc{fundingLocked} message from \bob{}
-  (Fig.~\ref{alg:sim:open}, line~\ref{alg:sim:open:channelOpened}). In the real
-  world \alice{} would have modified her
-  \texttt{new}-\linebreak\texttt{Channels} while handling \bob's
+  (Fig.~\ref{alg:sim:open:fundingLocked},
+  line~\ref{alg:sim:open:channelOpened}). In the real world \alice{} would have
+  modified her \texttt{new}-\linebreak\texttt{Channels} while handling \bob's
   \textsc{fundingLocked} (Fig.~\ref{alg:protocol:fundingLocked},
   line~\ref{alg:protocol:fundingLocked:report}), thus as far as this case is
   concerned, \texttt{newChannels} has the same contents in the real world as
@@ -155,7 +155,7 @@
   line~\ref{alg:fpaynet:fundingLocked:report}). This (\textsc{fundingLocked})
   can only be sent by \simulator{} if \alice{} is honest and right before the
   receiving of (\textsc{fundingLocked}) is simulated with her ITI
-  (Fig.~\ref{alg:sim:open},
+  (Fig.~\ref{alg:sim:open:fundingLocked},
   lines~\ref{alg:sim:fundingLocked:sim:alice}-\ref{alg:sim:fundingLocked:sim:bob}).
   In the real world, \alice's \texttt{newChannels} would be populated upon
   handling the same (\textsc{fundingLocked}). Therefore the \texttt{newChannels}

@@ -647,8 +647,7 @@
               \EndIf
             \ElsIf{there is no such closing/commitment transaction $\wedge \ h =
             \bot$}
-              \State assign largest block number of $\Sigma_{\alice}$ to $h$ of
-              entry
+              \State assign largest $\Sigma_{\alice}$ block no. to entry's $h$
             \ElsIf{there is no such closing/commitment transaction $\wedge \ h
             \neq \bot \ \wedge$ (largest block number of $\Sigma_{\alice}) \geq
             h + \tochain{}$}
@@ -659,7 +658,7 @@
           \EndFor
           \If{\alice{} has no open channels in $\Sigma_{\alice} \wedge
           \mathtt{negligent}(\alice) = \false \wedge
-          (\mathtt{offChainBalance}(\alice) \neq 0 \vee$
+          (\mathtt{offChainBalance}(\alice) \neq 0 \: \vee$
           \texttt{onChainBalance}(\alice) is not equal to the total funds
           exclusively spendable by \alice{} in $\Sigma_{\alice}$)}
             \State halt
