@@ -26,7 +26,7 @@
           \texttt{relayDelay}(\alice), pubKey)
           \item (\textsc{registered})
           \item (\textsc{news}, \texttt{newChannels}, \texttt{closedChannels},
-          \texttt{updatesToReport})
+          \texttt{updatesToReport}, \texttt{paymentsToReport})
         \end{itemize}
         \item from $\simulator$:
         \begin{itemize}
@@ -34,7 +34,8 @@
           \item (\textsc{corrupted}, \alice)
           \item (\textsc{channelAnnounced}, \alice, $p_{\alice, F}, p_{\bob,
           F}$, \textit{fchid}, \textit{pchid}, \textit{tid})
-          \item (\textsc{update}, \texttt{receipt}, \texttt{diffs}, \alice)
+          \item (\textsc{newUpdate}, \texttt{receipt}, \alice)
+          \item (\textsc{newPayments}, \texttt{payments}, \alice)
           \item (\textsc{closedChannel}, \texttt{channel}, \alice)
           \item (\textsc{resolvePays}, \texttt{charged})
         \end{itemize}
@@ -296,23 +297,33 @@
         \Indent
           \State choose unique payment ID \textit{payid}
           \State add $\left(\alice, \bob, x, \overrightarrow{\mathtt{path}},
-          \mathit{payid}\right)$ to \texttt{pendingPay}
-          \State send $\left(\textsc{pay}, \alice, \bob, x,
-          \overrightarrow{\mathtt{path}}, \mathit{expayid}, \mathit{payid},
-          \textsc{state}, \Sigma\right)$ to \simulator
+          \mathit{expayid}, \mathit{payid}\right)$ to \texttt{pendingPay}
+          \State send (\textsc{pay}, \alice, \bob, $x$,
+          $\overrightarrow{\mathtt{path}}$, \textit{expayid}, \textit{payid},
+          \textsc{state}, $\Sigma$) to \simulator
           \label{alg:fpaynet:pay:send}
         \EndIndent
         \Statex
 
-        \State Upon receiving (\textsc{update}, \texttt{receipt},
-        \texttt{diffs}, \alice) from \simulator:
+        \State Upon receiving (\textsc{newUpdate}, \texttt{receipt}, \alice)
+        from \simulator:
         \label{alg:fpaynet:update}
         \Indent
-          \State append (\texttt{receipt}, \texttt{diffs}) to
-          \texttt{updatesToReport}(\alice) \Comment{trust \simulator{} here,
-          check on \textsc{resolvePays}}
+          \State append \texttt{receipt} to \texttt{updatesToReport}(\alice)
+          \Comment{trust \simulator{} here, check on \textsc{resolvePays}}
           \label{alg:fpaynet:update:add}
-          \State append \texttt{diffs} to \texttt{pendingDiffs}
+          \State send (\textsc{continue}) to \simulator
+        \EndIndent
+        \Statex
+
+        \State Upon receiving (\textsc{newPayments}, \texttt{payments}, \alice)
+        from \simulator:
+        \label{alg:fpaynet:payments}
+        \Indent
+          \State add \texttt{payments} to \texttt{pendingDiffs}
+          \label{alg:fpaynet:payments:add:pendingdiffs}
+          \State strip \textit{payid} from each member of \texttt{payments} and
+          add them to \texttt{paymentsToReport}
           \State send (\textsc{continue}) to \simulator
         \EndIndent
       \end{algorithmic}
@@ -336,9 +347,9 @@
   halts if the charged player was not on the payment path
   (Fig.~\ref{alg:fpaynet:resolvepay},
   l.~\ref{alg:fpaynet:resolvepay:halt:path}), if a signature forgery has taken
-  place (Fig.~\ref{alg:fpaynet:resolvepay},
+  place (Fig.~\ref{alg:fpaynet:resolvepay:honestpayer},
   l.~\ref{alg:fpaynet:resolvepay:halt:ds}), if the charged player has not been
-  negligent (Fig.~\ref{alg:fpaynet:resolvepay},
+  negligent (Fig.~\ref{alg:fpaynet:resolvepay:honestpayer},
   ll.~\ref{alg:fpaynet:resolvepay:halt:rel}
   and~\ref{alg:fpaynet:resolvepay:halt:abs}), or if any one of the individual
   channel updates needed to carry out the whole payment has not been previously
@@ -357,70 +368,35 @@
           \ForAll{$\alice \text{ keys} \in \texttt{charged}$}
             \ForAll{$\left(\dave, \mathit{payid}\right) \in
             \mathtt{charged}\left(\alice\right)$}
+              \label{alg:fpaynet:resolvepay:innerloop}
               \State retrieve $\left(\alice, \bob, x,
-              \overrightarrow{\mathtt{path}}, \mathit{payid}\right)$ and remove
-              it from \texttt{pendingPay}
+              \overrightarrow{\mathtt{path}}, \mathit{expayid},
+              \mathit{payid}\right)$ and remove it from \texttt{pendingPay}
               \If{$\dave{} = \bot$} \Comment{Payment failed}
+              \label{alg:fpaynet:resolvepay:failed:if}
+                \If{there is an (\textit{expayid}, \textit{payid}, \_) entry in
+                \texttt{pendingDiffs}(\alice) or \texttt{pendingDiffs}(\bob) AND
+                \alice{} or \bob{} respectively is honest}
+                \label{alg:fpaynet:resolvepay:failed:reported:if}
+                  \State halt
+                  \label{alg:fpaynet:resolvepay:failed:reported}
+                \EndIf
                 \State continue with next iteration of inner loop
+                \label{alg:fpaynet:resolvepay:continue}
               \ElsIf{$\dave{} \notin \overrightarrow{\mathtt{path}}$}
                 \State halt \Comment{Only players on path may be charged}
                 \label{alg:fpaynet:resolvepay:halt:path}
               \ElsIf{$\dave{} \in \mathtt{corrupted}$}
                 \State run code of Fig.~\ref{alg:fpaynet:resolvepay:loops}
-                \State $\mathtt{offChainBalance}\left(\bob\right) \gets
-                \mathtt{offChainBalance}\left(\bob\right) + x$
+                \label{alg:fpaynet:resolvepay:corrupted:gotoloops}
+                \State increase \texttt{offChainBalance}(\bob) by $x$
                 \label{alg:fpaynet:resolvepay:corr:credit}
               \Else \ \Comment{\dave{} honest}
-                \State send (\textsc{read}) to \ledger{} as \dave{} and store
-                reply to $\Sigma_{\dave}$
-                \State \texttt{checkClosed}($\Sigma_{\dave}$)
-                \If{$\Sigma_{\dave}$ contains a tx that is not a
-                $\mathtt{localCom}_n$ or a $\mathtt{remoteCom}_n$ and spends a
-                funding tx for an open \texttt{channel} that contains \dave{}}
-                \label{alg:fpaynet:resolvepay:haltcond:ds}
-                  \State halt \Comment{DS forgery}
-                  % TODO: decide how to determine forgeries on pubKey(Alice)
-                  \label{alg:fpaynet:resolvepay:halt:ds}
-                \ElsIf{$\Sigma_{\dave}$ contains in block $h_{\mathtt{tx}}$ an
-                old $\mathtt{remoteCom}_m$ that does not contain the HTLC and a
-                tx that spends the delayed output of $\mathtt{remoteCom}_m$}
-                  \If{\texttt{polls}(\dave) contains an element in
-                  $[h_{\mathtt{tx}}, h_{\mathtt{tx}} +
-                  \mathtt{delay}\left(\dave\right) - 1]$}
-                  \label{alg:fpaynet:resolvepay:haltcond:rel}
-                    \State halt \Comment{\dave{} \textsc{poll}ed, but successful
-                    malicious closure}
-                    \label{alg:fpaynet:resolvepay:halt:rel}
-                  \Else
-                    \State $\mathtt{negligent}(\dave) \gets \true$
-                  \EndIf
-                \ElsIf{$\dave{} \neq \alice$}
-                  \State calculate \texttt{IncomingCltvExpiry},
-                  \texttt{OutgoingCltvExpiry} of \dave{} (as in
-                  Fig.~\ref{alg:protocol:pay:invoice},
-                  l.~\ref{alg:protocol:pay:invoice:cltv})
-                  \If{$\Sigma_{\dave}$ does not contain an old
-                  $\mathtt{remoteCom}_m$}
-                    \If{failure condition of
-                    Fig.~\ref{alg:fpaynet:resolvepay:haltcond:abs}
-                    is true}
-                      \State halt \Comment{\dave{} \textsc{poll}ed and fulfilled,
-                      but charged}
-                      \label{alg:fpaynet:resolvepay:halt:abs}
-                    \Else
-                      \State $\mathtt{negligent}(\dave) \gets \true$
-                    \EndIf
-                  \EndIf
-                \EndIf
-                \State run code of Fig.~\ref{alg:fpaynet:resolvepay:loops}
-                \State $\mathtt{offChainBalance}\left(\dave\right) \gets
-                \mathtt{offChainBalance}\left(\dave\right) - x$
-                \label{alg:fpaynet:resolvepay:debit}
-                \State $\mathtt{offChainBalance}\left(\bob\right) \gets
-                \mathtt{offChainBalance}\left(\bob\right) + x$
-                \label{alg:fpaynet:resolvepay:credit}
+                \State run code of Fig.~\ref{alg:fpaynet:resolvepay:honestpayer}
               \EndIf
             \EndFor
+            % TODO: verify that there are no negative elements in
+            % pendingDiffs(\alice) that pertain to open channels, halt otherwise
           \EndFor
         \EndIndent
       \end{algorithmic}
@@ -449,6 +425,59 @@
   \end{figure}
 
   \begin{figure}[H]
+    \begin{titlebox}{\normalfont Honest payer}{roundbox}{normal}
+      \begin{algorithmic}[1]
+        \State send (\textsc{read}) to \ledger{} as \dave{} and store reply to
+        $\Sigma_{\dave}$
+        \State \texttt{checkClosed}($\Sigma_{\dave}$)
+        \If{$\Sigma_{\dave}$ contains a tx that is not a $\mathtt{localCom}_n$
+        or a $\mathtt{remoteCom}_n$ and spends a funding tx for an open
+        \texttt{channel} that contains \dave{}}
+        \label{alg:fpaynet:resolvepay:haltcond:ds}
+          \State halt \Comment{DS forgery}
+          % TODO: decide how to determine forgeries on pubKey(Alice)
+          \label{alg:fpaynet:resolvepay:halt:ds}
+        \ElsIf{$\Sigma_{\dave}$ contains in block $h_{\mathtt{tx}}$ an old
+        $\mathtt{remoteCom}_m$ that does not contain the HTLC and a tx that
+        spends the delayed output of $\mathtt{remoteCom}_m$}
+          \If{\texttt{polls}(\dave) contains an element in $[h_{\mathtt{tx}},
+          h_{\mathtt{tx}} + \mathtt{delay}\left(\dave\right) - 1]$}
+          \label{alg:fpaynet:resolvepay:haltcond:rel}
+            \State halt \Comment{\dave{} \textsc{poll}ed, but successful
+            malicious closure}
+            \label{alg:fpaynet:resolvepay:halt:rel}
+          \Else
+            \State $\mathtt{negligent}(\dave) \gets \true$
+          \EndIf
+        \ElsIf{$\dave{} \neq \alice$}
+          \State calculate \texttt{IncomingCltvExpiry},
+          \texttt{OutgoingCltvExpiry} of \dave{} (as in
+          Fig.~\ref{alg:protocol:pay:invoice},
+          l.~\ref{alg:protocol:pay:invoice:cltv})
+          \If{$\Sigma_{\dave}$ does not contain an old $\mathtt{remoteCom}_m$}
+            \If{failure condition of
+            Fig.~\ref{alg:fpaynet:resolvepay:haltcond:abs} is true}
+              \State halt \Comment{\dave{} \textsc{poll}ed and fulfilled, but
+              charged}
+              \label{alg:fpaynet:resolvepay:halt:abs}
+            \Else
+              \State $\mathtt{negligent}(\dave) \gets \true$
+            \EndIf
+          \EndIf
+        \EndIf
+        \State run code of Fig.~\ref{alg:fpaynet:resolvepay:loops}
+        \label{alg:fpaynet:resolvepay:honest:gotoloops}
+        \State decrease \texttt{offChainBalance}(\dave) by $x$
+        \label{alg:fpaynet:resolvepay:debit}
+        \State increase \texttt{offChainBalance}(\bob) by $x$
+        \label{alg:fpaynet:resolvepay:credit}
+      \end{algorithmic}
+    \end{titlebox}
+    \caption{}
+    \label{alg:fpaynet:resolvepay:honestpayer}
+  \end{figure}
+
+  \begin{figure}[H]
     \begin{titlebox}{\normalfont Loop over payment hops for update and
     check}{roundbox}{normal}
       \begin{algorithmic}[1]
@@ -470,28 +499,30 @@
         \EndFor
         \ForAll{updated \texttt{channel}s in the previous loop}
         \label{alg:fpaynet:resolvepay:loops:halt:loop}
-          \State ensure that a corresponding element has been added to
-          the \texttt{updatesToReport} of each honest counterparty,
-          otherwise halt
+          \State ensure that an element reporting the new balance exists either
+          in the \texttt{updatesToReport} or the \texttt{updatesHistory} of each
+          honest party and that element has not been checked by the current line
+          in the past, otherwise halt
           \label{alg:fpaynet:resolvepay:loops:halt:do}
         \EndFor
-        % TODO: modify proof to pass this test
         \If{$\dave{} = \alice{} \wedge{} \alice{} \notin \mathtt{corrupted}
-        \wedge (\mathit{payid}, -x) \notin \mathtt{pendingDiffs}(\alice)$}
-        \Comment{payer not informed}
+        \wedge (\mathit{expayid}, \mathit{payid}, -x) \notin
+        \mathtt{pendingDiffs}(\alice)$} \Comment{payer not informed}
         \label{alg:fpaynet:resolvepay:loops:indiffs:debit:cond}
           \State halt
           \label{alg:fpaynet:resolvepay:loops:indiffs:debit:halt}
         \EndIf
-        \State remove (\textit{payid}, $-x$) from \texttt{pendingDiffs}(\alice)
-        \If{$\bob{} \notin \mathtt{corrupted} \wedge (\mathit{payid}, x) \notin
-        \mathtt{pendingDiffs}(\bob)$} \Comment{payee not informed}
+        \State remove (\textit{expayid}, \textit{payid}, $-x$) from
+        \texttt{pendingDiffs}(\alice)
+        \If{$\bob{} \notin \mathtt{corrupted} \wedge (\mathit{expayid},
+        \mathit{payid}, x) \notin \mathtt{pendingDiffs}(\bob)$} \Comment{payee
+        not informed}
         \label{alg:fpaynet:resolvepay:loops:indiffs:credit:cond}
           \State halt
           \label{alg:fpaynet:resolvepay:loops:indiffs:credit:halt}
         \EndIf
-        \State remove (\textit{payid}, $x$) from \texttt{pendingDiffs}(\bob)
-        % TODO end
+        \State remove (\textit{expayid}, \textit{payid}, $x$) from
+        \texttt{pendingDiffs}(\bob)
       \end{algorithmic}
     \end{titlebox}
     \caption{}
@@ -590,6 +621,7 @@
   after the closing of all of the player's channels
   (l.~\ref{alg:fpaynet:close:func:balance}).
 
+  % TODO: verify that all payments are already reported, halt otherwise
   \begin{figure}[H]
     \begin{systembox}{\fpaynet{} -- \texttt{checkClosed}()}
       \begin{algorithmic}[1]
@@ -620,7 +652,7 @@
               \State reduce \texttt{offChainBalance}(\bob) by $y$
               \State increase \texttt{onChainBalance}(\bob) by $y$
               \label{alg:fpaynet:close:func:bob:credit}
-              \State remove \texttt{channel} from \texttt{channels} \& entry
+              \State remove \texttt{channel} from \texttt{channels} and entry
               from \texttt{pendingClose}(\alice)
               \If{there is an (\textit{fchid}, \_, \_) entry in
               \texttt{pendingClose}(\bob)}
@@ -787,10 +819,13 @@
         \State Upon receiving (\textsc{getNews}) from \alice:
         \label{alg:fpaynet:getnews}
         \Indent
+          \State copy members of \texttt{updatesToReport}(\alice) to
+          \texttt{updatesHistory}(\alice)
           \State clear \texttt{newChannels}(\alice),
-          \texttt{closedChannels}(\alice), \texttt{updatesToReport}(\alice) and
-          send them to \alice{} with message name \textsc{news}, stripping
-          \textit{fchid} and h from \texttt{closedChannels}(\alice)
+          \texttt{closedChannels}(\alice), \texttt{updatesToReport}(\alice),
+          \texttt{paymentsToReport} and send them to \alice{} with message name
+          \textsc{news}, stripping \textit{fchid} and h from
+          \texttt{closedChannels}(\alice)
           \label{alg:fpaynet:getnews:send}
         \EndIndent
       \end{algorithmic}

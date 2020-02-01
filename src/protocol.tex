@@ -513,6 +513,7 @@
               \EndIf
             \EndFor
             \ForAll{spent offered HTLC output $i$ of $\mathtt{remoteCom}_n$}
+            \label{alg:protocol:poll:htlc:spent:loop}
               \If{we are intermediary}
                 \State retrieve preimage $R$, $\mathit{pchid}'$ of previous
                 channel on the path of the HTLC, and $\mathtt{HTLCNo}'$ of the
@@ -523,7 +524,9 @@
                 \State retrieve (\textit{expayid}, $x$) from entry in
                 \texttt{pendingPay} with $h$, \texttt{HTLCNo} of
                 $\mathrm{HTLC}_i$ and remove the entry
+                \label{alg:protocol:poll:report:pendingPay}
                 \State add (\textit{expayid}, $-x$) to \texttt{paymentsToReport}
+                \label{alg:protocol:poll:report:pay}
               \EndIf
             \EndFor
           \Else \ \Comment{malicious closure}
@@ -584,8 +587,8 @@
           \State add (\bob, $x$, $\overrightarrow{\mathtt{path}}$,
           \textit{expayid}, \textit{payid}, ``waiting for invoice'') to
           \texttt{pendingPay}
-          \State send (\textsc{sendInvoice}, $x$, \textit{payid},
-          \textit{expayid}) to \bob{}
+          \State send (\textsc{sendInvoice}, $x$, \textit{expayid},
+          \textit{payid}) to \bob{}
           \label{alg:protocol:pay:sendinvoice}
         \EndIndent
         \Statex
@@ -700,6 +703,7 @@
           \If{$\delta = \mathtt{receiver}$}
             \State retrieve $R : \mathcal{H}\left(R\right) = h$ from
             \texttt{pendingGetPaid} and move entry to \texttt{gotPaid}
+            \label{alg:protocol:pay:updateAddHtlc:gotpaid}
             \State add $\left(\mathtt{HTLCNo}, R\right)$ to
             $\mathtt{pendingFulfills}_{\mathit{pchid}}$
           \ElsIf{$\delta \neq \mathtt{receiver}$} \Comment{Send HTLC to next
@@ -822,6 +826,7 @@
             \State add (\textit{expayid}, $-x$) to
             \texttt{updateDiffs}(\texttt{channel}) of \texttt{channel} with ID
             \textit{pchid}
+            \label{alg:protocol:pay:updateFulfillHtlc:updatediffs}
           \EndIf
         \EndIndent
       \end{algorithmic}
@@ -966,11 +971,12 @@
           \State append \texttt{receipt}(\texttt{channel}) to
           \texttt{updatesToReport}
           \label{alg:protocol:pay:raa:report:updates}
-          \ForAll{$(\_, \_, \mathtt{ref}) \in
+          \ForAll{$(\_, \_, \textit{payid}, \mathtt{ref}) \in
           \mathtt{updateDiffs}(\mathtt{channel})$}
+          \label{alg:protocol:pay:raa:loop:gotpaid}
             \State remove from \texttt{gotPaid} the entry referenced by
             \texttt{ref}
-            \State strip \texttt{ref} from
+            \State strip \texttt{ref} and \textit{payid} from
             \texttt{updateDiffs}(\texttt{channel}) entry
           \EndFor
           \If{$\mathtt{updateDiffs}(\mathtt{channel}) \neq \emptyset$}
@@ -1052,16 +1058,19 @@
           \Comment{counterparty cooperative}
             \If{$\exists (\_, R, \mathit{expayid}, \mathit{payid}, x) \in
             \mathtt{gotPaid}$} \Comment{receiver}
-              \State add ($\mathit{expayid}, x$, reference to
+              \State add ($\mathit{expayid}, x$, \textit{payid}, reference to
               \texttt{gotPaid} entry) to \texttt{updateDiffs}(\texttt{channel})
+              \label{alg:protocol:pushfulfill:updatediffs}
             \EndIf
             \State send (\textsc{updateFulfillHtlc}, \textit{pchid},
             \texttt{HTLCNo}, $R$) to \textit{pchid} counterparty
           \Else \ \Comment{counterparty gone on-chain}
             \If{$\exists (\_, R, \mathit{expayid}, \mathit{payid}, x) \in
             \mathtt{gotPaid}$}
+            \label{alg:protocol:pushfulfill:check:gotpaid}
               \State remove entry from \texttt{gotPaid}
               \State add $(\mathit{expayid}, x)$ to \texttt{paymentsToReport}
+              \label{alg:protocol:pushfulfill:report}
             \EndIf
             \State $\mathrm{TX} \gets$ \{input: ($\mathtt{remoteCom}_n$ HTLC
             output with number $\mathtt{HTLCNo}, R$), output:
@@ -1125,8 +1134,10 @@
               counterparty has gone on-chain}), along with their signatures to
               \texttt{toSubmit}
               \ForAll{such HTLCs for which we are the payee (i.e., we have
-              received a (\textsc{sendInvoice}, $x$, \textit{expayid}, \_)
-              message in response to which we generated and sent $h_i$)}
+              received a (\textsc{sendInvoice}, $x$, \textit{expayid},
+              \textit{payid}) message in response to which we generated and sent
+              $h_i$)}
+              \label{alg:protocol:pay:foc:payment:loop}
                 \State add (\textit{expayid}, $x$) to \texttt{paymentsToReport}
                 \label{alg:protocol:pay:foc:payment}
               \EndFor
@@ -1162,10 +1173,12 @@
           \State $\mathrm{HTLCs} \gets \emptyset$
           \For{every $\text{HTLC output} \in \mathtt{localCom}_n$ with number
           $i$}
-            \If{there is a (\_, $R$, \textit{expayid}, \_, $x$) entry in
-            \texttt{gotPaid} for $R$ the preimage of $\mathrm{HTLC}_i$}
+            \If{there is a (\_, $R$, \textit{expayid}, \textit{payid}, $x$)
+            entry in \texttt{gotPaid} for $R$ the preimage of $\mathrm{HTLC}_i$}
+            \label{alg:protocol:close:unilateral:check:gotpaid}
               \State remove entry from \texttt{gotPaid}
               \State add (\textit{expayid}, $x$) to \texttt{paymentsToReport}
+              \label{alg:protocol:close:unilateral:report:payment}
             \EndIf
             \State $\mathrm{sig} \gets
             \textsc{SignIBS}\left(\mathtt{localHTLC}_{n, i}, sh_{\mathrm{htlc},

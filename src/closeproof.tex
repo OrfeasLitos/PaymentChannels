@@ -8,6 +8,20 @@
         \State simulate Fig.~\ref{alg:protocol:close:unilateral} receiving
         (\textsc{forceCloseChannel}, \texttt{receipt}, \textit{pchid}) with
         \alice's ITI
+        \If{during the simulation above,
+        line~\ref{alg:protocol:close:unilateral:report:payment} of
+        Fig.~\ref{alg:protocol:close:unilateral} is simulated in \alice's ITI}
+          \State send (\textsc{newPayments}, \texttt{payment}, \alice) to
+          $\fpaynet{}_{\mathrm{, Pay}}$, where \texttt{payment} consists of the
+          tuple just added to the simulated \texttt{paymentsToReport}, appended
+          with the \textit{payid} of
+          line~\ref{alg:protocol:close:unilateral:check:gotpaid}
+          (Fig.~\ref{alg:protocol:close:unilateral},
+          line~\ref{alg:protocol:close:unilateral:report:payment})
+          \label{alg:sim:close:unilateral:report}
+          \State upon receiving (\textsc{continue}) from $\fpaynet{}_{\mathrm{,
+          Pay}}$, carry on with the simulation
+        \EndIf
       \EndIndent
       \Statex
 
@@ -172,17 +186,18 @@
   \texttt{closedChannels} are always synchronized.
 
   Regarding \texttt{updatesToReport}, in the real world it is populated
-  exclusively in line~\ref{alg:protocol:pay:raa:report} of
+  exclusively in line~\ref{alg:protocol:pay:raa:report:updates} of
   Fig.~\ref{alg:protocol:pay:revokeAndAck}. In the ideal world on the other
   hand, it is updated in line~\ref{alg:fpaynet:update:add} of
-  Fig.~\ref{alg:fpaynet:pay}, which is triggered only by an (\textsc{update})
+  Fig.~\ref{alg:fpaynet:pay}, which is triggered only by a (\textsc{newUpdate})
   message by \simulator. This message is sent only when
-  line~\ref{alg:protocol:pay:raa:report} of
+  line~\ref{alg:protocol:pay:raa:report:updates} of
   Fig.~\ref{alg:protocol:pay:revokeAndAck} is simulated by \simulator{}
-  (Fig.~\ref{alg:sim:push}, line~\ref{alg:sim:push:report}). In the real world,
-  this happens only after receiving a valid (\textsc{revokeAndAck}) message from
-  the channel counterparty and after first having sent a corresponding
-  (\textsc{commitmentSigned}) message (Fig.~\ref{alg:protocol:pay:revokeAndAck},
+  (Fig.~\ref{alg:sim:push}, line~\ref{alg:sim:push:report:updates}). In the real
+  world, this happens only after receiving a valid (\textsc{revokeAndAck})
+  message from the channel counterparty and after first having sent a
+  corresponding (\textsc{commitmentSigned}) message
+  (Fig.~\ref{alg:protocol:pay:revokeAndAck},
   line~\ref{alg:protocol:pay:revokeAndAck:ensure} and
   Fig.~\ref{alg:protocol:pay:commitmentSigned},
   lines~\ref{alg:protocol:pay:commit:nomark}
@@ -274,12 +289,12 @@
   on-chain and either \alice's off-chain balance is not equal to zero, or if her
   on-chain balance is not the expected one, as reported by \simulator. This
   event can never happen for the following reasons. Firstly, as we have seen,
-  \simulator{} reports all updates with an (\textsc{update}) message
-  (Fig.~\ref{alg:sim:push}, line~\ref{alg:sim:push:report}) and a
+  \simulator{} reports all updates with a (\textsc{newUpdate}) message
+  (Fig.~\ref{alg:sim:push}, line~\ref{alg:sim:push:report:updates}) and a
   (\textsc{resolvePays}) message; upon receiving the latter and given that it
   doesn't halt, \fpaynet{} updates \texttt{offChainBalance}(\alice) if she is
   the payer or payee of one of the resolved payments
-  (Fig.~\ref{alg:fpaynet:resolvepay},
+  (Fig.~\ref{alg:fpaynet:resolvepay:honestpayer},
   lines~\ref{alg:fpaynet:resolvepay:corr:credit},~\ref{alg:fpaynet:resolvepay:debit}
   and~\ref{alg:fpaynet:resolvepay:credit}). Secondly, upon closure of each
   channel, \fpaynet{} would have halted if the closing balance were not the

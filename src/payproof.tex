@@ -40,12 +40,13 @@
         lines~\ref{alg:protocol:pay:foc:tosubmit}-\ref{alg:protocol:pay:foc:submit}
         of Fig.~\ref{alg:protocol:pay:foc} as \alice{}, using $t$ from message
         \label{alg:sim:pay:foc:run}
-        \If{during the simulation above, line~\ref{alg:protocol:pay:foc:update}
+        \If{during the simulation above, line~\ref{alg:protocol:pay:foc:payment}
         is simulated in \alice's ITI}
-          \State send (\textsc{update}, \texttt{receipt}, \texttt{diffs},
-          \alice) to $\fpaynet{}_{\mathrm{, Pay}}$, where \texttt{receipt} and
-          \texttt{diffs} are the fields just added to the simulated
-          \texttt{updatesToReport}
+          \State send (\textsc{newPayments}, \texttt{payment}, \alice) to
+          $\fpaynet{}_{\mathrm{, Pay}}$, where \texttt{payment} consists of the
+          tuple just added to the simulated \texttt{paymentsToReport}, appended
+          with the \textit{payid} mentioned in
+          line~\ref{alg:protocol:pay:foc:payment:loop}
           \label{alg:sim:foc:report}
           \State upon receiving (\textsc{continue}) from $\fpaynet{}_{\mathrm{,
           Pay}}$, carry on with the simulation
@@ -59,6 +60,8 @@
       \Indent
         \State add ($\overrightarrow{\mathtt{path}}$, \textit{payid}) to
         \texttt{payids}
+        % TODO next bullet: also add to payids payments that the adversary wants
+        % to do (i.e. on sendInvoice from A)
         \State strip \textit{payid} and \alice, simulate receiving the message
         with \alice{} ITI and further execute the parts of $\Pi_{\mathrm{LN}}$
         that correspond to honest parties
@@ -69,6 +72,7 @@
         \textsc{updateAddHtlc}} \Comment{payment failed}
           \State add $\left(\bot, \mathit{payid}\right)$ to
           \texttt{charged}(\alice)
+          \label{alg:sim:pay:failed}
           \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid}) from
           \texttt{payids}
         \EndIf
@@ -83,6 +87,19 @@
         receiving (\textsc{poll}), using $\Sigma_{\alice}$ from the message,
         with \alice's ITI
         \label{alg:sim:poll:run}
+        \If{during the simulation above, line~\ref{alg:protocol:poll:report:pay}
+        of Fig.~\ref{alg:protocol:poll:closedch} is simulated in \alice's ITI}
+          \State send (\textsc{newPayments}, \texttt{payment}, \alice) to
+          $\fpaynet{}_{\mathrm{, Pay}}$, where \texttt{payment} consists of the
+          tuple just added to the simulated \texttt{paymentsToReport}, appended
+          with the \textit{payid} stored the entry of \texttt{pendingPay}
+          referred to in line~\ref{alg:protocol:poll:report:pendingPay}
+          (Fig.~\ref{alg:protocol:poll:closedch},
+          line~\ref{alg:protocol:poll:report:pay})
+          \label{alg:sim:poll:report}
+          \State upon receiving (\textsc{continue}) from $\fpaynet{}_{\mathrm{,
+          Pay}}$, carry on with the simulation
+        \EndIf
       \EndIndent
     \end{algorithmic}
   \end{simulatorbox}
@@ -102,6 +119,20 @@
         handle subsequent messages by simulating respective ITIs of honest
         players or sending to \adversary{} the messages for corrupted players
         \label{alg:sim:push:fulfill}
+        \If{during the simulation above,
+        line~\ref{alg:protocol:pushfulfill:report} of
+        Fig.~\ref{alg:protocol:pay:push} is simulated in \alice's ITI}
+          \State send (\textsc{newPayments}, \texttt{payment}, \alice) to
+          $\fpaynet{}_{\mathrm{, Pay}}$, where \texttt{payment} consists of the
+          tuple just added to the simulated \texttt{paymentsToReport}, appended
+          with the \textit{payid} of
+          line~\ref{alg:protocol:pushfulfill:check:gotpaid}
+          (Fig.~\ref{alg:protocol:pay:push},
+          line~\ref{alg:protocol:pushfulfill:report})
+          \label{alg:sim:pushfulfill:report}
+          \State upon receiving (\textsc{continue}) from $\fpaynet{}_{\mathrm{,
+          Pay}}$, carry on with the simulation
+        \EndIf
       \EndIndent
       \Statex
 
@@ -125,16 +156,31 @@
         subsequent messages by simulating respective ITIs of honest players or
         sending to \adversary{} the messages for corrupted players
         \label{alg:sim:push:commit}
-        \If{during the simulation above, line~\ref{alg:protocol:pay:raa:report}
+        \If{during the simulation above,
+        line~\ref{alg:protocol:pay:raa:report:updates}
         of Fig.~\ref{alg:protocol:pay:revokeAndAck} is simulated in \alice's
         ITI}
-          \State send (\textsc{update}, \texttt{receipt}, \texttt{diffs},
-          \alice) to $\fpaynet{}_{\mathrm{, Pay}}$, where \texttt{receipt} and
-          \texttt{diffs} are the fields just added to the simulated
-          \texttt{updatesToReport}
+          \State send (\textsc{newUpdate}, \texttt{receipt}, \alice) to
+          $\fpaynet{}_{\mathrm{, Pay}}$, where \texttt{receipt} is the
+          field just added to the simulated \texttt{updatesToReport}
           (Fig.~\ref{alg:protocol:pay:revokeAndAck},
-          line~\ref{alg:protocol:pay:raa:report})
-          \label{alg:sim:push:report}
+          line~\ref{alg:protocol:pay:raa:report:updates})
+          \label{alg:sim:push:report:updates}
+          \State upon receiving (\textsc{continue}) from $\fpaynet{}_{\mathrm{,
+          Pay}}$, carry on with the simulation
+        \EndIf
+        \If{during the simulation above,
+        line~\ref{alg:protocol:pay:raa:report:payments}
+        of Fig.~\ref{alg:protocol:pay:revokeAndAck} is simulated in \alice's
+        ITI}
+          \State send (\textsc{newPayments}, \texttt{payments}, \alice) to
+          $\fpaynet{}_{\mathrm{, Pay}}$, where \texttt{payments} consists of the
+          fields just added to the simulated \texttt{paymentsToReport}, each
+          field appended with the respective \textit{payid} of
+          line~\ref{alg:protocol:pay:raa:loop:gotpaid}
+          (Fig.~\ref{alg:protocol:pay:revokeAndAck},
+          line~\ref{alg:protocol:pay:raa:report:payments})
+          \label{alg:sim:push:report:payments}
           \State upon receiving (\textsc{continue}) from $\fpaynet{}_{\mathrm{,
           Pay}}$, carry on with the simulation
         \EndIf
@@ -167,15 +213,18 @@
               \label{alg:sim:resolvepay:corrupted}
                 \State execute effect in
                 Fig.~\ref{alg:sim:resolvepay:corrupted:fig}
+                \label{alg:sim:resolvepay:corrupted:do}
               \ElsIf{condition in Fig.~\ref{alg:sim:resolvepay:nofulfill} is
               met} \Comment{\alice{} did not fulfill in time}
               \label{alg:sim:resolvepay:negligent}
                 \State execute effect in Fig.~\ref{alg:sim:resolvepay:nofulfill}
+                \label{alg:sim:resolvepay:negligent:do}
               \ElsIf{condition in Fig.~\ref{alg:sim:resolvepay:honest:fig} is
               met} \Comment{honest payment completed}
               \label{alg:sim:resolvepay:honest}
                 \State execute effect in
                 Fig.~\ref{alg:sim:resolvepay:honest:fig}
+                \label{alg:sim:resolvepay:honest:do}
               \EndIf
             \EndFor
           \EndFor
@@ -228,15 +277,16 @@
         \State $\Sigma_{\alice}$ contains an old $\mathtt{remoteCom}_m$ of the
         channel before \alice{} (closer to payer) on the
         $\overrightarrow{\mathtt{path}}$ that does not contain the relevant HTLC
-        and a tx that spends the delayed output of $\mathtt{remoteCom}_m \vee
-        ((\Sigma_{\alice}$ contains the most recent $\mathtt{remoteCom}_n$ or
-        $\mathtt{localCom}_n$ of the channel before \alice{} and the
+        anymore and a tx that spends the delayed output of $\mathtt{remoteCom}_m
+        \vee ((\Sigma_{\alice}$ contains the most recent $\mathtt{remoteCom}_n$
+        or $\mathtt{localCom}_n$ of the channel before \alice{} and the
         \texttt{HTLC-timeout} of the relevant HTLC $\vee$ \alice's latest
         irrevocably committed $\mathtt{remoteCom}_n$ for the channel before
         \alice{} does not contain the HTLC) $\wedge \: \Sigma_{\alice}$ contains
         the most recent $\mathtt{remoteCom}_l$ or $\mathtt{localCom}_l$ and the
-        \texttt{HTLC-success} that pays the counterparty for HTLC of the
-        channel after \alice{})
+        \texttt{HTLC-success} that pays the counterparty for HTLC of the channel
+        after \alice{})
+        \label{alg:sim:resolvepay:nofulfill:cond}
       \EndIndent
       \Statex
 
@@ -260,9 +310,11 @@
       \Indent
         \State \alice{} is the payer in $\overrightarrow{\mathtt{path}}$ AND
         ((she has received \textsc{updateFulfillHtlc} AND has subsequently sent
-        \textsc{commit} and \textsc{revokeAndAck}) OR player after \alice{} has
+        \textsc{commit} and \textsc{revokeAndAck}) OR (player after \alice{} has
         irrevocably fulfilled the HTLC on-chain (i.e. his \texttt{HTLC-success}
-        is in $\Sigma_{\alice}$))
+        is in $\Sigma_{\alice}$) AND \alice{} has received \textsc{poll} to
+        observe it))
+        \label{alg:sim:resolvepay:honest:cond}
       \EndIndent
       \Statex
 
@@ -515,12 +567,13 @@
   (\textsc{resolvePays}, \texttt{charged}). $\fpaynet{}_{\mathrm{, Pay}}$
   handles this message in Fig.~\ref{alg:fpaynet:resolvepay}
   and~\ref{alg:fpaynet:resolvepay:loops}, where, if it does not halt
-  (Fig.~\ref{alg:fpaynet:resolvepay},
+  (Fig.~\ref{alg:fpaynet:resolvepay:honestpayer},
   lines~\ref{alg:fpaynet:resolvepay:halt:ds},~\ref{alg:fpaynet:resolvepay:halt:rel}
   and~\ref{alg:fpaynet:resolvepay:halt:abs} and
   Fig.~\ref{alg:fpaynet:resolvepay:loops},
-  line~\ref{alg:fpaynet:resolvepay:loops:halt:do}), it updates the state of each
-  affected channel (Fig.~\ref{alg:fpaynet:resolvepay:loops},
+  lines~\ref{alg:fpaynet:resolvepay:loops:halt:do},~\ref{alg:fpaynet:resolvepay:loops:indiffs:debit:halt}
+  and~\ref{alg:fpaynet:resolvepay:loops:indiffs:credit:halt}), it updates the
+  state of each affected channel (Fig.~\ref{alg:fpaynet:resolvepay:loops},
   line~\ref{alg:fpaynet:resolvepay:loops:update:do}) and does not send any
   message, thus control returns to \environment. We will prove that, under $\neg
   P \wedge \neg Q \wedge \neg R \wedge \neg S$, $\fpaynet{}_{\mathrm{, Pay}}$
@@ -529,31 +582,31 @@
 
   $\fpaynet{}_{\mathrm{, Pay}}$ halts in
   line~\ref{alg:fpaynet:resolvepay:halt:ds} of
-  Fig.~\ref{alg:fpaynet:resolvepay} if the honest player \dave{} was charged for
-  a payment over a channel that was closed without using a commitment
-  transaction. Like $E$, this event is a subset of $P$, thus cannot happen given
-  $\neg P$.
+  Fig.~\ref{alg:fpaynet:resolvepay:honestpayer} if the honest player \dave{} was
+  charged for a payment over a channel that was closed without using a
+  commitment transaction. Like $E$, this event is a subset of $P$, thus cannot
+  happen given $\neg P$.
 
   $\fpaynet{}_{\mathrm{, Pay}}$ halts in
   line~\ref{alg:fpaynet:resolvepay:halt:rel} of
-  Fig.~\ref{alg:fpaynet:resolvepay} if the player \dave{} charged is an honest
-  member of the payment path, has \textsc{poll}ed in time to catch a malicious
-  closure (event $A$) but a malicious closure succeeded (event $B$).
+  Fig.~\ref{alg:fpaynet:resolvepay:honestpayer} if the player \dave{} charged is
+  an honest member of the payment path, has \textsc{poll}ed in time to catch a
+  malicious closure (event $A$) but a malicious closure succeeded (event $B$).
   $\fpaynet{}_{\mathrm{, Pay}}$ halts in
   line~\ref{alg:fpaynet:resolvepay:halt:abs} of
-  Fig.~\ref{alg:fpaynet:resolvepay} if \dave{} is not the payer, no malicious
-  closure succeeded ($\neg B$) and \dave{} has \textsc{poll}ed in time twice to
-  learn the preimage of the HTLC early enough (event $C$) and has attempted to
-  fulfill on chain at the right moment (event $D$). $\fpaynet{}_{\mathrm{,
-  Pay}}$ also halts if the two expiries do not have the expected distance (event
-  $F$) -- i.e. halts in the event $(A \wedge B) \vee (\neg B \wedge (F \vee (C
-  \wedge D)))$. $\simulator_{\mathrm{LN - Reg - Open}}$ decides that \dave{} is
-  charged if his previous counterparty did a malicious closure to a channel
-  version without the HTLC and spent their (delayed) output ($B$), or if his
-  next counterparty fulfilled (event $G$) and his previous counterparty timed
-  out the HTLC (event $H$) (Fig.~\ref{alg:sim:resolvepay},
-  line~\ref{alg:sim:resolvepay:negligent}), -- i.e. \dave{} is charged in the
-  event $B \vee (G \wedge H)$.
+  Fig.~\ref{alg:fpaynet:resolvepay:honestpayer} if \dave{} is not the payer, no
+  malicious closure succeeded ($\neg B$) and \dave{} has \textsc{poll}ed in time
+  twice to learn the preimage of the HTLC early enough (event $C$) and has
+  attempted to fulfill on chain at the right moment (event $D$).
+  $\fpaynet{}_{\mathrm{, Pay}}$ also halts if the two expiries do not have the
+  expected distance (event $F$) -- i.e. halts in the event $(A \wedge B) \vee
+  (\neg B \wedge (F \vee (C \wedge D)))$. $\simulator_{\mathrm{LN - Reg -
+  Open}}$ decides that \dave{} is charged if his previous counterparty did a
+  malicious closure to a channel version without the HTLC and spent their
+  (delayed) output ($B$), or if his next counterparty fulfilled (event $G$) and
+  his previous counterparty timed out the HTLC (event $H$)
+  (Fig.~\ref{alg:sim:resolvepay}, line~\ref{alg:sim:resolvepay:negligent}), --
+  i.e. \dave{} is charged in the event $B \vee (G \wedge H)$.
 
   We will now show that $\Pr[A \wedge B | \neg P \wedge \neg Q \wedge \neg R
   \wedge \neg S] = 0 \wedge \Pr[(C \wedge D) \wedge (G \wedge H) | \neg P \wedge
@@ -639,7 +692,60 @@
   no case \dave{} is charged for the payment, i.e. $\Pr[(C \wedge D) \wedge (G
   \wedge H) | \neg P \wedge \neg Q \wedge \neg R \wedge \neg S] = 0$.
 
-  It remains to be proven that the halt of
+  We will now show that the halt of
+  line~\ref{alg:fpaynet:resolvepay:failed:reported} in
+  Fig.~\ref{alg:fpaynet:resolvepay} does not occur with non-negligible
+  probability. If the check of line~\ref{alg:fpaynet:resolvepay:failed:if}
+  succeeds, this means that line~\ref{alg:sim:pay:failed} of
+  Fig.~\ref{alg:sim:pay} was executed by \simulator{}, therefore the payment
+  referred to by \textit{payid} failed, therefore neither \alice{} nor \bob{}
+  saw the relevant HTLC being fulfilled; call this event $T$. If now the check
+  of line~\ref{alg:fpaynet:resolvepay:failed:reported:if} succeeds, this means
+  that \fpaynet{} has received the relevant entry from \simulator{} in a
+  \textsc{newPayments} message (Fig.~\ref{alg:fpaynet:payments},
+  line~\ref{alg:fpaynet:payments:add:pendingdiffs}). This in turn happens in one
+  of the following cases: line~\ref{alg:sim:foc:report} of
+  Fig.~\ref{alg:sim:pay}, line~\ref{alg:sim:poll:report} of
+  Fig.~\ref{alg:sim:pay}, line~\ref{alg:sim:pushfulfill:report} of
+  Fig.~\ref{alg:sim:push}, and line~\ref{alg:sim:push:report:payments} of
+  Fig.~\ref{alg:sim:push}. Line~\ref{alg:sim:foc:report} of
+  Fig.~\ref{alg:sim:pay} can only be executed if the simulated \alice{} or
+  \bob{} has successfully fulfilled on chain the relevant HTLC
+  (Fig.~\ref{alg:protocol:pay:foc},
+  line~\ref{alg:protocol:pay:foc:payment:loop}), which however is incompatible
+  with $T$. Line~\ref{alg:sim:poll:report} of Fig.~\ref{alg:sim:pay} is executed
+  if the simulated \alice{} has executed line~\ref{alg:protocol:poll:report:pay}
+  of Fig.~\ref{alg:protocol:poll:closedch}, which means that the relevant
+  (offered) HTLC has been spent (i.e. fulfilled)
+  (line~\ref{alg:protocol:poll:htlc:spent:loop},
+  Fig.~\ref{alg:protocol:poll:closedch}), which is incompatible with $T$.
+  Line~\ref{alg:sim:pushfulfill:report} of Fig.~\ref{alg:sim:push} is executed
+  if the simulated \bob{} executes line~\ref{alg:protocol:pushfulfill:report} of
+  Fig.~\ref{alg:protocol:pay:push}, which happens only if a relevant entry
+  exists in \texttt{gotPaid} (line~\ref{alg:protocol:pushfulfill:check:gotpaid},
+  Fig.~\ref{alg:protocol:pay:push}), which in turn can only be added in
+  line~\ref{alg:protocol:pay:updateAddHtlc:gotpaid} of
+  Fig.~\ref{alg:protocol:pay:updateAddHtlc}. In order to reach that point of the
+  execution however, all \textsc{updateAddHtlc} checks must have passed, which
+  is incompatible with $T$. The last possible case in which the entry is added
+  to \texttt{pendingDiffs} is line~\ref{alg:sim:push:report:payments} of
+  Fig.~\ref{alg:sim:push}. This is executed if
+  line~\ref{alg:protocol:pay:raa:report:payments} of
+  Fig.~\ref{alg:protocol:pay:revokeAndAck} is executed either in the simulated
+  \alice{} or in the simulated \bob. The field \texttt{updateDiffs} can be
+  populated only in line~\ref{alg:protocol:pushfulfill:updatediffs} of
+  Fig.~\ref{alg:protocol:pay:push} for \alice{} or
+  line~\ref{alg:protocol:pay:updateFulfillHtlc:updatediffs} of
+  Fig.~\ref{alg:protocol:pay:updateFulfillHtlc} for \bob. The former case can
+  only happen if there was a corresponding entry in \texttt{gotPaid}, which, as
+  we saw before, is incompatible with $T$. Likewise, the latter can only happen
+  if \alice{} receives an \textsc{updateFulfillHtlc} message for the HTLC
+  corresponding to the payment, which can only happen if no
+  \textsc{updateAddHtlc} fails, which is contrary to $T$. Therefore the halt of
+  Fig.~\ref{alg:fpaynet:resolvepay},
+  line~\ref{alg:fpaynet:resolvepay:failed:reported} cannot happen.
+
+  Moving on, we have to prove that the halt of
   line~\ref{alg:fpaynet:resolvepay:loops:halt:do} in
   Fig.~\ref{alg:fpaynet:resolvepay:loops} does not occur with non-negligible
   probability. Indeed, \simulator{} only reports the payment as resolved in
@@ -658,13 +764,106 @@
   committed. This only happens when both sides send a \textsc{revokeAndAck} that
   updates the channel from a version that contains the relevant HTLC to a
   version that doesn't; and when an honest party receives such a
-  \textsc{revokeAndAck} message, it logs the update in \texttt{updatesToReport}
+  \textsc{revokeAndAck} message, it logs the new receipt, along with the latest
+  balance changes (\texttt{diffs}) in \texttt{updatesToReport}
   (Fig.~\ref{alg:protocol:pay:revokeAndAck},
-  line~\ref{alg:protocol:pay:raa:report}) which causes \simulator{} to report
-  the update to \fpaynet{} (Fig.~\ref{alg:sim:push},
-  line~\ref{alg:sim:push:report}). We therefore conclude that \fpaynet{} never
-  halts on line~\ref{alg:fpaynet:resolvepay:loops:halt:do} of
+  line~\ref{alg:protocol:pay:raa:report:updates}) which causes \simulator{} to
+  report the update to \fpaynet{} (Fig.~\ref{alg:sim:push},
+  line~\ref{alg:sim:push:report:updates}). We therefore conclude that \fpaynet{}
+  never halts on line~\ref{alg:fpaynet:resolvepay:loops:halt:do} of
   Fig.~\ref{alg:fpaynet:resolvepay:loops}.
+
+  It remains to be proven that \fpaynet{} does not halt with non-negligible
+  probability in lines~\ref{alg:fpaynet:resolvepay:loops:indiffs:debit:halt}
+  and~\ref{alg:fpaynet:resolvepay:loops:indiffs:credit:halt} of
+  Fig.~\ref{alg:fpaynet:resolvepay:loops}. For the halt of
+  line~\ref{alg:fpaynet:resolvepay:loops:indiffs:debit:halt} to occur, the
+  player charged must be the payer (as intended by the original \textsc{pay}
+  messsage) and honest, but its \texttt{pendingDiffs} must not contain a
+  corresponding entry for that payment. This however cannot happen for the
+  following reason. As execution is in the loop of
+  Fig.~\ref{alg:fpaynet:resolvepay},
+  line~\ref{alg:fpaynet:resolvepay:innerloop}, it is $(\dave, \mathit{payid})
+  \in \mathtt{charged}(\alice)$. As the code of
+  Fig.~\ref{alg:fpaynet:resolvepay:loops} is being run, either
+  line~\ref{alg:fpaynet:resolvepay:corrupted:gotoloops} of
+  Fig.~\ref{alg:fpaynet:resolvepay}
+  or~\ref{alg:fpaynet:resolvepay:honest:gotoloops} of
+  Fig.~\ref{alg:fpaynet:resolvepay:honestpayer} has been executed, so
+  line~\ref{alg:fpaynet:resolvepay:continue} has not been executed in the same
+  iteration of the loop, therefore $\dave \neq \bot$. Additionally, since
+  \fpaynet{} received a \textsc{resolvePays} message, \simulator{} has executed
+  Fig.~\ref{alg:sim:resolvepay} and added (\dave, \textit{payid}) to
+  \texttt{charged}(\alice) in exactly one of
+  lines~\ref{alg:sim:resolvepay:corrupted:do},~\ref{alg:sim:resolvepay:negligent:do},
+  or~\ref{alg:sim:resolvepay:honest:do}. Furthermore, since $\alice \notin
+  \mathtt{corrupted}$ (Fig.~\ref{alg:fpaynet:resolvepay:loops},
+  line~\ref{alg:fpaynet:resolvepay:loops:indiffs:debit:cond}), the condition of
+  Fig.~\ref{alg:sim:resolvepay:corrupted:fig} does not hold and since \alice{}
+  is the payer ($\dave{} = \alice$), there is no channel ``before'' her,
+  therefore the condition of Fig.~\ref{alg:sim:resolvepay:nofulfill} does not
+  hold either. Therefore the only way for \texttt{charged}(\alice) to contain
+  (\alice, \textit{payid}) is if the condition of
+  Fig~\ref{alg:sim:resolvepay:honest:fig} is true. The condition holds either
+  when \alice{} has received \textsc{updateFulfillHtlc} on the fulfilment of the
+  payment, followed by a \textsc{revokeAndAck}, or if her counterparty has
+  fulfilled on-chain and she has checked the blockchain since. In the first
+  case, the tuple (\textit{expayid}, \textit{payid}, \_) would have been added
+  to \texttt{pendingDiffs}(\alice) as \simulator{} would have simulated
+  line~\ref{alg:protocol:pay:updateFulfillHtlc:updatediffs} of
+  Fig.~\ref{alg:protocol:pay:updateFulfillHtlc} on receiving
+  \textsc{updateFulfillHtlc}, thus adding the tuple to \texttt{updateDiffs}, and
+  line~\ref{alg:protocol:pay:raa:report:payments} of
+  Fig.~\ref{alg:protocol:pay:revokeAndAck}, thus prompting \simulator{} to send
+  the tuple to \fpaynet{} (Fig.~\ref{alg:sim:push},
+  line~\ref{alg:sim:push:report:payments}), which would subsequently add it to
+  \texttt{pendingDiffs} (Fig.~\ref{alg:fpaynet:pay},
+  line~\ref{alg:fpaynet:payments:add:pendingdiffs}). Therefore in this case the
+  halt is impossible. In the alternative case, since \alice{} must have
+  \textsc{poll}ed after her counterparty's \texttt{HTLC-success} was settled
+  on-chain (Fig.~\ref{alg:sim:resolvepay:honest:fig},
+  line~\ref{alg:sim:resolvepay:honest:cond}) and therefore the loop of
+  line~\ref{alg:protocol:poll:closedch:loop} in
+  Fig.~\ref{alg:protocol:poll:closedch} must have been executed by \simulator{}
+  while simulating \alice, as well as the loop of
+  line~\ref{alg:protocol:poll:htlc:spent:loop} of the same figure and eventually
+  line~\ref{alg:protocol:poll:report:pay} in that figure, which would have
+  prompted in turn \simulator{} to send the relevant \textsc{newPayments}
+  message to \fpaynet{} (Fig.~\ref{alg:sim:pay},
+  line~\ref{alg:sim:poll:report}). In that case however the tuple
+  (\texttt{expayid}, \texttt{payid}, \_) would be in
+  \texttt{pendingDiffs}(\alice) and the check of
+  line~\ref{alg:fpaynet:resolvepay:loops:indiffs:debit:cond},
+  Fig.~\ref{alg:fpaynet:resolvepay:loops} would fail, therefore preventing the
+  functionality from halting.
+
+  We will now prove that the halt of
+  line~\ref{alg:fpaynet:resolvepay:loops:indiffs:credit:halt} in
+  Fig.~\ref{alg:fpaynet:resolvepay:loops} does not occur. This halt would take
+  place if the payee \bob{} is honest but was not previously informed of the
+  payment, i.e. the tuple (\textit{expayid}, \textit{payid}, \_) is not in
+  \texttt{pendingDiffs}(\bob). Similarly to the argument for
+  line~\ref{alg:fpaynet:resolvepay:loops:indiffs:debit:halt}, \simulator{} added
+  (\dave, \textit{payid}) to \texttt{charged}(\bob) in exactly one of
+  lines~\ref{alg:sim:resolvepay:corrupted:do},~\ref{alg:sim:resolvepay:negligent:do},
+  or~\ref{alg:sim:resolvepay:honest:do} of Fig.~\ref{alg:sim:resolvepay}. In the
+  first case, there was a player on the path that fulfilled the payment. This
+  can only happen if first \bob{} has fulfilled the payment and irrevocably
+  committed to a channel version that resolves the HTLC to his favour, therefore
+  \bob{} has either sent a relevant \textsc{updateFulfillHtlc} and
+  \textsc{revokeAndAck} or has fulfilled on-chain. As we saw previously, both
+  these scenarios would lead to \texttt{pendingDiffs}(\bob) containing the
+  (\texttt{expayid}, \texttt{payid}, \_) tuple. In the second and third cases
+  (line~\ref{alg:sim:resolvepay:nofulfill:cond},
+  Fig.~\ref{alg:sim:resolvepay:nofulfill} and
+  line~\ref{alg:sim:resolvepay:honest:cond},
+  Fig.~\ref{alg:sim:resolvepay:honest:fig}) once again the conditions describe
+  situations which are possible only if \bob{} has already successfully
+  fulfilled, which means that he has necessarily caused \simulator{} to send the
+  payment to \fpaynet{}, which has added it to \texttt{pendingDiffs}(\bob). We
+  conclude that the halt of
+  line~\ref{alg:fpaynet:resolvepay:loops:indiffs:credit:halt},
+  Fig.~\ref{alg:fpaynet:resolvepay:loops} cannot occur.
 
   To conclude, given $\neg P \wedge \neg Q \wedge \neg R \wedge \neg S$, it is
   $\textsc{Exec}^{\fpaynet{}_{\mathrm{, Open}}, \ledger}_{\simulator_{\mathrm{LN
