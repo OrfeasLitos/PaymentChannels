@@ -38,6 +38,8 @@
           \item (\textsc{newPayments}, \texttt{payments}, \alice)
           \item (\textsc{closedChannel}, \texttt{channel}, \alice)
           \item (\textsc{resolvePays}, \texttt{charged})
+          \item (\textsc{adversaryOpenChannel}, $x$, \texttt{bobDelay},
+          \textit{tid}, \textit{intid}, \textit{from} \alice, \textit{to} \bob)
         \end{itemize}
         \item to $\simulator$:
         \begin{itemize}
@@ -56,6 +58,7 @@
           \item (\textsc{pushAdd}, \textit{pchid}, \alice)
           \item (\textsc{commit}, \textit{pchid}, \alice)
           \item (\textsc{fulfillOnChain}, $t$, \alice)
+          \item (\textsc{adversaryOpenChannel}, \textit{fchid}, \textit{intid})
         \end{itemize}
       \end{itemize}
     \end{systembox}
@@ -174,7 +177,7 @@
   interaction.
 
   \begin{figure}[H]
-    \begin{systembox}{\fpaynet{} -- open}
+    \begin{systembox}{\fpaynet{} -- initiate open}
       \begin{algorithmic}[1]
         \State Upon receiving $\left(\textsc{openChannel}, \alice, \bob, x,
         \mathit{tid}\right)$ from \alice:
@@ -185,11 +188,36 @@
           \State choose unique channel ID \textit{fchid}
           \State $\mathtt{pendingOpen}\left(\mathit{fchid}\right) \gets
           \left(\alice, \bob, x, \mathit{tid}\right)$
-          \State send $\left(\textsc{openChannel}, \alice, \bob, x,
-          \mathit{fchid}, \mathit{tid}\right)$ to \simulator
+          \State send (\textsc{openChannel}, \alice, \bob, $x$, \textit{fchid},
+          \textit{tid}) to \simulator
         \EndIndent
         \Statex
 
+        \State Upon receiving (\textsc{adversaryOpenChannel}, $x$,
+        \texttt{bobDelay}, \textit{tid}, \textit{intid}, \textit{from} \alice,
+        \textit{to} \bob) from \simulator:
+        \label{alg:fpaynet:open:adv}
+        \Indent
+          \State ensure \alice{} is \texttt{corrupted} and \bob{} is not
+          \State ensure \textit{tid}, \textit{intid} haven't been associated
+          with \alice{} when opening another channel before
+          \label{alg:fpaynet:open:adversary:valid}
+          \State choose unique channel ID \textit{fchid}
+          \State $\mathtt{pendingOpen}\left(\mathit{fchid}\right) \gets
+          \left(\alice, \bob, x, \mathit{tid}\right)$
+          \State send (\textsc{adversaryOpenChannel}, \textit{fchid},
+          \textit{intid}) to \simulator
+          \label{alg:fpaynet:open:adv:send}
+        \EndIndent
+      \end{algorithmic}
+    \end{systembox}
+    \caption{}
+    \label{alg:fpaynet:open:init}
+  \end{figure}
+
+  \begin{figure}[H]
+    \begin{systembox}{\fpaynet{} -- negotiate open}
+      \begin{algorithmic}[1]
         \State Upon receiving (\textsc{channelAnnounced}, \alice, $p_{\alice,
         F}$, $p_{\bob, F}$, \textit{fchid}, \textit{pchid}, \textit{tid}) from
         \simulator:
@@ -276,7 +304,7 @@
       \end{algorithmic}
     \end{systembox}
     \caption{}
-    \label{alg:fpaynet:open}
+    \label{alg:fpaynet:open:negotiate}
   \end{figure}
 
   When instructed to perform a payment, \fpaynet{} simply takes note of the

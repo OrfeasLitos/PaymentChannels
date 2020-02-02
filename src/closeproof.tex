@@ -153,7 +153,8 @@
   lines~\ref{alg:protocol:getnews}-\ref{alg:protocol:getnews:send}).
   \texttt{newChannels}(\alice) in the ideal world is populated in two cases:
   First, when \fpaynet{} receives (\textsc{channelOpened}) after \alice{} has
-  previously received (\textsc{checkForNew}) (Fig.~\ref{alg:fpaynet:open},
+  previously received (\textsc{checkForNew})
+  (Fig.~\ref{alg:fpaynet:open:negotiate},
   line~\ref{alg:fpaynet:channelOpened:report}). This happens when the simulated
   \alice{} ITI handles a \textsc{fundingLocked} message from \bob{}
   (Fig.~\ref{alg:sim:open:fundingLocked},
@@ -165,7 +166,7 @@
   does \texttt{newChannels}(\alice) in the ideal. The other case when
   \texttt{newChannels}(\alice) is populated is when \fpaynet{} receives
   (\textsc{fundingLocked}) after \bob{} has previously received
-  (\textsc{checkForNew}) (Fig.~\ref{alg:fpaynet:open},
+  (\textsc{checkForNew}) (Fig.~\ref{alg:fpaynet:open:negotiate},
   line~\ref{alg:fpaynet:fundingLocked:report}). This (\textsc{fundingLocked})
   can only be sent by \simulator{} if \alice{} is honest and right before the
   receiving of (\textsc{fundingLocked}) is simulated with her ITI
@@ -303,7 +304,8 @@
   we have already proven. Lastly, upon each channel opening and closing,
   \fpaynet{} updates \texttt{offChainBalance}(\alice) and
   \texttt{onChainBalance}(\alice) to reflect the event
-  (Fig.~\ref{alg:fpaynet:open}, lines~\ref{alg:fpaynet:channelOpened:offchain}
+  (Fig.~\ref{alg:fpaynet:open:negotiate},
+  lines~\ref{alg:fpaynet:channelOpened:offchain}
   and~\ref{alg:fpaynet:channelOpened:onchain} and
   Fig.~\ref{alg:fpaynet:close:func},
   lines~\ref{alg:fpaynet:close:func:alice:credit}
