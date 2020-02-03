@@ -3,9 +3,10 @@
     \begin{algorithmic}[1]
       \State For messages \textsc{register}, \textsc{registerDone},
       \textsc{toppedUp}, \textsc{openChannel}, \textsc{channelAnnounced},
-      \textsc{checkForNew}, \textsc{poll}, \textsc{pay}, \textsc{pushAdd},
-      \textsc{pushFulfill}, \textsc{fulfillOnChain} and \textsc{commit}, act
-      like \fpaynet{}, but skip lines that call \texttt{checkClosed}().
+      \textsc{checkForNew}, \textsc{poll}, \textsc{pay},
+      \textsc{adversarySendInvoice}, \textsc{pushAdd}, \textsc{pushFulfill},
+      \textsc{fulfillOnChain} and \textsc{commit}, act like \fpaynet{}, but skip
+      lines that call \texttt{checkClosed}().
       \Statex
 
       \State Upon receiving any other message $M$ from \alice:
@@ -32,6 +33,28 @@
   \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$ -- pay}
     Like $\simulator{}_{\mathrm{LN - Reg - Open}}$. Differences:
     \begin{algorithmic}[1]
+      \State Upon simulating line~\ref{alg:protocol:pay:invoice:receive} of
+      Fig.~\ref{alg:protocol:pay:invoice}:
+      \Indent
+        \If{$\exists (\bot, \bot, \mathit{payid}) \in \mathtt{payids}$ where
+        \textit{payid} is the one in the \textsc{invoice} message}
+          \State replace second $\bot$ with the $h$ found in the
+          \textsc{invoice} message
+        \EndIf
+      \EndIndent
+      \Statex
+
+      \State Upon simulating line~\ref{alg:protocol:pay:updateAddHtlc:receive}
+      of Fig.~\ref{alg:protocol:pay:updateAddHtlc} with honest \alice:
+      \Indent
+        \If{$\exists \mathit{payid}: (\overrightarrow{\mathtt{path}}, h,
+        \mathit{payid}) \in \mathtt{payids}$ where $h$ is the one in the
+        \textsc{updateAddHtlc} message}
+          \State append \alice{} to $\overrightarrow{\mathtt{path}}$
+        \EndIf
+      \EndIndent
+      \Statex
+
       \State Upon receiving $\left(\textsc{fulfillOnChain}, t, \alice\right)$
       from $\fpaynet{}_{\mathrm{, Pay}}$:
       \label{alg:sim:pay:foc:top}
@@ -58,10 +81,8 @@
       \overrightarrow{\mathtt{path}}, \mathit{expayid}, \mathit{payid}\right)$
       from $\fpaynet{}_{\mathrm{, Pay}}$:
       \Indent
-        \State add ($\overrightarrow{\mathtt{path}}$, \textit{payid}) to
+        \State add ($\overrightarrow{\mathtt{path}}$, $\top$, \textit{payid}) to
         \texttt{payids}
-        % TODO next bullet: also add to payids payments that the adversary wants
-        % to do (i.e. on sendInvoice from A)
         \State strip \textit{payid} and \alice, simulate receiving the message
         with \alice{} ITI and further execute the parts of $\Pi_{\mathrm{LN}}$
         that correspond to honest parties
@@ -73,8 +94,8 @@
           \State add $\left(\bot, \mathit{payid}\right)$ to
           \texttt{charged}(\alice)
           \label{alg:sim:pay:failed}
-          \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid}) from
-          \texttt{payids}
+          \State remove ($\overrightarrow{\mathtt{path}}$, \_, \textit{payid})
+          from \texttt{payids}
         \EndIf
       \EndIndent
       \Statex
@@ -105,6 +126,40 @@
   \end{simulatorbox}
   \caption{}
   \label{alg:sim:pay}
+\end{figure}
+
+\begin{figure}[!htbp]
+  \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$ --
+  adversarial payment}
+    \begin{algorithmic}[1]
+      \State Upon receiving (\textsc{sendInvoice}, $x$, \textit{expayid},
+      \textit{payid}, \textit{from} \alice, \textit{to} \bob) from \adversary:
+      \Indent
+      \label{alg:sim:pay:adv:invoice}
+        \State ensure \alice{} is \texttt{corrupted} and that \bob{} is not
+        \State ensure no other payment with the same \textit{payid} exists
+        \State choose unique number adn assign it to \textit{invid}
+        \State store received message along with \textit{invid}
+        \State add ($\bot$, $\bot$, \textit{payid}) to \texttt{payids}
+        \State send (\textsc{adversarySendInvoice}, $x$, \textit{expayid},
+        \textit{payid}, \textit{intid}, \textit{from} \alice, \textit{to} \bob)
+        to $\fpaynet{}_{\mathrm{, Pay}}$
+        \label{alg:sim:pay:adv:invoice:send}
+      \EndIndent
+      \Statex
+
+      \State Upon receiving (\textsc{adversarySendInvoice}, \textit{invid}) from
+      $\fpaynet{}_{\mathrm{, Open}}$:
+      \label{alg:sim:pay:adv:invoice:recv}
+      \Indent
+        \State retrieve message associated with \textit{invid}
+        \State Continue simulation with \alice{} receiving the message from \bob
+        \label{alg:sim:pay:adv:invoice:cont}
+      \EndIndent
+    \end{algorithmic}
+  \end{simulatorbox}
+  \caption{}
+  \label{alg:sim:pay:adv}
 \end{figure}
 
 \begin{figure}[!htbp]
@@ -206,7 +261,7 @@
         \label{alg:sim:resolvepay:mayberesolve}
           \ForAll{$\Sigma_{\alice} \in \Sigma$}
           \label{alg:sim:resolvepay:everystate}
-            \ForAll{$(\overrightarrow{\mathtt{path}}, \mathit{payid}) \in
+            \ForAll{$(\overrightarrow{\mathtt{path}}, \_, \mathit{payid}) \in
             \mathtt{payids} : \alice \in \overrightarrow{\mathtt{path}}$}
               \If{condition in Fig.~\ref{alg:sim:resolvepay:corrupted:fig} is
               met} \Comment{no or bad communication with \bob's previous player}
@@ -256,11 +311,17 @@
 
       \Statex \textit{Effect}:
       \Indent
-         \State add (\texttt{corrupted}, \textit{payid}) to
-         \texttt{charged}(payer) where \texttt{corrupted} is set to one of the
-         corrupted parties between \alice{} and \bob{}
-         \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid}) from
-         \texttt{payids}
+        \State add (\texttt{corrupted}, \textit{payid}) to
+        \texttt{charged}(payer) where \texttt{corrupted} is set to one of the
+        corrupted parties between \alice{} and \bob{}
+        \If{there is an $h \neq \top$ member in \texttt{payids} entry}
+        \Comment{adversarially initiated payment, functionality doesn't know
+        path}
+          \State append $\overrightarrow{\mathtt{path}}$ to
+          \texttt{charged}(\alice) entry
+        \EndIf
+        \State remove ($\overrightarrow{\mathtt{path}}$, \_, \textit{payid})
+        from \texttt{payids}
       \EndIndent
     \end{algorithmic}
   \end{simulatorbox}
@@ -292,9 +353,15 @@
 
       \Statex \textit{Effect}:
       \Indent
-         \State add (\alice, \textit{payid}) to \texttt{charged}(payer)
-         \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid}) from
-         \texttt{payids}
+        \State add (\alice, \textit{payid}) to \texttt{charged}(payer)
+        \If{there is an $h \neq \top$ member in \texttt{payids} entry}
+        \Comment{adversarially initiated payment, functionality doesn't know
+        path}
+          \State append $\overrightarrow{\mathtt{path}}$ to
+          \texttt{charged}(\alice) entry
+        \EndIf
+        \State remove ($\overrightarrow{\mathtt{path}}$, \_,\textit{payid}) from
+        \texttt{payids}
       \EndIndent
     \end{algorithmic}
   \end{simulatorbox}
@@ -321,8 +388,14 @@
       \Statex \textit{Effect}:
       \Indent
         \State add (\alice, \textit{payid}) to \texttt{charged}(\alice)
-        \State remove ($\overrightarrow{\mathtt{path}}$, \textit{payid}) from
-        \texttt{payids}
+        \If{there is an $h \neq \top$ member in \texttt{payids} entry}
+        \Comment{adversarially initiated payment, functionality doesn't know
+        path}
+          \State append $\overrightarrow{\mathtt{path}}$ to
+          \texttt{charged}(\alice) entry
+        \EndIf
+        \State remove ($\overrightarrow{\mathtt{path}}$, \_, \textit{payid})
+        from \texttt{payids}
       \EndIndent
     \end{algorithmic}
   \end{simulatorbox}
@@ -348,16 +421,16 @@
 \end{lemma}
 
 \begin{proof}
-  Before focusing on individual messages sent by \environment, we will first
-  prove that four particular forgery events happen with negligible probability.
-  Let $P$ be the event in which at some point during the execution a transaction
-  that has the following two characteristics appears in $\Sigma_{\alice}$, for
-  some honest player \alice: it spends a funding transaction of a channel that
-  contains \alice{} (and thus has a $p_{\alice, F}$ public key) and it was never
-  signed by \alice. Suppose that $m$ is the maximum number of channels that a
-  player can open and $\exists \text{ PPT } \environment_P: \Pr[P] = a$. We show
-  in Proposition~\ref{prop:forgery:ds} that $\forall \environment, \Pr[P] \leq
-  nm \cdot \mathrm{E \mhyphen ds}(k)$.
+  Before focusing on individual messages sent by \environment{} or \adversary,
+  we will first prove that four particular forgery events happen with negligible
+  probability. Let $P$ be the event in which at some point during the execution
+  a transaction that has the following two characteristics appears in
+  $\Sigma_{\alice}$, for some honest player \alice: it spends a funding
+  transaction of a channel that contains \alice{} (and thus has a $p_{\alice,
+  F}$ public key) and it was never signed by \alice. Suppose that $m$ is the
+  maximum number of channels that a player can open and $\exists \text{ PPT }
+  \environment_P: \Pr[P] = a$. We show in Proposition~\ref{prop:forgery:ds} that
+  $\forall \environment, \Pr[P] \leq nm \cdot \mathrm{E \mhyphen ds}(k)$.
 
   Let $Q$ be the event in which at some point during the execution a transaction
   that has the following two characteristics appears in $\Sigma_{\alice}$, for
@@ -399,6 +472,23 @@
   $\exists \text{ PPT } \environment_S: \Pr[S] = d$. We show in
   Proposition~\ref{prop:forgery:master} that $\forall \environment, \Pr[S] \leq
   nm \cdot \mathrm{E \mhyphen master}(k)$.
+
+  In the ideal world, when the simulated \adversary{} attempts to send a payment
+  by instructing corrupted \alice{} to send (\textsc{sendInvoice}, $x$,
+  \textit{expayid}, \textit{payid}) to the honest payee \bob, \simulator{} sends
+  (\textsc{adversarySendInvoice}, $x$, \textit{expayid}, \textit{payid},
+  \textit{intid}, \textit{from} \alice, \textit{to} \bob) to
+  $\fpaynet{}_{\mathrm{, Pay}}$ (Fig.~\ref{alg:sim:pay:adv},
+  lines~\ref{alg:sim:pay:adv:invoice}-\ref{alg:sim:pay:adv:invoice:send}). In
+  this case, $\fpaynet{}_{\mathrm{, Pay}}$ stores the intention and prompts
+  \simulator{} to continue the payment (Fig.~\ref{alg:fpaynet:pay},
+  lines~\ref{alg:fpaynet:invoice:adv}-\ref{alg:fpaynet:invoice:adv:send}), who
+  in turn simulates the receipt of \textsc{sendInvoice} by \bob{}
+  (Fig.~\ref{alg:sim:pay:adv},
+  lines~\ref{alg:sim:pay:adv:invoice:recv}-\ref{alg:sim:pay:adv:invoice:cont}).
+  In the real world, such a message by the adversarially controlled \alice{}
+  would result in the honest \bob{} sending the same invoice, therefore the two
+  behaviours are indistinguishable.
 
   We can now move on to treating individual messages sent by \environment{}
   during the execution. When \environment{} sends $\left(\textsc{pay}, \bob, x,

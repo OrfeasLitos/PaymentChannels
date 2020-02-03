@@ -40,6 +40,9 @@
           \item (\textsc{resolvePays}, \texttt{charged})
           \item (\textsc{adversaryOpenChannel}, $x$, \texttt{bobDelay},
           \textit{tid}, \textit{intid}, \textit{from} \alice, \textit{to} \bob)
+          \item (\textsc{adversarySendInvoice}, $x$, \textit{expayid},
+          \textit{payid}, \textit{invid}, \textit{from} \alice, \textit{to}
+          \bob)
         \end{itemize}
         \item to $\simulator$:
         \begin{itemize}
@@ -59,6 +62,7 @@
           \item (\textsc{commit}, \textit{pchid}, \alice)
           \item (\textsc{fulfillOnChain}, $t$, \alice)
           \item (\textsc{adversaryOpenChannel}, \textit{fchid}, \textit{intid})
+          \item (\textsc{adversarySendInvoice}, \textit{invid})
         \end{itemize}
       \end{itemize}
     \end{systembox}
@@ -333,6 +337,22 @@
         \EndIndent
         \Statex
 
+        \State Upon receiving (\textsc{adversarySendInvoice}, $x$,
+        \textit{expayid}, \textit{payid}, \textit{invid}, \textit{from} \alice,
+        \textit{to} \bob) from \simulator:
+        \label{alg:fpaynet:invoice:adv}
+        \Indent
+          \State ensure \alice{} is \texttt{corrupted} and \bob{} is not
+          \State ensure \textit{payid}, \textit{invid} haven't been associated
+          with \alice{} when starting another payment before
+          \State add (\alice, \bob, $x$, $\bot$, \textit{expayid},
+          \textit{payid}) to \texttt{pendingPay}
+          \State send (\textsc{adversarySendInvoice}, \textit{invid}) to
+          \simulator
+          \label{alg:fpaynet:invoice:adv:send}
+        \EndIndent
+        \Statex
+
         \State Upon receiving (\textsc{newUpdate}, \texttt{receipt}, \alice)
         from \simulator:
         \label{alg:fpaynet:update}
@@ -394,12 +414,17 @@
         \textsc{pushAdd}, \textsc{commit}}
         \Indent
           \ForAll{$\alice \text{ keys} \in \texttt{charged}$}
-            \ForAll{$\left(\dave, \mathit{payid}\right) \in
+            \ForAll{$\left(\dave, \mathit{payid},
+            ?\overrightarrow{\mathtt{path}}\right) \in
             \mathtt{charged}\left(\alice\right)$}
               \label{alg:fpaynet:resolvepay:innerloop}
               \State retrieve $\left(\alice, \bob, x,
               \overrightarrow{\mathtt{path}}, \mathit{expayid},
               \mathit{payid}\right)$ and remove it from \texttt{pendingPay}
+              \If{there is a $\overrightarrow{\mathtt{path}}$ in neither or both
+              the \texttt{pendingPay} and \texttt{charged} entries}
+                \State halt
+              \EndIf
               \If{$\dave{} = \bot$} \Comment{Payment failed}
               \label{alg:fpaynet:resolvepay:failed:if}
                 \If{there is an (\textit{expayid}, \textit{payid}, \_) entry in

@@ -595,6 +595,7 @@
 
         \State Upon receiving (\textsc{sendInvoice}, $x$, \textit{expayid},
         \textit{payid}) from \bob:
+        \label{alg:protocol:pay:sendinvoice:receive}
         \Indent
           \State ensure there is no (\bob, \_,\textit{expayid}, \textit{payid},
           \_) entry in \texttt{pendingGetPaid}
@@ -615,6 +616,7 @@
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{invoice}, $h$,
         \texttt{minFinalCltvExpiry}, \textit{payid}) from \bob:
+        \label{alg:protocol:pay:invoice:receive}
         \Indent
           \State ensure there is a (\bob, $x$, $\overrightarrow{\mathtt{path}}$,
           \_, \textit{payid}, ``waiting for invoice'') entry in
@@ -682,6 +684,7 @@
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{updateAddHtlc}, \textit{pchid},
         \texttt{HTLCNo}, $x$, $h$, \texttt{IncomingCltvExpiry}, $M$) from \bob:
+        \label{alg:protocol:pay:updateAddHtlc:receive}
         \Indent
           \State run code of Fig.~\ref{alg:protocol:pay:updateAddHtlc:checks} --
           \textsc{updateAddHtlc} checks
