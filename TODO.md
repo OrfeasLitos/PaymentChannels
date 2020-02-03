@@ -4,5 +4,3 @@
   E] && for all i in |in|, [Alice received (TODO) from TODO && Alice sent (news, \_, \_,
   {..}.has(receipt of in\_i)) to E]] -> [blockchain will eventually have a tx from which
   Alice will be able to unilaterally spend at least init - sum(out\_i) + sum(in\_i)]
-* add fees
-* prove actual commit secret generation secure
