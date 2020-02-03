@@ -490,6 +490,16 @@
   would result in the honest \bob{} sending the same invoice, therefore the two
   behaviours are indistinguishable.
 
+  % TODO: decide if the paragraph below is redundant
+  In the ideal world, when the simulated \adversary{} attempts to add an HTLC by
+  instructing corrupted \alice{} to send (\textsc{updateAddHtlc},
+  \textit{pchid}, \texttt{HTLCNo}, $x$, $h$, \texttt{IncomingCltvExpiry}, $M$)
+  to honest \bob, \simulator{} simply simulates the receiving of the message by
+  \bob{} and subsequently carries out the rest of the simulation. In the real
+  world, such a message by the adversarially controlled \alice{} would result in
+  \bob{} and the rest of the ITIs following the same steps as in the simulated
+  case, therefore the two behaviours are indistinguishable.
+
   We can now move on to treating individual messages sent by \environment{}
   during the execution. When \environment{} sends $\left(\textsc{pay}, \bob, x,
   \overrightarrow{\mathtt{path}}, \mathit{expayid}\right)$ to \alice{} in the
