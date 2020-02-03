@@ -102,6 +102,20 @@
   \alice{} in its entirety. Therefore, when \environment{} sends
   \textsc{forceCloseChannel}, no opportunity for distinguishability arises.
 
+  % TODO: decide if the paragraph below is redundant
+  In the ideal world, when the simulated \adversary{} attempts to cooperatively
+  close a channel by instructing corrupted \alice{} to send a \textsc{shutdown}
+  message to honest \bob, \simulator{} simply simulates the receiving of the
+  message by \bob{} and subsequently carries out the rest of the simulation. In
+  the real world, such a message by the adversarially controlled \alice{} would
+  result in \bob{} and the rest of the ITIs following the same steps as in the
+  simulated case, therefore the two behaviours are indistinguishable. Note that
+  \fpaynet{} handles gracefully the fact that it is not notified of the closing
+  negotiation until it sees the closing transaction on-chain, due to the check
+  and addition of line~\ref{alg:fpaynet:close:func:ifunnotified}
+  and~\ref{alg:fpaynet:close:func:unnotified} respectively in
+  Fig.~\ref{alg:fpaynet:close:func}.
+
   When \environment{} sends (\textsc{closeChannel}, \texttt{receipt},
   \textit{pchid}) to \alice, in both the ideal and the real world the request
   will be further processed only if the identical checks of
