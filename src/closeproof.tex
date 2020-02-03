@@ -259,6 +259,31 @@
   \texttt{paymentsToReport} that are sent to \environment{} are exactly the same
   in the ideal and the real world.
 
+  Because \simulator{} now sends an additional \textsc{newPayments} message
+  (line~\ref{alg:sim:close:unilateral:report}, Fig.~\ref{alg:sim:close}) which
+  prompts \fpaynet{} to populate \texttt{paymentsToReport}
+  (line~\ref{alg:fpaynet:payments:add:pendingdiffs},
+  Fig.~\ref{alg:fpaynet:pay}), we have to revisit the halt of
+  line~\ref{alg:fpaynet:resolvepay:failed:reported} in
+  Fig.~\ref{alg:fpaynet:resolvepay} to ensure that it still cannot occur with
+  non-negligible probability. Indeed, the halt happens if either a payment has
+  been reported as successful and is found in the \texttt{pendingDiffs} of one
+  of the two endpoints, but the payment is now found by \fpaynet{} to have
+  failed. This particular payment is considered as failed by \fpaynet{} only if
+  \simulator{} has included it in \texttt{charged}
+  (line~\ref{alg:fpaynet:resolvepay:innerloop},
+  Fig.~\ref{alg:fpaynet:resolvepay}) and the first element is $\bot$
+  (line~\ref{alg:fpaynet:resolvepay:failed:if},
+  Fig.~\ref{alg:fpaynet:resolvepay}), which can happen only in case
+  line~\ref{alg:sim:pay:failed} of Fig.~\ref{alg:sim:pay} was previously
+  executed by \simulator. As we saw in detail in the proof of
+  Lemma~\ref{lemma:pay} when focussing on the fact that the same halt could
+  never occur however, in the case of line~\ref{alg:sim:pay:failed} of
+  Fig.~\ref{alg:sim:pay} none of the events that trigger \simulator{} to send a
+  report of the success of this particular payment to \fpaynet{} via a
+  \textsc{newPayments} message could have occurred, therefore the halt in
+  question can still never happen.
+
   Lastly, in the ideal world, whenever (\textsc{read}) is sent to \ledger{} and
   a reply is received, the function \texttt{checkClosed}
   (Fig.~\ref{alg:fpaynet:close:func}) is called with the reply of the \ledger{}
