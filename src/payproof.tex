@@ -65,6 +65,7 @@
         \label{alg:sim:pay:foc:run}
         \If{during the simulation above, line~\ref{alg:protocol:pay:foc:payment}
         is simulated in \alice's ITI}
+        \label{alg:sim:foc:report:if}
           \State send (\textsc{newPayments}, \texttt{payment}, \alice) to
           $\fpaynet{}_{\mathrm{, Pay}}$, where \texttt{payment} consists of the
           tuple just added to the simulated \texttt{paymentsToReport}, appended
@@ -110,6 +111,7 @@
         \label{alg:sim:poll:run}
         \If{during the simulation above, line~\ref{alg:protocol:poll:report:pay}
         of Fig.~\ref{alg:protocol:poll:closedch} is simulated in \alice's ITI}
+        \label{alg:sim:poll:report:if}
           \State send (\textsc{newPayments}, \texttt{payment}, \alice) to
           $\fpaynet{}_{\mathrm{, Pay}}$, where \texttt{payment} consists of the
           tuple just added to the simulated \texttt{paymentsToReport}, appended
@@ -177,6 +179,7 @@
         \If{during the simulation above,
         line~\ref{alg:protocol:pushfulfill:report} of
         Fig.~\ref{alg:protocol:pay:push} is simulated in \alice's ITI}
+        \label{alg:sim:pushfulfill:report:if}
           \State send (\textsc{newPayments}, \texttt{payment}, \alice) to
           $\fpaynet{}_{\mathrm{, Pay}}$, where \texttt{payment} consists of the
           tuple just added to the simulated \texttt{paymentsToReport}, appended
@@ -228,6 +231,7 @@
         line~\ref{alg:protocol:pay:raa:report:payments}
         of Fig.~\ref{alg:protocol:pay:revokeAndAck} is simulated in \alice's
         ITI}
+        \label{alg:sim:push:report:payments:if}
           \State send (\textsc{newPayments}, \texttt{payments}, \alice) to
           $\fpaynet{}_{\mathrm{, Pay}}$, where \texttt{payments} consists of the
           fields just added to the simulated \texttt{paymentsToReport}, each

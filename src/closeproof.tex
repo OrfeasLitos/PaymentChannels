@@ -11,6 +11,7 @@
         \If{during the simulation above,
         line~\ref{alg:protocol:close:unilateral:report:payment} of
         Fig.~\ref{alg:protocol:close:unilateral} is simulated in \alice's ITI}
+        \label{alg:sim:close:unilateral:report:if}
           \State send (\textsc{newPayments}, \texttt{payment}, \alice) to
           $\fpaynet{}_{\mathrm{, Pay}}$, where \texttt{payment} consists of the
           tuple just added to the simulated \texttt{paymentsToReport}, appended
@@ -158,12 +159,14 @@
 
   When \environment{} sends (\textsc{getNews}) to \alice, in the ideal world
   \fpaynet{} sends (\textsc{news}, \texttt{newChannels}(\alice),
-  \texttt{closedChannels}(\alice), \texttt{updatesToReport}\linebreak(\alice))
-  to \environment{} and empties these fields (Fig.~\ref{alg:fpaynet:daemon},
+  \texttt{closedChannels}(\alice), \texttt{updatesToReport}\linebreak(\alice),
+  \texttt{paymentsToReport}(\alice)) to \environment{} and empties these fields
+  (Fig.~\ref{alg:fpaynet:daemon},
   lines~\ref{alg:fpaynet:getnews}-\ref{alg:fpaynet:getnews:send}). In the real
   world, \alice{} sends (\textsc{news}, \texttt{newChannels},
-  \texttt{closedChannels}, \texttt{updatesToReport}) to \environment{} and
-  empties these fields as well (Fig.~\ref{alg:protocol:poll},
+  \texttt{closedChannels}, \texttt{updatesToReport}, \texttt{paymentsToReport})
+  to \environment{} and empties these fields as well
+  (Fig.~\ref{alg:protocol:poll},
   lines~\ref{alg:protocol:getnews}-\ref{alg:protocol:getnews:send}).
   \texttt{newChannels}(\alice) in the ideal world is populated in two cases:
   First, when \fpaynet{} receives (\textsc{channelOpened}) after \alice{} has
@@ -227,6 +230,34 @@
   line~\ref{alg:sim:push:commit}). We conclude that the \texttt{updatesToReport}
   sent to \environment{} in either the real or the ideal world are always
   identical.
+
+  As far as \texttt{paymentsToReport} is concerned, in the real world it is
+  populated in one of following cases: line~\ref{alg:protocol:pay:foc:payment}
+  of Fig.~\ref{alg:protocol:pay:foc}, line~\ref{alg:protocol:poll:report:pay} of
+  Fig.~\ref{alg:protocol:poll:closedch},
+  line~\ref{alg:protocol:pushfulfill:report} of
+  Fig.~\ref{alg:protocol:pay:push}, and
+  line~\ref{alg:protocol:pay:raa:report:payments} of
+  Fig.~\ref{alg:protocol:pay:revokeAndAck},
+  line~\ref{alg:protocol:close:unilateral:report:payment} of
+  Fig.~\ref{alg:protocol:close:unilateral}. All of these cases can occur in the
+  simulation of the ideal world in the same way, which would result in
+  \simulator{} informing \fpaynet{}
+  (lines~\ref{alg:sim:foc:report:if}-\ref{alg:sim:foc:report} of
+  Fig.~\ref{alg:sim:pay},
+  lines~\ref{alg:sim:poll:report:if}-\ref{alg:sim:poll:report} of
+  Fig.~\ref{alg:sim:pay},
+  lines~\ref{alg:sim:pushfulfill:report:if}-\ref{alg:sim:pushfulfill:report} of
+  Fig.~\ref{alg:sim:push},
+  lines~\ref{alg:sim:push:report:payments:if}-\ref{alg:sim:push:report:payments}
+  of Fig.~\ref{alg:sim:push}, and
+  lines~\ref{alg:sim:close:unilateral:report:if}-\ref{alg:sim:close:unilateral:report}
+  of Fig.~\ref{alg:sim:close} respectively) of the exact same payments. In turn,
+  \fpaynet{} would store the new payments (Fig.~\ref{alg:fpaynet:pay},
+  line~\ref{alg:fpaynet:payments:add:pendingdiffs}) and report them back to
+  \environment{} upon receiving \textsc{getNews}. We therefore conclude that the
+  \texttt{paymentsToReport} that are sent to \environment{} are exactly the same
+  in the ideal and the real world.
 
   Lastly, in the ideal world, whenever (\textsc{read}) is sent to \ledger{} and
   a reply is received, the function \texttt{checkClosed}
