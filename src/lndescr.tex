@@ -218,8 +218,10 @@
     In LN zero-hop payments are also carried out using HTLCs.
 
     LN gives the possibility for intermediaries to charge a fee for their
-    service, but such fees are not incorporated in the current analysis.
-    Furthermore, LN leverages the Sphinx onion packet scheme~\cite{sphinx} to
-    increase the privacy of payments, but we do not formaly analyze the privacy
-    of LN in this work -- we just use it in our protocol description to
-    syntactically match the message format used by LN.
+    service, but such fees are not incorporated in the current analysis for the
+    benefit of avoiding the added complexity and making it easier for the
+    functionality to keep track of the correct balances. Furthermore, LN
+    leverages the Sphinx onion packet scheme~\cite{sphinx} to increase the
+    privacy of payments, but we do not formaly analyze the privacy of LN in this
+    work -- we just use it in our protocol description to syntactically match
+    the message format used by LN.
