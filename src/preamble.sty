@@ -154,6 +154,13 @@
 \newcounter{figcount}
 \newcommand{\figlabel}[1]{\refstepcounter{figcount}\arabic{figcount}\label{#1}}
 
+% redden contents if \toredden is true
+\newcommand{\redden}[1]{%
+  \ifthenelse{\equal{\toredden}{true}}{%
+    \textcolor{red}{#1}%
+  }{#1}%
+}
+
 % argmin and argmax commands
 \DeclareMathOperator*{\argmax}{argmax}
 \DeclareMathOperator*{\argmin}{argmin}
