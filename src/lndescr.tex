@@ -128,10 +128,10 @@
     mitigated. The mitigation has the following form. At the time of creation of
     a new commitment, both parties will know \bob's ``revocation'' public key
     $pk_{\mathrm{rev}, B}$, but no party knows its corresponding secret -- the
-    key can only be computed by combining one secret value that \alice{} knows
-    $sk_{\mathrm{com}, n, A}$ and one secret value that \bob{} knows
-    $sk_{\mathrm{com}, n, B}$. \alice{} therefore can prevent \bob{} from using
-    his revocation key until she sends him $sk_{\mathrm{com}, n, A}$. Therefore,
+    key can only be computed by combining one secret value $sk_{\mathrm{com}, n,
+    A}$ that \alice{} knows and one secret value $sk_{\mathrm{com}, n, B}$ that
+    \bob{} knows. \alice{} therefore can prevent \bob{} from using his
+    revocation key until she sends him $sk_{\mathrm{com}, n, A}$. Therefore,
     \alice{} will send \bob{} $sk_{\mathrm{com}, n, A}$ only after the new
     commitment transaction is built and signed. Thus \bob{} cannot abuse his
     revocation key on a commitment before this transaction is revoked. We note
