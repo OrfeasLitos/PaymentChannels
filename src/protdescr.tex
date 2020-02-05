@@ -94,6 +94,8 @@
     balance of each player to the appropriate value after the payment is
     complete. After this last update, each party keeps a note to inform
     \environment{} about the new balance when it receives (\textsc{getNews}).
+    \alice{} and \charlie{} also keep a note to inform \environment{} that the
+    payment it had asked for succeeded.
 
     Observe that while locked up in an HTLC, funds do not belong to either
     player; they are rather in a temporary, transitive state. If one party
