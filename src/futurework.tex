@@ -1,6 +1,6 @@
-\section{Future Work}
-  In order to remain tractable, the current analysis omits some parts of the
-  lightning specification. In particular, the specification defines how
+\redden{\section{Future Work}}
+  \redden{In order to remain tractable, the current analysis omits some parts of
+  the lightning specification. In particular, the specification defines how
   intermediaries of multi-hop payments can charge a fee for their service, a
   feature that we did not include to avoid the added complexity. Furthermore,
   the per-update secret generation is not done with a PRF according to the
@@ -18,30 +18,30 @@
   to a compromise or fail to agree. Lastly, most Bitcoin nodes do not relay
   transactions that include outputs with tiny amounts of coins, a.k.a ``dust''
   outputs, to avoid bloating the blockchain. The lightning specification
-  provides extensive instructions as to how to prune such outputs.
+  provides extensive instructions as to how to prune such outputs.}
 
-  All aforementioned parts of the protocol were not analysed so that the
+  \redden{All aforementioned parts of the protocol were not analysed so that the
   security of the core parts of the lightning protocol could be discussed
   without distractions. In order for the analysis to cover the entirety of the
   current version of the lightning specification however, the aforementioned
   features should be incorporated and their security should be proven. This
-  expansion of the analysis is left as future work.
+  expansion of the analysis is left as future work.}
 
-  In a different direction, big parts of the security proof of the current work
-  consist of an exhaustive enumeration of the possible messages that
-  \environment{} and \adversary{} can send to the protocol, the simulator or the
-  functionality and tracking how such messages would change the flow of the
-  execution of the ideal and the real world. It is then argued that in all cases
-  the messages that would be sent to \environment{} and \adversary{} are
+  \redden{In a different direction, big parts of the security proof of the
+  current work consist of an exhaustive enumeration of the possible messages
+  that \environment{} and \adversary{} can send to the protocol, the simulator
+  or the functionality and tracking how such messages would change the flow of
+  the execution of the ideal and the real world. It is then argued that in all
+  cases the messages that would be sent to \environment{} and \adversary{} are
   indistinguishable. These parts of the proof are good candidates for rewriting
   in the environment of an automated proof assistant~\cite{mccarthy} to instill
   additional certainty that all possible execution paths are indeed checked and
   do not contain subtle sources of distinguishability. Developing an environment
   that aids in the production and verification of indistinguishability proofs in
-  the framework of Universal Composition is left as future work.
+  the framework of Universal Composition is left as future work.}
 
-  The present analysis constitutes the first comprehensive treatment in the
-  Universal Composability framework of a deployed layer-2 protocol on top of a
-  functional ledger. It can be extended and adapted to analyze other similar
+  \redden{The present analysis constitutes the first comprehensive treatment in
+  the Universal Composability framework of a deployed layer-2 protocol on top of
+  a functional ledger. It can be extended and adapted to analyze other similar
   protocols that achieve different security goals or use another ledger as base
-  layer.
+  layer.}

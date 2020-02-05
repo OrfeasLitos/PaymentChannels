@@ -11,17 +11,19 @@
   (\textsc{forceCloseChannel}).
 
   When \fpaynet{} receives (\textsc{openChannel}, \alice, \bob, $x$,
-  \textit{tid}) from \alice, it informs simulator \simulator{} of the intention
-  of environment \environment{} to create a channel between \alice{} and \bob{}
-  where \alice{} owns $x$ coins. When it receives (\textsc{pay}, \bob, $x,
-  \overrightarrow{\mathtt{path}}$, \texttt{receipt}) from \alice, it informs
-  \simulator{} that \environment{} asked to perform a multi-hop payment of $x$
-  coins from \alice{} to \bob{} along the $\overrightarrow{\mathtt{path}}$. In
-  the same vein, when \fpaynet{} receives (\textsc{closeChannel},
-  \texttt{receipt}, \textit{pchid}) or (\textsc{forceCloseChannel},
-  \texttt{receipt}, \textit{pchid}) from \alice{} (for a cooperative or
-  unilateral close respectively), it leaks to \simulator{} the fact that
-  \environment{} wants to close the relevant channel.
+  \textit{tid}) from \alice, it informs \redden{simulator} \simulator{} of the
+  intention of \redden{environment} \environment{} to create a channel between
+  \alice{} and \bob{} where \alice{} owns $x$ coins. When it receives
+  (\textsc{pay}, \bob, $x, \overrightarrow{\mathtt{path}}$, \texttt{receipt})
+  from \alice, it informs \simulator{} that \environment{} asked to perform a
+  multi-hop payment of $x$ coins from \alice{} to \bob{} along the
+  $\overrightarrow{\mathtt{path}}$. \redden{In the same vein}, when \fpaynet{}
+  receives (\textsc{closeChannel}, \texttt{receipt}, \textit{pchid}) or
+  % TODO: unredden typo
+  (\textsc{forceCloseChannel}, \texttt{receipt}, \textit{pchid}) from
+  \redden{\alice{}} (for a cooperative or unilateral close respectively), it
+  leaks to \simulator{} the fact that \environment{} wants to close the relevant
+  channel.
 
   In order to provide security guarantees, there are various moments when
   \fpaynet{} verifies whether certain expected events have actually taken place.
@@ -31,12 +33,12 @@
   following cases:
   \begin{itemize}
     \item On receiving (\textsc{poll}) by \alice, \fpaynet{} asks \ledger{} for
-    \alice's latest state $\Sigma_{\alice}$ and verifies that no bad events have
-    happened. In particular, \fpaynet{} halts if any of \alice's channels has
-    been closed maliciously with a transaction at height $h$ and, even though
-    \alice{} has \textsc{poll}ed within $[h, h + \mathtt{delay}(\alice) - 1]$,
-    she did not manage to punish the counterparty. Refer to
-    lines~\ref{alg:fpaynet:poll:ifdsforgery}
+    \alice's latest \redden{state} $\Sigma_{\alice}$ and verifies that no bad
+    events have happened. In particular, \fpaynet{} halts if any of \alice's
+    channels has been closed maliciously with a transaction at height $h$ and,
+    even though \alice{} has \textsc{poll}ed within $[h, h +
+    \mathtt{delay}(\alice) - 1]$, she did not manage to punish the counterparty.
+    Refer to lines~\ref{alg:fpaynet:poll:ifdsforgery}
     and~\ref{alg:fpaynet:poll:haspolled} of Fig.~\ref{alg:fpaynet:poll} for more
     details. If \fpaynet{} does not halt, it leaks to \simulator{} the polling
     details (including the identity of the poller and the state of the ledger in
@@ -46,15 +48,16 @@
     \item \fpaynet{} expects \simulator{} to send a (\textsc{resolvePays},
     \texttt{charged}) message that gives details on the outcome of one or more
     multi-hop payments that include the identity of the party that is charged.
-    Moreover, for each resolved payment, the message includes two expiry values,
-    expressed in absolute block height: \texttt{OutgoingCltvExpiry}, which is
-    the highest block in which the charged party could claim money from the
-    previous hop (closer to the payer) and \texttt{IncomingCltvExpiry}, which is
-    the lowest block in which the charged party could claim money from the next
-    hop (closer to the payee). \fpaynet{} checks that for each payment the
-    charged party was one of the following: (a) the one that initiated the
-    payment, (b) a malicious party or (c) an honest party that is negligent. The
-    latter case happens when the honest party either:
+    Moreover, for each resolved payment, the message includes two expiry
+    values\redden{, expressed in absolute} block height:
+    \texttt{OutgoingCltvExpiry}, which is the \redden{highest} block in which
+    the charged party could claim money from the previous hop (closer to the
+    \redden{payer}) and \texttt{IncomingCltvExpiry}, which is the
+    \redden{lowest} block in which the charged party could claim money from the
+    next hop (closer to the \redden{payee}). \fpaynet{} checks that for each
+    payment the charged party was one of the following: (a) the one that
+    initiated the payment, (b) a malicious party or (c) an honest party that is
+    negligent. The latter case happens when the honest party either:
     \begin{enumerate}
       \item did not \textsc{poll} in time to catch a malicious closure
       (similarly to the check performed when a \textsc{poll} message is handled,

@@ -208,7 +208,8 @@
   exclusively in line~\ref{alg:protocol:pay:raa:report:updates} of
   Fig.~\ref{alg:protocol:pay:revokeAndAck}. In the ideal world on the other
   hand, it is updated in line~\ref{alg:fpaynet:update:add} of
-  Fig.~\ref{alg:fpaynet:pay}, which is triggered only by a (\textsc{newUpdate})
+  Fig.~\ref{alg:fpaynet:pay}, which is triggered only by a
+  \redden{(\textsc{newUpdate})}
   message by \simulator. This message is sent only when
   line~\ref{alg:protocol:pay:raa:report:updates} of
   Fig.~\ref{alg:protocol:pay:revokeAndAck} is simulated by \simulator{}
@@ -232,9 +233,10 @@
   sent to \environment{} in either the real or the ideal world are always
   identical.
 
-  As far as \texttt{paymentsToReport} is concerned, in the real world it is
-  populated in one of following cases: line~\ref{alg:protocol:pay:foc:payment}
-  of Fig.~\ref{alg:protocol:pay:foc}, line~\ref{alg:protocol:poll:report:pay} of
+  \redden{As far as \texttt{paymentsToReport} is concerned, in the real world it
+  is populated in one of following cases:
+  line~\ref{alg:protocol:pay:foc:payment} of Fig.~\ref{alg:protocol:pay:foc},
+  line~\ref{alg:protocol:poll:report:pay} of
   Fig.~\ref{alg:protocol:poll:closedch},
   line~\ref{alg:protocol:pushfulfill:report} of
   Fig.~\ref{alg:protocol:pay:push}, and
@@ -258,11 +260,11 @@
   line~\ref{alg:fpaynet:payments:add:pendingdiffs}) and report them back to
   \environment{} upon receiving \textsc{getNews}. We therefore conclude that the
   \texttt{paymentsToReport} that are sent to \environment{} are exactly the same
-  in the ideal and the real world.
+  in the ideal and the real world.}
 
-  Because \simulator{} now sends an additional \textsc{newPayments} message
-  (line~\ref{alg:sim:close:unilateral:report}, Fig.~\ref{alg:sim:close}) which
-  prompts \fpaynet{} to populate \texttt{paymentsToReport}
+  \redden{Because \simulator{} now sends an additional \textsc{newPayments}
+  message (line~\ref{alg:sim:close:unilateral:report}, Fig.~\ref{alg:sim:close})
+  which prompts \fpaynet{} to populate \texttt{paymentsToReport}
   (line~\ref{alg:fpaynet:payments:add:pendingdiffs},
   Fig.~\ref{alg:fpaynet:pay}), we have to revisit the halt of
   line~\ref{alg:fpaynet:resolvepay:failed:reported} in
@@ -283,7 +285,7 @@
   Fig.~\ref{alg:sim:pay} none of the events that trigger \simulator{} to send a
   report of the success of this particular payment to \fpaynet{} via a
   \textsc{newPayments} message could have occurred, therefore the halt in
-  question can still never happen.
+  question can still never happen.}
 
   Lastly, in the ideal world, whenever (\textsc{read}) is sent to \ledger{} and
   a reply is received, the function \texttt{checkClosed}
@@ -361,10 +363,11 @@
   on-chain and either \alice's off-chain balance is not equal to zero, or if her
   on-chain balance is not the expected one, as reported by \simulator. This
   event can never happen for the following reasons. Firstly, as we have seen,
-  \simulator{} reports all updates with a (\textsc{newUpdate}) message
+  \simulator{} reports all updates with a \redden{(\textsc{newUpdate})} message
   (Fig.~\ref{alg:sim:push}, line~\ref{alg:sim:push:report:updates}) and a
   (\textsc{resolvePays}) message; upon receiving the latter and given that it
-  doesn't halt, \fpaynet{} updates \texttt{offChainBalance}(\alice) if she is
+  % TODO: unredden typo
+  doesn't halt, \fpaynet{} updates \redden{\texttt{offChainBalance}}(\alice) if she is
   the payer or payee of one of the resolved payments
   (Fig.~\ref{alg:fpaynet:resolvepay:honestpayer},
   lines~\ref{alg:fpaynet:resolvepay:corr:credit},~\ref{alg:fpaynet:resolvepay:debit}
@@ -373,8 +376,10 @@
   expected one (Fig.~\ref{alg:fpaynet:close:func},
   line~\ref{alg:fpaynet:close:func:ifmalicious}), an event that cannot happen as
   we have already proven. Lastly, upon each channel opening and closing,
-  \fpaynet{} updates \texttt{offChainBalance}(\alice) and
-  \texttt{onChainBalance}(\alice) to reflect the event
+  % TODO: unredden typo
+  \fpaynet{} updates \redden{\texttt{offChainBalance}}(\alice) and
+  % TODO: unredden typo
+  \redden{\texttt{onChainBalance}}(\alice) to reflect the event
   (Fig.~\ref{alg:fpaynet:open:negotiate},
   lines~\ref{alg:fpaynet:channelOpened:offchain}
   and~\ref{alg:fpaynet:channelOpened:onchain} and
