@@ -597,7 +597,7 @@
         \textit{payid}) from \bob:
         \label{alg:protocol:pay:sendinvoice:receive}
         \Indent
-          \State ensure there is no (\bob, \_,\textit{expayid}, \textit{payid},
+          \State ensure there is no (\bob, \_, \textit{expayid}, \textit{payid},
           \_) entry in \texttt{pendingGetPaid}
           \State choose random, unique preimage $R$
           \State add (\bob, $R$, \textit{expayid}, \textit{payid}, $x$) to
