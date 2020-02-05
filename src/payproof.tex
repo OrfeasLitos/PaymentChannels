@@ -868,9 +868,8 @@
   committed. This only happens when both sides send a \textsc{revokeAndAck} that
   updates the channel from a version that contains the relevant HTLC to a
   version that doesn't; and when an honest party receives such a
-  \textsc{revokeAndAck} message, it logs the new receipt, along with the latest
-  balance changes (\texttt{diffs}) in \texttt{updatesToReport}
-  (Fig.~\ref{alg:protocol:pay:revokeAndAck},
+  \textsc{revokeAndAck} message, it logs the new receipt in
+  \texttt{updatesToReport} (Fig.~\ref{alg:protocol:pay:revokeAndAck},
   line~\ref{alg:protocol:pay:raa:report:updates}) which causes \simulator{} to
   report the update to \fpaynet{} (Fig.~\ref{alg:sim:push},
   line~\ref{alg:sim:push:report:updates}). We therefore conclude that \fpaynet{}
