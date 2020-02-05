@@ -1127,9 +1127,9 @@
             \If{there exist HTLCs with hashes $h_1, \dots, h_k$ in latest
             $\mathtt{localCom}_n$ for which we have sent both
             \textsc{updateFulfillHtlc} and \textsc{commitmentSigned} to a
-            transaction without that HTLC to counterparty, but have not received
-            the corresponding \textsc{revokeAndAck} AND the HTLC expires within
-            $\left[t, t + \tochain{}\right]$}
+            transaction without those HTLCs to counterparty, but have not
+            received the corresponding \textsc{revokeAndAck}s AND some of the
+            HTLCs expire within $\left[t, t + \tochain{}\right]$}
               \State add $\mathtt{localCom}_n$ of the channel and all
               corresponding valid \texttt{HTLC-success}es and
               \texttt{HTLC-timeout}s (for both $\mathtt{localCom}_n$ and
