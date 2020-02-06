@@ -1,24 +1,24 @@
 \redden{\section{Future Work}}
   \redden{In order to remain tractable, the current analysis omits some parts of
   the lightning specification. In particular, the specification defines how
-  intermediaries of multi-hop payments can charge a fee for their service, a
-  feature that we did not include to avoid the added complexity. Furthermore,
-  the per-update secret generation is not done with a PRF according to the
-  specification: an optimisation that reduces the storage overhead for the
-  counterparty is used instead. The security of this optimisation however has
-  not been yet formally inspected. Additionally, the specification provisions
-  for a number of failure messages that help in keeping counterparties informed
-  of issues with requested payments and in alleviating the problem of unneeded
-  precautionary channel closures. Moreover, transactions that are added on-chain
-  offer a fee to the blockchain miners (unrelated to the fee of the off-chain
-  multi-hop payments). When closing a channel cooperatively, this fee is
-  contributed by both counterparties, therefore the closing sequence of the
-  specification includes an iterative negotiation of said fee where the two
-  parties repeatedly propose a value based on their settings until they converge
-  to a compromise or fail to agree. Lastly, most Bitcoin nodes do not relay
-  transactions that include outputs with tiny amounts of coins, a.k.a ``dust''
-  outputs, to avoid bloating the blockchain. The lightning specification
-  provides extensive instructions as to how to prune such outputs.}
+  intermediaries of multi-hop payments can charge a fee for their service.
+  Furthermore, the per-update secret generation is not done with a PRF according
+  to the specification: an optimisation that reduces the storage overhead for
+  the counterparty is used instead. The security of this optimisation however
+  has not been yet formally inspected. Additionally, the specification
+  provisions for a number of failure messages that help in keeping
+  counterparties informed of issues with requested payments and in alleviating
+  the problem of unneeded precautionary channel closures. Moreover, transactions
+  that are added on-chain offer a fee to the blockchain miners (unrelated to the
+  fee of the off-chain multi-hop payments). When closing a channel
+  cooperatively, this fee is contributed by both counterparties, therefore the
+  closing sequence of the specification includes an iterative negotiation of
+  said fee where the two parties repeatedly propose a value based on their
+  settings until they converge to a compromise or fail to agree. Lastly, most
+  Bitcoin nodes do not relay transactions that include outputs with tiny amounts
+  of coins, a.k.a ``dust'' outputs, to avoid bloating the blockchain. The
+  lightning specification provides extensive instructions as to how to prune
+  such outputs.}
 
   \redden{All aforementioned parts of the protocol were not analysed so that the
   security of the core parts of the lightning protocol could be discussed
@@ -27,28 +27,27 @@
   features should be incorporated and their security should be proven. This
   expansion of the analysis is left as future work.}
 
-  \redden{In a different direction, big parts of the security proof of the
-  current work consist of an exhaustive enumeration of the possible messages
-  that \environment{} and \adversary{} can send to the protocol, the simulator
-  or the functionality and tracking how such messages would change the flow of
-  the execution of the ideal and the real world. It is then argued that in all
-  cases the messages that would be sent to \environment{} and \adversary{} are
-  indistinguishable. These parts of the proof are good candidates for rewriting
-  in the environment of an automated proof assistant~\cite{mccarthy} to instill
-  additional certainty that all possible execution paths are indeed checked and
-  do not contain subtle sources of distinguishability. Developing an environment
-  that aids in the production and verification of indistinguishability proofs in
-  the framework of Universal Composition is left as future work.}
+  \redden{In a different direction, big parts of our main security proof consist
+  of an exhaustive enumeration of the possible messages that \environment{} and
+  \adversary{} can send to the protocol, the simulator or the functionality and
+  tracking how such messages would change the flow of the execution of the ideal
+  and the real world. It is then argued that in all cases the messages that
+  would be sent to \environment{} and \adversary{} are indistinguishable. These
+  parts of the proof are good candidates for rewriting in the environment of an
+  automated proof assistant~\cite{mccarthy} to instill additional certainty that
+  all possible execution paths are indeed checked and do not contain subtle
+  sources of distinguishability. Developing an environment that aids in the
+  production and verification of indistinguishability proofs in the framework of
+  Universal Composability is left as future work.}
 
-  \redden{The lightning specification is not static. On the contrary, it is
-  continuously undergoing a number of improvements. The most noteworthy change,
-  of which the details are not yet finalised, is the introduction of Pointlocked
-  TimeLocked Contracts (PTLCs). This mechanism replaces HTLCs and promises to
-  combat the ``wormhole'' attack~\cite{DBLP:conf/ndss/MalavoltaMSKM19}, while
-  increasing privacy. The current work can be modified to analyse the security
-  of PTLCs with relative ease. It also provides a framework suitable for
-  carrying out further work towards pinpointing the exact privacy benefit that
-  PTLCs offer as opposed to HTLCs.}
+  \redden{The lightning specification is not static, but it is continuously
+  undergoing a number of improvements. The most noteworthy upcoming change is
+  the introduction of Pointlocked TimeLocked Contracts (PTLCs). This mechanism
+  replaces HTLCs and promises to combat the ``wormhole''
+  attack~\cite{DBLP:conf/ndss/MalavoltaMSKM19}, while increasing privacy. Our
+  work can be modified to cover the case of PTLCs with relative ease. It also
+  provides a suitable framework for future work that aims to shed light on the
+  exact privacy benefit that PTLCs offer as opposed to HTLCs.}
 
   \redden{The present analysis constitutes the first comprehensive treatment in
   the Universal Composability framework of a deployed layer-2 protocol on top of
