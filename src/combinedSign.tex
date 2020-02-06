@@ -1,49 +1,8 @@
 \section{Combined Signatures primitive}
   \label{appendix:combinedsign}
-
-  The seven algorithms used by a Combined Signatures scheme are:
-  \begin{itemize}
-    \item $\left(mpk, msk\right) \gets \textsc{MasterKeyGen}\left(1^k\right)$
-    \item $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right)$
-    \item $cpk_l \gets \textsc{CombinePubKey}\left(mpk, pk\right)$
-    \item $\left(cpk_l, csk_l\right) \gets \textsc{CombineKey}\left(mpk,
-    msk, pk, sk\right)$
-    \item $\{0, 1\} \gets \textsc{TestKey}\left(pk, sk\right)$
-    \item $\sigma \gets \textsc{SignCS}\left(m, csk\right)$
-    \item $\left\{0, 1\right\} \gets \textsc{VerifyCS}\left(\sigma, m,
-    cpk\right)$
-  \end{itemize}
-  We demand that these three properties hold for a scheme to have correctness:
-  \begin{itemize}
-    \item $\forall k \in \mathbb{N},$ \\
-    $\Pr[\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$ \\
-    $\textsc{TestKey}(pk, sk) = 1] = 1$
-
-    I.e. \textsc{KeyShareGen}() must always generate a valid keypair.
-
-    \item $\forall k \in \mathbb{N},$ \\
-    $\Pr[(mpk, msk) \gets \textsc{MasterKeyGen}\left(1^k\right),$ \\
-    $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$ \\
-    $\left(cpk_1, csk_1\right) \gets \textsc{CombineKey}\left(mpk, msk, pk,
-    sk\right),$ \\
-    $cpk_2 \gets \textsc{CombinePubKey}\left(mpk, pk\right),$ \\
-    $cpk_1 = cpk_2] = 1$
-
-    I.e. for suitable input, \textsc{CombinePubKey}() and \textsc{CombineKey}()
-    produce the same public key.
-
-    \item $\forall k \in \mathbb{N}, m \in \mathcal{M},$ \\
-    $\Pr[(mpk, msk) \gets \textsc{MasterKeyGen}\left(1^k\right),$ \\
-    $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$ \\
-    $\left(cpk, csk\right) \gets \textsc{CombineKey}\left(mpk, msk, pk,
-    sk\right),$ \\
-    $\textsc{VerifyCS}(\textsc{SignCS}(m, csk), m, cpk) = 1] = 1$
-
-    I.e. for suitable input, honestly generated signatures always verify
-    correctly.
-  \end{itemize}
-  Last but not least, the security of the scheme is defined in terms of two
-  games:
+  The syntax of the algorithms and the definition of correctness are provided in
+  Section~\ref{sec:ov-combined-ds}. The security of the scheme is defined in
+  terms of two games:
   \begin{figure}[!htbp]
     \begin{gamebox}{$\mathsf{share \mhyphen
     EUF}^{\adversary}\left(1^k\right)$}

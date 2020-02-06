@@ -4,9 +4,9 @@
   generating signatures\redden{, which} is leveraged in the revocation and
   punishment mechanism of channel updates. Furthermore, we prove that the
   construction designed by the creators of LN realizes this primitive. We here
-  provide the intuition behind it and refer the reader to
-  Appendix~\ref{appendix:combinedsign} for the exact syntax, correctness and
-  security definitions, concrete construction and proof of security.
+  provide the concrete syntax and correctness definitions, along with the
+  intuition behind it. The exact security definitions, concrete construction and
+  proof of security can be found in Appendix~\ref{appendix:combinedsign}.
 
   Previous work on the subject of multi-party
   signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd1986digital,DBLP:conf/ndss/Ganesan95a,DBLP:conf/crypto/MacKenzieR01,ganesan1994secure}
@@ -26,6 +26,49 @@
   knowing the corresponding signing key. \redden{\bob{} will be able to
   construct the signing key only if \alice{} shares her secret information with
   him.}
+
+  More specifically, the seven algorithms used by a Combined Signatures scheme
+  are:
+  \begin{itemize}
+    \item $\left(mpk, msk\right) \gets \textsc{MasterKeyGen}\left(1^k\right)$
+    \item $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right)$
+    \item $cpk_l \gets \textsc{CombinePubKey}\left(mpk, pk\right)$
+    \item $\left(cpk_l, csk_l\right) \gets \textsc{CombineKey}\left(mpk,
+    msk, pk, sk\right)$
+    \item $\{0, 1\} \gets \textsc{TestKey}\left(pk, sk\right)$
+    \item $\sigma \gets \textsc{SignCS}\left(m, csk\right)$
+    \item $\left\{0, 1\right\} \gets \textsc{VerifyCS}\left(\sigma, m,
+    cpk\right)$
+  \end{itemize}
+  We demand that these three properties hold for a scheme to have correctness:
+  \begin{itemize}
+    \item $\forall k \in \mathbb{N},$ \\
+    $\Pr[\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$ \\
+    $\textsc{TestKey}(pk, sk) = 1] = 1$
+
+    I.e. \textsc{KeyShareGen}() must always generate a valid keypair.
+
+    \item $\forall k \in \mathbb{N},$ \\
+    $\Pr[(mpk, msk) \gets \textsc{MasterKeyGen}\left(1^k\right),$ \\
+    $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$ \\
+    $\left(cpk_1, csk_1\right) \gets \textsc{CombineKey}\left(mpk, msk, pk,
+    sk\right),$ \\
+    $cpk_2 \gets \textsc{CombinePubKey}\left(mpk, pk\right),$ \\
+    $cpk_1 = cpk_2] = 1$
+
+    I.e. for suitable input, \textsc{CombinePubKey}() and \textsc{CombineKey}()
+    produce the same public key.
+
+    \item $\forall k \in \mathbb{N}, m \in \mathcal{M},$ \\
+    $\Pr[(mpk, msk) \gets \textsc{MasterKeyGen}\left(1^k\right),$ \\
+    $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$ \\
+    $\left(cpk, csk\right) \gets \textsc{CombineKey}\left(mpk, msk, pk,
+    sk\right),$ \\
+    $\textsc{VerifyCS}(\textsc{SignCS}(m, csk), m, cpk) = 1] = 1$
+
+    I.e. for suitable input, honestly generated signatures always verify
+    correctly.
+  \end{itemize}
 
   Beyond correctness, combined signatures have two security properties expressed
   as follows. \redden{\textsf{Share-EUF}} security expresses security from the
