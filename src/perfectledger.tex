@@ -1,10 +1,10 @@
 \section{Instant finality ledgers are unrealisable}
 \label{sec:perfect-ledger}
-  As already mentioned, previous attempts at formalising payment channels in
-  UC~\cite{DBLP:conf/ccs/DziembowskiFH18,Malavolta:2017:CPP:3133956.3134096,sprites,perun}
+  As already mentioned, previous attempts at formalising payment channels in  
+UC~\cite{DBLP:conf/ccs/DziembowskiFH18,Malavolta:2017:CPP:3133956.3134096,sprites,perun}
   assume a variant of a ledger functionality with instant finality. We here
   define a representative variant of this approach \perfectledger{}
-  (Fig.~\ref{fig:perfectledger:func}) where all submitted transactions are
+  (defined below) where all submitted transactions are
   instantly added to the ledger and immediately available to be read by all
   players. Subsequently we argue that, albeit an attractive abstraction, such a
   functionality is unrealisable, even under strong network assumptions, i.e. a
@@ -13,31 +13,13 @@
   parties; no delays can be introduced by the adversary. \redden{We refer the
   reader to Appendix~\ref{appendix:ledger} for the formal definition of
   $\FnetworkEd^1$.}
-
   The \redden{adversary} however may choose to send its own messages only to
   specific parties. This allows the adversary to spread conflicting information
   or withhold data from some parties. \redden{T}his adversarial ability
-  precludes the possibility of the ledger of Fig.~\ref{fig:perfectledger:func}
-  to be realised.
-
-  \begin{figure}[H]
-    \begin{systembox}{\perfectledger}
-      \begin{algorithmic}[1]
-        \State State: List of txs $\mathcal{L}$
-        \Statex
-
-        \State Upon receiving (\textsc{Submit}, $m$) from \alice{} or
-        \adversary, append $m$ to $\mathcal{L}$ and send (\textsc{Submit},
-        \alice{} or \adversary, $m$) to \adversary
-        \Statex
-
-        \State Upon receiving (\textsc{Read}) from \alice, send (\textsc{Read},
-        $\mathcal{L}$) to \alice
-      \end{algorithmic}
-    \end{systembox}
-    \caption{}
-    \label{fig:perfectledger:func}
-  \end{figure}
+  precludes the possibility of such a  ledger
+  to be realised. 
+ \redden{The full proof can be found in
+ Appendix~\ref{sec:perfect-ledger:proof}.}
 
   \begin{theorem}[Perfect Ledger is Unrealisable]
     \label{theorem:perfectledger}
@@ -74,6 +56,22 @@
     a distinguishing advantage exists no matter how \perfectprot{} is
     implemented.
   \end{proofsketch}
+ \begin{figure}[H]
+    \begin{systembox}{\perfectledger}
+      \begin{algorithmic}[1]
+        \State State: List of txs $\mathcal{L}$
+        \Statex
 
- \redden{The full proof can be found in
- Appendix~\ref{sec:perfect-ledger:proof}.}
+        \State Upon receiving (\textsc{Submit}, $m$) from \alice{} or
+        \adversary, append $m$ to $\mathcal{L}$ and send (\textsc{Submit},
+        \alice{} or \adversary, $m$) to \adversary
+        \Statex
+
+        \State Upon receiving (\textsc{Read}) from \alice, send (\textsc{Read},
+        $\mathcal{L}$) to \alice
+      \end{algorithmic}
+    \end{systembox}
+%    \caption{}
+    \label{fig:perfectledger:func}
+  \end{figure}
+\vspace{-1cm}
