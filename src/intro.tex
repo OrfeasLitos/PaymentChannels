@@ -132,7 +132,7 @@ party is a member}, and is specified by the parameter ``$\mathrm{delay}$''
 \redden{(chosen by the party)}, (ii) the second type refers to monitoring for
 specific events related to receiving and relaying payments\redden{. In detail,
 let \emph{Alice} be an intermediary of a multi-hop payment. When the payment
-starts, she specifies two blockheights $h, h'$. Also, let $a$} the upper bound
+starts, she specifies two blockheights $h, h'$. Also, let $a$ be} the upper bound
 to the number of blocks that may be finalised in the ledger from the time a
 certain transaction is emitted to the time it becomes finalised (i.e. it is
 included in a block in the ``stable'' part of the ledger). \redden{\emph{Alice}
@@ -144,15 +144,14 @@ blocks.
 \item We provide a complete pseudocode description of the lightning network
 protocol $\Pi_{\mathrm{LN}}$ and prove that it realises $\fpaynet{}$ \redden{in
 the Random Oracle model}. We identify a number of underlying cryptographic
-primitives that have been used in the specification of the lightning network in
+primitives that have been used in the lightning network in
 a non-black-box fashion and without reference. Interestingly, while
 \redden{most} of these primitives are quite standard (a PRF, a Digital Signature
-scheme and an Identity Based Signature scheme)\redden{, the remaining one} is
-slightly less standard. \redden{The \emph{combined digital signature} -- as we
-chose to call it --} is a special case of an asymmetric two-party digital
+scheme and an Identity Based Signature scheme)\redden{, there is also one that} is less standard  \redden{and requires a new definition}. \redden{The \emph{combined digital signature} -- as we
+will call it --} is a special case of an asymmetric two-party digital
 signature primitive (e.g., see~\cite{DBLP:conf/ndss/NicolosiKDM03} and
 references therein) with the \redden{following} characteristic\redden{:} One of
-the two parties, the shareholder, generates and stores a share of the signing
+the two parties, \redden{called} the shareholder, generates and stores a share of the signing
 key\redden{.} The public key of the combined signature \redden{can be}
 determined non-interactively \redden{from public} information produced by both
 parties. Issuing signatures requires the availability of the share\redden{,}
@@ -173,7 +172,7 @@ payment network since such software would -- necessarily -- depend on a
 non-perfect ledger. This choice also distinguishes our work compared to previous
 attempts~\cite{DBLP:conf/ccs/DziembowskiFH18,Malavolta:2017:CPP:3133956.3134096,sprites,perun}
 to formalize payment networks, \redden{as well as highlights the considerable
-latency improvement that the lightning protocol offers in comparison to directly
+latency improvement that the  protocol offers in comparison to directly
 using the ledger.}
 \end{enumerate}
 

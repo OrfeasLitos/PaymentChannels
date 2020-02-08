@@ -8,7 +8,7 @@
   has not been yet formally inspected. Additionally, the specification
   provisions for a number of failure messages that help in keeping
   counterparties informed of issues with requested payments and in alleviating
-  the problem of unneeded precautionary channel closures. Moreover, transactions
+  the problem of unneeded precautionary channel closures. Transactions
   that are added on-chain offer a fee to the blockchain miners (unrelated to the
   fee of the off-chain multi-hop payments). When closing a channel
   cooperatively, this fee is contributed by both counterparties, therefore the
@@ -36,9 +36,9 @@
   parts of the proof are good candidates for rewriting in the environment of an
   automated proof assistant~\cite{mccarthy} to instill additional certainty that
   all possible execution paths are indeed checked and do not contain subtle
-  sources of distinguishability. Developing an environment that aids in the
-  production and verification of indistinguishability proofs in the framework of
-  Universal Composability is left as future work.}
+  sources of distinguishability. %Developing an environment that aids in the  production and verification of indistinguishability proofs in the framework of  Universal Composability is left as future work.
+Combining our results with the recent  mechanization of UC via Easycrypt~\cite{DBLP:conf/csfw/CanettiSV19} would be a natural and interesting direction for future work. 
+  }
 
   \redden{The lightning specification is not static, but it is continuously
   undergoing a number of improvements. The most noteworthy upcoming change is

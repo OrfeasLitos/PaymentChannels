@@ -1,15 +1,15 @@
-\section{Overview of the Combined Signature primitive}
+\section{The Combined Signature primitive}
 \label{sec:ov-combined-ds}
   As previously mentioned, we define a new primitive for combining keys and
   generating signatures\redden{, which} is leveraged in the revocation and
   punishment mechanism of channel updates. Furthermore, we prove that the
-  construction designed by the creators of LN realizes this primitive. We here
-  provide \redden{the concrete syntax and correctness definitions, along with}
+  construction designed by the creators of LN realizes this primitive. We 
+  provide here \redden{the concrete syntax and correctness definitions, along with}
   the intuition behind it. The exact security definitions, concrete construction
   and proof of security can be found in Appendix~\ref{appendix:combinedsign}.
 
   Previous work on the subject of multi-party
-  signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd1986digital,DBLP:conf/ndss/Ganesan95a,DBLP:conf/crypto/MacKenzieR01,ganesan1994secure}
+signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd1986digital,DBLP:conf/ndss/Ganesan95a,DBLP:conf/crypto/MacKenzieR01,ganesan1994secure}
   focuses on use-cases where some parties desire to generate a signature without
   revealing their private information; the latter is created using an
   interactive protocol. The resulting signatures can be verified by a single
@@ -75,7 +75,7 @@
   as follows. \redden{\textsf{Share-EUF}} security expresses security from the
   point of view of \alice{}, and establishes that \bob{} \redden{cannot issue} a
   valid combined signature if he does not possess \alice's corresponding secret
-  share. In Appendix~\ref{appendix:combinedsign} we prove the following:
+  share. In Appendix~\ref{appendix:combinedsign} we formalize it and prove:
 
   \begin{lemma}
     \label{lemma:comb:share}

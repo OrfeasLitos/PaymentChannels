@@ -11,7 +11,7 @@ paymentChannels.pdf: src/*
 
 red: src/*
 	echo "\newcommand{\toredden}{true}" >> src/preamble.sty
-	cp src/paymentChannels.tex src/paymentChannelsRed.tex
+	cp src/paymentChannels.tex src/paymentChannelsRed.tex; \
 	export TEXINPUTS=.:./src//:; \
 	pdflatex --shell-escape -halt-on-error -interaction=nonstopmode paymentChannelsRed.tex; \
 	bibtex paymentChannelsRed.aux; \
