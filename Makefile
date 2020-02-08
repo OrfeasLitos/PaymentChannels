@@ -1,16 +1,23 @@
 all: paymentChannels.pdf
 full: red bib
+REDDEN := $(shell tail -n 1 src/preamble.sty | sed 's/}.*/}/')
 
 #.ONESHELL:
 paymentChannels.pdf: src/*
-	echo "\newcommand{\toredden}{false}" >> src/preamble.sty
+ifeq ($(REDDEN),\newcommand{\toredden})
+	sed -i '$$d' src/preamble.sty
+endif
+	printf '\\newcommand{\\toredden}{false}\n' >> src/preamble.sty
 	export TEXINPUTS=.:./src//:; \
 	pdflatex --shell-escape -halt-on-error -interaction=nonstopmode paymentChannels.tex; \
 	rm -rf paymentChannels.aux paymentChannels.log paymentChannels.out paymentChannels.toc paymentChannels.lof paymentChannels.lot paymentChannels.bbl paymentChannels.blg paymentChannels-autopp.log paymentChannels-autopp.out paymentChannels-pics.pdf
 	sed -i '$$d' src/preamble.sty
 
 red: src/*
-	echo "\newcommand{\toredden}{true}" >> src/preamble.sty
+ifeq ($(REDDEN),\newcommand{\toredden})
+	sed -i '$$d' src/preamble.sty
+endif
+	printf '\\newcommand{\\toredden}{true}\n' >> src/preamble.sty
 	cp src/paymentChannels.tex src/paymentChannelsRed.tex
 	export TEXINPUTS=.:./src//:; \
 	pdflatex --shell-escape -halt-on-error -interaction=nonstopmode paymentChannelsRed.tex; \
@@ -22,7 +29,10 @@ red: src/*
 	rm src/paymentChannelsRed.tex
 
 bib: src/*
-	echo "\newcommand{\toredden}{false}" >> src/preamble.sty
+ifeq ($(REDDEN),\newcommand{\toredden})
+	sed -i '$$d' src/preamble.sty
+endif
+	printf '\\newcommand{\\toredden}{false}\n' >> src/preamble.sty
 	export TEXINPUTS=.:./src//:; \
 	pdflatex --shell-escape -halt-on-error -interaction=nonstopmode paymentChannels.tex; \
 	bibtex paymentChannels.aux; \
