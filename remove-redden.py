@@ -4,6 +4,7 @@
 # ./remove-redden.py $(ag -l redden src/)
 
 # TODO: fail on nested REMOVE
+# TODO: explicitly ignore escaped delimiters
 
 import sys
 
