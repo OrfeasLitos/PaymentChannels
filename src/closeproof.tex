@@ -366,7 +366,6 @@
   \simulator{} reports all updates with a (\textsc{newUpdate}) message
   (Fig.~\ref{alg:sim:push}, line~\ref{alg:sim:push:report:updates}) and a
   (\textsc{resolvePays}) message; upon receiving the latter and given that it
-  % TODO: unredden typo
   doesn't halt, \fpaynet{} updates \texttt{offChainBalance}(\alice) if she is
   the payer or payee of one of the resolved payments
   (Fig.~\ref{alg:fpaynet:resolvepay:honestpayer},
@@ -376,9 +375,7 @@
   expected one (Fig.~\ref{alg:fpaynet:close:func},
   line~\ref{alg:fpaynet:close:func:ifmalicious}), an event that cannot happen as
   we have already proven. Lastly, upon each channel opening and closing,
-  % TODO: unredden typo
   \fpaynet{} updates \texttt{offChainBalance}(\alice) and
-  % TODO: unredden typo
   \texttt{onChainBalance}(\alice) to reflect the event
   (Fig.~\ref{alg:fpaynet:open:negotiate},
   lines~\ref{alg:fpaynet:channelOpened:offchain}

@@ -21,8 +21,8 @@
   periodically. All messages sent between \alice, \bob{} and \charlie{}
   correspond to messages specified by LN. For clarity of exposition, we avoid
   mentioning the exact name and contents of every message. We refer the reader
-  to the formal definition of $\Pi_{\mathrm{LN}}$ for further details
-  (Appendix~\ref{appendix:protocol}).
+  to the formal definition of $\Pi_{\mathrm{LN}}$ for further
+  details~\redden{\cite{full-version}}.
 
   \noindent {\bf Registration.}
     Before \alice{} can use the network, \environment{} first has to send her a
@@ -134,9 +134,10 @@
     As mentioned earlier, LN uses a custom construction that takes advantage of
     elliptic curve homomorphic properties in order to derive any number of
     keypairs by combining a single ``basepoint'' with different ``labels''. We
-    instead use  Identity Based Signatures~\cite{ibsshamir,ibspaterson} (IBS)
-    to abstract the properties provided by the construction.  We also prove that
-    it actually implements an IBS, see Appendix~\ref{sec:ibs}.
+    instead use  Identity Based Signatures~\cite{ibsshamir,ibspaterson} (IBS) to
+    abstract the properties provided by the construction. We also prove
+    \redden{in the full version~\cite{full-version}} that it actually implements
+    an IBS.
 
     Additionally, we have chosen to simplify the protocol in a number of ways in
     order to keep the analysis tractable. In particular LN defines several

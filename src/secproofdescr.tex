@@ -35,57 +35,55 @@
   \end{theorem}
 
   \begin{proofsketch}
-    The proof is done in 5 steps of successive game replacement. In
-    the first lemma, (Lemma~\ref{lemma:dummy} in the appendix) we
-    define a simulator $\simulator_{\mathrm{LN}}$
-    that internally simulates a full execution of $\Pi_{\mathrm{LN}}$ for each
-    player, and a ``dummy'' functionality that acts as a simple relay between
-    \environment{} and $\simulator_{\mathrm{LN}}$. We argue that this version of
-    the ideal world trivially produces the exact same messages for
-    \environment{} as the real world.
+    The proof is done in 5 steps of successive game replacement. In the first
+    lemma, we define a simulator $\simulator_{\mathrm{LN}}$ that internally
+    simulates a full execution of $\Pi_{\mathrm{LN}}$ for each player, and a
+    ``dummy'' functionality that acts as a simple relay between \environment{}
+    and $\simulator_{\mathrm{LN}}$. We argue that this version of the ideal
+    world trivially produces the exact same messages for \environment{} as the
+    real world.
 
     In each subsequent step, we incrementally move responsibilities from the
-    simulator to the functionality, while ensuring the change is
-    transparent to both \environment{} and \adversary. Each step defines a
-    different functionality that handles some additional messages from
-    \environment{} exactly like \fpaynet, until the last step
-    (Lemma~\ref{lemma:close} in the appendix) where we use \fpaynet{} itself. Correspondingly,
-    the simulator of each step is adapted so that the new ideal execution is
-    computationally indistinguishable from the previous one. For each
-    step we exhaustively trace the differences from the previous step in order
-    to prove that, given the same messages from \environment{} and \adversary{},
-    the resulting responses remain unchanged.
+    simulator to the functionality, while ensuring the change is transparent to
+    both \environment{} and \adversary. Each step defines a different
+    functionality that handles some additional messages from \environment{}
+    exactly like \fpaynet, until the last step where we use \fpaynet{} itself.
+    Correspondingly, the simulator of each step is adapted so that the new ideal
+    execution is computationally indistinguishable from the previous one. For
+    each step we exhaustively trace the differences from the previous step in
+    order to prove that, given the same messages from \environment{} and
+    \adversary{}, the resulting responses remain unchanged.
 
-    The second step, (Lemma~\ref{lemma:reg} in the appendix) lets $\mathcal{F}$ handle registration messages,
-    along with the corruption messages from \simulator. In the third
-    step,  (Lemma~\ref{lemma:open} in the appendix)
-    the functionality additionally handles messages related to channel opening. It
-    behaves like \fpaynet, but does not execute \texttt{checkClosed}().
-    The fourth step, (Lemma~\ref{lemma:pay} in the appendix) has the functionality handle all messages sent during
-    channel updates. Lastly, (Lemma~\ref{lemma:close} in the appendix)
-    the entire \fpaynet{} is used as functionality, by incorporating the message for closing a channel,
-    executing \texttt{checkClosed}() normally and handing the message that returns
-    to \environment{} the receipts for newly opened, updated and closed
-    channels. The last two steps introduce a probability of failure in case
-    the various types of signatures used in  $\Pi_{\mathrm{LN}}$ are forged. We analyze these cases separately and argue that, if
-    such forgeries do not happen, the emulation is perfect. Therefore we can
-    calculate the concrete security bounds shown in the theorem.
+    The second step, lets $\mathcal{F}$ handle registration messages, along with
+    the corruption messages from \simulator. In the third step, the
+    functionality additionally handles messages related to channel opening. It
+    behaves like \fpaynet, but does not execute \texttt{checkClosed}().  The
+    fourth step, has the functionality handle all messages sent during channel
+    updates. Lastly, the entire \fpaynet{} is used as functionality, by
+    incorporating the message for closing a channel, executing
+    \texttt{checkClosed}() normally and handing the message that returns to
+    \environment{} the receipts for newly opened, updated and closed channels.
+    The last two steps introduce a probability of failure in case the various
+    types of signatures used in $\Pi_{\mathrm{LN}}$ are forged. We analyze these
+    cases separately and argue that, if such forgeries do not happen, the
+    emulation is perfect. Therefore we can calculate the concrete security
+    bounds shown in the theorem.
   \end{proofsketch}
-  As a concrete example of the proof approach, the second step (Lemma~\ref{lemma:reg} in the appendix) entails the following parts: First
-  $\fpaynet{}_{\mathrm{, Reg}}$ is defined (Fig.~\ref{alg:proof:fpaynet:reg}),
-  which is a functionality that behaves exactly like \fpaynet{} when receiving
-  the messages \textsc{register}, \textsc{registerDone}, \textsc{toppedUp} and
+  As a concrete example of the proof approach, the second step entails the
+  following parts: First $\fpaynet{}_{\mathrm{, Reg}}$ is defined, which is a
+  functionality that behaves exactly like \fpaynet{} when receiving the messages
+  \textsc{register}, \textsc{registerDone}, \textsc{toppedUp} and
   \textsc{corrupted}, but simply forwards all other messages along with the
-  sender to \simulator. Then $\simulator{}_{\mathrm{LN - Reg}}$ is defined
-  (Fig.~\ref{alg:sim:reg} in the appendix), which simulates all protocol instances, but in
-  response to \textsc{register} messages from $\fpaynet{}_{\mathrm{, Reg}}$, it
-  provides the public key of the key it just generated (as
-  $\fpaynet{}_{\mathrm{, Reg}}$ expects). It also keeps track of corruptions and
-  informs $\fpaynet{}_{\mathrm{, Reg}}$ thereof. Lastly, we argue that the
-  functionality and simulator that were used in  the first step (Lemma~\ref{lemma:dummy} in the appendix) can be
-  replaced by their newly defined counterparts without introducing any
-  discernible difference to the transcript that any \environment{} sees. This is
-  achieved by exhaustive enumeration of all possible messages and comparison of
-  the behaviour of the ideal and the real world for each, to conclude that the
-  change is transparent to \environment.
-  The formal proof can be found in Appendix~\ref{appendix:secproof}.
+  sender to \simulator. Then $\simulator{}_{\mathrm{LN - Reg}}$ is defined,
+  which simulates all protocol instances, but in response to \textsc{register}
+  messages from $\fpaynet{}_{\mathrm{, Reg}}$, it provides the public key of the
+  key it just generated (as $\fpaynet{}_{\mathrm{, Reg}}$ expects). It also
+  keeps track of corruptions and informs $\fpaynet{}_{\mathrm{, Reg}}$ thereof.
+  Lastly, we argue that the functionality and simulator that were used in  the
+  first step can be replaced by their newly defined counterparts without
+  introducing any discernible difference to the transcript that any
+  \environment{} sees. This is achieved by exhaustive enumeration of all
+  possible messages and comparison of the behaviour of the ideal and the real
+  world for each, to conclude that the change is transparent to \environment.
+  The formal proof can be found in \redden{the full
+  version~\cite{full-version}}.

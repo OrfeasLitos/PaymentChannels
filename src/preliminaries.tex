@@ -65,9 +65,9 @@
     ledger, it becomes visible to all parties at the discretion of the
     adversary, but within another predefined time window, and cannot be removed
     or reordered. This is called persistence. The exact definition can be found
-    in Appendix~\ref{appendix:ledger}. The current work makes heavy use
-    of these two security properties, as the security of the lightning network
-    relies crucially on the security of the underlying ledger.
+    in \redden{the full version~\cite{full-version}}. The current work makes
+    heavy use of these two security properties, as the security of the lightning
+    network relies crucially on the security of the underlying ledger.
 
     Furthermore, \ledger{} needs the \Fclock functionality,
     which models the notion of time. Every participating party can request to
@@ -75,18 +75,17 @@
     her round is over. \Fclock increments the time by one once all parties have
     declared the end of their round.
 
-    As already mentioned, the protocol and functionality defined in the
-    current work do not make direct use of \Fclock. Indeed, the only
-    notion of time both in the lightning protocol and in our work is provided by
-    the height of the blockchain, as reported respectively by the underlying
-    Bitcoin node and \ledger. We therefore omit it in the statements
-    of Lemmas~\ref{lemma:dummy}-\ref{lemma:close} and
-    Theorem~\ref{theorem:simulation} for simplicity of notation; it
-    should normally appear as hybrid along with \ledger. Its exact
-    definition can be found in Appendix~\ref{appendix:ledger}. We also note that
+    As already mentioned, the protocol and functionality defined in the current
+    work do not make direct use of \Fclock. Indeed, the only notion of time both
+    in the lightning protocol and in our work is provided by the height of the
+    blockchain, as reported respectively by the underlying Bitcoin node and
+    \ledger. We therefore omit it in the statement of
+    Theorem~\ref{theorem:simulation} for simplicity of notation; it should
+    normally appear as hybrid along with \ledger. Its exact definition can be
+    found in \redden{the full version~\cite{full-version}}. We also note that
     \ledger{} and \Fclock are global functionalities~\cite{globaluc} and
-    therefore can be accessed directly by the environment, whereas \fpaynet{}
-    is not.
+    therefore can be accessed directly by the environment, whereas \fpaynet{} is
+    not.
 
   \noindent \textbf{Transaction structure.}
     \ledger{} does not define what is a valid transaction, but leaves it as a
@@ -105,7 +104,7 @@
     each of its inputs correctly spends an output with no other connected input
     and the sum of the values of its outputs does not exceed the sum of the
     values of the outputs connected to its inputs. We refer the reader to
-    Appendix~\ref{appendix:txstructure} for a complete overview.
+    \redden{the full version~\cite{full-version}} for a complete overview.
 
   \noindent \textbf{Cryptographic Primitives.}
     In the Lightning Network specification, a custom scheme for deriving keys is
@@ -130,7 +129,6 @@
     \end{itemize}
     We refer the reader to~\cite{ibspaterson} for more details. Other
     cryptographic primitives used are digital signatures and pseudorandom
-    functions, see Appendices~\ref{sec:ds},~\ref{sec:ibs},
-    and~\ref{sec:prf}. Finally, a less common  two-party cryptographic
-    primitive is employed that we formalise as {\em  combined digital
-    signatures}, see Section~\ref{sec:ov-combined-ds}.
+    functions. Finally, a less common two-party cryptographic primitive is
+    employed that we formalise as \emph{combined digital signatures}, see
+    Section~\ref{sec:ov-combined-ds}.

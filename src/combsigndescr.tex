@@ -1,13 +1,12 @@
 \section{The Combined Signature primitive}
 \label{sec:ov-combined-ds}
   As previously mentioned, we define a new primitive for combining keys and
-  generating signatures, which is leveraged in the revocation and
-  punishment mechanism of channel updates. Furthermore, we prove that the
-  construction designed by the creators of LN realizes this primitive. We
-  provide here the concrete syntax and correctness definitions, along with
-  the intuition behind it. The exact security definitions, concrete construction
-  and proof of security can be found in Appendix~\ref{appendix:combinedsign}.
-  % TODO: rephrase
+  generating signatures, which is leveraged in the revocation and punishment
+  mechanism of channel updates. Furthermore, we prove that the construction
+  designed by the creators of LN realizes this primitive. We provide here the
+  concrete syntax and correctness definitions, along with the intuition behind
+  it, the exact security definitions, a concrete construction and proof of
+  \redden{its} security.
 
   Previous work on the subject of multi-party
 signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd1986digital,DBLP:conf/ndss/Ganesan95a,DBLP:conf/crypto/MacKenzieR01,ganesan1994secure}
@@ -76,48 +75,518 @@ signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd
   as follows. \textsf{Share-EUF} security expresses security from the
   point of view of \alice{}, and establishes that \bob{} cannot issue a
   valid combined signature if he does not possess \alice's corresponding secret
-  share. In Appendix~\ref{appendix:combinedsign} we formalize it and prove:
-  % TODO: bring Share-EUF game and sec definitions
+  share. \redden{Formally:}
 
-  \begin{lemma}
-    \label{lemma:comb:share}
-    The construction defined in Appendix~\ref{appendix:combinedsign} is
-    % TODO: rephrase
-    \textsf{share-EUF}-secure in the Random Oracle model under the assumption
-    that the underlying signature scheme is strongly \textsf{EUF-CMA}-secure and
-    the range of the Random Oracle coincides with that of the underlying
-    signature scheme signing keys.
-  \end{lemma}
+  \redden{
+  \begin{gamebox}{$\mathsf{share \mhyphen
+  EUF}^{\adversary}\left(1^k\right)$}
+    \begin{algorithmic}[1]
+      \State $\left(\mathtt{aux}, mpk, n\right) \gets
+      \adversary\left(\textsc{init}\right)$
+      \For{$i \gets 1$ to $n$}
+        \State $\left(pk_i, sk_i\right) \gets
+        \textsc{KeyShareGen}\left(1^k\right)$
+      \EndFor
+      \State $\left(cpk^*, pk^*, m^*, \sigma^*\right) \gets
+      \adversary\left(\textsc{keys}, \mathtt{aux}, pk_1, \dots, pk_n\right)$
+      \If{$pk^* \in \left\{pk_1, \dots, pk_n\right\} \wedge$
+      $cpk^* = \textsc{CombinePubKey}\left(mpk, pk^*\right) \wedge$
+      $\textsc{VerifyCS}\left(\sigma^*, m^*, cpk^*\right) = 1$}
+        \State \Return 1
+      \Else
+        \State \Return 0
+      \EndIf
+    \end{algorithmic}
+  \end{gamebox}
+  \begin{definition}
+    \label{def:share:secure}
+    A Combined Signatures scheme is \emph{\textsf{share-EUF}-secure} if
+    \begin{gather*}
+      \forall k \in \mathbb{N}, \forall \adversary \in \mathtt{PPT},
+      \Pr\left[\mathsf{share \mhyphen EUF}^{\adversary}\left(1^k\right) =
+      1\right] = \mathit{negl}\left(k\right)
+      \ifelseieee{\\}{}
+      \text{or equivalently} \\
+      \forall k \in \mathbb{N}, \mathrm{E \mhyphen share}(k) =
+      \mathit{negl}\left(k\right) \enspace, \\
+      \text{where } \mathrm{E \mhyphen share}(k) = \underset{\adversary \in
+      \mathtt{PPT}}{\sup}\{\Pr[\mathsf{share \mhyphen
+      EUF}^{\adversary}\left(1^k\right) = 1]\}
+    \end{gather*}
+  \end{definition}
+  }
 
   On the other hand, \textsf{master-EUF-CMA} security is modeled very
   similarly to standard \textsf{EUF-CMA} security, with the difference
   that \bob{} (the signer) combines malicious shares into his public key and
   issues signatures with respect to such combined keys. The security
   property ensures that these signatures provide no advantage to the adversary
-  in terms of producing a forged message for a combined key of its choice. In
-  this respect we prove:
-  % TODO: bring master-EUF-CMA game and sec definitions
+  in terms of producing a forged message for a combined key of its choice.
+  \redden{Formally:}
+
+  \begin{gamebox}{$\mathsf{master \mhyphen EUF \mhyphen
+  CMA}^{\adversary}\left(1^k\right)$}
+    \begin{algorithmic}[1]
+      \State $\left(mpk, msk\right) \gets
+      \textsc{MasterKeyGen}\left(1^k\right)$
+      \State $i \gets 0$
+      \State $\left(\mathtt{aux}_i, \mathrm{response}\right) \gets
+      \adversary\left(\textsc{init}, mpk\right)$
+      \While{response can be parsed as $\left(pk, sk, m\right)$}
+        \State $i \gets i + 1$
+        \State store $pk, sk, m$ as $pk_i, sk_i, m_i$
+        \State $\left(cpk_i, csk_i\right) \gets
+        \textsc{CombineKey}\left(mpk, msk, pk_i, sk_i\right)$
+        \State $\sigma_i \gets \textsc{SignCS}\left(m_i, csk_i\right)$
+        \State $\left(\mathtt{aux}_i, \mathrm{response}\right) \gets
+        \adversary\left(\textsc{signature}, \mathtt{aux}_{i-1},
+        \sigma_i\right)$
+      \EndWhile
+      \State parse response as $\left(cpk^*, pk^*, m^*, \sigma^*\right)$
+      \If{$m^* \notin \left\{m_1, \dots, m_i\right\} \wedge$
+      $cpk^* = \textsc{CombinePubKey}\left(mpk, pk^*\right) \wedge$
+      $\textsc{VerifyCS}\left(\sigma^*, m^*, cpk^*\right) = 1$}
+        \State \Return 1
+      \Else
+        \State \Return 0
+      \EndIf
+    \end{algorithmic}
+  \end{gamebox}
+  \begin{definition}
+    \label{def:master:secure}
+    A Combined Signatures scheme is \emph{\textsf{master-EUF-CMA}-secure} if
+    \begin{gather*}
+      \forall k \in \mathbb{N}, \forall \adversary \in \mathtt{PPT},
+      \ifelseieee{\\}{}
+      \Pr\left[\mathsf{master \mhyphen EUF \mhyphen
+      CMA}^{\adversary}\left(1^k\right) = 1\right] =
+      \mathit{negl}\left(k\right)
+      \ifelseieee{\\}{}
+      \text{or equivalently} \\
+      \forall k \in \mathbb{N}, \mathrm{E \mhyphen master}(k) =
+      \mathit{negl}\left(k\right) \enspace, \\
+      \text{where }
+      \ifelseieee{\\}{}
+      \mathrm{E \mhyphen master}(k) = \underset{\adversary \in
+      \mathtt{PPT}}{\sup}\{\Pr[\mathsf{master \mhyphen
+      EUF-CMA}^{\adversary}\left(1^k\right) = 1]\}
+    \end{gather*}
+  \end{definition}
+
+  \begin{definition}
+    \redden{A Combined Signatures scheme is \emph{\textsf{combine-EUF}-secure}
+    if it is both \textsf{share-EUF}-secure and \textsf{master-EUF-CMA}-secure.}
+  \end{definition}
+
+  \redden{In conclusion, a collection of algoritms is said to be a secure
+  Combined Signatures scheme if it conforms to the syntax of the seven
+  aforementioned algorithms, it satisfies the three correctness properties and
+  provides existential unforgeability against key-only attacks with respect to
+  key shares and existential unforgeability against chosen message attacks with
+  respect to master keys.}
+
+  \redden{We here define the particular construction for Combined Signatures
+  used in LN and prove its security.}
+
+  \redden{Parameters: hash function $\mathcal{H}$, group generator $G$
+  \begin{algorithmic}[0]
+    \State \textsc{MasterKeyGen}($1^k$, rand):
+    \Indent
+      \State \Return ($G \cdot \mathrm{rand}$, rand)
+    \EndIndent
+  \end{algorithmic}}
+
+  \redden{\begin{algorithmic}[0]
+    \State \textsc{KeyShareGen}($1^k$, rand):
+    \Indent
+      \State \Return ($G \cdot \mathrm{rand}$, rand)
+    \EndIndent
+  \end{algorithmic}}
+
+  \redden{\begin{algorithmic}[0]
+    \State \textsc{CombinePubKey}($mpk, pk$):
+    \Indent
+      \State \Return $mpk \cdot \mathcal{H}\left(mpk \concat pk\right) + pk
+      \cdot \mathcal{H}\left(pk \concat mpk\right)$
+    \EndIndent
+  \end{algorithmic}}
+
+  \redden{\begin{algorithmic}[0]
+    \State \textsc{CombineKey}($mpk, msk, pk, sk$):
+    \Indent
+      \State \Return $(\textsc{CombinePubKey}(mpk, pk), msk \cdot
+      \mathcal{H}\left(mpk \concat pk\right) + sk \cdot \mathcal{H}\left(pk
+      \concat mpk\right))$
+    \EndIndent
+  \end{algorithmic}}
+
+  \redden{\begin{algorithmic}[0]
+    \State \textsc{TestKey}($pk, sk$):
+    \Indent
+      \If{$pk = G \cdot sk$}
+        \State \Return 1
+      \Else
+        \State \Return 0
+      \EndIf
+    \EndIndent
+  \end{algorithmic}}
+
+  \redden{\begin{algorithmic}[0]
+    \State \textsc{SignCS}($m, csk$):
+    \Indent
+      \State \Return \textsc{SignDS}($m, csk$)
+    \EndIndent
+  \end{algorithmic}}
+
+  \redden{\begin{algorithmic}[0]
+    \State \textsc{VerifyCS}($\sigma, m, cpk$):
+    \Indent
+      \State \Return \textsc{VerifyDS}($\sigma, m, cpk$)
+    \EndIndent
+  \end{algorithmic}}
+
+  \redden{One can check by inspection that the syntax above matches the one
+  required by the Combined Signatures scheme definition. Furthermore, assuming
+  that \textsc{SignDS}() and \textsc{VerifyDS}() are provided by a correct
+  Digital Signature construction, it is straightforward to confirm that the
+  construction here satisfies the Combined Signatures correctness properties.}
+
+  \redden{We now move on to proving that the construction is also secure.}
+
+  \begin{lemma}
+    \label{lemma:comb:share}
+    The construction defined \redden{above} is \textsf{share-EUF}-secure in the
+    Random Oracle model under the assumption that the underlying signature
+    scheme is strongly \textsf{EUF-CMA}-secure and the range of the Random
+    Oracle coincides with that of the underlying signature scheme signing keys.
+  \end{lemma}
+
+  \begin{proof}
+    \redden{Let $k \in \mathbb{N}, \mathcal{B}$ PPT algorithm such that
+    \begin{equation*}
+      \Pr\left[\mathsf{share \mhyphen EUF}^{\mathcal{B}}\left(1^k\right) =
+      1\right] = a > \mathrm{negl}\left(k\right) \enspace.
+    \end{equation*}
+    We construct a PPT distinguisher \adversary{}
+    (Fig.~\ref{proof:comb:share:distinguisher}) such that
+    \begin{equation*}
+      \Pr\left[\mathsf{EUF \mhyphen CMA}^{\adversary}\left(1^k\right) =
+      1\right] > \mathrm{negl}\left(k\right)
+    \end{equation*}
+    that breaks the assumption, thus proving Lemma~\ref{lemma:comb:share}.}
+
+    \begin{figure}[!htbp]
+      \begin{algobox}{$\adversary\left(vk\right)$}
+        \begin{algorithmic}[1]
+          \State $j \overset{\$}{\gets} U\left[1,
+          T\left(\mathcal{B}\right)\right]$
+          \Comment{$T\left(M\right)$ is the maximum running time of $M$}
+          \Indent
+            \State Random Oracle: for every first-seen query $q$ from
+            $\mathcal{B}$ set $\mathcal{H}\left(q\right)$ to a random value
+            \State \Return $\mathcal{H}\left(q\right)$ to $\mathcal{B}$
+          \EndIndent
+          \State $\left(\mathtt{aux}, mpk, n\right) \gets
+          \adversary\left(\textsc{init}\right)$
+          \For{$i \gets 1$ to $n$}
+            \State $\left(pk_i, sk_i\right) \gets
+            \textsc{KeyShareGen}\left(1^k\right)$
+          \EndFor
+          \Indent
+            \State Random Oracle: Let $q$ be the $j$th first-seen query from
+            $\mathcal{B}$:
+            \If{$q = \left(mpk \concat x\right)$}
+            \label{proof:comb:share:ro:start}
+              \If{$\mathcal{H}\left(x \concat mpk\right)$ unset}
+                \State set $\mathcal{H}\left(x \concat mpk\right)$ to a random
+                value
+              \EndIf
+              \State set $\mathcal{H}\left(mpk \concat x\right)$ to $\left(vk
+              - x \cdot \mathcal{H}\left(x \concat mpk\right)\right) \cdot
+              mpk^{-1}$
+            \ElsIf{$q = \left(x \concat mpk\right)$}
+              \If{$\mathcal{H}\left(mpk \concat x\right)$ unset}
+                \State set $\mathcal{H}\left(mpk \concat x\right)$ to a random
+                value
+              \EndIf
+              \State set $\mathcal{H}\left(x \concat mpk\right)$ to $\left(vk
+              - mpk \cdot \mathcal{H}\left(mpk \concat x\right)\right) \cdot
+              x^{-1}$
+              \label{proof:comb:share:ro:end}
+            \Else
+              \State set $\mathcal{H}\left(q\right)$ to a random value
+            \EndIf
+            \State \Return $\mathcal{H}\left(q\right)$ to $\mathcal{B}$
+          \EndIndent
+          \State $\left(cpk^*, pk^*, m^*, \sigma^*\right) \gets
+          \mathcal{B}\left(\textsc{keys}, \mathtt{aux}, pk_1, \dots,
+          pk_n\right)$
+          \If{$vk = cpk^* \wedge \mathcal{B}$ wins the \textsf{share-EUF}
+          game} \Comment{\adversary{} won the \textsf{EUF-CMA} game}
+          \label{proof:comb:share:distinguisher:won}
+            \State \Return $\left(m^*, \sigma^*\right)$
+          \Else
+            \State \Return \textsc{fail}
+          \EndIf
+        \end{algorithmic}
+      \end{algobox}
+      \caption{}
+      \label{proof:comb:share:distinguisher}
+    \end{figure}
+
+    \redden{Let $Y$ be the range of the random oracle. The modified random
+    oracle used in Fig.~\ref{proof:comb:share:distinguisher} is
+    indistinguishable from the standard random oracle by PPT algorithms since
+    the statistical distance of the standard random oracle from the modified one
+    is at most $\frac{1}{2|Y|} < \mathit{negl}\left(k\right)$ as they differ in
+    at most one element.}
+
+    \redden{Let $E$ denote the event in which $\mathcal{B}$ does not invoke
+    \textsc{CombinePubKey} to produce $cpk^*$. In that case the values
+    $\mathcal{H}\left(pk^* \concat mpk\right)$ and $\mathcal{H}\left(mpk
+    \concat pk^*\right)$ are decided after $\mathcal{B}$ terminates
+    (Fig.~\ref{proof:comb:share:distinguisher},
+    line~\ref{proof:comb:share:distinguisher:won}) and thus
+    \begin{equation}
+      \begin{gathered}
+        \Pr\left[cpk^* = \textsc{CombinePubKey}\left(mpk, pk^*\right) |
+        E\right] =
+        \ifelseieee{\\ =}{}
+        \frac{1}{|Y|} < \mathit{negl}\left(k\right) \Rightarrow \\
+        \Pr\left[cpk^* = \textsc{CombinePubKey}\left(mpk, pk^*\right)
+        \wedge E\right] <
+        \ifelseieee{\\ <}{}
+        \mathit{negl}\left(k\right) \enspace.
+      \end{gathered}
+      \label{proof:comb:share:nocomb}
+    \end{equation}
+    It is
+    \begin{gather*}
+      \left(\mathcal{B} \text{ wins}\right) \rightarrow \left(cpk^* =
+      \textsc{CombinePubKey}\left(mpk, pk^*\right)\right) \Rightarrow \\
+      \Pr\left[\mathcal{B} \text{ wins}\right] \leq
+      \ifelseieee{\\ \leq}{}
+      \Pr\left[cpk^* = \textsc{CombinePubKey}\left(mpk, pk^*\right)\right]
+      \Rightarrow \\
+      \Pr\left[\mathcal{B} \text{ wins} \wedge E\right] \leq
+      \ifelseieee{\\ \leq}{}
+      \Pr\left[cpk^* = \textsc{CombinePubKey}\left(mpk, pk^*\right) \wedge
+      E\right]
+      \overset{\left(\ref{proof:comb:share:nocomb}\right)}{\Rightarrow} \\
+      \Pr\left[\mathcal{B} \text{ wins} \wedge E\right] <
+      \mathit{negl}\left(k\right) \enspace.
+    \end{gather*}
+    }
+
+    \redden{But we know that $\Pr\left[\mathcal{B} \text{ wins}\right] =
+    \Pr\left[\mathcal{B} \text{ wins} \wedge E\right] + \Pr\left[\mathcal{B}
+    \text{ wins} \wedge \neg E\right]$ and $\Pr\left[\mathcal{B} \text{
+    wins}\right] = a$ by the assumption, thus
+    \begin{equation}
+      \label{proof:comb:share:nohash}
+      \Pr\left[\mathcal{B} \text{ wins} \wedge \neg E\right] > a -
+      \mathit{negl}\left(k\right) \enspace.
+    \end{equation}
+    }
+
+    \redden{We now focus at the event $\neg E$. Let $F$ the event in which the
+    call of $\mathcal{B}$ to \textsc{CombinePubKey} to produce $cpk^*$ results
+    in the $j$th invocation of the Random Oracle. Since $j$ is chosen uniformly
+    at random and using Proposition~1 of~\cite{full-version}, $\Pr\left[F | \neg
+    E\right] = \frac{1}{T\left(\mathcal{B}\right)}$. Observe that $\Pr\left[F |
+    E\right] = 0 \Rightarrow \Pr\left[F\right] = \Pr\left[F | \neg E\right] =
+    \frac{1}{T\left(\mathcal{B}\right)}$.}
+
+    \redden{In the case where the event $\left(F \wedge \mathcal{B} \text{ wins}
+    \wedge \neg E\right)$ holds, it is
+    \begin{gather*}
+      cpk^* = \textsc{CombinePubKey}\left(mpk, pk^*\right) = \\
+      mpk \cdot \mathcal{H}\left(mpk \concat pk^*\right) + pk^* \cdot
+      \mathcal{H}\left(pk^* \concat mpk\right)
+    \end{gather*}
+    Since $F$ holds, the $j$th invocation of the Random Oracle queried either
+    the value $\mathcal{H}\left(mpk \concat pk^*\right)$ or
+    $\mathcal{H}\left(pk^* \concat mpk\right)$. In either case
+    (Fig.~\ref{proof:comb:share:distinguisher},
+    lines~\ref{proof:comb:share:ro:start}-\ref{proof:comb:share:ro:end}), it
+    is $cpk^* = vk$. This means that $\textsc{VerifyCS}\left(\sigma^*, m^*,
+    vk\right) = 1$. We conclude that in the event $\left(F \wedge \mathcal{B}
+    \text{ wins} \wedge \neg E\right)$, \adversary{} wins the \textsf{EUF-CMA}
+    game. A final observation is that the probability that the events
+    $\left(\mathcal{B} \text{ wins} \wedge \neg E\right)$ and $F$ are almost
+    independent, thus
+    \begin{gather*}
+      \Pr\left[F \wedge \mathcal{B} \text{ wins} \wedge \neg E\right] =
+      \ifelseieee{\\ =}{}
+      \Pr\left[F\right] \Pr\left[\mathcal{B} \text{ wins} \wedge \neg E\right]
+      \pm \mathit{negl}\left(k\right)
+      \overset{\left(\ref{proof:comb:share:nohash}\right)}{=} \\
+      \frac{a - \mathit{negl}\left(k\right)}{T\left(\mathcal{B}\right)} \pm
+      \mathit{negl}\left(k\right) > \mathit{negl}\left(k\right)
+    \end{gather*}
+    }
+  \end{proof}
 
   \begin{lemma}
     \label{lemma:comb:master}
-    The construction of Appendix~\ref{appendix:combinedsign} is
-    % TODO: rephrase
-    \textsf{master-EUF-CMA}-secure in the Random Oracle model under the
-    assumption that the underlying signature scheme is strongly
-    \textsf{EUF-CMA}-secure and the range of the Random Oracle coincides with
-    that of the underlying signature scheme signing keys.
+    The construction \redden{above} is \textsf{master-EUF-CMA}-secure in the
+    Random Oracle model under the assumption that the underlying signature
+    scheme is strongly \textsf{EUF-CMA}-secure and the range of the Random
+    Oracle coincides with that of the underlying signature scheme signing keys.
   \end{lemma}
+
+  \begin{proof}
+    \redden{
+    Let $k \in \mathbb{N}, \mathcal{B}$ PPT algorithm such that
+    \begin{equation*}
+      \Pr\left[\mathsf{master \mhyphen EUF \mhyphen
+      CMA}^{\mathcal{B}}\left(1^k\right) = 1\right] = a >
+      \mathrm{negl}\left(k\right) \enspace.
+    \end{equation*}
+    We construct a PPT distinguisher \adversary{}
+    (Fig.~\ref{proof:comb:master:distinguisher}) such that
+    \begin{equation*}
+      \Pr\left[\mathsf{EUF \mhyphen CMA}^{\adversary}\left(1^k\right) =
+      1\right] > \mathrm{negl}\left(k\right)
+    \end{equation*}
+    that breaks the assumption, thus proving Lemma~\ref{lemma:comb:master}.
+    }
+
+    \begin{figure}[!htbp]
+      \begin{algobox}{$\adversary\left(vk\right)$}
+        \begin{algorithmic}[1]
+          \State $j \overset{\$}{\gets} U\left[1, T\left(\mathcal{B}\right) +
+          T\left(\adversary\right)\right]$
+          \Comment{$T\left(M\right)$ is the maximum running time of $M$}
+          \Indent
+            \State Random Oracle: for every first-seen query $q$ from
+            $\mathcal{B}$ set $\mathcal{H}\left(q\right)$ to a random value
+            \State \Return $\mathcal{H}\left(q\right)$ to $\mathcal{B}$
+          \EndIndent
+          \State $\left(mpk, msk\right) \gets
+          \textsc{MasterKeyGen}\left(1^k\right)$
+          \Indent
+            \State Random Oracle: Let $q$ be the $j$th first-seen query from
+            $\mathcal{B}$ or \adversary:
+            \If{$q = \left(mpk \concat x\right)$}
+              \If{$\mathcal{H}\left(x \concat mpk\right)$ unset}
+                \State set $\mathcal{H}\left(x \concat mpk\right)$ to a random
+                value
+              \EndIf
+              \State set $\mathcal{H}\left(mpk \concat x\right)$ to $\left(vk
+              - x \cdot \mathcal{H}\left(x \concat mpk\right)\right) \cdot
+              mpk^{-1}$
+            \ElsIf{$q = \left(x \concat mpk\right)$}
+              \If{$\mathcal{H}\left(mpk \concat x\right)$ unset}
+                \State set $\mathcal{H}\left(mpk \concat x\right)$ to a random
+                value
+              \EndIf
+              \State set $\mathcal{H}\left(x \concat mpk\right)$ to $\left(vk
+              - mpk \cdot \mathcal{H}\left(mpk \concat x\right)\right) \cdot
+              x^{-1}$
+            \Else
+              \State set $\mathcal{H}\left(q\right)$ to a random value
+            \EndIf
+            \State \Return $\mathcal{H}\left(q\right)$ to $\mathcal{B}$ or
+            \adversary
+          \EndIndent
+          \State $i \gets 0$
+          \State $\left(\mathtt{aux}_i, \mathrm{response}\right) \gets
+          \mathcal{B}\left(\textsc{init}, mpk\right)$
+          \While{response can be parsed as $\left(pk, sk, m\right)$}
+            \State $i \gets i + 1$
+            \State store $pk, sk, m$ as $pk_i, sk_i, m_i$
+            \State $\left(cpk_i, csk_i\right) \gets
+            \textsc{CombineKey}\left(mpk, msk, pk_i, sk_i\right)$
+            \State $\sigma_i \gets \textsc{SignCS}\left(m_i, csk_i\right)$
+            \State $\left(\mathtt{aux}_i, \mathrm{response}\right) \gets
+            \mathcal{B}\left(\textsc{signature}, \mathtt{aux}_{i-1},
+            \sigma_i\right)$
+          \EndWhile
+          \State parse response as $\left(cpk^*, pk^*, m^*, \sigma^*\right)$
+          \If{$vk = cpk^* \wedge \mathcal{B}$ wins the \textsf{master-EUF-CMA}
+          game} \Comment{\adversary{} won the \textsf{EUF-CMA} game}
+          \label{proof:comb:master:distinguisher:won}
+            \State \Return $\left(m^*, \sigma^*\right)$
+          \Else
+            \State \Return \textsc{fail}
+          \EndIf
+        \end{algorithmic}
+      \end{algobox}
+      \caption{}
+      \label{proof:comb:master:distinguisher}
+    \end{figure}
+
+    \redden{The modified random oracle used in
+    Fig.~\ref{proof:comb:master:distinguisher} is indistinguishable from the
+    standard random oracle for the same reasons as in the proof of
+    Lemma~\ref{lemma:comb:share}.}
+
+    \redden{Let $E$ denote the event in which \textsc{CombinePubKey} is not
+    invoked to produce $cpk^*$. In that case the values $\mathcal{H}\left(pk^*
+    \concat mpk\right)$ and $\mathcal{H}\left(mpk \concat pk^*\right)$ are
+    decided after $\mathcal{B}$ terminates
+    (Fig.~\ref{proof:comb:master:distinguisher},
+    line~\ref{proof:comb:master:distinguisher:won}) and thus
+    \begin{equation}
+      \begin{gathered}
+        \Pr\left[cpk^* = \textsc{CombinePubKey}\left(mpk, pk^*\right) |
+        E\right] <
+        \ifelseieee{\\ <}{}
+        \mathit{negl}\left(k\right) \Rightarrow \\
+        \Pr\left[cpk^* = \textsc{CombinePubKey}\left(mpk, pk^*\right) \wedge
+        E\right] <
+        \ifelseieee{\\ <}{}
+        \mathit{negl}\left(k\right) \enspace.
+      \end{gathered}
+      \label{proof:comb:master:nocomb}
+    \end{equation}
+    We can reason like in the proof of Lemma~\ref{lemma:comb:share} to deduce
+    that
+    \begin{equation}
+      \label{proof:comb:master:nohash}
+      \Pr\left[\mathcal{B} \text{ wins} \wedge \neg E\right] > a -
+      \mathit{negl}\left(k\right) \enspace.
+    \end{equation}
+    }
+
+    \redden{We now focus at the event $\neg E$. Let $F$ the event in which the
+    call of to \textsc{CombinePubKey} that produces $cpk^*$ results in the $j$th
+    invocation of the Random Oracle. Since $j$ is chosen uniformly at random and
+    using Proposition~1 of~\cite{full-version}, $\Pr\left[F | \neg E\right] =
+    \frac{1}{T\left(\mathcal{B}\right) + T\left(\adversary\right)}$. Observe
+    that $\Pr\left[F | E\right] = 0 \Rightarrow \Pr\left[F\right] = \Pr\left[F |
+    \neg E\right] = \frac{1}{T\left(\mathcal{B}\right) +
+    T\left(\adversary\right)}$.}
+
+    \redden{Once more we can reason in the same fashion as in the proof of
+    Lemma~\ref{lemma:comb:share} to deduce that
+    \begin{gather*}
+      \Pr\left[F \wedge \mathcal{B} \text{ wins} \wedge \neg E\right] =
+      \ifelseieee{\\ =}{}
+      \Pr\left[F\right] \Pr\left[\mathcal{B} \text{ wins} \wedge \neg E\right]
+      \pm \mathit{negl}\left(k\right)
+      \overset{\left(\ref{proof:comb:master:nohash}\right)}{=} \\
+      \frac{a - \mathit{negl}\left(k\right)}{T\left(\mathcal{B}\right) +
+      T\left(\adversary\right)} \pm \mathit{negl}\left(k\right) >
+      \mathit{negl}\left(k\right)
+    \end{gather*}
+    }
+  \end{proof}
 
   The two results can then be combined to obtain the desired security property:
 
   \begin{theorem}
     \label{thm:combsign}
-    The construction of Appendix~\ref{appendix:combinedsign} is
-    % TODO: rephrase
-    \textsf{combine-EUF}-secure in the Random Oracle model under the assumption
-    that the underlying signature scheme is strongly \textsf{EUF-CMA}-secure.
+    The construction \redden{above} is \textsf{combine-EUF}-secure in the Random
+    Oracle model under the assumption that the underlying signature scheme is
+    strongly \textsf{EUF-CMA}-secure.
   \end{theorem}
-  % TODO: bring construction
-  % TODO: bring proofs
-  % TODO: remove appendices
-  % TODO: remove and rephrase all dangling refs
+
+  \redden{
+  \begin{proof}
+    The construction is \textsf{combine-EUF}-secure as a consequence of
+    Lemma~\ref{lemma:comb:share}, Lemma~\ref{lemma:comb:master} and the
+    definition of \textsf{combine-EUF}-security.
+  \end{proof}
+  }

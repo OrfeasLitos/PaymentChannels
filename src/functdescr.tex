@@ -1,13 +1,13 @@
 \section{Overview of \fpaynet{}}
 \label{sec:ov-paynet}
-  One of our contributions is the specification of \fpaynet{}
-  (Appendix~\ref{appendix:payfunc}), a functionality that describes the
-  functional and security guarantees given by an ideal payment network. The
-  central aim of \fpaynet{} is opening payment channels, keeping
-  track of their state, updating them according to requested payments and
-  closing them, as requested by honest players, all in a secure manner. In
-  particular, the three main messages it can receive from \alice{} are
-  (\textsc{openChannel}), (\textsc{pay}), (\textsc{closeChannel}) and
+  One of our contributions is the specification of \fpaynet, a functionality
+  that describes the functional and security guarantees given by an ideal
+  payment network. \redden{Its definition can be found in the full
+  version~\cite{full-version}}. The central aim of \fpaynet{} is opening payment
+  channels, keeping track of their state, updating them according to requested
+  payments and closing them, as requested by honest players, all in a secure
+  manner. In particular, the three main messages it can receive from \alice{}
+  are (\textsc{openChannel}), (\textsc{pay}), (\textsc{closeChannel}) and
   (\textsc{forceCloseChannel}).
 
   When \fpaynet{} receives (\textsc{openChannel}, \alice, \bob, $x$,
@@ -19,7 +19,6 @@
   multi-hop payment of $x$ coins from \alice{} to \bob{} along the
   $\overrightarrow{\mathtt{path}}$. In the same vein, when \fpaynet{}
   receives (\textsc{closeChannel}, \texttt{receipt}, \textit{pchid}) or
-  % TODO: unredden typo
   (\textsc{forceCloseChannel}, \texttt{receipt}, \textit{pchid}) from
   \alice{} (for a cooperative or unilateral close respectively), it
   leaks to \simulator{} the fact that \environment{} wants to close the relevant
@@ -38,9 +37,7 @@
     channels has been closed maliciously with a transaction at height $h$ and,
     even though \alice{} has \textsc{poll}ed within $[h, h +
     \mathtt{delay}(\alice) - 1]$, she did not manage to punish the counterparty.
-    Refer to lines~\ref{alg:fpaynet:poll:ifdsforgery}
-    and~\ref{alg:fpaynet:poll:haspolled} of Fig.~\ref{alg:fpaynet:poll} for more
-    details. If \fpaynet{} does not halt, it leaks to \simulator{} the polling
+    If \fpaynet{} does not halt, it leaks to \simulator{} the polling
     details (including the identity of the poller and the state of the ledger in
     their view).
     % TODO: explicitly mention bounds for receiving node
@@ -61,37 +58,32 @@
     \begin{enumerate}
       \item did not \textsc{poll} in time to catch a malicious closure
       (similarly to the check performed when a \textsc{poll} message is handled,
-      as described above) (Fig.~\ref{alg:fpaynet:resolvepay:honestpayer},
-      line~\ref{alg:fpaynet:resolvepay:haltcond:rel}) or
+      as described above) or
       \item did not \textsc{poll} twice while the block height in the view of
       the player was in $[\mathtt{OutgoingCltvExpiry},
       \mathtt{IncomingCltvExpiry} - \tochain]$ with a distance of at least
       \tochain{} between the two \textsc{poll}s or
       \item did not enforce the retrieval of the funds lost as a result of this
       payment when the chain in her view had height $\mathtt{IncomingCltvExpiry}
-      - \tochain$ (Fig.~\ref{alg:fpaynet:resolvepay:haltcond:abs}) with a
-      \textsc{fulfillOnChain} message, as discussed below.
+      - \tochain$ with a \textsc{fulfillOnChain} message, as discussed below.
     \end{enumerate}
     Note that $\tochain$ is the maximum number of blocks an honest party needs
     to wait from the moment a valid transaction is submitted until it is added
-    to the ledger state (Proposition~\ref{prop:tochain}). \fpaynet{} also
-    ensures that the two expiries (\texttt{OutgoingCltvExpiry} and
-    \texttt{IncomingCltvExpiry}) have a distance of at least
-    $\mathtt{relayDelay}(\alice) + \tochain$, otherwise it halts. In case the
-    charged party was honest and non-negligent, \fpaynet{} halts. It also halts
-    if a particular payment resulted in a channel update for which \simulator{}
-    did not inform \fpaynet{} (Fig.~\ref{alg:fpaynet:resolvepay:loops},
-    line~\ref{alg:fpaynet:resolvepay:loops:halt:do}).
+    to the ledger state. \fpaynet{} also ensures that the two expiries
+    (\texttt{OutgoingCltvExpiry} and \texttt{IncomingCltvExpiry}) have a
+    distance of at least $\mathtt{relayDelay}(\alice) + \tochain$, otherwise it
+    halts. In case the charged party was honest and non-negligent, \fpaynet{}
+    halts. It also halts if a particular payment resulted in a channel update
+    for which \simulator{} did not inform \fpaynet{}.
     \item \fpaynet{} executes the function
     \texttt{checkClosed}($\Sigma_{\alice}$) every time it receives
-    $\Sigma_{\alice}$ from \ledger{} (Fig.~\ref{alg:fpaynet:close:func},
-    lines~\ref{alg:fpaynet:close:func:start}-\ref{alg:fpaynet:close:func:end}).
-    In this case, it checks that every channel that \environment{} has asked to
-    be closed or \simulator{} designated as closed indeed has a closing
-    transaction that corresponds to its latest state in $\Sigma_{\alice}$.
-    Enough time is given for that transaction to settle in $\Sigma_{\alice}$,
-    but if that time passes and the channel is still open or it is closed to a
-    wrong version and no opportunity for punishment was given, \fpaynet{} halts.
+    $\Sigma_{\alice}$ from \ledger{}.  In this case, it checks that every
+    channel that \environment{} has asked to be closed or \simulator{}
+    designated as closed indeed has a closing transaction that corresponds to
+    its latest state in $\Sigma_{\alice}$.  Enough time is given for that
+    transaction to settle in $\Sigma_{\alice}$, but if that time passes and the
+    channel is still open or it is closed to a wrong version and no opportunity
+    for punishment was given, \fpaynet{} halts.
   \end{itemize}
 
   A number of  messages that support the protocol progress are also handled:
