@@ -1,5 +1,5 @@
-\redden{\section{Future Work and Conclusion}}
-  \redden{In order to remain tractable, the current analysis omits some parts of
+\section{Future Work and Conclusion}
+  In order to remain tractable, the current analysis omits some parts of
   the lightning specification. In particular, the specification defines how
   intermediaries of multi-hop payments can charge a fee for their service.
   Furthermore, the per-update secret generation is not done with a PRF according
@@ -18,16 +18,16 @@
   Bitcoin nodes do not relay transactions that include outputs with tiny amounts
   of coins, a.k.a ``dust'' outputs, to avoid bloating the blockchain. The
   lightning specification provides extensive instructions as to how to prune
-  such outputs.}
+  such outputs.
 
-  \redden{All aforementioned parts of the protocol were not analysed so that the
+  All aforementioned parts of the protocol were not analysed so that the
   security of the core parts of the lightning protocol could be discussed
   without distractions. In order for the analysis to cover the entirety of the
   current version of the lightning specification however, the aforementioned
   features should be incorporated and their security should be proven. This
-  expansion of the analysis is left as future work.}
+  expansion of the analysis is left as future work.
 
-  \redden{In a different direction, big parts of our main security proof consist
+  In a different direction, big parts of our main security proof consist
   of an exhaustive enumeration of the possible messages that \environment{} and
   \adversary{} can send to the protocol, the simulator or the functionality and
   tracking how such messages would change the flow of the execution of the ideal
@@ -38,20 +38,20 @@
   all possible execution paths are indeed checked and do not contain subtle
   sources of distinguishability. %Developing an environment that aids in the  production and verification of indistinguishability proofs in the framework of  Universal Composability is left as future work.
 Combining our results with the recent  mechanization of UC via Easycrypt~\cite{DBLP:conf/csfw/CanettiSV19} would be a natural and interesting direction for future work. 
-  }
+  
 
-  \redden{The lightning specification is not static, but it is continuously
+  The lightning specification is not static, but it is continuously
   undergoing a number of improvements. The most noteworthy upcoming change is
   the introduction of Pointlocked TimeLocked Contracts (PTLCs). This mechanism
   replaces HTLCs and promises to combat the ``wormhole''
   attack~\cite{DBLP:conf/ndss/MalavoltaMSKM19}, while increasing privacy. Our
   work can be modified to cover the case of PTLCs with relative ease. It also
   provides a suitable framework for future work that aims to shed light on the
-  exact privacy benefit that PTLCs offer as opposed to HTLCs.}
+  exact privacy benefit that PTLCs offer as opposed to HTLCs.
 
-  \redden{The present analysis constitutes the first comprehensive treatment in
+  The present analysis constitutes the first comprehensive treatment in
   the Universal Composability framework of a deployed layer-2 protocol on top of
   a functional ledger. It can be extended and adapted to analyze other similar
   protocols that achieve different security goals or use another ledger as base
-  layer.}
+  layer.
 

@@ -1,7 +1,7 @@
 \section{Preliminaries}
 \label{sec:preliminaries}
   In this section we give a brief overview of the tools and frameworks
-  \redden{used} in this work.
+  used in this work.
 
   \noindent \textbf{Universal Composability framework.}
     In simulation-based security, cryptographic tasks are defined via an ideal
@@ -12,18 +12,18 @@
     security features. A protocol $\Pi$ realises the functionality $\mathcal{F}$
     if for any  real world adversary we can define a ``simulator'' \simulator{},
     acting as an ideal world adversary, such that any environment
-    \redden{\environment{}} cannot distinguish between the real world and the
+    \environment{} cannot distinguish between the real world and the
     ideal world executions. Albeit a powerful tool, simulation-based security
     only works when a single instance of the protocol is run in isolation.
     However, real-world systems almost always run several programs concurrently,
     which furthermore may run different instances of the same protocol. To
-    facilitate this\redden{,} the Universal Composability~\cite{uc} framework
-    \redden{allows us} to analyse a single instance of the protocol and then
+    facilitate this, the Universal Composability~\cite{uc} framework
+    allows us to analyse a single instance of the protocol and then
     take advantage of a generic composition theorem to infer the security of the
     protocol more broadly. This is achieved by allowing arbitrary interactions
     between the environment and the real-world adversary.
 
-    \redden{As mentioned, lightning network members have to periodically check
+    As mentioned, lightning network members have to periodically check
     the blockchain to ensure the security of their funds. However, the execution
     model of the UC framework allows \environment{} to impose extended periods
     of inactivity to any party. We opted to avoid the complication of using the
@@ -32,7 +32,7 @@
     preclude the composability of our model. We instead allow \environment{} to
     deny activation to players (therefore becoming negligent) and provide
     security guarantees conditional on \environment{} permitting the necessary
-    monitoring of the blockchain.}
+    monitoring of the blockchain.
 
 %In particular it
 %    replaces $\mathcal{F}$, $\Pi$, \adversary{}, \simulator{} and the external
@@ -59,34 +59,34 @@
     distributed append-only data structure akin to a blockchain. Any
     participating party can read from \ledger, which returns an ordered list
     of transactions. Furthermore parties can submit new transactions which, if
-    valid, will be added to the ledger \redden{and made visible to all parties}
+    valid, will be added to the ledger and made visible to all parties
     at the discretion of the adversary, but necessarily within a predefined time
     window. This property is called liveness. Once a transaction is added to the
     ledger, it becomes visible to all parties at the discretion of the
     adversary, but within another predefined time window, and cannot be removed
     or reordered. This is called persistence. The exact definition can be found
-    in Appendix~\ref{appendix:ledger}. \redden{The current work makes heavy use
+    in Appendix~\ref{appendix:ledger}. The current work makes heavy use
     of these two security properties, as the security of the lightning network
-    relies crucially on the security of the underlying ledger.}
+    relies crucially on the security of the underlying ledger.
 
-    Furthermore, \ledger{} needs \redden{the} \Fclock \redden{functionality,
-    which} models the notion of time. Every participating party can request to
+    Furthermore, \ledger{} needs the \Fclock functionality,
+    which models the notion of time. Every participating party can request to
     read the current time (which is initialized to 0) and inform \Fclock that
     her round is over. \Fclock increments the time by one once all parties have
     declared the end of their round.
 
-    \redden{As already mentioned,} the protocol and functionality defined in the
-    current work do not make direct use of \Fclock. \redden{Indeed, the only
+    As already mentioned, the protocol and functionality defined in the
+    current work do not make direct use of \Fclock. Indeed, the only
     notion of time both in the lightning protocol and in our work is provided by
     the height of the blockchain, as reported respectively by the underlying
-    Bitcoin node and \ledger.} We therefore omit \redden{it} in the statements
+    Bitcoin node and \ledger. We therefore omit it in the statements
     of Lemmas~\ref{lemma:dummy}-\ref{lemma:close} and
-    Theorem~\ref{theorem:simulation} for simplicity of notation; \redden{it}
-    should normally appear as hybrid along with \ledger. \redden{Its} exact
+    Theorem~\ref{theorem:simulation} for simplicity of notation; it
+    should normally appear as hybrid along with \ledger. Its exact
     definition can be found in Appendix~\ref{appendix:ledger}. We also note that
-    \ledger{} and \Fclock are global functionalities~\cite{globaluc} \redden{and
-    therefore can be accessed directly by the environment,} whereas \fpaynet{}
-    \redden{is} not.
+    \ledger{} and \Fclock are global functionalities~\cite{globaluc} and
+    therefore can be accessed directly by the environment, whereas \fpaynet{}
+    is not.
 
   \noindent \textbf{Transaction structure.}
     \ledger{} does not define what is a valid transaction, but leaves it as a
@@ -130,7 +130,7 @@
     \end{itemize}
     We refer the reader to~\cite{ibspaterson} for more details. Other
     cryptographic primitives used are digital signatures and pseudorandom
-    functions, see \redden{Appendices}~\ref{sec:ds},~\ref{sec:ibs},
-    \redden{and}~\ref{sec:prf}. Finally, a less common  two-party cryptographic
+    functions, see Appendices~\ref{sec:ds},~\ref{sec:ibs},
+    and~\ref{sec:prf}. Finally, a less common  two-party cryptographic
     primitive is employed that we formalise as {\em  combined digital
     signatures}, see Section~\ref{sec:ov-combined-ds}.

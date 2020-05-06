@@ -2,7 +2,7 @@
 \label{sec:ov-ln}
 
   \noindent {\bf Two-party channels.}
-    The aim of LN is to enable fast\redden{, cheap, off-chain} transactions,
+    The aim of LN is to enable fast, cheap, off-chain transactions,
     without compromising security. Specifically no trust between counterparties
     is needed. This is achieved as follows: Two parties that plan to have
     recurring monetary exchanges lock up some funds with one special on-chain
@@ -14,14 +14,14 @@
     the channel and retrieve the coins they are entitled to -- according to the
     latest channel state -- and thus neither party has to trust the other.
 
-    In more detail, to open a channel \alice{} and \bob{} first \redden{exchange
+    In more detail, to open a channel \alice{} and \bob{} first exchange
     a number of keys and desired timelocks $\mathrm{relDel}_A,
-    \mathrm{relDel}_B$ (explained below) and then} build locally some
+    \mathrm{relDel}_B$ (explained below) and then build locally some
     transactions. The ``funding transaction'' $F$ contains a 2-of-2 multisig
     output with one ``funding'' public key $pk_{F, A}, pk_{F, B}$ for each
-    counterparty. \redden{This multisig output needs signatures for both
-    designated public keys in order to be spent. $F$} is funded with
-    \redden{$c_F$} coins that belong only to one of the two parties, say \alice.
+    counterparty. This multisig output needs signatures for both
+    designated public keys in order to be spent. $F$ is funded with
+    $c_F$ coins that belong only to one of the two parties, say \alice.
 
     \begin{figure}[H]
     \centering
@@ -37,10 +37,10 @@
     \end{figure}
 
     Each party also builds a slightly different version of the ``commitment
-    transaction'' $C_A, C_B$. \redden{\alice{} uses her ``delayed payment'' key
+    transaction'' $C_A, C_B$. \alice{} uses her ``delayed payment'' key
     $pk_{\mathrm{dcom}, A}$ and \bob's ``revocation'' key $pk_{\mathrm{rev}, B}$
     (received before), whereas \bob{} uses \alice's ``payment'' key
-    $pk_{\mathrm{com}, A}$ (received before).} Both $C_A$ and $C_B$ spend the
+    $pk_{\mathrm{com}, A}$ (received before). Both $C_A$ and $C_B$ spend the
     funding output of $F$ and allow \alice{} to retrieve her funds if she acts
     honestly, as we will explain shortly. \alice{} sends \bob{} the signature of
     $C_B$ made with her $sk_{F, A}$ and vice-versa.
@@ -77,19 +77,19 @@
     \begin{figure*}
       % using png from GIMP. TODO: build tx composer and use that instead
       \includegraphics[width=\textwidth]{all-txs-figure}
-      \redden{\caption{All transactions of an open channel with an HTLC in
+      \caption{All transactions of an open channel with an HTLC in
       flight. \alice{} owns $c_A$ coins, \bob{} $c_B$ coins, and $c_h$ coins
       will be transferred to \bob{} if he discloses the preimage of $h$ until
       the ledger has $\mathrm{height}_{\mathrm{cltv}}$ blocks, otherwise they
       will return to \alice. ``funding'' is in the ledger, \alice{} keeps
       locally ``$\mathrm{comm}_A$'' and ``$\mathrm{HTLC}_A$'', and \bob{} keeps
-      ``$\mathrm{comm}_B$'' and ``$\mathrm{HTLC}_B$''.}}
+      ``$\mathrm{comm}_B$'' and ``$\mathrm{HTLC}_B$''.}
       \label{fig:all-txs}
     \end{figure*}
 
-    She now broadcasts $F$; once \redden{both parties see that} it is confirmed,
-    \redden{they generate and exchange new ``commitment'' keys (used for
-    updating the channel later) and} the channel is open.
+    She now broadcasts $F$; once both parties see that it is confirmed,
+    they generate and exchange new ``commitment'' keys (used for
+    updating the channel later) and the channel is open.
 
     Every time they want to make a payment to each other, they exchange a series
     of messages that have two effects. First, a new pair of commitment
@@ -103,13 +103,13 @@
 
     Invalidating past commitments requires some care. The reason is that it is
     impossible to actually make past commitments invalid without spending the
-    funding output \redden{on-chain; doing this for every update would however
-    defeat} the purpose of LN. The following idea is leveraged instead: If
+    funding output on-chain; doing this for every update would however
+    defeat the purpose of LN. The following idea is leveraged instead: If
     \alice{} broadcasts an old commitment and \bob{} sees it, he can punish
     \alice{} by taking all the money in the channel. Therefore \alice{} is
     technically able to broadcast an old commitment, but has no financial
-    benefit in doing so. \redden{The same reasoning holds if \bob{} broadcasts
-    an old commitment.} On the donwside this imposes the requirement that
+    benefit in doing so. The same reasoning holds if \bob{} broadcasts
+    an old commitment. On the donwside this imposes the requirement that
     parties must observe the blockchain periodically --- see below the
     explanation of timelocks and how they facilitate a time window within which
     parties should react.
@@ -118,9 +118,9 @@
     posting her old local commitment which has an output that carries her old
     share of the funds. This output can be spent in two ways: either with a
     signature by \alice's ``delayed payment'' secret key
-    \redden{$sk_{\mathrm{dcom}, A}$} which is a usual ECDSA key, or with a
-    signature by \bob's ``revocation'' secret key \redden{$sk_{\mathrm{rev},
-    B}$}, which is also an ECDSA key, but with an additional characteristic that
+    $sk_{\mathrm{dcom}, A}$ which is a usual ECDSA key, or with a
+    signature by \bob's ``revocation'' secret key $sk_{\mathrm{rev},
+    B}$, which is also an ECDSA key, but with an additional characteristic that
     we will explain soon. Thus, if \alice{} broadcasts an old commitment, \bob{}
     will be able to obtain her funds by spending her output using his
     ``revocation'' key. This privilege of course opens the possibility for
@@ -130,11 +130,11 @@
     has the following form. At the time of creation of a new commitment, both
     parties will know \bob's ``revocation'' public key $pk_{\mathrm{rev}, B}$,
     but no party knows its corresponding secret -- the key can only be computed
-    by combining one secret value \redden{$sk_{\mathrm{com}, n, A}$} that
-    \alice{} knows and one secret value \redden{$sk_{\mathrm{com}, n, B}$} that
+    by combining one secret value $sk_{\mathrm{com}, n, A}$ that
+    \alice{} knows and one secret value $sk_{\mathrm{com}, n, B}$ that
     \bob{} knows. \alice{} therefore can prevent \bob{} from using his
-    revocation key until she sends \redden{him $sk_{\mathrm{com}, n, A}$}.
-    Therefore, \alice{} will send \redden{\bob{} $sk_{\mathrm{com}, n, A}$} only
+    revocation key until she sends him $sk_{\mathrm{com}, n, A}$.
+    Therefore, \alice{} will send \bob{} $sk_{\mathrm{com}, n, A}$ only
     after the new commitment transaction is built and signed. Thus \bob{} cannot
     abuse his revocation key on a commitment before this transaction is revoked.
     We note that the underlying cryptographic mechanism  that enables such
@@ -146,11 +146,11 @@
     Appendix~\ref{appendix:combinedsign}.
 
     The last element needed to make channel updates secure is the
-    \redden{already mentioned} ``relative timelock''. If \alice{} broadcasts a
+    already mentioned ``relative timelock''. If \alice{} broadcasts a
     commitment transaction, she is not allowed to immediately spend her funds
     with her ``delayed payment'' key. Instead, she has to wait for the
     transaction to reach a pre-agreed block depth (the relative timelock,
-    \redden{negotiated during the opening of the channel and} hardcoded in the
+    negotiated during the opening of the channel and hardcoded in the
     output script of the commitment transaction) in order to give some time to
     \bob{} to see the transaction and, if it does not correspond to the latest
     version of the channel, punish her with his ``revocation'' key. This avoids
@@ -160,17 +160,17 @@
 
     Lastly, if \alice{} wants to unilaterally close a channel, all she has to do
     is broadcast her latest local commitment (the only one not revoked)
-    \redden{and any outstanding HTLC transactions (explained below)} and wait
+    and any outstanding HTLC transactions (explained below) and wait
     for the timelock to expire in order to spend her funds. The LN specification
     further allows for cooperative channel closure, achieved by negotiating and
-    broadcasting the ``closing transaction'' \redden{which is not encumbered
-    with a timelock, providing immediate availability of funds.}
+    broadcasting the ``closing transaction'' which is not encumbered
+    with a timelock, providing immediate availability of funds.
 
     As mentioned timelocks provide specific time windows within which both
     parties have to check the blockchain in order to punish a misbehaving
     counterparty who  broadcasts an old commitment transaction. This means that
     parties have to be regularly online to safeguard against theft.
-    \redden{Furthermore,} LN makes it possible to trustlessly outsource this to
+    Furthermore, LN makes it possible to trustlessly outsource this to
     so-called watchtowers, but this mechanism is not analyzed in the current
     work.
 
@@ -206,30 +206,30 @@
     This type of promise where a preimage is exchanged for money is called
     Hashed Time Locked Contract (HTLC). It is enforceable on-chain in case the
     payer does not cooperatively update upon disclosure of the preimage, thus no
-    trust is needed. \redden{It is realised as an additional output of the
+    trust is needed. It is realised as an additional output of the
     commitment transactions, which contains the specified hash and transfers its
     funds either to the party that should provide the preimage or to the other
     party after a timeout. A corresponding ``HTLC transaction'' that can spend
-    this output is built by each party.} In the previous example with \alice{},
-    \bob{} and \charlie, two HTLC \redden{transactions} were signed and
-    fulfilled \redden{in total} for the payment to go through. Two updates
+    this output is built by each party. In the previous example with \alice{},
+    \bob{} and \charlie, two HTLC transactions were signed and
+    fulfilled in total for the payment to go through. Two updates
     happened in each channel: one to sign the HTLC and one to fulfill it. The
     time frames were chosen so that every intermediary has had the time to learn
     the preimage and give it to the previous party on the path.
-    \redden{Figure~\ref{fig:all-txs} shows all transactions implicated in a
-    channel that has an HTLC in flight.}
+    Figure~\ref{fig:all-txs} shows all transactions implicated in a
+    channel that has an HTLC in flight.
 
     In LN zero-hop payments are also carried out using HTLCs.
 
     LN gives the possibility for intermediaries to charge a fee for their
     service, but such fees are not incorporated in the current analysis
-    \redden{for the benefit of avoiding the added complexity and making it
+    for the benefit of avoiding the added complexity and making it
     easier for the functionality to keep track of the correct balances. We note
     in passing that the ``wormhole'' attack described
     in~\cite{DBLP:conf/ndss/MalavoltaMSKM19} is captured by our model, as an
     adversary that controls two non-neighbouring nodes on a payment path can
     skip the intermediate nodes. Nevertheless, such an attack is inconsequential
-    in our analysis given the lack of fees.} Furthermore, LN leverages the
+    in our analysis given the lack of fees. Furthermore, LN leverages the
     Sphinx onion packet scheme~\cite{sphinx} to increase the privacy of
     payments, but we do not formaly analyze the privacy of LN in this work -- we
     just use it in our protocol description to syntactically match the message

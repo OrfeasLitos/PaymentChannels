@@ -3,7 +3,7 @@
     \begin{algorithmic}[1]
       \State For messages \textsc{register}, \textsc{registerDone},
       \textsc{toppedUp}, \textsc{openChannel},
-      \redden{\textsc{adversaryOpenChannel}, \textsc{channelAnnounced}} and
+      \textsc{adversaryOpenChannel}, \textsc{channelAnnounced} and
       \textsc{checkForNew}, act like \fpaynet{}, but skip lines that call
       \texttt{checkClosed}().
       \Statex
@@ -30,7 +30,7 @@
 
 \begin{figure}[!htbp]
   \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open}}$ --
-  \redden{open}}
+  open}
     Like $\simulator{}_{\mathrm{LN - Reg}}$. Differences:
     \begin{algorithmic}[1]
       \State Upon receiving (\textsc{openChannel}, \alice, \bob, $x$,
@@ -82,7 +82,7 @@
       \EndIndent
       \Statex
 
-      \redden{\State Upon receiving (\textsc{openChannel}, $x$,
+      \State Upon receiving (\textsc{openChannel}, $x$,
       \texttt{remoteDelay}, $pt_F$, $ptb_{\mathrm{pay}}$, $ptb_{\mathrm{dpay}}$,
       $ptb_{\mathrm{htlc}}$, $pt_{\mathrm{com}, 1}$, $ptb_{\mathrm{rev}}$,
       \textit{tid}, \textit{from} \alice, \textit{to} \bob) from \adversary{}:
@@ -96,18 +96,18 @@
         to $\fpaynet{}_{\mathrm{, Open}}$
         \label{alg:sim:open:adv:send}
       \EndIndent
-      \Statex}
+      \Statex
 
-      \redden{\State Upon receiving (\textsc{adversaryOpenChannel},
+      \State Upon receiving (\textsc{adversaryOpenChannel},
       \textit{fchid}, \textit{intid}) from $\fpaynet{}_{\mathrm{, Open}}$:
       \label{alg:sim:open:adv:recv}
       \Indent
         \State retrieve message associated with \textit{intid}
         \State Continue simulation with \alice{} receiving the message from \bob
         \label{alg:sim:open:adv:cont}
-      \EndIndent}
+      \EndIndent
     \end{algorithmic}
-    \redden{Continued in Fig.~\ref{alg:sim:open:fundingLocked}}
+    Continued in Fig.~\ref{alg:sim:open:fundingLocked}
   \end{simulatorbox}
   \caption{}
   \label{alg:sim:open}
@@ -115,8 +115,8 @@
 
 \begin{figure}[!htbp]
   \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open}}$ --
-  \redden{funding locked}}
-    \redden{Continuing from Fig.~\ref{alg:sim:open}}
+  funding locked}
+    Continuing from Fig.~\ref{alg:sim:open}
     \begin{algorithmic}[1]
       \State Upon receiving (\textsc{fundingLocked}, \alice, $\Sigma_{\alice}$,
       \textit{fchid}) from $\fpaynet{}_{\mathrm{, Open}}$:
@@ -213,7 +213,7 @@
   line~\ref{alg:protocol:open:fundingSigned:mark}) (which also needs a valid
   \alice-\bob{} interaction up to that point)
 
-  \redden{In the ideal world, when the simulated \adversary{} attempts to open a
+  In the ideal world, when the simulated \adversary{} attempts to open a
   new channel by instructing corrupted \alice{} to send (\textsc{openChannel},
   $x$, \texttt{bobDelay}, \_, \_, \_, \_, \_, \_, \textit{tid}) to honest \bob,
   \simulator{} sends (\textsc{adversaryOpenChannel}, $x$, \texttt{bobDelay},
@@ -229,7 +229,7 @@
   world, such a message by the adversarially controlled \alice{} would result in
   the honest player \bob{} starting the same opening negotiation as the one that
   was just described in the ideal world, therefore the two behaviours are
-  indistinguishable.}
+  indistinguishable.
   % TODO: decide if the last sentence here is enough. The same for other
   % adversarial messages
 

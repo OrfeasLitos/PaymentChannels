@@ -19,17 +19,17 @@
             \State $\mathtt{pendingClose}, \mathtt{newChannels} \gets \emptyset$
             \State $\mathtt{closedChannels}, \mathtt{updatesToReport} \gets
             \emptyset$
-            \State $\redden{\mathtt{paymentsToReport}} \gets \emptyset$
-            \State $\mathtt{unclaimedOfferedHTLCs}, \redden{\mathtt{gotPaid}}
+            \State $\mathtt{paymentsToReport} \gets \emptyset$
+            \State $\mathtt{unclaimedOfferedHTLCs}, \mathtt{gotPaid}
             \gets \emptyset$
             \State $\mathtt{unclaimedReceivedHTLCs}, \mathtt{pendingGetPaid}
             \gets \emptyset$
           }{
             \State $\mathtt{channels}, \mathtt{pendingOpen},
             \mathtt{pendingPay}, \mathtt{pendingClose},
-            \redden{\mathtt{paymentsToReport}} \gets \emptyset$
+            \mathtt{paymentsToReport} \gets \emptyset$
             \State $\mathtt{newChannels}, \mathtt{closedChannels},
-            \mathtt{updatesToReport}, \redden{\mathtt{gotPaid}} \gets \emptyset$
+            \mathtt{updatesToReport}, \mathtt{gotPaid} \gets \emptyset$
             \State $\mathtt{unclaimedOfferedHTLCs},
             \mathtt{unclaimedReceivedHTLCs}, \mathtt{pendingGetPaid} \gets
             \emptyset$
@@ -123,9 +123,9 @@
           \State ensure \textit{tid} hasn't been used for opening another
           channel before
           \label{alg:protocol:open:env:valid}
-          \State \Comment{\redden{Keys marked with ``$b$'' are called basepoint
+          \State \Comment{Keys marked with ``$b$'' are called basepoint
           keys. Their use reduces from three to one the public keys that have to
-          be exchanged on each update.}}
+          be exchanged on each update.}
           \State $\left(\left(ph_F, sh_F\right), \left(phb_{\mathrm{pay}},
           shb_{\mathrm{pay}}\right), \left(phb_{\mathrm{dpay}},
           shb_{\mathrm{dpay}}\right),\right.$ $\left.\left(phb_{\mathrm{htlc}},
@@ -316,7 +316,7 @@
           \texttt{pendingOpen} on which we have sent up to
           \textsc{fundingCreated}
           \State ensure $\textsc{VerifyDS}\left(\mathtt{BobSig}_1,
-          \mathtt{localCom}, p\redden{t}_F\right) = \mathtt{True}$
+          \mathtt{localCom}, pt_F\right) = \mathtt{True}$
           \State $\mathtt{localCom}_1 \gets \mathtt{localCom}$
           \State $\mathtt{lastLocalSigned} \gets 0$
           \State add $\mathtt{BobSig}_1$ to channel entry in
@@ -480,7 +480,7 @@
         \label{alg:protocol:getnews}
         \Indent
           \State clear \texttt{newChannels}, \texttt{closedChannels},
-          \texttt{updatesToReport}, \redden{\texttt{paymentsToReport}} and send
+          \texttt{updatesToReport}, \texttt{paymentsToReport} and send
           them to \environment{} with message name \textsc{news}
           \label{alg:protocol:getnews:send}
         \EndIndent
@@ -520,13 +520,13 @@
                 corresponding $\mathrm{HTLC}'$ in $\mathit{pchid}'$
                 \State add $\left(\mathtt{HTLCNo}', R\right)$ to
                 $\mathtt{pendingFulfills}_{\mathit{pchid}'}$
-              \redden{\Else \Comment{we are the payer}
+              \Else \Comment{we are the payer}
                 \State retrieve (\textit{expayid}, $x$) from entry in
                 \texttt{pendingPay} with $h$, \texttt{HTLCNo} of
                 $\mathrm{HTLC}_i$ and remove the entry
                 \label{alg:protocol:poll:report:pendingPay}
                 \State add (\textit{expayid}, $-x$) to \texttt{paymentsToReport}
-                \label{alg:protocol:poll:report:pay}}
+                \label{alg:protocol:poll:report:pay}
               \EndIf
             \EndFor
           \Else \ \Comment{malicious closure}
@@ -569,7 +569,7 @@
     \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -- pay}
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{pay}, \bob, $x$,
-        $\overrightarrow{\mathtt{path}}$, \redden{\textit{expayid}}) from
+        $\overrightarrow{\mathtt{path}}$, \textit{expayid}) from
         \environment:
         \Indent
           \State ensure that $\overrightarrow{\mathtt{path}}$ consists of
@@ -586,23 +586,23 @@
           \State choose unique payment ID \textit{payid} \Comment{unique for
           \alice{} and \bob}
           \State add (\bob, $x$, $\overrightarrow{\mathtt{path}}$,
-          \redden{\textit{expayid}}, \textit{payid}, ``waiting for invoice'') to
+          \textit{expayid}, \textit{payid}, ``waiting for invoice'') to
           \texttt{pendingPay}
-          \State send (\textsc{sendInvoice}, \redden{$x$, \textit{expayid}},
+          \State send (\textsc{sendInvoice}, $x$, \textit{expayid},
           \textit{payid}) to \bob{}
           \label{alg:protocol:pay:sendinvoice}
         \EndIndent
         \Statex
 
-        \State Upon receiving (\textsc{sendInvoice}, \redden{$x$,
-        \textit{expayid}}, \textit{payid}) from \bob:
+        \State Upon receiving (\textsc{sendInvoice}, $x$,
+        \textit{expayid}, \textit{payid}) from \bob:
         \label{alg:protocol:pay:sendinvoice:receive}
         \Indent
-          \State ensure there is no (\bob, \redden{\_, \textit{expayid},}
-          \textit{payid}, \redden{\_}) entry in \texttt{pendingGetPaid}
+          \State ensure there is no (\bob, \_, \textit{expayid},
+          \textit{payid}, \_) entry in \texttt{pendingGetPaid}
           \State choose random, unique preimage $R$
-          \State add (\bob, $R$, \redden{\textit{expayid},} \textit{payid},
-          \redden{$x$}) to \texttt{pendingGetPaid}
+          \State add (\bob, $R$, \textit{expayid}, \textit{payid},
+          $x$) to \texttt{pendingGetPaid}
           \State send (\textsc{invoice}, $\mathcal{H}(R)$, $\mathtt{relayDelay}
           + \tochain{}$, \textit{payid}) to \bob{}
         \EndIndent
@@ -620,11 +620,11 @@
         \label{alg:protocol:pay:invoice:receive}
         \Indent
           \State ensure there is a (\bob, $x$, $\overrightarrow{\mathtt{path}}$,
-          \redden{\_,} \textit{payid}, ``waiting for invoice'') entry in
+          \_, \textit{payid}, ``waiting for invoice'') entry in
           \texttt{pendingPay}
           \State ensure $h$ is valid (in the range of $\mathcal{H}$)
-          \State \redden{remove mark from, add $h$ and \texttt{HTLCNo} to entry
-          in \texttt{pendingPay}}
+          \State remove mark from, add $h$ and \texttt{HTLCNo} to entry
+          in \texttt{pendingPay}
           \State retrieve \texttt{CltvExpiryDelta}s from
           $\overrightarrow{\mathtt{path}}$
           \State send (\textsc{read}) to \ledger{} and assign largest block
@@ -700,13 +700,13 @@
           \texttt{remoteCom}, marked with \texttt{HTLCNo}
           \State reduce simple payment output in \texttt{localCom} by $x$
           \State add an ($x$, $pt_{\mathrm{rev}, n+1}$ $\vee$
-          \redden{(}$pt_{\mathrm{htlc}, n+1}$, \texttt{IncomingCltvExpiry}
+          ($pt_{\mathrm{htlc}, n+1}$, \texttt{IncomingCltvExpiry}
           absolute) $\vee$ ($pt_{\mathrm{htlc}, n+1}$ $\wedge$
           $ph_{\mathrm{htlc}, n+1}$, on preimage of $h$)) htlc output (all with
-          $n+1$ keys) to \redden{\texttt{localCom}}, marked with \texttt{HTLCNo}
+          $n+1$ keys) to \texttt{localCom}, marked with \texttt{HTLCNo}
           \If{$\delta = \mathtt{receiver}$}
             \State retrieve $R : \mathcal{H}\left(R\right) = h$ from
-            \texttt{pendingGetPaid} and \redden{move entry to \texttt{gotPaid}}
+            \texttt{pendingGetPaid} and move entry to \texttt{gotPaid}
             \label{alg:protocol:pay:updateAddHtlc:gotpaid}
             \State add $\left(\mathtt{HTLCNo}, R\right)$ to
             $\mathtt{pendingFulfills}_{\mathit{pchid}}$
@@ -717,20 +717,20 @@
             commitment tx
             \State reduce simple payment output in $\mathtt{remoteCom}'$ by $x$
             \State add an additional $\left(x,
-            ph\redden{'}_{\mathrm{rev}, n+1} \vee
-            \left(ph\redden{'}_{\mathrm{htlc}, n+1} \wedge
-            pt\redden{'}_{\mathrm{htlc}, n+1}, \text{ on
+            ph'_{\mathrm{rev}, n+1} \vee
+            \left(ph'_{\mathrm{htlc}, n+1} \wedge
+            pt'_{\mathrm{htlc}, n+1}, \text{ on
             preimage}\right.\right.$ $\left.\left.\text{of } h\right) \vee
-            ph\redden{'}_{\mathrm{htlc}, n+1}, \mathtt{OutgoingCltvExpiry}
+            ph'_{\mathrm{htlc}, n+1}, \mathtt{OutgoingCltvExpiry}
             \text{ absolute}\right)$ output (all with $n+1$ keys) to
             $\mathtt{remoteCom}'$, marked with $\texttt{HTLCNo}'$
             \State reduce delayed payment output in $\mathtt{localCom}'$ by $x$
-            \State add an additional ($x$, $pt\redden{'}_{\mathrm{rev}, n+1}$
-            $\vee$ ($pt\redden{'}_{\mathrm{htlc}, n+1}$, on preimage of $h$)
-            $\vee$ ($pt\redden{'}_{\mathrm{htlc}, n+1}$ $\wedge$
-            $ph\redden{'}_{\mathrm{htlc}, n+1},$ \texttt{OutgoingCltvExpiry}
+            \State add an additional ($x$, $pt'_{\mathrm{rev}, n+1}$
+            $\vee$ ($pt'_{\mathrm{htlc}, n+1}$, on preimage of $h$)
+            $\vee$ ($pt'_{\mathrm{htlc}, n+1}$ $\wedge$
+            $ph'_{\mathrm{htlc}, n+1},$ \texttt{OutgoingCltvExpiry}
             absolute)) output (all with $n+1$ keys) to
-            $\redden{\mathtt{localCom}}'$, marked with $\texttt{HTLCNo}'$
+            $\mathtt{localCom}'$, marked with $\texttt{HTLCNo}'$
             \State increment $\texttt{HTLCNo}'$ by 1
             \State $M' \gets \mathtt{SphinxPrepare}\left(M, \delta,
             sk_{\mathit{Alice}}\right)$
@@ -760,7 +760,7 @@
           \mathtt{IncomingCltvExpiry} \geq \mathtt{OutgoingCltvExpiry} =
           \mathtt{minFinalCltvExpiry}$
           \State mark \texttt{HTLCNo} as ``receiver''
-        \Else \ \Comment{We are \redden{an} intermediary}
+        \Else \ \Comment{We are an intermediary}
           \State ensure $x = x', \mathtt{IncomingCltvExpiry} \geq
           \max\{\mathtt{OutgoingCltvExpiry}, t\} + \mathtt{relayDelay} +
           2\tochain{}$
@@ -826,7 +826,7 @@
               \State send $\left(\textsc{updateFulfillHtlc}, \mathit{pchid}',
               \mathtt{HTLCNo}', R\right)$ to counterparty
             \EndIf
-          \redden{\Else \Comment{We are the payer}
+          \Else \Comment{We are the payer}
             \State retrieve (\textit{expayid}, $x$) from entry in
             \texttt{pendingPay} with $h$, \texttt{HTLCNo} and remove the entry
             \Comment{entry is unique because of \texttt{HTLCNo}}
@@ -834,7 +834,7 @@
             \texttt{updateDiffs}(\texttt{channel}) of \texttt{channel} with ID
             \textit{pchid}
             \label{alg:protocol:pay:updateFulfillHtlc:updatediffs}
-          \EndIf}
+          \EndIf
         \EndIndent
       \end{algorithmic}
     \end{protocolbox}
@@ -975,10 +975,10 @@
           \State mark $\mathtt{remoteCom}_{n+1}$ as ``irrevocably committed''
           \State $\mathtt{localCom}_{n+1} \gets \mathtt{pendingLocalCom}$
           \State unmark \texttt{channel}
-          \State \redden{append} \texttt{receipt}(\texttt{channel}) to
+          \State append \texttt{receipt}(\texttt{channel}) to
           \texttt{updatesToReport}
           \label{alg:protocol:pay:raa:report:updates}
-          \redden{\ForAll{$(\_, \_, \textit{payid}, \mathtt{ref}) \in
+          \ForAll{$(\_, \_, \textit{payid}, \mathtt{ref}) \in
           \mathtt{updateDiffs}(\mathtt{channel})$}
           \label{alg:protocol:pay:raa:loop:gotpaid}
             \State remove from \texttt{gotPaid} the entry referenced by
@@ -990,9 +990,9 @@
             \State add \texttt{updateDiffs}(\texttt{channel}) members to
             \texttt{paymentsToReport}
             \label{alg:protocol:pay:raa:report:payments}
-          \EndIf}
-          \State \redden{$\mathtt{updateDiffs}(\mathtt{channel}) \gets
-          \emptyset$}
+          \EndIf
+          \State $\mathtt{updateDiffs}(\mathtt{channel}) \gets
+          \emptyset$
           \State $sh_{\mathrm{rev}, n} \gets
           \textsc{CombineKey}\left(phb_{\mathrm{rev}}, shb_{\mathrm{rev}},
           pt_{\mathrm{com} n}, st_{\mathrm{com}, n}\right)$
@@ -1064,22 +1064,22 @@
           $\mathtt{pendingFulfills}_{\mathit{pchid}}$
           \If{$\mathtt{remoteCom}_n \notin \Sigma_{\alice}$}
           \Comment{counterparty cooperative}
-            \redden{\If{$\exists (\_, R, \mathit{expayid}, \mathit{payid}, x)
+            \If{$\exists (\_, R, \mathit{expayid}, \mathit{payid}, x)
             \in \mathtt{gotPaid}$} \Comment{receiver}
               \State add ($\mathit{expayid}, x$, \textit{payid}, reference to
               \texttt{gotPaid} entry) to \texttt{updateDiffs}(\texttt{channel})
               \label{alg:protocol:pushfulfill:updatediffs}
-            \EndIf}
+            \EndIf
             \State send (\textsc{updateFulfillHtlc}, \textit{pchid},
             \texttt{HTLCNo}, $R$) to \textit{pchid} counterparty
           \Else \ \Comment{counterparty gone on-chain}
-            \redden{\If{$\exists (\_, R, \mathit{expayid}, \mathit{payid}, x)
+            \If{$\exists (\_, R, \mathit{expayid}, \mathit{payid}, x)
             \in \mathtt{gotPaid}$}
             \label{alg:protocol:pushfulfill:check:gotpaid}
               \State remove entry from \texttt{gotPaid}
               \State add $(\mathit{expayid}, x)$ to \texttt{paymentsToReport}
               \label{alg:protocol:pushfulfill:report}
-            \EndIf}
+            \EndIf
             \State $\mathrm{TX} \gets$ \{input: ($\mathtt{remoteCom}_n$ HTLC
             output with number $\mathtt{HTLCNo}, R$), output:
             $pk_{\alice}$\}
@@ -1118,7 +1118,7 @@
   \end{figure}
 
   \begin{figure}[H]
-    \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -- \redden{\textsc{fulfillOnChain}}}
+    \begin{protocolbox}{$\Pi_{\mathrm{LN}}$ -- \textsc{fulfillOnChain}}
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{fulfillOnChain}) from \environment:
         \label{alg:protocol:pay:foc:top}
@@ -1129,12 +1129,12 @@
           \State $\mathtt{toSubmit} \gets \emptyset$
           \label{alg:protocol:pay:foc:tosubmit}
           \ForAll{channels}
-            \If{there exist HTLC\redden{s with hashes $h_1, \dots, h_k$} in
+            \If{there exist HTLCs with hashes $h_1, \dots, h_k$ in
             latest $\mathtt{localCom}_n$ for which we have sent both
             \textsc{updateFulfillHtlc} and \textsc{commitmentSigned} to a
-            transaction without \redden{those HTLCs} to counterparty, but have
-            not received the corresponding \textsc{revokeAndAck}\redden{s} AND
-            \redden{some of} the HTLC\redden{s} expire within $\left[t, t +
+            transaction without those HTLCs to counterparty, but have
+            not received the corresponding \textsc{revokeAndAck}s AND
+            some of the HTLCs expire within $\left[t, t +
             \tochain{}\right]$}
               \State add $\mathtt{localCom}_n$ of the channel and all
               corresponding valid \texttt{HTLC-success}es and
@@ -1142,14 +1142,14 @@
               $\mathtt{remoteCom}_n$\footnote{Ensures funds retrieval if
               counterparty has gone on-chain}), along with their signatures to
               \texttt{toSubmit}
-              \redden{\ForAll{such HTLCs for which we are the payee (i.e., we
+              \ForAll{such HTLCs for which we are the payee (i.e., we
               have received a (\textsc{sendInvoice}, $x$, \textit{expayid},
               \textit{payid}) message in response to which we generated and sent
               $h_i$)}
               \label{alg:protocol:pay:foc:payment:loop}
                 \State add (\textit{expayid}, $x$) to \texttt{paymentsToReport}
                 \label{alg:protocol:pay:foc:payment}
-              \EndFor}
+              \EndFor
             \EndIf
           \EndFor
           \State send (\textsc{submit}, \texttt{toSubmit}) to \ledger
@@ -1182,14 +1182,14 @@
           \State $\mathrm{HTLCs} \gets \emptyset$
           \For{every $\text{HTLC output} \in \mathtt{localCom}_n$ with number
           $i$}
-            \redden{\If{there is a (\_, $R$, \textit{expayid}, \textit{payid},
+            \If{there is a (\_, $R$, \textit{expayid}, \textit{payid},
             $x$) entry in \texttt{gotPaid} for $R$ the preimage of
             $\mathrm{HTLC}_i$}
             \label{alg:protocol:close:unilateral:check:gotpaid}
               \State remove entry from \texttt{gotPaid}
               \State add (\textit{expayid}, $x$) to \texttt{paymentsToReport}
               \label{alg:protocol:close:unilateral:report:payment}
-            \EndIf}
+            \EndIf
             \State $\mathrm{sig} \gets
             \textsc{SignIBS}\left(\mathtt{localHTLC}_{n, i}, sh_{\mathrm{htlc},
             n}\right)$
@@ -1230,8 +1230,8 @@
           $\mathtt{channel} \in \mathtt{channels}$ with ID \textit{pchid}
           \label{alg:protocol:close:coop:ensure}
           \State stop serving any (\textsc{pay}, \textsc{closeChannel}) message
-          from \environment{} \redden{and any (\textsc{UpdateAddHtlc},
-          \textsc{sendInvoice}) message from counterparty} for this channel.
+          from \environment{} and any (\textsc{UpdateAddHtlc},
+          \textsc{sendInvoice}) message from counterparty for this channel.
           \label{alg:protocol:close:coop:noserve}
           \State mark \texttt{channel} as ``coop closing''
           \If{there are outstanding HTLC outputs in the latest
@@ -1249,10 +1249,10 @@
           \State ensure there is an open $\mathtt{channel} \in
           \mathtt{channels}$ with \bob{} with ID \textit{pchid}
           \If{\texttt{channel} is not marked ``coop closing''}
-            \State \redden{stop serving any (\textsc{pay},
+            \State stop serving any (\textsc{pay},
             \textsc{closeChannel}) message from \environment{} and any
             (\textsc{UpdateAddHtlc}, \textsc{sendInvoice}) message from
-            counterparty for this channel.}
+            counterparty for this channel.
             \State mark channel as ``coop closing''
             \If{there are outstanding HTLC outputs in the latest
             $\mathtt{localCom}_n$}

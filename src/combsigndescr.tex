@@ -1,10 +1,10 @@
 \section{The Combined Signature primitive}
 \label{sec:ov-combined-ds}
   As previously mentioned, we define a new primitive for combining keys and
-  generating signatures\redden{, which} is leveraged in the revocation and
+  generating signatures, which is leveraged in the revocation and
   punishment mechanism of channel updates. Furthermore, we prove that the
   construction designed by the creators of LN realizes this primitive. We
-  provide \redden{here the concrete syntax and correctness definitions, along with}
+  provide here the concrete syntax and correctness definitions, along with
   the intuition behind it. The exact security definitions, concrete construction
   and proof of security can be found in Appendix~\ref{appendix:combinedsign}.
   % TODO: rephrase
@@ -18,17 +18,17 @@ signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd
   protocol. As we will see however, the primitive defined here has different
   aims and limitations and, to our knowledge, has not been formalized yet.
 
-  A combined signature is a two-party primitive, say \redden{between} \alice{}
-  and \bob\redden{,} with \bob{} being the signer and \alice{} the holder of a
-  share of the secret key\redden{. This share} is essential for issuing
-  signatures\redden{, which in turn are} verifiable with the ``combined''
-  verification key. The verification key is \redden{generated} using public
+  A combined signature is a two-party primitive, say between \alice{}
+  and \bob, with \bob{} being the signer and \alice{} the holder of a
+  share of the secret key. This share is essential for issuing
+  signatures, which in turn are verifiable with the ``combined''
+  verification key. The verification key is generated using public
   information drawn from \alice{} and \bob{} and is feasible without any party
-  knowing the corresponding signing key. \redden{\bob{} will be able to
+  knowing the corresponding signing key. \bob{} will be able to
   construct the signing key only if \alice{} shares her secret information with
-  him.}
+  him.
 
-  \redden{More specifically, the seven algorithms used by a Combined Signatures
+  More specifically, the seven algorithms used by a Combined Signatures
   scheme are:
   \begin{itemize}
     \item $\left(mpk, msk\right) \gets \textsc{MasterKeyGen}\left(1^k\right)$
@@ -40,41 +40,41 @@ signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd
     \item $\sigma \gets \textsc{SignCS}\left(m, csk\right)$
     \item $\left\{0, 1\right\} \gets \textsc{VerifyCS}\left(\sigma, m,
     cpk\right)$
-  \end{itemize}}
-  \redden{We demand that these three properties hold for a scheme to have
-  correctness:}
+  \end{itemize}
+  We demand that these three properties hold for a scheme to have
+  correctness:
   \begin{itemize}
-    \item \redden{$\forall k \in \mathbb{N},$ \\
+    \item $\forall k \in \mathbb{N},$ \\
     $\Pr[\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$ \\
-    $\textsc{TestKey}(pk, sk) = 1] = 1$}
+    $\textsc{TestKey}(pk, sk) = 1] = 1$
 
-    \redden{I.e. \textsc{KeyShareGen}() must always generate a valid keypair.}
+    I.e. \textsc{KeyShareGen}() must always generate a valid keypair.
 
-    \item \redden{$\forall k \in \mathbb{N},$ \\
+    \item $\forall k \in \mathbb{N},$ \\
     $\Pr[(mpk, msk) \gets \textsc{MasterKeyGen}\left(1^k\right),$ \\
     $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$ \\
     $\left(cpk_1, csk_1\right) \gets \textsc{CombineKey}\left(mpk, msk, pk,
     sk\right),$ \\
     $cpk_2 \gets \textsc{CombinePubKey}\left(mpk, pk\right),$ \\
-    $cpk_1 = cpk_2] = 1$}
+    $cpk_1 = cpk_2] = 1$
 
-    \redden{I.e. for suitable input, \textsc{CombinePubKey}() and
-    \textsc{CombineKey}() produce the same public key.}
+    I.e. for suitable input, \textsc{CombinePubKey}() and
+    \textsc{CombineKey}() produce the same public key.
 
-    \item \redden{$\forall k \in \mathbb{N}, m \in \mathcal{M},$ \\
+    \item $\forall k \in \mathbb{N}, m \in \mathcal{M},$ \\
     $\Pr[(mpk, msk) \gets \textsc{MasterKeyGen}\left(1^k\right),$ \\
     $\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$ \\
     $\left(cpk, csk\right) \gets \textsc{CombineKey}\left(mpk, msk, pk,
     sk\right),$ \\
-    $\textsc{VerifyCS}(\textsc{SignCS}(m, csk), m, cpk) = 1] = 1$}
+    $\textsc{VerifyCS}(\textsc{SignCS}(m, csk), m, cpk) = 1] = 1$
 
-    \redden{I.e. for suitable input, honestly generated signatures always verify
-    correctly.}
+    I.e. for suitable input, honestly generated signatures always verify
+    correctly.
   \end{itemize}
 
   Beyond correctness, combined signatures have two security properties expressed
-  as follows. \redden{\textsf{Share-EUF}} security expresses security from the
-  point of view of \alice{}, and establishes that \bob{} \redden{cannot issue} a
+  as follows. \textsf{Share-EUF} security expresses security from the
+  point of view of \alice{}, and establishes that \bob{} cannot issue a
   valid combined signature if he does not possess \alice's corresponding secret
   share. In Appendix~\ref{appendix:combinedsign} we formalize it and prove:
   % TODO: bring Share-EUF game and sec definitions
@@ -89,13 +89,13 @@ signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd
     signature scheme signing keys.
   \end{lemma}
 
-  On the other hand, \redden{\textsf{master-EUF-CMA}} security is modeled very
-  similarly to standard \redden{\textsf{EUF-CMA}} security, with the difference
+  On the other hand, \textsf{master-EUF-CMA} security is modeled very
+  similarly to standard \textsf{EUF-CMA} security, with the difference
   that \bob{} (the signer) combines malicious shares into his public key and
-  issues signatures with respect to such combined keys\redden{. The security
-  property ensures that these signatures} provide no advantage to the adversary
+  issues signatures with respect to such combined keys. The security
+  property ensures that these signatures provide no advantage to the adversary
   in terms of producing a forged message for a combined key of its choice. In
-  this respect we prove\redden{:}
+  this respect we prove:
   % TODO: bring master-EUF-CMA game and sec definitions
 
   \begin{lemma}

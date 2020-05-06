@@ -10,16 +10,16 @@ UC~\cite{DBLP:conf/ccs/DziembowskiFH18,Malavolta:2017:CPP:3133956.3134096,sprite
   functionality is unrealisable, even under strong network assumptions, i.e. a
   multicast synchronous network $\FnetworkEd^1$. Such a network ensures that
   messages sent by honest parties will be instantly delivered to all other
-  parties; no delays can be introduced by the adversary. \redden{We refer the
+  parties; no delays can be introduced by the adversary. We refer the
   reader to Appendix~\ref{appendix:ledger} for the formal definition of
-  $\FnetworkEd^1$.}
-  The \redden{adversary} however may choose to send its own messages only to
+  $\FnetworkEd^1$.
+  The adversary however may choose to send its own messages only to
   specific parties. This allows the adversary to spread conflicting information
-  or withhold data from some parties. \redden{T}his adversarial ability
+  or withhold data from some parties. This adversarial ability
   precludes the possibility of such a  ledger
   to be realised. 
- \redden{The full proof can be found in
- Appendix~\ref{sec:perfect-ledger:proof}.}
+ The full proof can be found in
+ Appendix~\ref{sec:perfect-ledger:proof}.
 
   \begin{theorem}[Perfect Ledger is Unrealisable]
     \label{theorem:perfectledger}
@@ -27,31 +27,31 @@ UC~\cite{DBLP:conf/ccs/DziembowskiFH18,Malavolta:2017:CPP:3133956.3134096,sprite
     \perfectadv{} such that for any ITM \simulator
     \begin{equation*}
       \textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot,
-      \redden{\perfectadv, \perfectenv}} \not\approx
+      \perfectadv, \perfectenv} \not\approx
       \textsc{Exec}^{\perfectledger, \gFclock}_{\simulator,
-      \redden{\perfectenv}}
+      \perfectenv}
     \end{equation*}
   \end{theorem}
 
   \begin{proofsketch}
-    We take advantage of \redden{\perfectadv}'s ability to selectively send
-    messages to specific players. In particular, \redden{\perfectenv{}} starts
+    We take advantage of \perfectadv's ability to selectively send
+    messages to specific players. In particular, \perfectenv{} starts
     an execution with two players and generates a random message $m$. In half of
     the executions (randomly selected),  the adversary simulates a ``broken''
     \perfectprot{} execution where the effects of submitting $m$ are only shared
-    with one of the two players, say \alice{} by \redden{\perfectadv{}} (in the
+    with one of the two players, say \alice{} by \perfectadv{} (in the
     real world). The environment then sends (\textsc{read}) to the other player,
     say \bob. If \bob{} returns a ledger containing $m$, then
-    \redden{\perfectenv{}} concludes that it is the ideal world, otherwise it
+    \perfectenv{} concludes that it is the ideal world, otherwise it
     sends (\textsc{read}) to \alice. If she returns a ledger with $m$, then
-    \redden{\perfectenv{}} concludes it is in the real world, otherwise it
+    \perfectenv{} concludes it is in the real world, otherwise it
     concludes it is in the ideal world.
 
     The above is not sufficient since a protocol may choose to return an empty
     ledger; to counter this, in the other half of the executions,
-    \redden{\perfectenv{}} sends (\textsc{submit}, $m$) to \alice{} and then
+    \perfectenv{} sends (\textsc{submit}, $m$) to \alice{} and then
     (\textsc{read}) to \bob. If, and only if, \bob{} knows $m$, then
-    \redden{\perfectenv{}} concludes this is the ideal world. This forces the
+    \perfectenv{} concludes this is the ideal world. This forces the
     \perfectprot{} protocol to achieve instant finality and will establish that
     a distinguishing advantage exists no matter how \perfectprot{} is
     implemented.

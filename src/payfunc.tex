@@ -10,7 +10,7 @@
           \item (\textsc{openChannel}, \alice, \bob, $x$, \textit{tid})
           \item (\textsc{checkForNew}, \alice, \bob, \textit{tid})
           \item (\textsc{pay}, \bob, $x, \overrightarrow{\mathtt{path}}$,
-          \redden{\textit{expayid}})
+          \textit{expayid})
           \item (\textsc{closeChannel}, \texttt{receipt}, \textit{pchid})
           \item (\textsc{forceCloseChannel}, \texttt{receipt}, \textit{pchid})
           \item (\textsc{poll})
@@ -25,9 +25,9 @@
           \item (\textsc{register}, \alice, \texttt{delay}(\alice),
           \texttt{relayDelay}(\alice), pubKey)
           \item (\textsc{registered})
-          \item (\textsc{news}, \redden{\texttt{newChannels},
+          \item (\textsc{news}, \texttt{newChannels},
           \texttt{closedChannels}, \texttt{updatesToReport},
-          \texttt{paymentsToReport}})
+          \texttt{paymentsToReport})
         \end{itemize}
         \item from $\simulator$:
         \begin{itemize}
@@ -35,15 +35,15 @@
           \item (\textsc{corrupted}, \alice)
           \item (\textsc{channelAnnounced}, \alice, $p_{\alice, F}, p_{\bob,
           F}$, \textit{fchid}, \textit{pchid}, \textit{tid})
-          \item (\redden{\textsc{newUpdate}}, \texttt{receipt}, \alice)
-          \item \redden{(\textsc{newPayments}, \texttt{payments}, \alice)}
+          \item (\textsc{newUpdate}, \texttt{receipt}, \alice)
+          \item (\textsc{newPayments}, \texttt{payments}, \alice)
           \item (\textsc{closedChannel}, \texttt{channel}, \alice)
           \item (\textsc{resolvePays}, \texttt{charged})
-          \item \redden{(\textsc{adversaryOpenChannel}, $x$, \texttt{bobDelay},
-          \textit{tid}, \textit{intid}, \textit{from} \alice, \textit{to} \bob)}
-          \item \redden{(\textsc{adversarySendInvoice}, $x$, \textit{expayid},
+          \item (\textsc{adversaryOpenChannel}, $x$, \texttt{bobDelay},
+          \textit{tid}, \textit{intid}, \textit{from} \alice, \textit{to} \bob)
+          \item (\textsc{adversarySendInvoice}, $x$, \textit{expayid},
           \textit{payid}, \textit{invid}, \textit{from} \alice, \textit{to}
-          \bob)}
+          \bob)
         \end{itemize}
         \item to $\simulator$:
         \begin{itemize}
@@ -52,8 +52,8 @@
           \textit{tid})
           \item (\textsc{channelOpened}, \alice, \textit{fchid})
           \item (\textsc{pay}, \alice, \bob, $x,
-          \overrightarrow{\mathtt{path}}$, \redden{\textit{expayid}},
-          \textit{payid}, \redden{\textsc{state}, $\Sigma$})
+          \overrightarrow{\mathtt{path}}$, \textit{expayid},
+          \textit{payid}, \textsc{state}, $\Sigma$)
           \item (\textsc{continue})
           \item (\textsc{closeChannel}, \textit{fchid}, \alice)
           \item (\textsc{forceCloseChannel}, \textit{fchid}, \alice)
@@ -62,9 +62,9 @@
           \item (\textsc{pushAdd}, \textit{pchid}, \alice)
           \item (\textsc{commit}, \textit{pchid}, \alice)
           \item (\textsc{fulfillOnChain}, $t$, \alice)
-          \item \redden{(\textsc{adversaryOpenChannel}, \textit{fchid},
-          \textit{intid})}
-          \item \redden{(\textsc{adversarySendInvoice}, \textit{invid})}
+          \item (\textsc{adversaryOpenChannel}, \textit{fchid},
+          \textit{intid})
+          \item (\textsc{adversarySendInvoice}, \textit{invid})
         \end{itemize}
       \end{itemize}
     \end{systembox}
@@ -98,7 +98,7 @@
         \Indent
           \State $\mathtt{channels}, \mathtt{pendingPay}, \mathtt{pendingOpen}
           \gets \emptyset$
-          \State $\redden{\texttt{pendingDiffs}}, \mathtt{corrupted}, \Sigma
+          \State $\texttt{pendingDiffs}, \mathtt{corrupted}, \Sigma
           \gets \emptyset$
         \EndIndent
         \Statex
@@ -183,7 +183,7 @@
   interaction.
 
   \begin{figure}[H]
-    \begin{systembox}{\fpaynet{} -- \redden{initiate} open}
+    \begin{systembox}{\fpaynet{} -- initiate open}
       \begin{algorithmic}[1]
         \State Upon receiving $\left(\textsc{openChannel}, \alice, \bob, x,
         \mathit{tid}\right)$ from \alice:
@@ -199,7 +199,7 @@
         \EndIndent
         \Statex
 
-        \redden{\State Upon receiving (\textsc{adversaryOpenChannel}, $x$,
+        \State Upon receiving (\textsc{adversaryOpenChannel}, $x$,
         \texttt{bobDelay}, \textit{tid}, \textit{intid}, \textit{from} \alice,
         \textit{to} \bob) from \simulator:
         \label{alg:fpaynet:open:adv}
@@ -214,7 +214,7 @@
           \State send (\textsc{adversaryOpenChannel}, \textit{fchid},
           \textit{intid}) to \simulator
           \label{alg:fpaynet:open:adv:send}
-        \EndIndent}
+        \EndIndent
       \end{algorithmic}
     \end{systembox}
     \caption{}
@@ -222,7 +222,7 @@
   \end{figure}
 
   \begin{figure}[H]
-    \begin{systembox}{\fpaynet{} -- \redden{negotiate open}}
+    \begin{systembox}{\fpaynet{} -- negotiate open}
       \begin{algorithmic}[1]
         \State Upon receiving (\textsc{channelAnnounced}, \alice, $p_{\alice,
         F}$, $p_{\bob, F}$, \textit{fchid}, \textit{pchid}, \textit{tid}) from
@@ -293,12 +293,12 @@
           \State ensure a \texttt{channel} is in
           \texttt{pendingOpen}(\textit{fchid}), marked with ``waiting for
           \textsc{channelOpened}'' and remove mark
-          \State $\redden{\mathtt{offChainBalance}}\left(\mathrm{funder}\right)
-          \gets \redden{\mathtt{offChainBalance}}\left(\mathrm{funder}\right) +
+          \State $\mathtt{offChainBalance}\left(\mathrm{funder}\right)
+          \gets \mathtt{offChainBalance}\left(\mathrm{funder}\right) +
           x$
           \label{alg:fpaynet:channelOpened:offchain}
-          \State $\redden{\mathtt{onChainBalance}}\left(\mathrm{funder}\right)
-          \gets \redden{\mathtt{onChainBalance}}\left(\mathrm{funder}\right) -
+          \State $\mathtt{onChainBalance}\left(\mathrm{funder}\right)
+          \gets \mathtt{onChainBalance}\left(\mathrm{funder}\right) -
           x$
           \label{alg:fpaynet:channelOpened:onchain}
           \State $\mathtt{channel} \gets \left(\mathrm{funder}, \mathrm{fundee},
@@ -329,21 +329,21 @@
     \begin{systembox}{\fpaynet{} -- pay}
       \begin{algorithmic}[1]
         \State Upon receiving $\left(\textsc{pay}, \bob, x,
-        \overrightarrow{\mathtt{path}}, \redden{\mathit{expayid}}\right)$ from
+        \overrightarrow{\mathtt{path}}, \mathit{expayid}\right)$ from
         \alice:
         \Indent
           \State choose unique payment ID \textit{payid}
           \State add $\left(\alice, \bob, x, \overrightarrow{\mathtt{path}},
-          \redden{\mathit{expayid}}, \mathit{payid}\right)$ to
+          \mathit{expayid}, \mathit{payid}\right)$ to
           \texttt{pendingPay}
           \State send (\textsc{pay}, \alice, \bob, $x$,
-          $\overrightarrow{\mathtt{path}}$, \redden{\textit{expayid}},
+          $\overrightarrow{\mathtt{path}}$, \textit{expayid},
           \textit{payid}, \textsc{state}, $\Sigma$) to \simulator
           \label{alg:fpaynet:pay:send}
         \EndIndent
         \Statex
 
-        \redden{\State Upon receiving (\textsc{adversarySendInvoice}, $x$,
+        \State Upon receiving (\textsc{adversarySendInvoice}, $x$,
         \textit{expayid}, \textit{payid}, \textit{invid}, \textit{from} \alice,
         \textit{to} \bob) from \simulator:
         \label{alg:fpaynet:invoice:adv}
@@ -356,14 +356,14 @@
           \State send (\textsc{adversarySendInvoice}, \textit{invid}) to
           \simulator
           \label{alg:fpaynet:invoice:adv:send}
-        \EndIndent}
+        \EndIndent
         \Statex
 
-        \State Upon receiving (\redden{\textsc{newUpdate}}, \texttt{receipt},
+        \State Upon receiving (\textsc{newUpdate}, \texttt{receipt},
         \alice) from \simulator:
         \label{alg:fpaynet:update}
         \Indent
-          \State \redden{append} \texttt{receipt} to
+          \State append \texttt{receipt} to
           \texttt{updatesToReport}(\alice) \Comment{trust \simulator{} here,
           check on \textsc{resolvePays}}
           \label{alg:fpaynet:update:add}
@@ -371,7 +371,7 @@
         \EndIndent
         \Statex
 
-        \redden{\State Upon receiving (\textsc{newPayments}, \texttt{payments},
+        \State Upon receiving (\textsc{newPayments}, \texttt{payments},
         \alice) from \simulator:
         \label{alg:fpaynet:payments}
         \Indent
@@ -380,7 +380,7 @@
           \State strip \textit{payid} from each member of \texttt{payments} and
           add them to \texttt{paymentsToReport}(\alice)
           \State send (\textsc{continue}) to \simulator
-        \EndIndent}
+        \EndIndent
       \end{algorithmic}
     \end{systembox}
     \caption{}
@@ -422,26 +422,26 @@
         \Indent
           \ForAll{$\alice \text{ keys} \in \texttt{charged}$}
             \ForAll{$\left(\dave, \mathit{payid},
-            \redden{?\overrightarrow{\mathtt{path}}}\right) \in
+            ?\overrightarrow{\mathtt{path}}\right) \in
             \mathtt{charged}\left(\alice\right)$}
               \label{alg:fpaynet:resolvepay:innerloop}
               \State retrieve $\left(\alice, \bob, x,
-              \overrightarrow{\mathtt{path}}, \redden{\mathit{expayid}},
+              \overrightarrow{\mathtt{path}}, \mathit{expayid},
               \mathit{payid}\right)$ and remove it from \texttt{pendingPay}
-              \redden{\If{there is a $\overrightarrow{\mathtt{path}}$ in neither
+              \If{there is a $\overrightarrow{\mathtt{path}}$ in neither
               or both the \texttt{pendingPay} and \texttt{charged} entries}
                 \State halt
-              \EndIf}
+              \EndIf
               \If{$\dave{} = \bot$} \Comment{Payment failed}
               \label{alg:fpaynet:resolvepay:failed:if}
-                \redden{\If{there is an (\textit{expayid}, \textit{payid}, \_)
+                \If{there is an (\textit{expayid}, \textit{payid}, \_)
                 entry in \texttt{pendingDiffs}(\alice) or
                 \texttt{pendingDiffs}(\bob) AND \alice{} or \bob{} respectively
                 is honest}
                 \label{alg:fpaynet:resolvepay:failed:reported:if}
                   \State halt
                   \label{alg:fpaynet:resolvepay:failed:reported}
-                \EndIf}
+                \EndIf
                 \State continue with next iteration of inner loop
                 \label{alg:fpaynet:resolvepay:continue}
               \ElsIf{$\dave{} \notin \overrightarrow{\mathtt{path}}$}
@@ -450,7 +450,7 @@
               \ElsIf{$\dave{} \in \mathtt{corrupted}$}
                 \State run code of Fig.~\ref{alg:fpaynet:resolvepay:loops}
                 \label{alg:fpaynet:resolvepay:corrupted:gotoloops}
-                \State \redden{increase \texttt{offChainBalance}(\bob) by $x$}
+                \State increase \texttt{offChainBalance}(\bob) by $x$
                 \label{alg:fpaynet:resolvepay:corr:credit}
               \Else \ \Comment{\dave{} honest}
                 \State run code of Fig.~\ref{alg:fpaynet:resolvepay:honestpayer}
@@ -528,9 +528,9 @@
         \EndIf
         \State run code of Fig.~\ref{alg:fpaynet:resolvepay:loops}
         \label{alg:fpaynet:resolvepay:honest:gotoloops}
-        \State \redden{decrease \texttt{offChainBalance}(\dave) by $x$}
+        \State decrease \texttt{offChainBalance}(\dave) by $x$
         \label{alg:fpaynet:resolvepay:debit}
-        \State \redden{increase \texttt{offChainBalance}(\bob) by $x$}
+        \State increase \texttt{offChainBalance}(\bob) by $x$
         \label{alg:fpaynet:resolvepay:credit}
       \end{algorithmic}
     \end{titlebox}
@@ -560,13 +560,13 @@
         \EndFor
         \ForAll{updated \texttt{channel}s in the previous loop}
         \label{alg:fpaynet:resolvepay:loops:halt:loop}
-          \State ensure that \redden{an element reporting the new balance exists
-          either in the \texttt{updatesToReport} or the \texttt{updatesHistory}}
-          of each honest party \redden{and that element has not been checked by
-          the current line in the past}, otherwise halt
+          \State ensure that an element reporting the new balance exists
+          either in the \texttt{updatesToReport} or the \texttt{updatesHistory}
+          of each honest party and that element has not been checked by
+          the current line in the past, otherwise halt
           \label{alg:fpaynet:resolvepay:loops:halt:do}
         \EndFor
-        \redden{\If{$\dave{} = \alice{} \wedge{} \alice{} \notin
+        \If{$\dave{} = \alice{} \wedge{} \alice{} \notin
         \mathtt{corrupted} \wedge (\mathit{expayid}, \mathit{payid}, -x) \notin
         \mathtt{pendingDiffs}(\alice)$} \Comment{payer not informed}
         \label{alg:fpaynet:resolvepay:loops:indiffs:debit:cond}
@@ -581,9 +581,9 @@
         \label{alg:fpaynet:resolvepay:loops:indiffs:credit:cond}
           \State halt
           \label{alg:fpaynet:resolvepay:loops:indiffs:credit:halt}
-        \EndIf}
-        \State \redden{remove (\textit{expayid}, \textit{payid}, $x$) from
-        \texttt{pendingDiffs}(\bob)}
+        \EndIf
+        \State remove (\textit{expayid}, \textit{payid}, $x$) from
+        \texttt{pendingDiffs}(\bob)
       \end{algorithmic}
     \end{titlebox}
     \caption{}
@@ -707,13 +707,13 @@
             \label{alg:fpaynet:close:func:happy:start}
               \State let $x, y$ \alice{}'s and \texttt{channel} counterparty
               \bob{}'s balances respectively
-              \redden{\State reduce \texttt{offChainBalance}(\alice) by $x$
+              \State reduce \texttt{offChainBalance}(\alice) by $x$
               \State increase \texttt{onChainBalance}(\alice) by $x$
               \label{alg:fpaynet:close:func:alice:credit}
               \State reduce \texttt{offChainBalance}(\bob) by $y$
-              \State increase \texttt{onChainBalance}(\bob) by $y$}
+              \State increase \texttt{onChainBalance}(\bob) by $y$
               \label{alg:fpaynet:close:func:bob:credit}
-              \State remove \texttt{channel} from \texttt{channels} \redden{and}
+              \State remove \texttt{channel} from \texttt{channels} and
               entry from \texttt{pendingClose}(\alice)
               \If{there is an (\textit{fchid}, \_, \_) entry in
               \texttt{pendingClose}(\bob)}
@@ -740,8 +740,8 @@
               \EndIf
             \ElsIf{there is no such closing/commitment transaction $\wedge \ h =
             \bot$}
-              \State assign largest \redden{$\Sigma_{\alice}$ block no. to
-              entry's $h$}
+              \State assign largest $\Sigma_{\alice}$ block no. to
+              entry's $h$
             \ElsIf{there is no such closing/commitment transaction $\wedge \ h
             \neq \bot \ \wedge$ (largest block number of $\Sigma_{\alice}) \geq
             h + \tochain{}$}
@@ -750,9 +750,9 @@
               \label{alg:fpaynet:close:func:idle}
             \EndIf
           \EndFor
-          \If{\alice{} has no open channels in $\Sigma_{\alice} \redden{\wedge}
-          \mathtt{negligent}(\alice) = \false \redden{\wedge}
-          (\mathtt{offChainBalance}(\alice) \neq 0 \: \redden{\vee}$
+          \If{\alice{} has no open channels in $\Sigma_{\alice} \wedge
+          \mathtt{negligent}(\alice) = \false \wedge
+          (\mathtt{offChainBalance}(\alice) \neq 0 \: \vee$
           \texttt{onChainBalance}(\alice) is not equal to the total funds
           exclusively spendable by \alice{} in $\Sigma_{\alice}$)}
             \State halt
@@ -881,11 +881,11 @@
         \State Upon receiving (\textsc{getNews}) from \alice:
         \label{alg:fpaynet:getnews}
         \Indent
-          \redden{\State copy members of \texttt{updatesToReport}(\alice) to
-          \texttt{updatesHistory}(\alice)}
+          \State copy members of \texttt{updatesToReport}(\alice) to
+          \texttt{updatesHistory}(\alice)
           \State clear \texttt{newChannels}(\alice),
           \texttt{closedChannels}(\alice), \texttt{updatesToReport}(\alice),
-          \redden{\texttt{paymentsToReport}(\alice)} and send them to \alice{}
+          \texttt{paymentsToReport}(\alice) and send them to \alice{}
           with message name \textsc{news}, stripping \textit{fchid} and h from
           \texttt{closedChannels}(\alice)
           \label{alg:fpaynet:getnews:send}

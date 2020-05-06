@@ -35,8 +35,8 @@
   \end{theorem}
 
   \begin{proofsketch}
-    The proof is done in 5 steps \redden{of successive game replacement}. In
-    \redden{the first lemma, (Lemma~\ref{lemma:dummy} in the appendix)} we
+    The proof is done in 5 steps of successive game replacement. In
+    the first lemma, (Lemma~\ref{lemma:dummy} in the appendix) we
     define a simulator $\simulator_{\mathrm{LN}}$
     that internally simulates a full execution of $\Pi_{\mathrm{LN}}$ for each
     player, and a ``dummy'' functionality that acts as a simple relay between
@@ -45,25 +45,25 @@
     \environment{} as the real world.
 
     In each subsequent step, we incrementally move responsibilities from the
-    simulator to the functionality\redden{, while ensuring the change is
-    transparent to both \environment{} and \adversary}. Each step defines a
+    simulator to the functionality, while ensuring the change is
+    transparent to both \environment{} and \adversary. Each step defines a
     different functionality that handles some additional messages from
     \environment{} exactly like \fpaynet, until the last step
-    (Lemma~\ref{lemma:close} \redden{in the appendix}) where we use \fpaynet{} itself. Correspondingly,
+    (Lemma~\ref{lemma:close} in the appendix) where we use \fpaynet{} itself. Correspondingly,
     the simulator of each step is adapted so that the new ideal execution is
-    computationally indistinguishable from the previous one. \redden{For each
+    computationally indistinguishable from the previous one. For each
     step we exhaustively trace the differences from the previous step in order
     to prove that, given the same messages from \environment{} and \adversary{},
-    the resulting responses remain unchanged.}
+    the resulting responses remain unchanged.
 
-    \redden{The second step, (Lemma~\ref{lemma:reg} in the appendix)} lets $\mathcal{F}$ handle registration messages,
-    along with the corruption messages from \simulator. In \redden{the third
-    step,  (Lemma~\ref{lemma:open} in the appendix)}
+    The second step, (Lemma~\ref{lemma:reg} in the appendix) lets $\mathcal{F}$ handle registration messages,
+    along with the corruption messages from \simulator. In the third
+    step,  (Lemma~\ref{lemma:open} in the appendix)
     the functionality additionally handles messages related to channel opening. It
     behaves like \fpaynet, but does not execute \texttt{checkClosed}().
-    \redden{The fourth step, (Lemma~\ref{lemma:pay} in the appendix)} has the functionality handle all messages sent during
-    channel updates. Lastly, \redden{(Lemma~\ref{lemma:close} in the appendix)}
-    the entire \fpaynet{} \redden{is used} as functionality, by incorporating the message for closing a channel,
+    The fourth step, (Lemma~\ref{lemma:pay} in the appendix) has the functionality handle all messages sent during
+    channel updates. Lastly, (Lemma~\ref{lemma:close} in the appendix)
+    the entire \fpaynet{} is used as functionality, by incorporating the message for closing a channel,
     executing \texttt{checkClosed}() normally and handing the message that returns
     to \environment{} the receipts for newly opened, updated and closed
     channels. The last two steps introduce a probability of failure in case
@@ -71,7 +71,7 @@
     such forgeries do not happen, the emulation is perfect. Therefore we can
     calculate the concrete security bounds shown in the theorem.
   \end{proofsketch}
-  \redden{As a concrete example of the proof approach, the second step (Lemma~\ref{lemma:reg} in the appendix) entails the following parts: First
+  As a concrete example of the proof approach, the second step (Lemma~\ref{lemma:reg} in the appendix) entails the following parts: First
   $\fpaynet{}_{\mathrm{, Reg}}$ is defined (Fig.~\ref{alg:proof:fpaynet:reg}),
   which is a functionality that behaves exactly like \fpaynet{} when receiving
   the messages \textsc{register}, \textsc{registerDone}, \textsc{toppedUp} and
@@ -87,5 +87,5 @@
   discernible difference to the transcript that any \environment{} sees. This is
   achieved by exhaustive enumeration of all possible messages and comparison of
   the behaviour of the ideal and the real world for each, to conclude that the
-  change is transparent to \environment.}
+  change is transparent to \environment.
   The formal proof can be found in Appendix~\ref{appendix:secproof}.

@@ -4,7 +4,7 @@
       \State For messages \textsc{register}, \textsc{registerDone},
       \textsc{toppedUp}, \textsc{openChannel}, \textsc{channelAnnounced},
       \textsc{checkForNew}, \textsc{poll}, \textsc{pay},
-      \redden{\textsc{adversarySendInvoice}}, \textsc{pushAdd},
+      \textsc{adversarySendInvoice}, \textsc{pushAdd},
       \textsc{pushFulfill}, \textsc{fulfillOnChain} and \textsc{commit}, act
       like \fpaynet{}, but skip lines that call \texttt{checkClosed}().
       \Statex
@@ -33,18 +33,18 @@
   \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$ -- pay}
     Like $\simulator{}_{\mathrm{LN - Reg - Open}}$. Differences:
     \begin{algorithmic}[1]
-      \State \redden{Upon simulating line~\ref{alg:protocol:pay:invoice:receive}
-      of Fig.~\ref{alg:protocol:pay:invoice}:}
+      \State Upon simulating line~\ref{alg:protocol:pay:invoice:receive}
+      of Fig.~\ref{alg:protocol:pay:invoice}:
       \Indent
-        \redden{\If{$\exists (\bot, \bot, \mathit{payid}) \in \mathtt{payids}$
+        \If{$\exists (\bot, \bot, \mathit{payid}) \in \mathtt{payids}$
         where \textit{payid} is the one in the \textsc{invoice} message}
           \State replace second $\bot$ with the $h$ found in the
           \textsc{invoice} message
-        \EndIf}
+        \EndIf
       \EndIndent
       \Statex
 
-      \redden{\State Upon simulating
+      \State Upon simulating
       line~\ref{alg:protocol:pay:updateAddHtlc:receive} of
       Fig.~\ref{alg:protocol:pay:updateAddHtlc} with honest \alice:
       \Indent
@@ -53,7 +53,7 @@
         \textsc{updateAddHtlc} message}
           \State append \alice{} to $\overrightarrow{\mathtt{path}}$
         \EndIf
-      \EndIndent}
+      \EndIndent
       \Statex
 
       \State Upon receiving $\left(\textsc{fulfillOnChain}, t, \alice\right)$
@@ -64,7 +64,7 @@
         lines~\ref{alg:protocol:pay:foc:tosubmit}-\ref{alg:protocol:pay:foc:submit}
         of Fig.~\ref{alg:protocol:pay:foc} as \alice{}, using $t$ from message
         \label{alg:sim:pay:foc:run}
-        \redden{\If{during the simulation above,
+        \If{during the simulation above,
         line~\ref{alg:protocol:pay:foc:payment} is simulated in \alice's ITI}
         \label{alg:sim:foc:report:if}
           \State send (\textsc{newPayments}, \texttt{payment}, \alice) to
@@ -75,17 +75,17 @@
           \label{alg:sim:foc:report}
           \State upon receiving (\textsc{continue}) from $\fpaynet{}_{\mathrm{,
           Pay}}$, carry on with the simulation
-        \EndIf}
+        \EndIf
       \EndIndent
       \Statex
 
       \State Upon receiving $\left(\textsc{pay}, \alice, \bob, x,
-      \overrightarrow{\mathtt{path}}, \redden{\mathit{expayid}},
+      \overrightarrow{\mathtt{path}}, \mathit{expayid},
       \mathit{payid}\right)$ from $\fpaynet{}_{\mathrm{, Pay}}$:
       \Indent
-        \State add ($\overrightarrow{\mathtt{path}}$, \redden{$\top$,}
+        \State add ($\overrightarrow{\mathtt{path}}$, $\top$,
         \textit{payid}) to \texttt{payids}
-        \State strip \textit{payid} \redden{and \alice}, simulate receiving the
+        \State strip \textit{payid} and \alice, simulate receiving the
         message with \alice{} ITI and further execute the parts of
         $\Pi_{\mathrm{LN}}$ that correspond to honest parties
         (Fig.~\ref{alg:protocol:pay:outofband}-Fig.~\ref{alg:protocol:pay:updateFulfillHtlc})
@@ -95,7 +95,7 @@
           \State add $\left(\bot, \mathit{payid}\right)$ to
           \texttt{charged}(\alice)
           \label{alg:sim:pay:failed}
-          \State remove ($\overrightarrow{\mathtt{path}}$, \redden{\_,}
+          \State remove ($\overrightarrow{\mathtt{path}}$, \_,
           \textit{payid}) from \texttt{payids}
         \EndIf
       \EndIndent
@@ -109,7 +109,7 @@
         receiving (\textsc{poll}), using $\Sigma_{\alice}$ from the message,
         with \alice's ITI
         \label{alg:sim:poll:run}
-        \redden{\If{during the simulation above,
+        \If{during the simulation above,
         line~\ref{alg:protocol:poll:report:pay} of
         Fig.~\ref{alg:protocol:poll:closedch} is simulated in \alice's ITI}
         \label{alg:sim:poll:report:if}
@@ -123,7 +123,7 @@
           \label{alg:sim:poll:report}
           \State upon receiving (\textsc{continue}) from $\fpaynet{}_{\mathrm{,
           Pay}}$, carry on with the simulation
-        \EndIf}
+        \EndIf
       \EndIndent
     \end{algorithmic}
   \end{simulatorbox}
@@ -133,9 +133,9 @@
 
 \begin{figure}[!htbp]
   \begin{simulatorbox}{$\simulator{}_{\mathrm{LN - Reg - Open - Pay}}$ --
-  \redden{adversarial payment}}
+  adversarial payment}
     \begin{algorithmic}[1]
-      \redden{\State Upon receiving (\textsc{sendInvoice}, $x$,
+      \State Upon receiving (\textsc{sendInvoice}, $x$,
       \textit{expayid}, \textit{payid}, \textit{from} \alice, \textit{to} \bob)
       from \adversary:
       \Indent
@@ -149,17 +149,17 @@
         \textit{payid}, \textit{intid}, \textit{from} \alice, \textit{to} \bob)
         to $\fpaynet{}_{\mathrm{, Pay}}$
         \label{alg:sim:pay:adv:invoice:send}
-      \EndIndent}
+      \EndIndent
       \Statex
 
-      \redden{\State Upon receiving (\textsc{adversarySendInvoice},
+      \State Upon receiving (\textsc{adversarySendInvoice},
       \textit{invid}) from $\fpaynet{}_{\mathrm{, Open}}$:
       \label{alg:sim:pay:adv:invoice:recv}
       \Indent
         \State retrieve message associated with \textit{invid}
         \State Continue simulation with \alice{} receiving the message from \bob
         \label{alg:sim:pay:adv:invoice:cont}
-      \EndIndent}
+      \EndIndent
     \end{algorithmic}
   \end{simulatorbox}
   \caption{}
@@ -178,7 +178,7 @@
         handle subsequent messages by simulating respective ITIs of honest
         players or sending to \adversary{} the messages for corrupted players
         \label{alg:sim:push:fulfill}
-        \redden{\If{during the simulation above,
+        \If{during the simulation above,
         line~\ref{alg:protocol:pushfulfill:report} of
         Fig.~\ref{alg:protocol:pay:push} is simulated in \alice's ITI}
         \label{alg:sim:pushfulfill:report:if}
@@ -192,7 +192,7 @@
           \label{alg:sim:pushfulfill:report}
           \State upon receiving (\textsc{continue}) from $\fpaynet{}_{\mathrm{,
           Pay}}$, carry on with the simulation
-        \EndIf}
+        \EndIf
       \EndIndent
       \Statex
 
@@ -220,16 +220,16 @@
         line~\ref{alg:protocol:pay:raa:report:updates}
         of Fig.~\ref{alg:protocol:pay:revokeAndAck} is simulated in \alice's
         ITI}
-          \State send (\redden{\textsc{newUpdate}}, \texttt{receipt}, \alice) to
+          \State send (\textsc{newUpdate}, \texttt{receipt}, \alice) to
           $\fpaynet{}_{\mathrm{, Pay}}$, where \texttt{receipt} is the
-          \redden{field} just added to the simulated \texttt{updatesToReport}
+          field just added to the simulated \texttt{updatesToReport}
           (Fig.~\ref{alg:protocol:pay:revokeAndAck},
           line~\ref{alg:protocol:pay:raa:report:updates})
           \label{alg:sim:push:report:updates}
           \State upon receiving (\textsc{continue}) from
           $\fpaynet{}_{\mathrm{, Pay}}$, carry on with the simulation
         \EndIf
-        \redden{\If{during the simulation above,
+        \If{during the simulation above,
         line~\ref{alg:protocol:pay:raa:report:payments}
         of Fig.~\ref{alg:protocol:pay:revokeAndAck} is simulated in \alice's
         ITI}
@@ -244,7 +244,7 @@
           \label{alg:sim:push:report:payments}
           \State upon receiving (\textsc{continue}) from $\fpaynet{}_{\mathrm{,
           Pay}}$, carry on with the simulation
-        \EndIf}
+        \EndIf
       \EndIndent
     \end{algorithmic}
   \end{simulatorbox}
@@ -267,7 +267,7 @@
         \label{alg:sim:resolvepay:mayberesolve}
           \ForAll{$\Sigma_{\alice} \in \Sigma$}
           \label{alg:sim:resolvepay:everystate}
-            \ForAll{$(\overrightarrow{\mathtt{path}}, \redden{\_,}
+            \ForAll{$(\overrightarrow{\mathtt{path}}, \_,
             \mathit{payid}) \in \mathtt{payids} : \alice \in
             \overrightarrow{\mathtt{path}}$}
               \If{condition in Fig.~\ref{alg:sim:resolvepay:corrupted:fig} is
@@ -291,9 +291,9 @@
             \EndFor
           \EndFor
           \label{alg:sim:resolvepay:loopend}
-          \State \redden{clear \texttt{charged} and send
+          \State clear \texttt{charged} and send
           $\left(\textsc{resolvePays}, \mathtt{charged}\right)$ to
-          $\fpaynet{}_{\mathrm{, Pay}}$}
+          $\fpaynet{}_{\mathrm{, Pay}}$
         \EndIf
       \EndIndent
     \end{algorithmic}
@@ -319,16 +319,16 @@
 
       \Statex \textit{Effect}:
       \Indent
-        \State add \redden{(\texttt{corrupted}, \textit{payid}) to
-        \texttt{charged}(payer)} where \texttt{corrupted} is set to one of the
+        \State add (\texttt{corrupted}, \textit{payid}) to
+        \texttt{charged}(payer) where \texttt{corrupted} is set to one of the
         corrupted parties between \alice{} and \bob{}
-        \redden{\If{there is an $h \neq \top$ member in \texttt{payids} entry}
+        \If{there is an $h \neq \top$ member in \texttt{payids} entry}
         \Comment{adversarially initiated payment, functionality doesn't know
         path}
           \State append $\overrightarrow{\mathtt{path}}$ to
           \texttt{charged}(\alice) entry
-        \EndIf}
-        \State remove ($\overrightarrow{\mathtt{path}}$, \redden{\_,}
+        \EndIf
+        \State remove ($\overrightarrow{\mathtt{path}}$, \_,
         \textit{payid}) from \texttt{payids}
       \EndIndent
     \end{algorithmic}
@@ -346,10 +346,10 @@
         \State $\Sigma_{\alice}$ contains an old $\mathtt{remoteCom}_m$ of the
         channel before \alice{} (closer to payer) on the
         $\overrightarrow{\mathtt{path}}$ that does not contain the relevant HTLC
-        \redden{anymore} and a tx that spends the delayed output of
+        anymore and a tx that spends the delayed output of
         $\mathtt{remoteCom}_m \vee ((\Sigma_{\alice}$ contains the most recent
         $\mathtt{remoteCom}_n$ or $\mathtt{localCom}_n$ of the channel before
-        \alice{} and the \texttt{HTLC-\redden{timeout}} of the relevant HTLC
+        \alice{} and the \texttt{HTLC-timeout} of the relevant HTLC
         $\vee$ \alice's latest irrevocably committed $\mathtt{remoteCom}_n$ for
         the channel before \alice{} does not contain the HTLC) $\wedge \:
         \Sigma_{\alice}$ contains the most recent $\mathtt{remoteCom}_l$ or
@@ -361,14 +361,14 @@
 
       \Statex \textit{Effect}:
       \Indent
-        \State add (\alice, \textit{payid}) to \texttt{charged}(\redden{payer})
-        \redden{\If{there is an $h \neq \top$ member in \texttt{payids} entry}
+        \State add (\alice, \textit{payid}) to \texttt{charged}(payer)
+        \If{there is an $h \neq \top$ member in \texttt{payids} entry}
         \Comment{adversarially initiated payment, functionality doesn't know
         path}
           \State append $\overrightarrow{\mathtt{path}}$ to
           \texttt{charged}(\alice) entry
-        \EndIf}
-        \State remove ($\overrightarrow{\mathtt{path}}$, \redden{\_,}
+        \EndIf
+        \State remove ($\overrightarrow{\mathtt{path}}$, \_,
         \textit{payid}) from \texttt{payids}
       \EndIndent
     \end{algorithmic}
@@ -385,10 +385,10 @@
       \Indent
         \State \alice{} is the payer in $\overrightarrow{\mathtt{path}}$ AND
         ((she has received \textsc{updateFulfillHtlc} AND has subsequently sent
-        \textsc{commit} and \textsc{revokeAndAck}) OR \redden{(}player after
+        \textsc{commit} and \textsc{revokeAndAck}) OR (player after
         \alice{} has irrevocably fulfilled the HTLC on-chain (i.e. his
-        \texttt{HTLC-success} is in $\Sigma_{\alice}$) \redden{AND \alice{} has
-        received \textsc{poll} to observe it))}
+        \texttt{HTLC-success} is in $\Sigma_{\alice}$) AND \alice{} has
+        received \textsc{poll} to observe it))
         \label{alg:sim:resolvepay:honest:cond}
       \EndIndent
       \Statex
@@ -396,13 +396,13 @@
       \Statex \textit{Effect}:
       \Indent
         \State add (\alice, \textit{payid}) to \texttt{charged}(\alice)
-        \redden{\If{there is an $h \neq \top$ member in \texttt{payids} entry}
+        \If{there is an $h \neq \top$ member in \texttt{payids} entry}
         \Comment{adversarially initiated payment, functionality doesn't know
         path}
           \State append $\overrightarrow{\mathtt{path}}$ to
           \texttt{charged}(\alice) entry
-        \EndIf}
-        \State remove ($\overrightarrow{\mathtt{path}}$, \redden{\_,}
+        \EndIf
+        \State remove ($\overrightarrow{\mathtt{path}}$, \_,
         \textit{payid}) from \texttt{payids}
       \EndIndent
     \end{algorithmic}
@@ -429,8 +429,8 @@
 \end{lemma}
 
 \begin{proof}
-  Before focusing on individual messages sent by \environment{} \redden{or
-  \adversary}, we will first prove that four particular forgery events happen
+  Before focusing on individual messages sent by \environment{} or
+  \adversary, we will first prove that four particular forgery events happen
   with negligible probability. Let $P$ be the event in which at some point
   during the execution a transaction that has the following two characteristics
   appears in $\Sigma_{\alice}$, for some honest player \alice: it spends a
@@ -482,7 +482,7 @@
   Proposition~\ref{prop:forgery:master} that $\forall \environment, \Pr[S] \leq
   nm \cdot \mathrm{E \mhyphen master}(k)$.
 
-  \redden{In the ideal world, when the simulated \adversary{} attempts to send a
+  In the ideal world, when the simulated \adversary{} attempts to send a
   payment by instructing corrupted \alice{} to send (\textsc{sendInvoice}, $x$,
   \textit{expayid}, \textit{payid}) to the honest payee \bob, \simulator{} sends
   (\textsc{adversarySendInvoice}, $x$, \textit{expayid}, \textit{payid},
@@ -497,21 +497,21 @@
   lines~\ref{alg:sim:pay:adv:invoice:recv}-\ref{alg:sim:pay:adv:invoice:cont}).
   In the real world, such a message by the adversarially controlled \alice{}
   would result in the honest \bob{} sending the same invoice, therefore the two
-  behaviours are indistinguishable.}
+  behaviours are indistinguishable.
 
   % TODO: decide if the paragraph below is redundant
-  \redden{In the ideal world, when the simulated \adversary{} attempts to add an
+  In the ideal world, when the simulated \adversary{} attempts to add an
   HTLC by instructing corrupted \alice{} to send (\textsc{updateAddHtlc},
   \textit{pchid}, \texttt{HTLCNo}, $x$, $h$, \texttt{IncomingCltvExpiry}, $M$)
   to honest \bob, \simulator{} simply simulates the receiving of the message by
   \bob{} and subsequently carries out the rest of the simulation. In the real
   world, such a message by the adversarially controlled \alice{} would result in
   \bob{} and the rest of the ITIs following the same steps as in the simulated
-  case, therefore the two behaviours are indistinguishable.}
+  case, therefore the two behaviours are indistinguishable.
 
   We can now move on to treating individual messages sent by \environment{}
   during the execution. When \environment{} sends $\left(\textsc{pay}, \bob, x,
-  \overrightarrow{\mathtt{path}}, \redden{\mathit{expayid}}\right)$ to \alice{}
+  \overrightarrow{\mathtt{path}}, \mathit{expayid}\right)$ to \alice{}
   in the ideal world, $\simulator_{\mathrm{LN - Reg - Open}}$ is always notified
   (Fig.~\ref{alg:fpaynet:pay}, line~\ref{alg:fpaynet:pay:send}) and simulates
   the relevant execution of the real world (Fig.~\ref{alg:sim:pay},
@@ -659,7 +659,7 @@
   Fig.~\ref{alg:protocol:pay:outofband},
   line~\ref{alg:protocol:pay:sendinvoice}, when the first message is
   $\left(\textsc{pay}, \bob, x, \overrightarrow{\mathtt{path}},
-  \redden{\_}\right)$ and \bob{} is corrupted), or if the handling of the
+  \_\right)$ and \bob{} is corrupted), or if the handling of the
   message results in sending (\textsc{submit}) to \ledger{} (e.g. in
   Fig.~\ref{alg:protocol:pay:push}, line~\ref{alg:protocol:pushfulfill:submit}
   when the first message is (\textsc{pushFulfill}, \textit{pchid}) and
@@ -681,8 +681,8 @@
   lines~\ref{alg:fpaynet:resolvepay:halt:ds},~\ref{alg:fpaynet:resolvepay:halt:rel}
   and~\ref{alg:fpaynet:resolvepay:halt:abs} and
   Fig.~\ref{alg:fpaynet:resolvepay:loops},
-  line\redden{s}~\ref{alg:fpaynet:resolvepay:loops:halt:do}\redden{,}~\ref{alg:fpaynet:resolvepay:loops:indiffs:debit:halt}
-  \redden{and}~\ref{alg:fpaynet:resolvepay:loops:indiffs:credit:halt}), it
+  lines~\ref{alg:fpaynet:resolvepay:loops:halt:do},~\ref{alg:fpaynet:resolvepay:loops:indiffs:debit:halt}
+  and~\ref{alg:fpaynet:resolvepay:loops:indiffs:credit:halt}), it
   updates the state of each affected channel
   (Fig.~\ref{alg:fpaynet:resolvepay:loops},
   line~\ref{alg:fpaynet:resolvepay:loops:update:do}) and does not send any
@@ -803,7 +803,7 @@
   no case \dave{} is charged for the payment, i.e. $\Pr[(C \wedge D) \wedge (G
   \wedge H) | \neg P \wedge \neg Q \wedge \neg R \wedge \neg S] = 0$.
 
-  \redden{We will now show that the halt of
+  We will now show that the halt of
   line~\ref{alg:fpaynet:resolvepay:failed:reported} in
   Fig.~\ref{alg:fpaynet:resolvepay} does not occur with non-negligible
   probability. If the check of line~\ref{alg:fpaynet:resolvepay:failed:if}
@@ -854,9 +854,9 @@
   corresponding to the payment, which can only happen if no
   \textsc{updateAddHtlc} fails, which is contrary to $T$. Therefore the halt of
   Fig.~\ref{alg:fpaynet:resolvepay},
-  line~\ref{alg:fpaynet:resolvepay:failed:reported} cannot happen.}
+  line~\ref{alg:fpaynet:resolvepay:failed:reported} cannot happen.
 
-  \redden{Moving on, we have to prove} that the halt of
+  Moving on, we have to prove that the halt of
   line~\ref{alg:fpaynet:resolvepay:loops:halt:do} in
   Fig.~\ref{alg:fpaynet:resolvepay:loops} does not occur with non-negligible
   probability. Indeed, \simulator{} only reports the payment as resolved in
@@ -875,7 +875,7 @@
   committed. This only happens when both sides send a \textsc{revokeAndAck} that
   updates the channel from a version that contains the relevant HTLC to a
   version that doesn't; and when an honest party receives such a
-  \textsc{revokeAndAck} message, it logs the \redden{new receipt} in
+  \textsc{revokeAndAck} message, it logs the new receipt in
   \texttt{updatesToReport} (Fig.~\ref{alg:protocol:pay:revokeAndAck},
   line~\ref{alg:protocol:pay:raa:report:updates}) which causes \simulator{} to
   report the update to \fpaynet{} (Fig.~\ref{alg:sim:push},
@@ -883,7 +883,7 @@
   never halts on line~\ref{alg:fpaynet:resolvepay:loops:halt:do} of
   Fig.~\ref{alg:fpaynet:resolvepay:loops}.
 
-  \redden{It remains to be proven that \fpaynet{} does not halt with
+  It remains to be proven that \fpaynet{} does not halt with
   non-negligible probability in
   lines~\ref{alg:fpaynet:resolvepay:loops:indiffs:debit:halt}
   and~\ref{alg:fpaynet:resolvepay:loops:indiffs:credit:halt} of
@@ -946,9 +946,9 @@
   \texttt{pendingDiffs}(\alice) and the check of
   line~\ref{alg:fpaynet:resolvepay:loops:indiffs:debit:cond},
   Fig.~\ref{alg:fpaynet:resolvepay:loops} would fail, therefore preventing the
-  functionality from halting.}
+  functionality from halting.
 
-  \redden{We will now prove that the halt of
+  We will now prove that the halt of
   line~\ref{alg:fpaynet:resolvepay:loops:indiffs:credit:halt} in
   Fig.~\ref{alg:fpaynet:resolvepay:loops} does not occur. This halt would take
   place if the payee \bob{} is honest but was not previously informed of the
@@ -974,7 +974,7 @@
   payment to \fpaynet{}, which has added it to \texttt{pendingDiffs}(\bob). We
   conclude that the halt of
   line~\ref{alg:fpaynet:resolvepay:loops:indiffs:credit:halt},
-  Fig.~\ref{alg:fpaynet:resolvepay:loops} cannot occur.}
+  Fig.~\ref{alg:fpaynet:resolvepay:loops} cannot occur.
 
   To conclude, given $\neg P \wedge \neg Q \wedge \neg R \wedge \neg S$, it is
   $\textsc{Exec}^{\fpaynet{}_{\mathrm{, Open}}, \ledger}_{\simulator_{\mathrm{LN

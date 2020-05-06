@@ -49,17 +49,17 @@ network}~\cite{lightning}\footnote{The specification available online is a more
 descriptive reference for the inner workings of the protocol, see
 \url{https://github.com/lightningnetwork/lightning-rfc/blob/master/02-peer-protocol.md}.
 See also the raiden network that implements Lightning over Ethereum,
-\url{https://raiden.network}.} that \redden{functions over the Bitcoin
-blockchain and leverages} the concept of a bilateral payment channel. The
+\url{https://raiden.network}.} that functions over the Bitcoin
+blockchain and leverages the concept of a bilateral payment channel. The
 latency for a transaction becomes linear to actual network delay and another
 factor that equals the number of bilateral payment channel hops in the path that
-connects the two end-points of the transaction. \redden{Implicated parties are
-guaranteed that, if they wish so,} \emph{eventually} the ledger will record
-\redden{a} ``gross'' settlement \redden{transaction that reflects the balance
-resulting from all in-channel payments}. Deviations from this guarantee are
-cryptographically feasible but deincentivised\redden{: a malicious party trying
+connects the two end-points of the transaction. Implicated parties are
+guaranteed that, if they wish so, \emph{eventually} the ledger will record
+a ``gross'' settlement transaction that reflects the balance
+resulting from all in-channel payments. Deviations from this guarantee are
+cryptographically feasible but deincentivised: a malicious party trying
 to commit to an outdated state will lose funds to a peer that provides evidence
-of a subsequent state.} Moreover, note that no record of a specific payment
+of a subsequent state. Moreover, note that no record of a specific payment
 transaction need ever appear on-chain thus the number of lightning transactions
 that can be exchanged can reach the maximum capacity the network allows between
 the parties, without being impeded by any restrictions of the underlying
@@ -69,9 +69,9 @@ The lightning network has been very influential in the space and spun a number
 of follow up research and implementations (see below for references). We note
 that the lightning network is not the only option for building an overlay over a
 blockchain. See e.g.,~\cite{DBLP:conf/eurocrypt/PassS18} for an alternative
-approach focusing on reducing latency\redden{,} where it is shown that if the
+approach focusing on reducing latency, where it is shown that if the
 assumption is raised to a security threshold of $3/4$ plus the honesty of an
-additional special player\redden{,} it is possible to obtain optimal latency.
+additional special player, it is possible to obtain optimal latency.
 Nevertheless, this approach does not offer the throughput benefits that are
 intrinsic to the lightning network.
 %TODO: clarify above
@@ -84,7 +84,7 @@ operational\footnote{For current deployment statistics see e.g.,
 extract precise statements regarding the level of security it offers.
 
 \noindent \textbf{Our Results.} We present the first, to our knowledge, complete
-security analysis of the lightning network\redden{, which we carry out} in the
+security analysis of the lightning network, which we carry out in the
 universal composition (UC) setting. We model the payment overlay that the
 lightning network provides as an ideal functionality and we demonstrate how it
 can be implemented in a hybrid world which assumes a global ledger
@@ -100,67 +100,67 @@ details our results are as follows.
 
 \begin{enumerate}
 \item We present the $\fpaynet{}$ functionality which abstracts the syntax and
-security properties provided by the lightning network. \redden{We describe our
+security properties provided by the lightning network. We describe our
 $\fpaynet{}$ assuming a global ledger functionality $\ledger$ as defined
 in~\cite{BMTZ17}, and further refined in~\cite{genesis}, which we know that is
-realised by the Bitcoin blockchain.} Our approach not only captures lightning,
+realised by the Bitcoin blockchain. Our approach not only captures lightning,
 but it is also general as it can be applied to any payment network by finely
-tuning the \redden{following parts of the functionality:} the exact channel
+tuning the following parts of the functionality: the exact channel
 opening message sequence, the details of the on-chain checks performed by
 \fpaynet, the negligence time bounds and the penalty in case of a malicious
 closure being caught. Using $\fpaynet{}$, parties can open and close channels,
 forward payments along channel paths in the network as well as poll its status.
 Importantly, the functionality keeps track of all the off-chain and on-chain
-balances and ensures that when a channel closes\redden{,} the on-chain balances
-are in line with the off-chain \redden{ones}. In order to handle
-\redden{realistic} adversarial deviations, \redden{$\fpaynet{}$ allows} the
-adversary to \redden{choose one of the following outcomes for each multi-hop
-payment}: (i) let it go through as requested, (ii) charge it to an adversarial
+balances and ensures that when a channel closes, the on-chain balances
+are in line with the off-chain ones. In order to handle
+realistic adversarial deviations, $\fpaynet{}$ allows the
+adversary to choose one of the following outcomes for each multi-hop
+payment: (i) let it go through as requested, (ii) charge it to an adversarial
 party along the path, (iii) charge it to a \emph{negligent} honest party along
-the path. This last outcome is a crucial security characteristic \redden{of the}
-lightning network: honest parties are \redden{required} to poll the
-functionality \redden{with a frequency} that corresponds to their level of
+the path. This last outcome is a crucial security characteristic of the
+lightning network: honest parties are required to poll the
+functionality with a frequency that corresponds to their level of
 involvement in the network and the properties of the underlying ledger. If a
-party \redden{does not poll often enough, $\fpaynet{}$ identifies it as
-negligent} and it may lose funds.
+party does not poll often enough, $\fpaynet{}$ identifies it as
+negligent and it may lose funds.
 
-\item We identify for the first time the exact polling requirements \redden{so
-that honest parties} do not lose funds\redden{, as a function of the parameters
-of $\ledger$.} The polling requirements for each party are two-fold: (i) the
-first type refers to monitoring for closures of channels \redden{of which the
-party is a member}, and is specified by the parameter ``$\mathrm{delay}$''
-\redden{(chosen by the party)}, (ii) the second type refers to monitoring for
-specific events related to receiving and relaying payments\redden{. In detail,
+\item We identify for the first time the exact polling requirements so
+that honest parties do not lose funds, as a function of the parameters
+of $\ledger$. The polling requirements for each party are two-fold: (i) the
+first type refers to monitoring for closures of channels of which the
+party is a member, and is specified by the parameter ``$\mathrm{delay}$''
+(chosen by the party), (ii) the second type refers to monitoring for
+specific events related to receiving and relaying payments. In detail,
 let \emph{Alice} be an intermediary of a multi-hop payment. When the payment
-starts, she specifies two blockheights $h, h'$. Also, let $a$ be} the upper bound
+starts, she specifies two blockheights $h, h'$. Also, let $a$ be the upper bound
 to the number of blocks that may be finalised in the ledger from the time a
 certain transaction is emitted to the time it becomes finalised (i.e. it is
-included in a block in the ``stable'' part of the ledger). \redden{\emph{Alice}
+included in a block in the ``stable'' part of the ledger). \emph{Alice}
 should then poll twice while her local view of the chain advances from
-blockheight $h$ to blockheight $h' - a$.} Moreover, the two pollings should be
-separated by a time window \redden{so that the chain can} grow by at least $a$
+blockheight $h$ to blockheight $h' - a$. Moreover, the two pollings should be
+separated by a time window so that the chain can grow by at least $a$
 blocks.
 
 \item We provide a complete pseudocode description of the lightning network
-protocol $\Pi_{\mathrm{LN}}$ and prove that it realises $\fpaynet{}$ \redden{in
-the Random Oracle model}. We identify a number of underlying cryptographic
+protocol $\Pi_{\mathrm{LN}}$ and prove that it realises $\fpaynet{}$ in
+the Random Oracle model. We identify a number of underlying cryptographic
 primitives that have been used in the lightning network in
 a non-black-box fashion and without reference. Interestingly, while
-\redden{most} of these primitives are quite standard (a PRF, a Digital Signature
-scheme and an Identity Based Signature scheme)\redden{, there is also one that} is less standard  \redden{and requires a new definition}. \redden{The \emph{combined digital signature} -- as we
-will call it --} is a special case of an asymmetric two-party digital
+most of these primitives are quite standard (a PRF, a Digital Signature
+scheme and an Identity Based Signature scheme), there is also one that is less standard  and requires a new definition. The \emph{combined digital signature} -- as we
+will call it -- is a special case of an asymmetric two-party digital
 signature primitive (e.g., see~\cite{DBLP:conf/ndss/NicolosiKDM03} and
-references therein) with the \redden{following} characteristic\redden{:} One of
-the two parties, \redden{called} the shareholder, generates and stores a share of the signing
-key\redden{.} The public key of the combined signature \redden{can be}
-determined non-interactively \redden{from public} information produced by both
-parties. Issuing signatures requires the availability of the share\redden{,}
+references therein) with the following characteristic: One of
+the two parties, called the shareholder, generates and stores a share of the signing
+key. The public key of the combined signature can be
+determined non-interactively from public information produced by both
+parties. Issuing signatures requires the availability of the share,
 which is verifiable given the public information provided by the shareholder. We
 formalise the combined digital signature primitive and show that the
-construction lying within the \redden{lightning} specification \redden{realises}
+construction lying within the lightning specification realises
 it under standard cryptographic assumptions. In summary, the realisation of
 $\fpaynet{}$ is achieved assuming the security of the underlying
-primitives\redden{,} which in turn can be based on EC-DLOG and the Random Oracle
+primitives, which in turn can be based on EC-DLOG and the Random Oracle
 model.
 
 \item We prove that a more idealized ledger functionality, i.e. a ledger with
@@ -171,9 +171,9 @@ perfect ledger, it would not be relevant for any real world deployment of a
 payment network since such software would -- necessarily -- depend on a
 non-perfect ledger. This choice also distinguishes our work compared to previous
 attempts~\cite{DBLP:conf/ccs/DziembowskiFH18,Malavolta:2017:CPP:3133956.3134096,sprites,perun}
-to formalize payment networks, \redden{as well as highlights the considerable
+to formalize payment networks, as well as highlights the considerable
 latency improvement that the  protocol offers in comparison to directly
-using the ledger.}
+using the ledger.
 \end{enumerate}
 
 \noindent \textbf{Related Work.} A first suggestion for building a
@@ -181,7 +181,7 @@ unidirectional payment channel appeared in~\cite{spilman}. Bidirectional payment
 channels were developed in~\cite{DBLP:conf/sss/DeckerW15} and of course as part
 of the lightning network~\cite{lightning}. Subsequent work on the topic dealt
 with either improving payment networks by utilising more expressive blockchains
-such as Ethereum~\cite{perun}, hardwar\redden{e} assumptions, see
+such as Ethereum~\cite{perun}, hardware assumptions, see
 e.g.,~\cite{DBLP:conf/systor/LindNEKPS18}, or extending its functionality beyond
 payments, to smart contracts,~\cite{sprites} or finally enhancing their privacy,
 see
@@ -191,8 +191,8 @@ networks such as rebalancing~\cite{DBLP:conf/ccs/KhalilG17} or finding routes in
 a decentralised fashion~\cite{flare,spider}. With respect to idealising the
 payment network functionality in the UC setting, a number of previous
 papers~\cite{DBLP:conf/ccs/DziembowskiFH18,Malavolta:2017:CPP:3133956.3134096,sprites,perun}
-presented ideal functionalities abstracting the concept\redden{, but they did
-not prove that the lightning network realises them}. The main advantage of our
+presented ideal functionalities abstracting the concept, but they did
+not prove that the lightning network realises them. The main advantage of our
 approach however here is that, for the first time, we present a payment network
 functionality that interoperates with a global ledger functionality for which we
 know, in light of the results of~\cite{BMTZ17}, that is realisable by the
@@ -204,21 +204,21 @@ utilized ``too idealised'' ledger functionalities for their analysis which offer
 instant finality; as we prove in Theorem~\ref{theorem:perfectledger}, a
 representative variant of these functionalities
 (Fig.~\ref{fig:perfectledger:func}) is unrealisable even under strong network
-assumptions (cf. Section~\ref{sec:perfect-ledger}). \redden{It is worth noting
+assumptions (cf. Section~\ref{sec:perfect-ledger}). It is worth noting
 here that, were such a ledger realizable, layer-2 payment networks would not be
 as useful in practice because one of their two main motivations is the high
-latency of real blockchains.} On the other hand, in~\cite{sprites} the ledger is
+latency of real blockchains. On the other hand, in~\cite{sprites} the ledger is
 not explicitly specified as a functionality, but only informally described.
 Several smart contracts are formally defined instead as UC ITMs, which are the
 entities with which protocols ultimately interact. The execution model of these
 contracts and their interaction with the blockchain is explained in an intuitive
-way, but a complete formalization of the ledger is missing. \redden{Lastly, the
+way, but a complete formalization of the ledger is missing. Lastly, the
 ledger used in~\cite{DBLP:conf/ccs/DziembowskiFH18} cannot be used directly by
 protocol parties, only accessed via higher-level functionalities. This
 limitation is imposed because otherwise any party could arbitrarily change the
 balances of other parties, given the definition of the functionality. This
 ledger is therefore a useful abstraction for higher-level protocols, but not
-amenable to direct usage, let alone concrete realisation.}
+amenable to direct usage, let alone concrete realisation.
 
 \noindent \textbf{Organisation.} In Section~\ref{sec:preliminaries} we present
 preliminaries for the model we employ and the relevant cryptographic primitives.
@@ -229,7 +229,7 @@ Our abstraction of the core lightning protocol is provided in
 Section~\ref{sec:ov-protocol}. We give more details about the combined digital
 signature primitive in Section~\ref{sec:ov-combined-ds}. In
 Section~\ref{sec:ov-security-proof} we provide an overview of the security
-proof \redden{of the main simulation theorem}. Finally, in
+proof of the main simulation theorem. Finally, in
 Section~\ref{sec:perfect-ledger} we formalise our claim that a ledger
 functionality with instant finality is unrealisable. In the appendix, we first
 give more details on the preliminary primitives, specifically in
