@@ -7,6 +7,7 @@
   provide \redden{here the concrete syntax and correctness definitions, along with}
   the intuition behind it. The exact security definitions, concrete construction
   and proof of security can be found in Appendix~\ref{appendix:combinedsign}.
+  % TODO: rephrase
 
   Previous work on the subject of multi-party
 signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd1986digital,DBLP:conf/ndss/Ganesan95a,DBLP:conf/crypto/MacKenzieR01,ganesan1994secure}
@@ -76,10 +77,12 @@ signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd
   point of view of \alice{}, and establishes that \bob{} \redden{cannot issue} a
   valid combined signature if he does not possess \alice's corresponding secret
   share. In Appendix~\ref{appendix:combinedsign} we formalize it and prove:
+  % TODO: bring Share-EUF game and sec definitions
 
   \begin{lemma}
     \label{lemma:comb:share}
     The construction defined in Appendix~\ref{appendix:combinedsign} is
+    % TODO: rephrase
     \textsf{share-EUF}-secure in the Random Oracle model under the assumption
     that the underlying signature scheme is strongly \textsf{EUF-CMA}-secure and
     the range of the Random Oracle coincides with that of the underlying
@@ -93,10 +96,12 @@ signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd
   property ensures that these signatures} provide no advantage to the adversary
   in terms of producing a forged message for a combined key of its choice. In
   this respect we prove\redden{:}
+  % TODO: bring master-EUF-CMA game and sec definitions
 
   \begin{lemma}
     \label{lemma:comb:master}
     The construction of Appendix~\ref{appendix:combinedsign} is
+    % TODO: rephrase
     \textsf{master-EUF-CMA}-secure in the Random Oracle model under the
     assumption that the underlying signature scheme is strongly
     \textsf{EUF-CMA}-secure and the range of the Random Oracle coincides with
@@ -108,6 +113,11 @@ signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd
   \begin{theorem}
     \label{thm:combsign}
     The construction of Appendix~\ref{appendix:combinedsign} is
+    % TODO: rephrase
     \textsf{combine-EUF}-secure in the Random Oracle model under the assumption
     that the underlying signature scheme is strongly \textsf{EUF-CMA}-secure.
   \end{theorem}
+  % TODO: bring construction
+  % TODO: bring proofs
+  % TODO: remove appendices
+  % TODO: remove and rephrase all dangling refs
