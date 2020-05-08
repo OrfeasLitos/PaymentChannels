@@ -102,13 +102,11 @@ signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd
     \label{def:share:secure}
     A Combined Signatures scheme is \emph{\textsf{share-EUF}-secure} if
     \begin{gather*}
-      \forall k \in \mathbb{N}, \forall \adversary \in \mathtt{PPT},
-      \Pr\left[\mathsf{share \mhyphen EUF}^{\adversary}\left(1^k\right) =
-      1\right] = \mathrm{negl}\left(k\right)
+      \forall \adversary \in \mathtt{PPT}, \Pr\left[\mathsf{share \mhyphen
+      EUF}^{\adversary}\left(1^k\right) = 1\right] = \mathrm{negl}\left(k\right)
       \ifelseieee{\\}{}
       \text{or equivalently} \\
-      \forall k \in \mathbb{N}, \mathrm{E \mhyphen share}(k) =
-      \mathrm{negl}\left(k\right) \enspace, \\
+      \mathrm{E \mhyphen share}(k) = \mathrm{negl}\left(k\right) \enspace, \\
       \text{where } \mathrm{E \mhyphen share}(k) = \underset{\adversary \in
       \mathtt{PPT}}{\sup}\{\Pr[\mathsf{share \mhyphen
       EUF}^{\adversary}\left(1^k\right) = 1]\}
@@ -156,15 +154,13 @@ signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd
     \label{def:master:secure}
     A Combined Signatures scheme is \emph{\textsf{master-EUF-CMA}-secure} if
     \begin{gather*}
-      \forall k \in \mathbb{N}, \forall \adversary \in \mathtt{PPT},
-      \ifelseieee{\\}{}
+      \forall \adversary \in \mathtt{PPT}, \ifelseieee{\\}{}
       \Pr\left[\mathsf{master \mhyphen EUF \mhyphen
       CMA}^{\adversary}\left(1^k\right) = 1\right] =
       \mathrm{negl}\left(k\right)
       \ifelseieee{\\}{}
       \text{or equivalently} \\
-      \forall k \in \mathbb{N}, \mathrm{E \mhyphen master}(k) =
-      \mathit{negl}\left(k\right) \enspace, \\
+      \mathrm{E \mhyphen master}(k) = \mathrm{negl}\left(k\right) \enspace, \\
       \text{where }
       \ifelseieee{\\}{}
       \mathrm{E \mhyphen master}(k) = \underset{\adversary \in
