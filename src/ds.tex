@@ -60,11 +60,11 @@
     \begin{gather*}
       \forall k \in \mathbb{N}, \forall \adversary \in \mathtt{PPT},
       \Pr\left[\mathsf{EUF \mhyphen CMA}^{\adversary}\left(1^k\right) = 1\right]
-      = \mathit{negl}\left(k\right)
+      = \mathrm{negl}\left(k\right)
       \ifelseieee{\\}{}
       \text{or equivalently} \\
       \forall k \in \mathbb{N}, \mathrm{E \mhyphen ds}(k) =
-      \mathit{negl}\left(k\right) \enspace, \\
+      \mathrm{negl}\left(k\right) \enspace, \\
       \text{where } \mathrm{E \mhyphen ds}(k) = \underset{\adversary \in
       \mathtt{PPT}}{\sup}\{\Pr[\mathsf{EUF \mhyphen
       CMA}^{\adversary}\left(1^k\right) = 1]\} \enspace.

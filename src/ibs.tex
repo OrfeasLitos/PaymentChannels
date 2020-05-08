@@ -83,11 +83,11 @@
       \forall k \in \mathbb{N}, \forall \adversary \in \mathtt{PPT},
       \ifelseieee{\\}{}
       \Pr\left[\mathsf{IBS \mhyphen EUF \mhyphen
-      CMA}^{\adversary}\left(1^k\right) = 1\right] = \mathit{negl}\left(k\right)
+      CMA}^{\adversary}\left(1^k\right) = 1\right] = \mathrm{negl}\left(k\right)
       \ifelseieee{\\}{}
       \text{or equivalently} \\
       \forall k \in \mathbb{N}, \mathrm{E \mhyphen ibs}(k) =
-      \mathit{negl}\left(k\right) \enspace, \\
+      \mathrm{negl}\left(k\right) \enspace, \\
       \text{where } \mathrm{E \mhyphen ibs}(k) = \underset{\adversary \in
       \mathtt{PPT}}{\sup}\{\Pr[\mathsf{IBS \mhyphen EUF \mhyphen
       CMA}^{\adversary}\left(1^k\right) = 1]\} \enspace.
@@ -225,7 +225,7 @@
       in Fig.~\ref{proof:ibs:distinguisher} is indistinguishable from the
       standard random oracle by PPT algorithms since the statistical distance of
       the standard random oracle from the modified one is at most
-      $\frac{1}{2|Y|} < \mathit{negl}\left(k\right)$ as they differ in at most
+      $\frac{1}{2|Y|} < \mathrm{negl}\left(k\right)$ as they differ in at most
       one element.
 
       Let $E$ denote the event in which neither \textsc{KeyDer}($mpk, msk, l^*$)
@@ -237,12 +237,12 @@
         \begin{gathered}
           \Pr[vk \in \textsc{KeyDer}\left(mpk, msk, l^*\right) \vee \\
           vk = \textsc{PubKeyDer}\left(mpk, l^*\right) | E] <
-          \mathit{negl}\left(k\right) \Rightarrow \\
+          \mathrm{negl}\left(k\right) \Rightarrow \\
           \Pr[(vk \in \textsc{KeyDer}\left(mpk, msk, l^*\right) \vee \\
           vk = \textsc{PubKeyDer}\left(mpk, l^*\right)) \wedge E] <
-          \mathit{negl}\left(k\right) \Rightarrow \\
+          \mathrm{negl}\left(k\right) \Rightarrow \\
           \Pr\left[vk = \textsc{PubKeyDer}\left(mpk, l^*\right) \wedge E\right]
-          < \mathit{negl}\left(k\right) \enspace.
+          < \mathrm{negl}\left(k\right) \enspace.
         \end{gathered}
         \label{proof:ibs:nocomb}
       \end{equation}
@@ -257,7 +257,7 @@
         \Pr\left[vk = \textsc{PubKeyDer}\left(mpk, l^*\right) \wedge E\right]
         \overset{\left(\ref{proof:ibs:nocomb}\right)}{\Rightarrow} \\
         \Pr\left[\mathcal{B} \text{ wins} \wedge E\right] <
-        \mathit{negl}\left(k\right) \enspace.
+        \mathrm{negl}\left(k\right) \enspace.
       \end{gather*}
 
       But we know that $\Pr\left[\mathcal{B} \text{ wins}\right] =
@@ -267,7 +267,7 @@
       \begin{equation}
         \label{proof:ibs:nohash}
         \Pr\left[\mathcal{B} \text{ wins} \wedge \neg E\right] > a -
-        \mathit{negl}\left(k\right) \enspace.
+        \mathrm{negl}\left(k\right) \enspace.
       \end{equation}
 
       We now focus at the event $\neg E$. Let $F$ the event in which the call of
@@ -307,10 +307,10 @@
         \Pr\left[F \wedge \mathcal{B} \text{ wins} \wedge \neg E\right] =
         \ifelseieee{\\ =}{}
         \Pr\left[F\right] \Pr\left[\mathcal{B} \text{ wins} \wedge \neg E\right]
-        \pm \mathit{negl}\left(k\right)
+        \pm \mathrm{negl}\left(k\right)
         \overset{\left(\ref{proof:ibs:nohash}\right)}{=} \\
-        \frac{a - \mathit{negl}\left(k\right)}{T\left(\mathcal{A}\right) +
-        T\left(\mathcal{B}\right)} \pm \mathit{negl}\left(k\right) >
-        \mathit{negl}\left(k\right)
+        \frac{a - \mathrm{negl}\left(k\right)}{T\left(\mathcal{A}\right) +
+        T\left(\mathcal{B}\right)} \pm \mathrm{negl}\left(k\right) >
+        \mathrm{negl}\left(k\right)
       \end{gather*}
     \end{proof}
