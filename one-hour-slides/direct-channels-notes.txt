@@ -1,0 +1,19 @@
+p. 2  - "Macroeconomic" issue
+p. 3  - individual's issue
+      - Visa: Merchant doesn’t get money instantly, but gets a promise to get it soon, which is pretty much the same
+p. 6  - This one in detail, next part (multi-hop payments) just a taster
+p. 7  - on-chain txs
+      - Alice doesn’t trust Bob and vice versa
+p. 9  - Later date
+      - Cloud = cheap
+      - n = #times Alice & Bob change their minds on outputs = #channel payments
+      - cheap = O(1)
+p. 10 - 1st idea
+p. 14 - Or even if Bob loses connection
+      - 1st idea insecure and brittle
+p. 15 - 2nd idea
+p. 23 - 3rd idea
+p. 25 - This works!
+p. 26 - Example punishment on chain
+p. 32 - Forget previous scenario
+p. 33 - Charlie gets 1 coin from Alice, gives 1 to Bob. His total balance unchanged
