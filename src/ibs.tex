@@ -38,9 +38,12 @@
     $\textsc{VerifyIBS}(\textsc{SignIBS}(m, sk), m, pk) = 1] = 1$
   \end{itemize}
 
+  Let $\textsc{IBSalgs} = \{\textsc{Setup}, \textsc{KeyDer}, \textsc{PubKeyDer},
+  \textsc{SignIBS}, \textsc{VerifyIBS}\}$.
+
   \begin{figure}[!htbp]
     \begin{gamebox}{$\mathsf{IBS \mhyphen EUF \mhyphen
-    CMA}^{\adversary}\left(1^k\right)$}
+    CMA}^{\adversary}\left(1^k, \textsc{IBSalgs}\right)$}
       \begin{algorithmic}[1]
         \State $(mpk, msk) \gets \textsc{Setup}(1^k)$
         \State $i, j \gets 0$
@@ -77,26 +80,28 @@
   \end{figure}
   \begin{definition}
     \label{def:ibs:secure}
-    An Identity Based Signatures scheme is \emph{\textsf{IBS-EUF-CMA}-secure}
-    if
+    An Identity Based Signatures scheme \textsc{IBSalgs} is
+    \emph{\textsf{IBS-EUF-CMA}-secure} if
     \begin{gather*}
       \forall k \in \mathbb{N}, \forall \adversary \in \mathtt{PPT},
       \ifelseieee{\\}{}
       \Pr\left[\mathsf{IBS \mhyphen EUF \mhyphen
-      CMA}^{\adversary}\left(1^k\right) = 1\right] = \mathrm{negl}\left(k\right)
+      CMA}^{\adversary}\left(1^k, \textsc{IBSalgs}\right) = 1\right] =
+      \mathrm{negl}\left(k\right),
       \ifelseieee{\\}{}
       \text{or equivalently} \\
       \forall k \in \mathbb{N}, \mathrm{E \mhyphen ibs}(k) =
       \mathrm{negl}\left(k\right) \enspace, \\
       \text{where } \mathrm{E \mhyphen ibs}(k) = \underset{\adversary \in
       \mathtt{PPT}}{\sup}\{\Pr[\mathsf{IBS \mhyphen EUF \mhyphen
-      CMA}^{\adversary}\left(1^k\right) = 1]\} \enspace.
+      CMA}^{\adversary}\left(1^k, \textsc{IBSalgs}\right) = 1]\} \enspace.
     \end{gather*}
   \end{definition}
 
   \subsection{Construction}
     We here define the particular construction for Identity Based Signatures
-    used in LN and prove its security.
+    used in LN and prove its security. Let \textsc{LN-IBS} be its 5 algorithms;
+    the parameters are hard-coded in the algorithms.
 
     Parameters: hash function $\mathcal{H}$, group generator $G$
     \begin{algorithmic}[0]
@@ -148,7 +153,7 @@
       Let $k \in \mathbb{N}, \mathcal{B}$ PPT algorithm such that
       \begin{equation*}
         \Pr\left[\mathsf{IBS \mhyphen EUF \mhyphen
-        CMA}^{\mathcal{B}}\left(1^k\right) = 1\right] = a >
+        CMA}^{\mathcal{B}}\left(1^k, \textsc{LN-IBS}\right) = 1\right] = a >
         \mathrm{negl}\left(k\right) \enspace.
       \end{equation*}
       We construct a PPT distinguisher \adversary{}
