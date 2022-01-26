@@ -10,14 +10,17 @@
     with the locked funds multiple times solely by interacting privately,
     without informing the blockchain. If they want to use their funds in the
     usual, on-chain way again, they have to close the channel and unlock the
-    funds with one more on-chain transaction. Each party can unilaterally close
+    funds with one more on-chain transaction. Therefore the number of on-chain
+    transactions implicated in a channel is constant in the number of off-chain
+    payments. Furthermore, each party can unilaterally close
     the channel and retrieve the coins they are entitled to -- according to the
     latest channel state -- and thus neither party has to trust the other.
 
     In more detail, to open a channel \alice{} and \bob{} first exchange
     a number of keys and desired timelocks $\mathrm{relDel}_A,
     \mathrm{relDel}_B$ (explained below) and then build locally some
-    transactions. The ``funding transaction'' $F$ contains a 2-of-2 multisig
+    transactions; no transaction is published yet. The ``funding transaction''
+    $F$ contains a 2-of-2 multisig
     output with one ``funding'' public key $pk_{F, A}, pk_{F, B}$ for each
     counterparty. This multisig output needs signatures for both
     designated public keys in order to be spent. $F$ is funded with
@@ -43,7 +46,8 @@
     $pk_{\mathrm{com}, A}$ (received before). Both $C_A$ and $C_B$ spend the
     funding output of $F$ and allow \alice{} to retrieve her funds if she acts
     honestly, as we will explain shortly. \alice{} sends \bob{} the signature of
-    $C_B$ made with her $sk_{F, A}$ and vice-versa.
+    $C_B$ made with her $sk_{F, A}$ and vice-versa. Both parties verify that the
+    received signature is valid.
 
     \begin{figure}[H]
     \centering
@@ -87,19 +91,26 @@
       \label{fig:all-txs}
     \end{figure*}
 
-    She now broadcasts $F$; once both parties see that it is confirmed,
-    they generate and exchange new ``commitment'' keys (used for
-    updating the channel later) and the channel is open.
+    Observe that \alice{} can now safely publish the funding transaction $F$
+    without fear of losing her coins: the only possible ways for it to be spent
+    are either via $C_A$ or $C_B$, both of which transfer her funding coins back
+    to a key she owns. She now broadcasts the funding transaction $F$; once both
+    parties see that it is confirmed, they generate and exchange new
+    ``commitment'' keys (used for updating the channel later) and the channel is
+    open.
 
     Every time they want to make a payment to each other, they exchange a series
     of messages that have two effects. First, a new pair of commitment
     transactions, along with their signatures by the funding keys, is created,
-    one for each counterparty. Each of these transactions ensures that, if
+    one for each counterparty. The outputs of the new commitment transactions
+    use new keys and reflect the new channel balance. Each of these transactions
+    ensures that, if
     broadcast, each party will be able to spend the appropriate share from the
     coins contained in the funding output. Second, the two old commitment
     transactions are revoked. This ensures that no party can close a channel
-    using an old commitment transaction which may be more beneficial to her than
-    the latest one.
+    using an old commitment transaction, as such an old commitment transaction
+    reflects a superseded channel state, which may be more beneficial than the
+    latest state for one of the two parties.
 
     Invalidating past commitments requires some care. The reason is that it is
     impossible to actually make past commitments invalid without spending the
@@ -115,8 +126,9 @@
     parties should react.
 
     The punishing mechanism operates as follows. Suppose \alice{} considers
-    posting her old local commitment which has an output that carries her old
-    share of the funds. This output can be spent in two ways: either with a
+    posting one of her old local commitments which has an output that carries her old
+    share of the funds (c.f.\ Fig.~\ref{fig:ln:commitment:alice}). This output
+    can be spent in two ways: either with a
     signature by \alice's ``delayed payment'' secret key
     $sk_{\mathrm{dcom}, A}$ which is a usual ECDSA key, or with a
     signature by \bob's ``revocation'' secret key $sk_{\mathrm{rev},
@@ -134,14 +146,17 @@
     \alice{} knows and one secret value $sk_{\mathrm{com}, n, B}$ that
     \bob{} knows. \alice{} therefore can prevent \bob{} from using his
     revocation key until she sends him $sk_{\mathrm{com}, n, A}$.
-    Therefore, \alice{} will send \bob{} $sk_{\mathrm{com}, n, A}$ only
-    after the new commitment transaction is built and signed. Thus \bob{} cannot
+    Therefore, \alice{} will send $sk_{\mathrm{com}, n, A}$ to \bob{} only
+    after the new commitment transaction is built and signed. As a result, all
+    old commitment transactions are revoked, only the latest one is not.Thus
+    \bob{} cannot
     abuse his revocation key on a commitment before this transaction is revoked.
     We note that the underlying cryptographic mechanism  that enables such
     ``revocation keys'' is not straightforward and, as part of our
     contributions, we formalise it as a new two-party cryptographic primitive.
-    We call it ``combined signature'' and we prove that the construction hidden
-    in the LN implementation realizes it in the random oracle model under the
+    We call it ``combined signature'' and we prove in
+    Section~\ref{sec:ov-combined-ds} that the construction hidden
+    in the LN implementation realises it in the random oracle model under the
     assumption that the underlying digital signature scheme is secure in
     \redden{the full version~\cite{full-version}}.
 
@@ -166,7 +181,8 @@
     broadcasting the ``closing transaction'' which is not encumbered
     with a timelock, providing immediate availability of funds.
 
-    As mentioned timelocks provide specific time windows within which both
+    As we mentioned previously, timelocks provide specific time windows within
+    which both
     parties have to check the blockchain in order to punish a misbehaving
     counterparty who  broadcasts an old commitment transaction. This means that
     parties have to be regularly online to safeguard against theft.

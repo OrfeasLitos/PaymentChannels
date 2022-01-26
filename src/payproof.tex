@@ -447,7 +447,8 @@
   output tied with a public key that was created by \alice{} ($p_{\alice,
   \mathrm{pay}, n}, p_{\alice, \mathrm{dpay}, n}, p_{\alice, \mathrm{htlc}, n}$
   respectively) and it was never signed by \alice. Suppose that $p$ is the
-  maximum total number of opens and updates that a player can perform and that
+  maximum total number of opens and updates that a player can perform across all
+  channels and that
   $\exists \text{ PPT } \environment_Q: \Pr[Q] = b$. We show
   in Proposition~\ref{prop:forgery:ibs} that $\forall \environment, \Pr[Q] \leq
   3np \cdot \mathrm{E \mhyphen ibs}(k)$.
@@ -464,9 +465,9 @@
   \bob{} to efficiently compute $s_{\bob, \mathrm{rev}, n}$ with
   \textsc{CombineKey}($pb_{\bob, \mathrm{rev}}, sb_{\bob, \mathrm{rev}},
   p_{\alice, \mathrm{com}, n}, s_{\alice, \mathrm{com}, n}$).) Suppose that $p$
-  is the maximum total number of opens and updates that a player can perform,
-  $m$ is the maximum number of opens a player can perform and $\exists \text{
-  PPT } \environment_R: Pr[R] = c$. We show in
+  is the maximum total number of opens and updates that a player can perform
+  across all channels, $m$ is the maximum number of channels a player can open
+  and $\exists \text{ PPT } \environment_R: Pr[R] = c$. We show in
   Proposition~\ref{prop:forgery:share} that $\forall \environment, \Pr[R] \leq
   nmp \cdot \mathrm{E \mhyphen share}(k) + \mathrm{E \mhyphen prf}(k)$.
 

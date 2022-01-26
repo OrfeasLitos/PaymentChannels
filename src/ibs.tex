@@ -175,7 +175,7 @@
             \Indent
               \State Random Oracle: Let $q$ be the $k$th first-seen query from
               $\mathcal{B}$ or \adversary:
-              \If{$q = \left(l \concat mpk\right)$}
+              \If{$q = \left(l \concat mpk\right)$ for some $l \in \mathcal{L}$}
                 \State set $\mathcal{H}\left(l \concat mpk\right)$ to $\left(vk
                 - mpk\right) \cdot G^{-1}$
               \Else

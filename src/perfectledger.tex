@@ -20,8 +20,10 @@
 
   \begin{theorem}[Perfect Ledger is Unrealisable]
     \label{theorem:perfectledger}
-    For any ITM \perfectprot{} there exist ITMs \perfectenv,
-    \perfectadv{} such that for any ITM \simulator
+    No ITM \perfectprot{} with hybrids $\FnetworkEd^1$ and \gFclock can realise
+    \perfectledger. Put otherwise, for any ITM \perfectprot{} with hybrids
+    $\FnetworkEd^1$ and \gFclock, there exist ITMs \perfectenv, \perfectadv{}
+    such that for any ITM \simulator
     \begin{equation*}
       \textsc{Exec}^{\FnetworkEd^1, \gFclock}_{\perfectprot,
       \perfectadv, \perfectenv} \not\approx
