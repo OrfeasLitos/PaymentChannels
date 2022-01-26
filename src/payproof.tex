@@ -429,17 +429,18 @@
 \end{lemma}
 
 \begin{proof}
-  Before focusing on individual messages sent by \environment{} or
-  \adversary, we will first prove that four particular forgery events happen
-  with negligible probability. Let $P$ be the event in which at some point
-  during the execution a transaction that has the following two characteristics
-  appears in $\Sigma_{\alice}$, for some honest player \alice: it spends a
-  funding transaction of a channel that contains \alice{} (and thus has a
-  $p_{\alice, F}$ public key) and it was never signed by \alice. Suppose that
-  $m$ is the maximum number of channels that a player can open and $\exists
-  \text{ PPT } \environment_P: \Pr[P] = a$. We show in
-  Proposition~\ref{prop:forgery:ds} that $\forall \environment, \Pr[P] \leq nm
-  \cdot \mathrm{E \mhyphen ds}(k)$.
+  Before focusing on individual messages sent by \environment{} or \adversary,
+  we will first prove that four particular forgery events happen with negligible
+  probability. Let $P$ be the event in which at some point during the execution
+  a transaction that has the following two characteristics appears in
+  $\Sigma_{\alice}$, for some honest player \alice: it spends a funding
+  transaction of a channel that contains \alice{} (and thus has a $p_{\alice,
+  F}$ public key) and it was never signed by \alice. Suppose that $n$ is the
+  number of players, $m$ is the maximum number of channels that a player can
+  open and $p$ is the maximum number of opens and updates a player can perform
+  in all channels, and $\exists \text{ PPT } \environment_P: \Pr[P] = a$. We
+  show in Proposition~\ref{prop:forgery:ds} that $\forall \environment, \Pr[P]
+  \leq nm \cdot \mathrm{E \mhyphen ds}(k)$.
 
   Let $Q$ be the event in which at some point during the execution a transaction
   that has the following two characteristics appears in $\Sigma_{\alice}$, for
