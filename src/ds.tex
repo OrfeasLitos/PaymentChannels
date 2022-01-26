@@ -13,11 +13,25 @@
   To ensure compatibility, LN uses ECDSA over the same curve as its basic
   signature scheme. In this work, we abstract the particular construction away
   and use instead the established primitive that a secure construction must
-  realize.
+  realise. Looking forward, in order to facilitate the definition of combined
+  signatures purely on top of classic digital signatures, we split the key
+  generation algorithm in two explicitly separate steps, one for the secret and
+  one for the public key generation. Note that this does not affect the
+  correctness or the security of digital signatures in any way, as no new powers
+  are given to the adversary. Furthermore, this splitting is fully compatible
+  with the digital signature construction of interest, ECDSA.
 
-  The three algorithms used by a Digital Signatures scheme are:
+  The five algorithms used by a Digital Signatures scheme are:
   \begin{itemize}
-    \item $(pk, sk) \gets \textsc{KeyGen}(1^k)$
+    \item \greenit{$sk \gets \textsc{SecKeyGen}(1^k)$}
+    \item \greenit{$pk \gets \textsc{PubKeyGen}(sk)$}
+    \item $(pk, sk) \gets \textsc{KeyGen}(1^k)$ where \\
+    $\textsc{KeyGen}(1^k):$
+    \begin{itemize}[label={}]
+      \item $sk \gets \textsc{SecKeyGen}(1^k)$
+      \item $pk \gets \textsc{PubKeyGen}(sk)$
+      \item \textbf{return} $(pk, sk)$
+    \end{itemize}
     \item $\sigma \gets \textsc{SignDS}(m, sk)$
     \item $\{0, 1\} \gets \textsc{VerifyDS}(\sigma, m, pk)$
   \end{itemize}

@@ -186,16 +186,16 @@ signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd
 
   \redden{Parameters: hash function $\mathcal{H}$, group generator $G$
   \begin{algorithmic}[0]
-    \State \textsc{MasterKeyGen}($1^k$, rand):
+    \State \textsc{MasterKeyGen}($1^k$):
     \Indent
-      \State \Return ($G \cdot \mathrm{rand}$, rand)
+      \State \Return \textsc{KeyGen}($1^k$)
     \EndIndent
   \end{algorithmic}}
 
   \redden{\begin{algorithmic}[0]
     \State \textsc{KeyShareGen}($1^k$, rand):
     \Indent
-      \State \Return ($G \cdot \mathrm{rand}$, rand)
+      \State \Return \textsc{KeyGen}($1^k$)
     \EndIndent
   \end{algorithmic}}
 
@@ -219,7 +219,7 @@ signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd
   \redden{\begin{algorithmic}[0]
     \State \textsc{TestKey}($pk, sk$):
     \Indent
-      \If{$pk = G \cdot sk$}
+      \If{$pk = textsc{PubKeyGen}(sk)$}
         \State \Return 1
       \Else
         \State \Return 0
