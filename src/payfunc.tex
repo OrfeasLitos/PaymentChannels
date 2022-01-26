@@ -115,7 +115,8 @@
           \mathtt{newChannels}\left(\alice\right) \gets \emptyset$
           \State $\mathtt{polls}\left(\alice\right) \gets \emptyset$
           \State $\mathtt{focs}\left(\alice\right) \gets \emptyset$
-          \State send (\textsc{read}) to \ledger{} as \alice{}, store reply to
+          \State register \alice{} to \ledger{},
+          send (\textsc{read}) to \ledger{} as \alice{}, store reply to
           $\Sigma_{\alice}$, add $\Sigma_{\alice}$ to $\Sigma$ and add largest
           block number to \texttt{polls}(\alice)
           \label{alg:fpaynet:support:read}
