@@ -102,7 +102,7 @@
     \begin{algorithmic}[0]
       \State \textsc{Setup}($1^k$, rand):
       \Indent
-        \State \Return ($G \cdot \mathrm{rand}$, rand)
+        \State \Return \textsc{KeyGen}($1^k$)
       \EndIndent
     \end{algorithmic}
 
