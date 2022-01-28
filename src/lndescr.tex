@@ -40,7 +40,9 @@
     \end{figure}
 
     Each party also builds a slightly different version of the ``commitment
-    transaction'' $C_A, C_B$. \alice{} uses her ``delayed payment'' key
+    transaction'', $C_A$ (Figure~\ref{fig:ln:commitment:alice}) for \alice and
+    $C_B$ (Figure~\ref{fig:ln:commitment:bob}) for \bob. \alice{} uses her
+    ``delayed payment'' key
     $pk_{\mathrm{dcom}, A}$ and \bob's ``revocation'' key $pk_{\mathrm{rev}, B}$
     (received before), whereas \bob{} uses \alice's ``payment'' key
     $pk_{\mathrm{com}, A}$ (received before). Both $C_A$ and $C_B$ spend the

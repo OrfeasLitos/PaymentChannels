@@ -124,9 +124,15 @@ involvement in the network and the properties of the underlying ledger. If a
 party does not poll often enough, $\fpaynet{}$ identifies it as
 negligent and it may lose funds.
 
-\item We identify for the first time the exact polling requirements so
-that honest parties do not lose funds, as a function of the parameters
-of $\ledger$. The polling requirements for each party are two-fold: (i) the
+\item We identify for the first time the exact polling requirements that are
+imposed by the lightning network to the honest participating parties, i.e.\ how
+often parties have to check the state of the ledger functionality $\ledger$
+(over which the lightning network is overlaid) and how to act depending on what
+they see. These requirements are a function of the parameters of $\ledger$ and
+ensure that honest parties do not lose funds. $\ledger$ provides explicit
+security guarantees with respect to consistency and liveness which in turn
+impact the guarantees provided by $\fpaynet{}$. The polling requirements for
+each party are two-fold: (i) the
 first type refers to monitoring for closures of channels of which the
 party is a member, and is specified by the parameter ``$\mathrm{delay}$''
 (chosen by the party), (ii) the second type refers to monitoring for
