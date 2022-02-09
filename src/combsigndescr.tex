@@ -388,7 +388,7 @@ signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd
     \redden{We now focus at the event $\neg E$. Let $F$ the event in which the
     call of $\mathcal{B}$ to \textsc{CombinePubKey} to produce $cpk^*$ results
     in the $j$th invocation of the Random Oracle. Since $j$ is chosen uniformly
-    at random and using Proposition~1 of~\cite{full-version}, $\Pr\left[F | \neg
+    at random and using Proposition~\ref{prop:tochain}, $\Pr\left[F | \neg
     E\right] = \frac{1}{T\left(\mathcal{B}\right)}$. Observe that $\Pr\left[F |
     E\right] = 0 \Rightarrow \Pr\left[F\right] = \Pr\left[F | \neg E\right] =
     \frac{1}{T\left(\mathcal{B}\right)}$.}
@@ -549,7 +549,7 @@ signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd
     \redden{We now focus at the event $\neg E$. Let $F$ the event in which the
     call of to \textsc{CombinePubKey} that produces $cpk^*$ results in the $j$th
     invocation of the Random Oracle. Since $j$ is chosen uniformly at random and
-    using Proposition~1 of~\cite{full-version}, $\Pr\left[F | \neg E\right] =
+    using Proposition~\ref{prop:tochain}, $\Pr\left[F | \neg E\right] =
     \frac{1}{T\left(\mathcal{B}\right) + T\left(\adversary\right)}$. Observe
     that $\Pr\left[F | E\right] = 0 \Rightarrow \Pr\left[F\right] = \Pr\left[F |
     \neg E\right] = \frac{1}{T\left(\mathcal{B}\right) +

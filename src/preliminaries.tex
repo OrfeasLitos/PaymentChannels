@@ -64,8 +64,8 @@
     window. This property is called liveness. Once a transaction is added to the
     ledger, it becomes visible to all parties at the discretion of the
     adversary, but within another predefined time window, and cannot be removed
-    or reordered. This is called persistence. The exact definition can be found
-    in \redden{the full version~\cite{full-version}}. The current work makes
+    or reordered. This is called persistence. This property arises from the
+    specification of \ledger, found below. The current work makes
     heavy use of these two security properties, as the security of the lightning
     network relies crucially on the security of the underlying ledger.
 
@@ -82,7 +82,7 @@
     \ledger. We therefore omit it in the statement of
     Theorem~\ref{theorem:simulation} for simplicity of notation; it should
     normally appear as hybrid along with \ledger. Its exact definition can be
-    found in \redden{the full version~\cite{full-version}}. We also note that
+    found below. We also note that
     \ledger{} and \Fclock are global functionalities~\cite{globaluc} and
     therefore can be accessed directly by the environment, whereas \fpaynet{} is
     not.
