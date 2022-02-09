@@ -538,7 +538,7 @@ drawn from the   UC formalisation of~\cite{BMTZ17,genesis}.
     each of its inputs correctly spends an output with no other connected input
     and the sum of the values of its outputs does not exceed the sum of the
     values of the outputs connected to its inputs. We refer the reader to
-    \redden{the full version~\cite{full-version}} for a complete overview.
+    Section~\ref{appendix:txstructure} for a complete overview.
 
   \subsection{Cryptographic Primitives}
     In the Lightning Network specification, a custom scheme for deriving keys is
@@ -561,8 +561,8 @@ drawn from the   UC formalisation of~\cite{BMTZ17,genesis}.
       \item $\{0, 1\} \leftarrow \textsc{VerifyIBS}(\sigma, m, pk_l)$: signature
       verification
     \end{itemize}
-    We refer the reader to~\cite{ibspaterson} for more details. Other
-    cryptographic primitives used are digital signatures and pseudorandom
-    functions. Finally, a less common two-party cryptographic primitive is
+    We refer the reader to~\cite{ibspaterson} and to Section~\ref{sec:ibs} for more details. Other
+    cryptographic primitives used are digital signatures (Section~\ref{sec:ds}) and pseudorandom
+    functions (Section~\ref{sec:prf}). Finally, a less common two-party cryptographic primitive is
     employed that we formalise as \emph{combined digital signatures}, see
     Section~\ref{sec:ov-combined-ds}.
