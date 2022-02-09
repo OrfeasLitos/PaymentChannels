@@ -8,7 +8,7 @@ of the number of transactions they can handle per unit of time, are perhaps the
 two most crucial open questions in the area of permissionless distributed
 ledgers and remain fundamental barriers for their wider adoption in applications
 that require large scale and reasonably expedient transaction processing,
-cf.~\cite{scaling}. The Bitcoin blockchain protocol, introduced by
+c.f.~\cite{scaling}. The Bitcoin blockchain protocol, introduced by
 Nakamoto~\cite{bitcoin}, provides settlement with probability of error that
 drops exponentially in the number of blocks $k$ that accumulate over a
 transaction of interest. This has been informally argued in the original white
@@ -141,7 +141,7 @@ specific events related to receiving and relaying payments. In detail,
 let \emph{Alice} be an intermediary of a multi-hop payment. When the payment
 starts, she specifies two blockheights $h, h'$. Also, let $a$ be the upper bound
 to the number of blocks that may be finalised in the ledger from the time a
-certain transaction is emitted to the time it becomes finalised (i.e. it is
+certain transaction is emitted to the time it becomes finalised (i.e.\ it is
 included in a block in the ``stable'' part of the ledger). \emph{Alice}
 should then poll twice while her local view of the chain advances from
 blockheight $h$ to blockheight $h' - a$. Moreover, the two pollings should be
@@ -170,7 +170,7 @@ $\fpaynet{}$ is achieved assuming the security of the underlying
 primitives, which in turn can be based on EC-DLOG and the Random Oracle
 model.
 
-\item We prove that a more idealized ledger functionality, i.e. a ledger with
+\item We prove that a more idealized ledger functionality, i.e.\ a ledger with
 instant finality, is unrealisable even assuming a synchronous multicast network.
 This result supports our decision to use the more realistic ledger functionality
 of~\cite{BMTZ17}, since it establishes that if our analysis was based on such a
@@ -212,7 +212,7 @@ utilized ``too idealised'' ledger functionalities for their analysis which offer
 instant finality; as we prove in Theorem~\ref{theorem:perfectledger}, a
 representative variant of these functionalities
 (Fig.~\ref{fig:perfectledger:func}) is unrealisable even under strong network
-assumptions (cf. Section~\ref{sec:perfect-ledger}). It is worth noting
+assumptions (c.f.\ Section~\ref{sec:perfect-ledger}). It is worth noting
 here that, were such a ledger realizable, layer-2 payment networks would not be
 as useful in practice because one of their two main motivations is the high
 latency of real blockchains. On the other hand, in~\cite{sprites} the ledger is

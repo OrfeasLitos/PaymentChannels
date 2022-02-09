@@ -47,7 +47,7 @@ signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd
     $\Pr[\left(pk, sk\right) \gets \textsc{KeyShareGen}\left(1^k\right),$ \\
     $\textsc{TestKey}(pk, sk) = 1] = 1$
 
-    I.e. \textsc{KeyShareGen}() must always generate a valid keypair.
+    I.e.\ \textsc{KeyShareGen}() must always generate a valid keypair.
 
     \item $\forall k \in \mathbb{N},$ \\
     $\Pr[(mpk, msk) \gets \textsc{MasterKeyGen}\left(1^k\right),$ \\
@@ -57,7 +57,7 @@ signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd
     $cpk_2 \gets \textsc{CombinePubKey}\left(mpk, pk\right),$ \\
     $cpk_1 = cpk_2] = 1$
 
-    I.e. for suitable input, \textsc{CombinePubKey}() and
+    I.e.\ for suitable input, \textsc{CombinePubKey}() and
     \textsc{CombineKey}() produce the same public key.
 
     \item $\forall k \in \mathbb{N}, m \in \mathcal{M},$ \\
@@ -67,7 +67,7 @@ signatures~\cite{DBLP:conf/ndss/NicolosiKDM03,DBLP:journals/iacr/BellareS01,boyd
     sk\right),$ \\
     $\textsc{VerifyCS}(\textsc{SignCS}(m, csk), m, cpk) = 1] = 1$
 
-    I.e. for suitable input, honestly generated signatures always verify
+    I.e.\ for suitable input, honestly generated signatures always verify
     correctly.
   \end{itemize}
 

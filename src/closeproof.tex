@@ -223,7 +223,7 @@
   lines~\ref{alg:protocol:pay:commit:nomark}
   and~\ref{alg:protocol:pay:commit:mark}), which happens only after receiving
   (\textsc{commit}) from \environment. In the ideal world a simulation of the
-  same events can only happen in the exact same case, i.e. when \environment{}
+  same events can only happen in the exact same case, i.e.\ when \environment{}
   sends an identical (\textsc{commit}) to the same player. Indeed, \fpaynet{}
   simply forwards this message to \simulator{} (Fig.~\ref{alg:fpaynet:daemon},
   line~\ref{alg:fpaynet:daemon:commit}), who in turn simply simulates the
@@ -312,9 +312,9 @@
   Therefore the only way for a malicious counterparty to spend the delayed
   output before \alice{} has the time to punish is by spending the punishment
   output themself. This however can never happen, since this event would be a
-  subset of either $R$, if $\mathtt{remoteCom}_n$ (i.e. the counterparty closed
+  subset of either $R$, if $\mathtt{remoteCom}_n$ (i.e.\ the counterparty closed
   the channel) is in $\Sigma_{\alice}$, or $Q$, if $\mathtt{localCom}_n$ is in
-  $\Sigma_{\alice}$ (i.e. \alice{} closed the channel).
+  $\Sigma_{\alice}$ (i.e.\ \alice{} closed the channel).
 
   \fpaynet{} halts in line~\ref{alg:fpaynet:close:func:idle} of
   Fig.~\ref{alg:fpaynet:close:func} in case \environment{} has asked for the
@@ -385,7 +385,7 @@
   or~\ref{alg:fpaynet:close:func:bob:credit} respectively). Therefore, it is
   impossible for \fpaynet{} to halt here.
 
-  Similarly to the previous proof, if we allow for forgeries again, i.e. if we
+  Similarly to the previous proof, if we allow for forgeries again, i.e.\ if we
   allow the event $P \vee Q \vee R \vee S$, we observe that $\Pr[P \vee Q \vee R
   \vee S] \leq nm \cdot \mathrm{E \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen
   ibs}(k) + nmp \cdot \mathrm{E \mhyphen share}(k) + \mathrm{E \mhyphen prf}(k)

@@ -59,7 +59,8 @@
       \item Both $Alice$ and $Bob$ follow exactly the same steps as before to create
       $C2a$, $C2b$, $RD2a$ and $RD2b$; the only difference these transactions have to
       their counterparts from the previous state of the channel is that, instead of 0.5
-      BTC for each player, they contain the new agreed balance of the channel (e.g. 0.4
+      BTC for each player, they contain the new agreed balance of the channel
+      (e.g.\ 0.4
       BTC for $Alice$ and 0.6 BTC for $Bob$).
 
       \item $Alice$ creates, signs and sends to $Bob$ a so-called ``Breach Remedy''
@@ -108,9 +109,9 @@
     transaction and wait for her funds to be unlocked.
 
   \subsection{Payments depending on preimage knowledge (HTLC)}
-    Multi-hop payments can take place between players (e.g. $Alice$ and $Dave$) who do not
-    share a simple channel (i.e. an on-chain Funding transaction), but share simple
-    channels with intermediate nodes (e.g. $Alice$ with $Bob$, $Bob$ with $Carol$ and
+    Multi-hop payments can take place between players (e.g.\ $Alice$ and $Dave$) who do not
+    share a simple channel (i.e.\ an on-chain Funding transaction), but share simple
+    channels with intermediate nodes (e.g.\ $Alice$ with $Bob$, $Bob$ with $Carol$ and
     $Carol$ with $Dave$).
 
     To enable the creation of multi-hop channels, so-called ``Hashed Timelock Contracts''
@@ -164,11 +165,11 @@
     \begin{enumerate}
       \item $Dave$ generates a random number $R$ and sends $hash\left(R\right)$ to
       $Alice$, $Bob$ and $Carol$.
-      \item $Alice$ and $Bob$ update their channel with an e.g. 300-block HTLC that
+      \item $Alice$ and $Bob$ update their channel with an e.g.\ 300-block HTLC that
       transfers 0.001 BTC from $Alice$ to $Bob$.
-      \item $Bob$ and $Carol$ update their channel with an e.g. 200-block HTLC that
+      \item $Bob$ and $Carol$ update their channel with an e.g.\ 200-block HTLC that
       transfers 0.001 BTC from $Bob$ to $Carol$.
-      \item $Carol$ and $Dave$ update their channel with an e.g. 100-block HTLC that
+      \item $Carol$ and $Dave$ update their channel with an e.g.\ 100-block HTLC that
       transfers 0.001 BTC from $Carol$ to $Dave$.
       \item $Dave$ discloses $R$ to $Carol$; he obtains 0.001 BTC from the 100-block HTLC
       transaction.

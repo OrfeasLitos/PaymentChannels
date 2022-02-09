@@ -385,7 +385,7 @@
           \bob{} in \texttt{pendingOpen} with a ``no \textsc{fundingLocked}''
           mark
           \If{\texttt{channel} is not marked with ``\textsc{fundingLocked}
-          sent''} \Comment{i.e. marked with ``broadcast''}
+          sent''} \Comment{i.e.\ marked with ``broadcast''}
             \State send (\textsc{read}) to \ledger{} and assign reply to
             $\Sigma_{\alice}$
             \State ensure $\exists$ unspent TX in $\Sigma_{\alice}$ with ID
@@ -893,7 +893,7 @@
 
   When a player receives \textsc{commitmentSigned} with some signatures for a
   particular channel, she verifies that the signatures correspond to the
-  expected HTLCs (i.e. the added but unsigned ones) and that the signatures for
+  expected HTLCs (i.e.\ the added but unsigned ones) and that the signatures for
   the new commitment tx and said HTLCs are valid. She then generates the
   keyshare pair and sends its public part to the counterparty along with the
   secret part of the old keyshare in a message labelled \textsc{revokeAndAck}.

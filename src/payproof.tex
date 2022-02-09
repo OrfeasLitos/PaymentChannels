@@ -310,9 +310,9 @@
       \Indent
         \State \alice{} sent \textsc{updateFulfillHtlc} to a corrupted player
         and either (got the fulfillment of the HTLC irrevocably committed OR
-        fulfilled the HTLC on-chain (i.e. \texttt{HTLC-success} is in
+        fulfilled the HTLC on-chain (i.e.\ \texttt{HTLC-success} is in
         $\Sigma_{\alice}$)), AND the next honest player \bob{} down the line
-        successfully timed out the HTLC on-chain (i.e. \texttt{HTLC-timeout} is
+        successfully timed out the HTLC on-chain (i.e.\ \texttt{HTLC-timeout} is
         in $\Sigma_{\bob}$)
       \EndIndent
       \Statex
@@ -386,7 +386,7 @@
         \State \alice{} is the payer in $\overrightarrow{\mathtt{path}}$ AND
         ((she has received \textsc{updateFulfillHtlc} AND has subsequently sent
         \textsc{commit} and \textsc{revokeAndAck}) OR (player after
-        \alice{} has irrevocably fulfilled the HTLC on-chain (i.e. his
+        \alice{} has irrevocably fulfilled the HTLC on-chain (i.e.\ his
         \texttt{HTLC-success} is in $\Sigma_{\alice}$) AND \alice{} has
         received \textsc{poll} to observe it))
         \label{alg:sim:resolvepay:honest:cond}
@@ -657,12 +657,12 @@
   the handling of line~\ref{alg:sim:resolvepay:firstmsg},
   $\simulator_{\mathrm{LN - Reg - Open}}$ does not have control of the
   execution. That can happen if a simulated ITI sends a message to a corrupted
-  player and that player does not respond (e.g. in
+  player and that player does not respond (e.g.\ in
   Fig.~\ref{alg:protocol:pay:outofband},
   line~\ref{alg:protocol:pay:sendinvoice}, when the first message is
   $\left(\textsc{pay}, \bob, x, \overrightarrow{\mathtt{path}},
   \_\right)$ and \bob{} is corrupted), or if the handling of the
-  message results in sending (\textsc{submit}) to \ledger{} (e.g. in
+  message results in sending (\textsc{submit}) to \ledger{} (e.g.\ in
   Fig.~\ref{alg:protocol:pay:push}, line~\ref{alg:protocol:pushfulfill:submit}
   when the first message is (\textsc{pushFulfill}, \textit{pchid}) and
   counterparty has gone on-chain). In that case, the (\textsc{state}) message is
@@ -712,14 +712,14 @@
   twice to learn the preimage of the HTLC early enough (event $C$) and has
   attempted to fulfill on chain at the right moment (event $D$).
   $\fpaynet{}_{\mathrm{, Pay}}$ also halts if the two expiries do not have the
-  expected distance (event $F$) -- i.e. halts in the event $(A \wedge B) \vee
+  expected distance (event $F$) -- i.e.\ halts in the event $(A \wedge B) \vee
   (\neg B \wedge (F \vee (C \wedge D)))$. $\simulator_{\mathrm{LN - Reg -
   Open}}$ decides that \dave{} is charged if his previous counterparty did a
   malicious closure to a channel version without the HTLC and spent their
   (delayed) output ($B$), or if his next counterparty fulfilled (event $G$) and
   his previous counterparty timed out the HTLC (event $H$)
   (Fig.~\ref{alg:sim:resolvepay}, line~\ref{alg:sim:resolvepay:negligent}), --
-  i.e. \dave{} is charged in the event $B \vee (G \wedge H)$.
+  i.e.\ \dave{} is charged in the event $B \vee (G \wedge H)$.
 
   We will now show that $\Pr[A \wedge B | \neg P \wedge \neg Q \wedge \neg R
   \wedge \neg S] = 0 \wedge \Pr[(C \wedge D) \wedge (G \wedge H) | \neg P \wedge
@@ -802,7 +802,7 @@
   (at block height $h_2$) necessarily reveals the \texttt{HTLC-success} to
   \dave{} and subsequently the (\textsc{fulfillOnChain}) causes \dave{} to
   fulfill the HTLC with the previous counterparty, as argued above. Therefore in
-  no case \dave{} is charged for the payment, i.e. $\Pr[(C \wedge D) \wedge (G
+  no case \dave{} is charged for the payment, i.e.\ $\Pr[(C \wedge D) \wedge (G
   \wedge H) | \neg P \wedge \neg Q \wedge \neg R \wedge \neg S] = 0$.
 
   We will now show that the halt of
@@ -829,7 +829,7 @@
   with $T$. Line~\ref{alg:sim:poll:report} of Fig.~\ref{alg:sim:pay} is executed
   if the simulated \alice{} has executed line~\ref{alg:protocol:poll:report:pay}
   of Fig.~\ref{alg:protocol:poll:closedch}, which means that the relevant
-  (offered) HTLC has been spent (i.e. fulfilled)
+  (offered) HTLC has been spent (i.e.\ fulfilled)
   (line~\ref{alg:protocol:poll:htlc:spent:loop},
   Fig.~\ref{alg:protocol:poll:closedch}), which is incompatible with $T$.
   Line~\ref{alg:sim:pushfulfill:report} of Fig.~\ref{alg:sim:push} is executed
@@ -954,7 +954,7 @@
   line~\ref{alg:fpaynet:resolvepay:loops:indiffs:credit:halt} in
   Fig.~\ref{alg:fpaynet:resolvepay:loops} does not occur. This halt would take
   place if the payee \bob{} is honest but was not previously informed of the
-  payment, i.e. the tuple (\textit{expayid}, \textit{payid}, \_) is not in
+  payment, i.e.\ the tuple (\textit{expayid}, \textit{payid}, \_) is not in
   \texttt{pendingDiffs}(\bob). Similarly to the argument for
   line~\ref{alg:fpaynet:resolvepay:loops:indiffs:debit:halt}, \simulator{} added
   (\dave, \textit{payid}) to \texttt{charged}(\bob) in exactly one of
@@ -982,7 +982,7 @@
   $\textsc{Exec}^{\fpaynet{}_{\mathrm{, Open}}, \ledger}_{\simulator_{\mathrm{LN
   - Reg - Open}}, \environment} = \textsc{Exec}^{\fpaynet{}_{\mathrm{, Pay}},
   \ledger}_{\simulator_{\mathrm{LN - Reg - Open - Pay}}, \environment}$. If we
-  allow for forgeries again, i.e. if we allow the event $P \vee Q \vee R \vee
+  allow for forgeries again, i.e.\ if we allow the event $P \vee Q \vee R \vee
   S$, we observe that $\Pr[P \vee Q \vee R \vee S] \leq nm \cdot \mathrm{E
   \mhyphen ds}(k) + 3np \cdot \mathrm{E \mhyphen ibs}(k) + nmp \cdot \mathrm{E
   \mhyphen share}(k) + \mathrm{E \mhyphen prf}(k) + nm \cdot \mathrm{E \mhyphen
