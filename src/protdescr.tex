@@ -25,14 +25,14 @@
   Section~\ref{appendix:protocol} for further
   details.
 
-  \noindent {\bf Registration.}
+  \subsection{Registration}
     Before \alice{} can use the network, \environment{} first has to send her a
     (\textsc{register}, delay, relayDelay) message. She generates her
     persistent key and sends it back to \environment{}. The latter may choose to
     add some funds to this key and then send (\textsc{toppedUp}) to \alice, who
     checks her state in \ledger{} and records her on-chain balance.
 
-  \noindent {\bf Channel opening.}
+  \subsection{Channel opening}
     When she receives (\textsc{openChannel}, \alice, \bob, $x$, \textit{tid})
     from \environment, \alice{} initiates the message sequence needed to open a
     channel with \bob, funded by her with $x$ coins. After following the
@@ -47,7 +47,7 @@
     note to give \environment{} a receipt of the new channel the next time they
     receive (\textsc{getNews}).
 
-  \noindent {\bf Channel closing.}
+  \subsection{Channel closing}
     When sent by \environment, the messages \textsc{closeChannel} and
     \textsc{forceCloseChannel} prompt \alice{} to close the channel
     cooperatively or unilaterally respectively, as explained in
@@ -55,7 +55,7 @@
     \environment{} that the channel is closed when she receives
     (\textsc{getNews}).
 
-  \noindent {\bf Performing payments.}
+  \subsection{Performing payments}
     We will now follow the exact steps needed for a multi-hop payment,
     filling in many details that we omitted from Section~\ref{sec:ov-ln}. When
     she receives (\textsc{pay}, \charlie, $x$, $\overrightarrow{\mathtt{path}}$)
@@ -66,7 +66,7 @@
     by choosing a random preimage and sending back to \alice{} its hash.
     \alice{} then prepares a Sphinx~\cite{sphinx} onion packet with the relevant
     information for each party on the $\overrightarrow{\mathtt{path}}$ and sends
-    it to \bob{}. \bob{} peels his layer of the onion and, after performing
+    it to \bob{}. \bob{} ``peels'' his layer of the onion and, after performing
     sanity checks and extracting the hash, he takes a note of this
     pending HTLC. He does not yet forward the onion to \charlie, because
     \alice{} is not yet committed to paying \bob. The latter happens if \alice{}
@@ -109,7 +109,7 @@
     correct software implementation the corresponding actions happen
     automatically, without waiting for a prompt by the user.
 
-  \noindent {\bf Polling.}
+  \subsection{Polling}
     Lastly, \environment{} may send (\textsc{poll}) to \alice. She then reads
     her state in \ledger{} and checks for closed channels. If she finds
     maliciously closed channels (closed using old commitments), she punishes the
@@ -151,9 +151,65 @@
     not the case in $\Pi_{\mathrm{LN}}$.
 
     Lastly, in order to incentivize users to act as intermediaries or check for
-    channel closures on behalf of others, LN provides for fees for these two
-    roles. Furthermore, in order to reduce transaction size and ensure
+    channel closures on behalf of others, LN permits receiving fees for these
+    two roles. Furthermore, in order to reduce transaction size and ensure
     that bitcoin nodes relay the transactions, it specifies exact rules for
     pruning outputs of too low value (known as ``dust outputs''). In the current
     analysis we do not consider these features.
   \ifelseieee{}{\end{remark}}
+
+  Figure~\ref{fig:channel-data} lists an exhaustive list of the exact data a
+  channel participant needs to store.
+
+  \begin{figure}[H]
+  \centering
+  \begin{mdframed}
+    \begin{itemize}
+      \item \alice's secret keys:
+      \begin{itemize}
+        \item $s_{\alice}$: key for on-chain funds (DS)\footnote{basic Digital
+        Signature}
+        \item $s_{\alice, F}$: funding (DS)
+        \item $sb_{\alice, \mathrm{pay}}$: payment basepoint
+        (IBS)\footnote{Identity Based Signature}
+        \item $sb_{\alice, \mathrm{dpay}}$: delayed payment basepoint (IBS)
+        \item $sb_{\alice, \mathrm{htlc}}$: htlc basepoint (IBS)
+        \item $sb_{\alice, \mathrm{rev}}$: revocation basepoint
+        (CS\footnote{Combined Signature} -- master)
+      \end{itemize}
+      \item \bob's public keys: public counterparts to 5 keys above
+      \item \texttt{seed}: for deriving \alice's per commitment keys $s_{\alice,
+      \mathrm{com}, i}$ with PRF
+      \item \bob's per commitment points:
+      \begin{itemize}
+        \item $\forall i \in [1, \dots, n], s_{\bob, \mathrm{com}, i}$: one
+        secret per \textsc{revokeAndAck} received (CS -- share)
+        \item $p_{\bob, \mathrm{com}, n+1}$ and $p_{\bob, \mathrm{com}, n+2}$:
+        current and next points (CS -- share)
+      \end{itemize}
+      \item \alice's coins
+      \item \bob's coins
+      \item for every HTLC that is included in the latest irrevocably committed
+      (local or remote) commitment:
+        \begin{itemize}
+          \item direction ($\alice \rightarrow \bob$ or $\bob \rightarrow \alice$)
+          \item hash
+          \item preimage (if known)
+          \item coins
+          \item Is it included in latest $\mathtt{localCom}_n$? (boolean)
+          \item HTLC number
+        \end{itemize}
+      \item signatures:
+      \begin{itemize}
+        \item signature resulting from \textsc{SignDS}$(\mathtt{localCom}_{n+1},
+        s_{\bob, F})$ (DS)
+        \item for every HTLC included in $\mathtt{localCom}_{n+1}$, if HTLC is
+        outgoing, a signature for \texttt{HTLC-timeout}, else a signature for
+        \texttt{HTLC-success} with $s_{\bob, \mathrm{htlc}, n+1}$ (IBS)
+      \end{itemize}
+    \end{itemize}
+  \end{mdframed}
+  \caption{Data \alice{} holds in an \alice{} -- \bob{} channel with $n$
+  updates}
+  \label{fig:channel-data}
+  \end{figure} \ \\

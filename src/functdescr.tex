@@ -5,7 +5,7 @@
   payment network. Its definition can be found in Section~\ref{appendix:payfunc}. The central aim of \fpaynet{} is opening payment
   channels, keeping track of their state, updating them according to requested
   payments and closing them, as requested by honest players, all in a secure
-  manner. In particular, the three main messages it can receive from \alice{}
+  manner. In particular, the four main messages it can receive from \alice{}
   are (\textsc{openChannel}), (\textsc{pay}), (\textsc{closeChannel}) and
   (\textsc{forceCloseChannel}).
 
@@ -48,10 +48,10 @@
     \texttt{charged}) message that gives details on the outcome of one or more
     multi-hop payments that include the identity of the party that is charged.
     Moreover, for each resolved payment, the message includes two expiry
-    values, expressed in absolute block height:
-    \texttt{OutgoingCltvExpiry}, which is the highest block in which
-    the charged party could claim money from the previous hop (closer to the
-    payer) and \texttt{IncomingCltvExpiry}, which is the
+    values that are expressed in absolute block height:
+    \texttt{OutgoingCltvExpiry} on the one hand, which is the highest block in
+    which the charged party could claim money from the previous hop (closer to
+    the payer) and \texttt{IncomingCltvExpiry} on the other, which is the
     lowest block in which the charged party could claim money from the
     next hop (closer to the payee). \fpaynet{} checks that for each
     payment the charged party was one of the following: (a) the one that
@@ -65,21 +65,24 @@
       the player was in $[\mathtt{OutgoingCltvExpiry},
       \mathtt{IncomingCltvExpiry} - \tochain]$ with a distance of at least
       \tochain{} between the two \textsc{poll}s or
-      \item did not enforce the retrieval of the funds lost as a result of this
-      payment when the chain in her view had height $\mathtt{IncomingCltvExpiry}
-      - \tochain$ with a \textsc{fulfillOnChain} message, as discussed below.
+      \item did not enforce the retrieval of the funds that were lost as a
+      result of this payment when the chain in her view had height
+      $\mathtt{IncomingCltvExpiry} - \tochain$ with a \textsc{fulfillOnChain}
+      message, as discussed below.
     \end{enumerate}
     Note that $\tochain$ is the maximum number of blocks an honest party needs
     to wait from the moment a valid transaction is submitted until it is added
     to the ledger state. \fpaynet{} also ensures that the two expiries
     (\texttt{OutgoingCltvExpiry} and \texttt{IncomingCltvExpiry}) have a
     distance of at least $\mathtt{relayDelay}(\alice) + \tochain$, otherwise it
-    halts. In case the charged party was honest and non-negligent, \fpaynet{}
-    halts. It also halts if a particular payment resulted in a channel update
-    for which \simulator{} did not inform \fpaynet{}.
+    halts. In case the charged party was honest, not the payer and
+    non-negligent, \fpaynet{} halts. It also halts if a particular payment
+    resulted in a channel update for which \simulator{} did not inform
+    \fpaynet{}.
     \item \fpaynet{} executes the function
     \texttt{checkClosed}($\Sigma_{\alice}$) every time it receives
-    \alice's ledger state. In this case, it checks that every
+    \alice's ledger state $\Sigma_{\alice}$ from \ledger{}. In this case, it
+    checks that every
     channel that \environment{} has asked to be closed or \simulator{}
     designated as closed indeed has a closing transaction that corresponds to
     its latest state in $\Sigma_{\alice}$.  Enough time is given for that

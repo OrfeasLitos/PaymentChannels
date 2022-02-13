@@ -1,14 +1,33 @@
 \section{Instant finality ledgers are unrealisable}
 \label{sec:perfect-ledger}
-  As already mentioned, previous attempts at formalising payment channels in
+  Previous attempts at formalising payment channels in
   UC~\cite{DBLP:conf/ccs/DziembowskiFH18,Malavolta:2017:CPP:3133956.3134096,sprites,perun}
-  assume a variant of a ledger functionality with instant finality. We here
-  define a representative variant of this approach \perfectledger{} (defined
-  below) where all submitted transactions are instantly added to the ledger and
+  assume a variant of a ledger functionality with instant finality. In
+  particular, in
+  \cite{DBLP:conf/ccs/DziembowskiFH18,perun,Malavolta:2017:CPP:3133956.3134096}
+  the specified ledger functionality settles every submitted transaction
+  immediately and makes it visible to all players. To date, such a ledger has
+  not been realized by any protocol. Furthermore, any realistic model of the
+  network should consider the fact that messages reach their destination with a
+  delay and possibly in a different order from the one they were sent. Therefore
+  it is plausible to believe that such a ledger functionality is not realizable
+  on top of realistic network models, even when corruptions are not allowed. We
+  here prove formally this intuition.
+
+  In \cite{sprites} the ledger is not explicitly specified as a functionality,
+  but it is only informally described. Several smart contracts are formally
+  defined instead as UC ITMs, which are the entities with which protocols
+  ultimately interact. The execution model of these contracts and their
+  interaction with the blockchain is explained in an intuitive way, but a
+  complete formalization of the ledger is missing.
+
+  We here define a representative variant of this approach \perfectledger{}
+  where all submitted transactions are instantly added to the ledger and
   immediately available to be read by all players. Subsequently we argue that,
   albeit an attractive abstraction, such a functionality is unrealisable, even
   under strong network assumptions, i.e.\ a multicast synchronous network
-  $\FnetworkEd^1$. Such a network ensures that messages sent by honest parties
+  $\FnetworkEd^1$ (c.f.\ Figure~\ref{code:functionality:network}). Such a
+  network ensures that messages sent by honest parties
   will be instantly delivered to all other parties; no delays can be introduced
   by the adversary. The formal definition of $\FnetworkEd^1$ can be found in
   Figure~\ref{code:functionality:network}. The
@@ -23,13 +42,13 @@
         \State State: List of txs $\mathcal{L}$
         \Statex
 
-        \State Upon receiving (\textsc{Submit}, $m$) from \alice{} or
+        \State Upon receiving (\textsc{Submit}, $m$) from $P$ or
         \adversary, append $m$ to $\mathcal{L}$ and send (\textsc{Submit},
-        \alice{} or \adversary, $m$) to \adversary
+        $P$ or \adversary, $m$) to \adversary
         \Statex
 
-        \State Upon receiving (\textsc{Read}) from \alice, send (\textsc{Read},
-        $\mathcal{L}$) to \alice
+        \State Upon receiving (\textsc{Read}) from $P$, send (\textsc{Read},
+        $\mathcal{L}$) to $P$
       \end{algorithmic}
     \end{systembox}
     \caption{\perfectledger functionality}

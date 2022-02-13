@@ -1,7 +1,7 @@
 \section{Lightning Network overview}
 \label{sec:ov-ln}
 
-  \noindent {\bf Two-party channels.}
+  \subsection{Two-party channels}
     The aim of LN is to enable fast, cheap, off-chain transactions,
     without compromising security. Specifically no trust between counterparties
     is needed. This is achieved as follows: Two parties that plan to have
@@ -20,11 +20,12 @@
     a number of keys and desired timelocks $\mathrm{relDel}_A,
     \mathrm{relDel}_B$ (explained below) and then build locally some
     transactions; no transaction is published yet. The ``funding transaction''
-    $F$ contains a 2-of-2 multisig
+    $F$ (Figure~\ref{fig:ln:funding}) contains a 2-of-2 multisig
     output with one ``funding'' public key $pk_{F, A}, pk_{F, B}$ for each
     counterparty. This multisig output needs signatures for both
     designated public keys in order to be spent. $F$ is funded with
-    $c_F$ coins that belong only to one of the two parties, say \alice.
+    $c_F$ coins that belong only to one of the two parties, the funder.
+    W.l.o.g., we assume this party is \alice.
 
     \begin{figure}[H]
     \centering
@@ -36,7 +37,8 @@
       }
     \end{pspicture}
     \label{fig:ln:funding}
-    \caption{Funding TX (on-chain): Rules over, coins below output.}
+    \caption{Funding TX (on-chain): Rules over output, coins below output. $pk_1
+    \wedge pk_2$ is a $2$-of-$2$ multisig with keys $pk_1$ and $pk_2$.}
     \end{figure}
 
     Each party also builds a slightly different version of the ``commitment
@@ -122,7 +124,7 @@
     \alice{} by taking all the money in the channel. Therefore \alice{} is
     technically able to broadcast an old commitment, but has no financial
     benefit in doing so. The same reasoning holds if \bob{} broadcasts
-    an old commitment. On the donwside this imposes the requirement that
+    an old commitment. On the downside this imposes the requirement that
     parties must observe the blockchain periodically --- see below the
     explanation of timelocks and how they facilitate a time window within which
     parties should react.
@@ -150,7 +152,7 @@
     revocation key until she sends him $sk_{\mathrm{com}, n, A}$.
     Therefore, \alice{} will send $sk_{\mathrm{com}, n, A}$ to \bob{} only
     after the new commitment transaction is built and signed. As a result, all
-    old commitment transactions are revoked, only the latest one is not.Thus
+    old commitment transactions are revoked, only the latest one is not. Thus
     \bob{} cannot
     abuse his revocation key on a commitment before this transaction is revoked.
     We note that the underlying cryptographic mechanism  that enables such
@@ -191,7 +193,7 @@
     so-called watchtowers, but this mechanism is not analyzed in the current
     work.
 
-  \noindent {\bf Multi-hop payments.}
+  \subsection{Multi-hop payments}
     Having funds locked down for exclusive use with a particular counterparty
     would be a serious limitation. LN goes beyond that by allowing multi-hop
     payments. In a situation where \alice{} has a channel with \bob{} and he has
@@ -236,7 +238,8 @@
     Figure~\ref{fig:all-txs} shows all transactions implicated in a
     channel that has an HTLC in flight.
 
-    In LN zero-hop payments are also carried out using HTLCs.
+    In LN zero-hop payments (i.e.\ direct payments within a single channel) are
+    also carried out using HTLCs.
 
     LN gives the possibility for intermediaries to charge a fee for their
     service, but such fees are not incorporated in the current analysis

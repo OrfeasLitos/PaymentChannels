@@ -1,22 +1,28 @@
 \section{Identity Based Signatures primitive}
 \label{sec:ibs}
   As we mentioned previously, LN uses a custom construction to derive three new
-  keys on each update. We abstract this construction using a slight modification
-  to the previously established Identity Based Signatures
-  primitive~\cite{ibspaterson,ibsshamir}. Our version augments the scheme with
-  explicit verification keys, which are generated together with the signing
-  keys. Furthermore a new key derivation algorithm is introduced, which returns
-  only the verification key of an identity, given its label. We furthermore
-  prove that the custom construction used in LN realizes the primitive.
+  keys on each channel update. Its syntax and security aims closely match those
+  of previously studied Identity Based Signature
+  schemes~\cite{ibsshamir,ibspaterson}, thus we use the latter to abstract away
+  the complexity of the construction and highlight the security requirements it
+  satisfies. Our version augments the scheme with explicit verification keys,
+  which are generated together with the signing keys. Furthermore we introduce a
+  new key derivation algorithm which, on input of the public parameters $mpk$
+  and a label $l$, returns the verification key $pk_l$. We furthermore prove
+  that the custom construction used in LN realizes the primitive.
 
   The five algorithms used by an Identity Based Signatures scheme (with our
   modification) are:
   \begin{itemize}
-    \item $(mpk, msk) \leftarrow \textsc{Setup}(1^k)$
-    \item $(pk_l, sk_l) \leftarrow \textsc{KeyDer}(mpk, msk, l)$
-    \item $pk_l \leftarrow \textsc{PubKeyDer}(mpk, l)$
-    \item $\sigma \leftarrow \textsc{SignIBS}(m, sk_l)$
-    \item $\{0, 1\} \leftarrow \textsc{VerifyIBS}(\sigma, m, pk_l)$
+    \item $(mpk, msk) \leftarrow \textsc{Setup}(1^k)$: master keypair generation
+    \item $(pk_l, sk_l) \leftarrow \textsc{KeyDer}(mpk, msk, l)$: keypair
+    derivation with label $l$
+    \item $pk_l \leftarrow \textsc{PubKeyDer}(mpk, l)$: verification key
+    derivation with label $l$
+    \item $\sigma \leftarrow \textsc{SignIBS}(m, sk_l)$: signature generation
+    with signing key $sk_l$
+    \item $\{0, 1\} \leftarrow \textsc{VerifyIBS}(\sigma, m, pk_l)$: signature
+    verification
   \end{itemize}
   Observe that $mpk$ is not part of the input to \textsc{SignIBS} and
   \textsc{VerifyIBS}. In our case, this input is not needed. In fact, because
@@ -105,7 +111,7 @@
 
     Parameters: hash function $\mathcal{H}$, group generator $G$
     \begin{algorithmic}[0]
-      \State \textsc{Setup}($1^k$, rand):
+      \State \textsc{Setup}($1^k$):
       \Indent
         \State \Return \textsc{KeyGen}($1^k$)
       \EndIndent
@@ -234,7 +240,7 @@
       one element.
 
       Let $E$ denote the event in which neither \textsc{KeyDer}($mpk, msk, l^*$)
-      or \textsc{PubKeyDer}($mpk, l^*$) is invoked. In that case the value
+      nor \textsc{PubKeyDer}($mpk, l^*$) is invoked. In that case the value
       $\mathcal{H}\left(l \concat mpk\right)$ is decided after $\mathcal{B}$
       terminates (Fig.~\ref{proof:ibs:distinguisher},
       line~\ref{proof:ibs:distinguisher:won}) and thus
@@ -279,7 +285,7 @@
       to \textsc{KeyDer}($mpk, msk, l^*$) or \textsc{PubKeyDer}($mpk, l^*$)
       results in the $k$th
       invocation of the Random Oracle. Since $k$ is chosen uniformly at random
-      and using Proposition~\ref{prop:distrib},
+      and using Proposition~\ref{prop:distrib}, it is
       $\Pr\left[F | \neg E\right] = \frac{1}{T\left(\mathcal{B}\right) +
       T\left(\adversary\right)}$. Observe that $\Pr\left[F | E\right] = 0
       \Rightarrow \Pr\left[F\right] = \Pr\left[F | \neg E\right] =
@@ -302,7 +308,8 @@
       Since $F$ holds, the $k$th invocation of the Random Oracle queried
       $\mathcal{H}\left(l^* \concat mpk\right)$.
       Therefore it is $\textsc{PubKeyDer}\left(mpk, l^*\right) = vk$. This means
-      that the verification is successful: $\textsc{VerifyIBS}\left(\sigma^*,
+      that the verification is successful, i.e.\
+      $\textsc{VerifyIBS}\left(\sigma^*,
       m^*, vk\right) = 1$. We conclude that, if $\left(F \wedge
       \mathcal{B} \text{ wins} \wedge \neg E\right)$, \adversary{} wins the
       \textsf{EUF-CMA} game. A final observation is that the probability that

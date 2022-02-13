@@ -1,14 +1,15 @@
 \section{Security proof overview}
 \label{sec:ov-security-proof}
   \begin{theorem}[Lightning Payment Network Security]
-    The protocol $\Pi_{\mathrm{LN}}$ realises $\fpaynet$ given a global
-    functionality $\ledger$ and assuming the security of the underlying digital
-    signature, identity-based signature, combined digital signature and PRF.
-    Specifically,
+    The protocol $\Pi_{\mathrm{LN}}$ UC-realises the local functionality
+    $\fpaynet$ given a global functionality $\ledger$ and assuming the security
+    of the underlying digital signature, identity-based signature, combined
+    digital signature and PRF. Specifically,
     \label{theorem:simulation}
     \ifelseieee{
       \begin{gather*}
-        \forall k \in \mathbb{N}, \text{ PPT } \environment, \\
+        \forall k \in \mathbb{N}, \exists \text{ PPT } \simulator: \forall
+        \text{ PPT } \environment, \\
         |\Pr[\textsc{Exec}^{\ledger}_{\Pi_{\mathrm{LN}}, \adversary_{\mathrm{d}},
         \environment} = 1] - \Pr[\textsc{Exec}^{\fpaynet, \ledger}_{\simulator,
         \environment} = 1]| \leq \\
@@ -19,13 +20,14 @@
       \end{gather*}
     }{
       \begin{gather*}
-        \forall k \in \mathbb{N}, \text{ PPT } \environment,
+        \forall k \in \mathbb{N}, \exists \text{ PPT } \simulator: \forall
+        \text{ PPT } \environment,
         |\Pr[\textsc{Exec}^{\ledger}_{\Pi_{\mathrm{LN}}, \adversary_{\mathrm{d}},
         \environment} = 1] - \Pr[\textsc{Exec}^{\fpaynet, \ledger}_{\simulator,
         \environment} = 1]| \leq \\
-        2nm  \mathrm{E \mhyphen ds}(k)  + 6np  \mathrm{E \mhyphen ids}(k) + 2nmp
-        \mathrm{E \mhyphen share}(k) + 2nm \mathrm{E \mhyphen master}(k)+  2
-        \mathrm{E \mhyphen prf}(k)  \enspace,
+        2nm  \mathrm{E \mhyphen ds}(k) + 6np \mathrm{E \mhyphen ids}(k) + 2nmp
+        \mathrm{E \mhyphen share}(k) + 2nm \mathrm{E \mhyphen master}(k)+ 2
+        \mathrm{E \mhyphen prf}(k) \enspace,
       \end{gather*}
     }
     where $n$ is the maximum number of registered users, $m$ is the maximum
@@ -35,8 +37,9 @@
   \end{theorem}
 
   \begin{proofsketch}
-    The proof is done in 5 steps of successive game replacement. In the first
-    lemma, we define a simulator $\simulator_{\mathrm{LN}}$ that internally
+    The proof is done in 5 steps of successive game replacement. In
+    Lemma~\ref{lemma:dummy}, we define a simulator $\simulator_{\mathrm{LN}}$
+    that internally
     simulates a full execution of $\Pi_{\mathrm{LN}}$ for each player, and a
     ``dummy'' functionality that acts as a simple relay between \environment{}
     and $\simulator_{\mathrm{LN}}$. We argue that this version of the ideal
@@ -47,20 +50,23 @@
     simulator to the functionality, while ensuring the change is transparent to
     both \environment{} and \adversary. Each step defines a different
     functionality that handles some additional messages from \environment{}
-    exactly like \fpaynet, until the last step where we use \fpaynet{} itself.
+    exactly like \fpaynet, until the last step (Lemma~\ref{lemma:close}) where
+    we use \fpaynet{} itself.
     Correspondingly, the simulator of each step is adapted so that the new ideal
     execution is computationally indistinguishable from the previous one. For
     each step we exhaustively trace the differences from the previous step in
     order to prove that, given the same messages from \environment{} and
     \adversary{}, the resulting responses remain unchanged.
 
-    The second step, lets $\mathcal{F}$ handle registration messages, along with
-    the corruption messages from \simulator. In the third step, the
+    In the second step, Lemma~\ref{lemma:reg} lets $\mathcal{F}$ handle
+    registration messages, along with the corruption messages from \simulator.
+    In the third step, Lemma~\ref{lemma:open}, the
     functionality additionally handles messages related to channel opening. It
-    behaves like \fpaynet, but does not execute \texttt{checkClosed}().  The
-    fourth step, has the functionality handle all messages sent during channel
-    updates. Lastly, the entire \fpaynet{} is used as functionality, by
-    incorporating the message for closing a channel, executing
+    behaves like \fpaynet, but does not execute \texttt{checkClosed}(). In the
+    fourth step, Lemma~\ref{lemma:pay} has the functionality handle all messages
+    sent during channel updates. Lastly, Lemma~\ref{lemma:close} has the entire
+    \fpaynet{} as its
+    functionality, by incorporating the message for closing a channel, executing
     \texttt{checkClosed}() normally and handing the message that returns to
     \environment{} the receipts for newly opened, updated and closed channels.
     The last two steps introduce a probability of failure in case the various
