@@ -28,17 +28,11 @@
     W.l.o.g., we assume this party is \alice.
 
     \begin{figure}[H]
-    \centering
-    \begin{pspicture}
-      \drawtx{funding}{
-        {{},{}}%
-      }{
-        {{$pk_{F{,} A} \wedge pk_{F{,} B}$},{$c_F$}}%
-      }
-    \end{pspicture}
-    \label{fig:ln:funding}
-    \caption{Funding TX (on-chain): Rules over output, coins below output. $pk_1
-    \wedge pk_2$ is a $2$-of-$2$ multisig with keys $pk_1$ and $pk_2$.}
+      \centering
+      \includegraphics[width=9cm]{funding-figure.png}
+      \caption{Funding TX (on-chain): Rules over output, coins below output. $pk_1
+      \wedge pk_2$ is a $2$-of-$2$ multisig with keys $pk_1$ and $pk_2$.}
+      \label{fig:ln:funding}
     \end{figure}
 
     Each party also builds a slightly different version of the ``commitment
@@ -54,32 +48,19 @@
     received signature is valid.
 
     \begin{figure}[H]
-    \centering
-    \begin{pspicture}
-      \drawtx{$\mathrm{comm}_A$}{
-        {{$\sigma_{F{,} A} \wedge \sigma_{F{,} B}$},{funding}}%
-      }{
-        {{$pk_{\mathrm{rev}{,} B} \vee$,
-        $(\mathrm{relDel}_B \wedge pk_{\mathrm{dcom}{,} A})$},{$c_F$}}%
-      }
-    \end{pspicture}
-    \label{fig:ln:commitment:alice}
-    \caption{\alice's initial commitment TX (off-chain): Required data over
-    input, spent output below input.}
+      \centering
+      \includegraphics[width=\textwidth]{alice-comm-figure.png}
+      \caption{\alice's initial commitment TX (off-chain): Required data over
+      input, spent output below input.}
+      \label{fig:ln:commitment:alice}
     \end{figure}
 
     \begin{figure}[H]
-    \centering
-    \begin{pspicture}
-      \drawtx{$\mathrm{comm}_B$}{
-        {{$\sigma_{F{,} A} \wedge \sigma_{F{,} B}$},{funding}}%
-      }{
-        {{$pk_{\mathrm{com}{,} A}$},{$c_F$}}%
-      }
-    \end{pspicture}
-    \label{fig:ln:commitment:bob}
-    \caption{\bob's initial commitment TX (off-chain): All coins belong to
-    \alice, so she can immediately spend them if \bob{} closes.}
+      \centering
+      \includegraphics[width=11cm]{bob-comm-figure.png}
+      \caption{\bob's initial commitment TX (off-chain): All coins belong to
+      \alice, so she can immediately spend them if \bob{} closes.}
+      \label{fig:ln:commitment:bob}
     \end{figure}
 
     \begin{figure*}
