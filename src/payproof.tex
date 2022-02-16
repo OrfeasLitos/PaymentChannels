@@ -511,7 +511,7 @@
   \bob{} and the rest of the ITIs following the same steps as in the simulated
   case, therefore the two behaviours are indistinguishable.
 
-  We can now move on to treating individual messages sent by \environment{}
+  We can now move on to treating the individual messages sent by \environment{}
   during the execution. When \environment{} sends $\left(\textsc{pay}, \bob, x,
   \overrightarrow{\mathtt{path}}, \mathit{expayid}\right)$ to \alice{}
   in the ideal world, $\simulator_{\mathrm{LN - Reg - Open}}$ is always notified
@@ -523,7 +523,7 @@
   \environment). Therefore, when \environment{} sends \textsc{pay}, no
   opportunity for distinguishability arises.
 
-  When \environment{} sends any message of (\textsc{pushAdd}, \textit{pchid}),
+  When \environment{} sends any message among (\textsc{pushAdd}, \textit{pchid}),
   (\textsc{pushFulfill}, \textit{pchid}), (\textsc{commit}, \textit{pchid}) to
   \alice{} in the ideal world, it is forwarded to $\simulator_{\mathrm{LN - Reg
   - Open}}$ (Fig.~\ref{alg:fpaynet:daemon},
@@ -769,6 +769,7 @@
 
   Event $H$ happens only when the previous counterparty successfully appends
   \texttt{HTLC-timeout} to $\Sigma_{\dave}$, which is a valid transaction only
+  starting
   from the block of height $\mathtt{IncomingCltvExpiry} + 1$ and on, or if the
   previous counterparty learns the preimage of the HTLC and forges a signature
   valid by \dave's public HTLC key, or if the previous counterparty forges a
@@ -978,7 +979,7 @@
   line~\ref{alg:fpaynet:resolvepay:loops:indiffs:credit:halt},
   Fig.~\ref{alg:fpaynet:resolvepay:loops} cannot occur.
 
-  To conclude, given $\neg P \wedge \neg Q \wedge \neg R \wedge \neg S$, it is
+  To conclude, given that $\neg P \wedge \neg Q \wedge \neg R \wedge \neg S$, it is
   $\textsc{Exec}^{\fpaynet{}_{\mathrm{, Open}}, \ledger}_{\simulator_{\mathrm{LN
   - Reg - Open}}, \environment} = \textsc{Exec}^{\fpaynet{}_{\mathrm{, Pay}},
   \ledger}_{\simulator_{\mathrm{LN - Reg - Open - Pay}}, \environment}$. If we
