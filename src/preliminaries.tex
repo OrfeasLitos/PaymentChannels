@@ -102,8 +102,7 @@ drawn from the   UC formalisation of~\cite{BMTZ17,genesis}.
   Honest parties may also find themselves in a desynchronised state: this is
   when honest parties lose access to some of their resources. The resources that
   are necessary for proper ledger maintenance and that the functionality keeps
-  track of are the global random oracle \Foracle, the clock \Fclock and network
-  \FnetworkEd. If an honest party maintains registration with all the resources
+  track of are the global random oracle \Foracle and the clock \Fclock. If an honest party maintains registration with all the resources
   then after \vdelay clock ticks it necessarily becomes synchronised.
 
   The progress of the \state variable is guaranteed via the \LFextend function
@@ -487,39 +486,6 @@ drawn from the   UC formalisation of~\cite{BMTZ17,genesis}.
     $\current_\sid:=\current_\sid+1$  and reset $d_{(\Func,\sid)}:=0$ and
     $d_{\party}:=0$ for all parties $\party=(\cdot,\sid) \in \PS$.
   \end{systembox}
-
-
-\begin{systembox}{$\FnetworkEd^{\Delay}$}
-	The functionality is parameterized with a set possible senders and receivers $\PS$. Any newly registered (resp. deregistered) party is added to  (resp. deleted from) $\PS$. 
-	
-	{\small
-		\begin{itemize}
-			\item \textbf{Honest sender multicast.} Upon receiving $(\NetworkMulticast,\sid,m)$ from some $\party\in\PS$, where $\PS=\{\stkh_1,\ldots,\stkh_n\}$ denotes the current party set, choose $n$ new unique message-IDs $\mid_1,\ldots,\mid_{n}$, initialize $2n$ new variables $D_{\mid_1}:=D_{\mid_1}^{MAX}\ldots:=D_{\mid_n}:=D_{\mid_n}^{MAX}:=1$, set $\vec{M}:=\vec{M}||(m,\mid_1,D_{\mid_1},\stkh_1)||\ldots||(m,\mid_n,D_{\mid_n},\stkh_n)$, and send $(\NetworkMulticast,\sid,m,\party,(\stkh_1,\mid_1),\ldots,(\stkh_n,\mid_n))$ to the adversary.
-			\smallskip
-			\item \textbf{Adversarial sender (partial) multicast.}
-			Upon receiving $(\NetworkMulticast,\sid,(m_{i_1},\stkh_{i_1}),\ldots,(m_{i_\ell},\stkh_{i_\ell}))$ from the adversary with $\{\stkh_{i_1},\ldots,\stkh_{i_\ell}\}\subseteq\PS$, choose $\ell$ new unique message-IDs $\mid_{i_1},\ldots,\mid_{i_\ell}$, initialize $\ell$ new variables $D_{\mid_{i_1}}:=D_{\mid_{i_1}}^{MAX}:=\ldots:=D_{\mid_{i_\ell}}:=D_{\mid_{i_\ell}}^{MAX}:=1$, set $\vec{M}:=\vec{M}||(m_{i_1},\mid_{i_1},D_{\mid_{i_1}},\stkh_{i_1})||\ifelseieee{\ldots$ $}{}\ldots||(m_{i_\ell},\mid_{i_\ell},D_{\mid_{i_\ell}},\stkh_{i_\ell})$, and send $(\NetworkMulticast,\sid,(m_{i_1},\stkh_{i_1},\mid_{i_1}),\ldots, (m_{i_\ell},\stkh_{i_\ell},\mid_{i_\ell})$ to the adversary.
-			
-			\smallskip
-			\item \textbf{Honest party fetching.}
-			Upon receiving $(\NetworkFetch,\sid)$ from $\party \in\PS$ (or from $\Adv$ on behalf of $\party$ if $\party$ is corrupted):
-			\begin{enumerate}
-				\item For all tuples  $(m,\mid,D_\mid,\party)\in\vec{M}$, set $D_\mid:=D_\mid-1$.
-				\item Let $\vec{M}_0^{\party}$ denote the subvector $\vec{M}$ including all tuples of the form $(m,\mid,D_\mid,\party)$ with $D_\mid=0$ (in the same order as they appear in $\vec{M}$).  
-				Delete all entries in $\vec{M}^{\party}_0$ from $\vec{M}$,  and send $\vec{M}^{\party}_0$ to $\party$.
-				
-			\end{enumerate}
-			
-			\smallskip
-			\item \textbf{Adding adversarial delays.}
-			Upon receiving $(\NetworkDelays,\sid, (T_{\mid_{i_1}},\mid_{i_1}), \ldots, (T_{\mid_{i_\ell}},\mid_{i_\ell}))$ from the adversary do the following for each pair $(T_{\mid_{i_j}},\mid_{i_j})$: \\
-			If $D_{\mid_{i_j}}^{MAX}+T_{\mid_{i_j}}\leq\Delta$ and $\mid$ is a message-ID registered in the current $\vec{M}$, set $D_{\mid_{i_j}}:= D_{\mid_{i_j}} + T_{\mid_{i_j}}$ and set $D_{\mid_{i_j}}^{MAX}:= D_{\mid_{i_j}}^{MAX} + T_{\mid_{i_j}}$; otherwise, ignore this pair.   
-			
-			\smallskip
-			\item \textbf{Adversarially reordering messages.}
-			Upon receiving $(\NetworkSwap,\sid, \mid, \mid')$ from the adversary, if $\mid$ and $\mid'$ are message-IDs registered in the current $\vec{M}$, then swap the triples $(m,\mid,D_\mid,\cdot)$ and $(m,\mid', D_{\mid'},\cdot)$ in $\vec{M}$. Return $(\NetworkSwap,\sid)$ to the adversary. 
-		\end{itemize}
-	}
-\end{systembox}
 
   \subsection{Transaction structure}
     \ledger{} does not define what is a valid transaction, but leaves it as a
